@@ -1,0 +1,82 @@
+@charset "utf-8";
+
+/*  -------------------------------------------------------------
+    Zed
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    Author:         Dereckson
+    Tags:           space retro futurist
+    Filename:       forms.css
+    Version:        1.0
+    Created:        2010-01-27
+    Updated:        2010-01-27
+    Licence:        Creative Commons BY 3.0
+    -------------------------------------------------------------    */
+
+/*  ------
+    Import dojo CSS
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -    */
+
+@import "/js/dojo/dijit/themes/tundra/tundra.css";
+
+/*  -------------------------------------------------------------
+    Forms rows
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -    */
+
+form .row {
+    margin-bottom: 0.8em;
+}
+
+hr {
+    width: 90%;
+    color: lightgray;
+    margin: 2em auto 2em auto;
+}
+
+/*  -------------------------------------------------------------
+    input tags width
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -    */
+
+.small {
+    width: 5em;
+}
+.medium {
+    width: 12em;
+}
+.long {
+    width: 20em;
+}
+
+/*  -------------------------------------------------------------
+    Labels (from dojo CSS)
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -    */
+
+.firstLabel {
+    display: inline-block;
+    display: -moz-inline-box;
+    width: 10em;
+    min-width: 10em;
+    vertical-align: top;
+}
+
+.secondLabel {
+    width: auto;
+    margin-left: 5em;
+    margin-right: 1em;
+}
+
+fieldset label {
+    margin-right: 1em;
+}
+
+/*  -------------------------------------------------------------
+    Misc
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -    */
+
+/* Doesn't display DOJO tooltips provider if JS disabled */
+.dojotooltip {
+    display: none;
+}
+
+.dijitButton {
+    color: black;
+}

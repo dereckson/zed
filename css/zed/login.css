@@ -1,0 +1,63 @@
+body {
+    margin: 0 0 0 0;
+    background-color: #343434;
+    font-family: "FixedSys", monospace;
+}
+
+#LoginBox {
+    background-image: url("/img/login/bg.jpg");
+    width: 341px;
+    height: 516px;
+    margin: 0 auto 0 auto;
+}
+
+#LoginBox label { display:none; }
+
+#LoginBox input {
+    width: 150px;
+    font-weight: 900;
+    border: none;
+    background-color: #3b3f55;
+    color: white;
+}
+
+#LoginBox #username {
+    position: relative;
+    top: 250px;
+    left: 150px;
+}
+
+#LoginBox #password {
+    position: relative;
+    top: 300px;
+    left: 150px;
+}
+
+#LoginBox #openid {
+    position: relative;
+    top: 390px;
+    width: 230px;
+    left: 50px;
+    
+    /* OpenID */
+    background-image: url("/img/login/openid.png");
+    background-position: 0% 50%;
+    background-repeat: no-repeat;
+    padding-left: 20px;
+}
+
+#LoginBox #submit {
+    position: relative;
+    top: 420px;
+    left: 250px;
+    width: 50px;
+}
+    
+.error {
+    position: relative;
+    width: 290px;
+    margin: 0 10px 0 10px;
+    text-align: right;
+    color: #3b3f55;
+    top: 274px;
+}
