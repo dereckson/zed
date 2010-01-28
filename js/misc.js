@@ -1,3 +1,10 @@
+/* SmartLine */
+
+function UpdateSmartLine() {
+    document.forms.SmartLine.C.value = document.forms.SmartLine.SmartLineHistory.value;
+    document.forms.SmartLine.C.focus();
+}
+
 /* Dumps a variable */
 
 function dump(arr,level) {
@@ -31,18 +38,18 @@ var ar2215 = {
     input: "",
     pattern: "38384040373937396665",
     clear: setTimeout('ar2215.clear_input()', 2000),
-    load: function (link) {
+    load: function () {
         window.document.onkeydown = function (e) {
             ar2215.input += e ? e.keyCode : event.keyCode;
             if (ar2215.input == ar2215.pattern) {
-                ar2215.code(link);
+                ar2215.code("/index.php/push");
                 clearTimeout(ar2215.clear);
                 return;
             }
             clearTimeout(ar2215.clear);
             ar2215.clear = setTimeout("ar2215.clear_input()", 2000);
         }
-        this.iphone.load(link)
+        this.iphone.load("/index.php/push");
     },
     code: function (link) {
         window.location = link;
@@ -97,4 +104,4 @@ var ar2215 = {
     }
 }
 
-ar2215.load("http://photos.folleterre.org");
+ar2215.load();

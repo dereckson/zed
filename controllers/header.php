@@ -24,5 +24,5 @@ $smarty->assign('WALL_USER_URL', get_url('user', $row['username']));
 //
 
 $smarty->display('header.tpl');
- 
+define('HEADER_PRINTED', true);
 ?>

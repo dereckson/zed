@@ -1,4 +1,5 @@
     <div class="clear"></div>
+{include file="smartline.tpl"}
     <hr />
     <div class="grid_12 alpha">
         <p>[ {#Product#} / {$CurrentPerso->location_global} / {if $screen}{$screen}{else}Untitled screen{/if} ]</p>

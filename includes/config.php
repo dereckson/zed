@@ -21,6 +21,7 @@ $Config['sql']['database'] = 'zed';
 $prefix = '';
 define('TABLE_BODIES', $prefix . 'geo_bodies');
 define('TABLE_COMMENTS', $prefix . 'comments');
+define('TABLE_LOG_SMARTLINE', $prefix . 'log_smartline');
 define('TABLE_MESSAGES', $prefix . 'messages');
 define('TABLE_MOTD', $prefix . 'motd');
 define('TABLE_PERSOS', $prefix . 'persos');

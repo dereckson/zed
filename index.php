@@ -8,6 +8,11 @@
  * Application entry point
  */
 
+////////////////////////////////////////////////////////////////////////////////
+///
+/// Initialization
+///
+
 //Pluton library
 include('includes/core.php');
 
@@ -50,6 +55,9 @@ if ($CurrentUser->id < 1000) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+///
+/// Perso selector
+///
 
 //Handles form
 if ($_POST['form'] == 'perso.create') {
@@ -112,13 +120,17 @@ if (!$CurrentPerso) {
     }
 }
 
-////////////////////////////////////////////////////////////////////////////////
-
-//Assigns current user and perso objects as Smarty variables
-$smarty->assign('CurrentUser',  $CurrentUser);
+//Assigns current perso object as Smarty variable
 $smarty->assign('CurrentPerso', $CurrentPerso);
 
-//If the perso location is unknown, eject it to an asteroid
+////////////////////////////////////////////////////////////////////////////////
+///
+/// Tasks to execute before calling the URL controller:
+///     - assert the perso is somewhere
+///     - executes the smartline
+///
+
+//If the perso location is unknown, ejects it to an asteroid
 if (!$CurrentPerso->location_global) {
     require_once('includes/objects/place.php');
     $smarty->assign('NOTIFY', lang_get('NewLocationNotify'));
@@ -126,9 +138,14 @@ if (!$CurrentPerso->location_global) {
     $CurrentPerso->save_field('location_global');
 }
 
-////////////////////////////////////////////////////////////////////////////////
+//SmartLine
+include("includes/SmartLine/ZedSmartLine.php");
 
-//Calls the specific controller to serve the requested page
+////////////////////////////////////////////////////////////////////////////////
+///
+/// Calls the specific controller to serve the requested page
+///
+
 $url = explode('/', substr($_SERVER['PATH_INFO'], 1));
 
 switch ($controller = $url[0]) {

@@ -51,7 +51,8 @@ function message_die ($msg_code, $msg_text = '', $msg_title = '', $err_line = ''
         
         
         $smarty->assign('ERROR_TEXT', $debug_text);
-        $smarty->display("error.tpl");
+        $template = defined(HEADER_PRINTED) && HEADER_PRINTED ? "error_block.tpl" : "error.tpl";
+	$smarty->display($template);
         exit;
     } else {
         old_message_die($msg_code, $msg_text, $msg_title, $err_line, $err_file, $sql);

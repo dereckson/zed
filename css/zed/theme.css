@@ -113,7 +113,8 @@ a:hover {
 
 .message.light {
     background-color: #fafafa;
-    border: 1px solid #dedede;
+    border: 3px solid #dedede;
+    width: 938px;
 }
 
 .message.light a {color: #343434;}
@@ -132,6 +133,7 @@ a:hover {
 
 .message_info {
     text-align: right;
+    margin-bottom: 1em;
 }
 
 .message_text {
@@ -193,6 +195,12 @@ a:hover {
 }
 .red a {color: #993333;}
 
+.black {
+    background-color: black;
+    color: #ccc;
+    border: solid 2px #555;
+}
+
 .plum a:hover,
 .green a:hover,
 .skyblue a:hover,
@@ -201,4 +209,51 @@ a:hover {
 .orange a:hover,
 .red a:hover{
     font-weight: bold;
+}
+
+/*  -------------------------------------------------------------
+    SmartLine
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -    */
+
+#SmartLine {
+    width: 100%;
+}
+
+#SmartLine .left {
+    background-color: green;
+}
+
+#SmartLine .right {
+    float: right;
+    text-align: right;
+    background-color: yellow;
+}
+
+/* TODO: ajouter un sélecteur de SmarLine pour chat/commandes (60px) */
+/* grid_1 alpha -> sélecteur, grid_3 -> history, grid_12 > bar */
+
+#SmartLineHistory {
+    width: 115%; /* dépasse de sa bordure */
+}
+
+#SmartLineBar{
+    /* 99.6% for alignment with .message.light */
+    width: 99.6%;
+}
+
+#SmartLineResults {
+	font-family: "Fixedsys Excelsior 3.01", FixedSys, Terminal;
+	font-size: 12pt;
+}
+
+#SmartLineResults .highlight {
+	color: #16c3cc;
+}
+
+#SmartLineResults .error {
+	color: red;
+}
+
+#SmartLineResults p {
+    padding-left: 1em;
 }
