@@ -35,7 +35,7 @@
 
 /* Icons */
 .dojoxFloatingCloseIcon {
-	background:url('icons/tabClose.png') no-repeat center center; 
+	background:url('../../../dijit/themes/tundra/images/tabClose.png') no-repeat center center; 
 	width:16px;
 	height:16px; 
 	overflow:hidden;

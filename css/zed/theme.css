@@ -17,20 +17,23 @@
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -    */
 
 body {
-    margin: 28px 0 0 0;
+    /* margin: 28px 0 0 0; */
+    margin: 0 0 0 0;
     
     background-color: #343434;
-	background-image: url("/img/zed/topborder.png");
-	background-position: top;
-	background-repeat: repeat-x;
+    background-image: url("/img/zed/topborder.png");
+    background-position: top;
+    background-repeat: repeat-x;
+
+    font-family: "Calibri", "Lucida Sans Unicode", "Trebuchet MS", "Helvetica", "Arial", sans-serif;
     
-	font-family: "Calibri", "Lucida Sans Unicode", "Trebuchet MS", "Helvetica", "Arial", sans-serif;
-	font-size: 80%;
+    
+    color: white;
 }
 
 
-label, p, table, pre {
-    color: white
+h1, h2, h3, h4, h5, h6 {
+    color: black;
 }
 
 pre {
@@ -68,23 +71,26 @@ a:hover {
 	text-align: center;
 	background: #eeeeee;
 	font-size: 1.5em;
+	color: black;
 	
 	border: 5px solid #1AC8E8;
 	width: 950px;
-
 }
 
 .wap {
 	padding-top:    50px;
 	padding-bottom: 50px;
 
-	margin-bottom: 10px;
+	margin-bottom: 10px;	
 	
-	border: 5px solid indianred;
 	text-align: center;
 	background: #eeeeee;
 	font-size: 2em;
+	color: black;
+
+	border: 5px solid indianred;
 	width: 950px;
+	
 }
 
 /*  -------------------------------------------------------------
@@ -94,11 +100,29 @@ a:hover {
 .wall {
     text-align: left;
     float: right;
+    font-size: 80%;
 }
 
 .wall_info {
     display: block;
     text-align: right;
+}
+
+/*  -------------------------------------------------------------
+    Info
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -    */
+
+.info {
+    font-size: 90%;
+}
+
+.info strong {
+    display: inline-block;
+    display: -moz-inline-box;
+    width: 9em;
+    min-width: 9em;
+    font-weight: 600;
+    color: #fd9800;
 }
 
 /*  -------------------------------------------------------------
@@ -109,12 +133,14 @@ a:hover {
     margin-bottom: 17px;
     padding: 8px 9px 8px 9px;
     width: 940px;
+    font-size: 80%;
 }
 
 .message.light {
     background-color: #fafafa;
     border: 3px solid #dedede;
     width: 938px;
+    color: black;
 }
 
 .message.light a {color: #343434;}
@@ -226,7 +252,6 @@ a:hover {
 #SmartLine .right {
     float: right;
     text-align: right;
-    background-color: yellow;
 }
 
 /* TODO: ajouter un sélecteur de SmarLine pour chat/commandes (60px) */
@@ -256,4 +281,40 @@ a:hover {
 
 #SmartLineResults p {
     padding-left: 1em;
+}
+
+/*  -------------------------------------------------------------
+    Floating panes
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -    */
+.floatingPaneTutorial {
+    width: 957.5px;
+    margin-bottom: 1em;
+    color: black;
+}
+
+.floatingPaneTutorial a {
+    color: navy;
+}
+
+.floatingPaneTutorial a:hover {
+    color: #7F0707;
+    font-weight: 900;
+}
+
+.floatingPaneTutorial p {
+    color: black;
+    margin: 0;
+    padding: 5px 10px 0px 10px; 
+}
+
+.dojoxDockList {
+    color: black;
+}
+
+/*  -------------------------------------------------------------
+    Footer
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -    */
+
+#footer {
+    font-size: 80%;
 }
