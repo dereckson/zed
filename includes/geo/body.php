@@ -17,10 +17,17 @@ class GeoBody {
     public $name;
     
     public $hypership;
-    public $start;
+    public $asteroid;
+    public $moon;
+    public $planet;
+    public $star;
+    public $orbital;
+    public $hidden;
     
     public $location;
     public $description;
+    
+    public $lastError;
     
     /*
      * Initializes a new instance
@@ -36,12 +43,19 @@ class GeoBody {
     /*
      * Loads the object body (ie fill the properties) from the $_POST array
      */
-    function load_from_form () {
+    function load_from_form ($readBoolean = true) {
         if (array_key_exists('name', $_POST)) $this->name = $_POST['name'];
         
-        if (array_key_exists('hypership', $_POST)) $this->hypership = $_POST['hypership'];
-        if (array_key_exists('start', $_POST)) $this->start = $_POST['start'];
-        
+        if ($readBoolean) {
+            if (array_key_exists('hypership', $_POST)) $this->hypership = $_POST['hypership'];
+            if (array_key_exists('star', $_POST)) $this->start = $_POST['star'];
+            if (array_key_exists('asteroid', $_POST)) $this->hypership = $_POST['asteroid'];
+            if (array_key_exists('moon', $_POST)) $this->start = $_POST['moon'];
+            if (array_key_exists('planet', $_POST)) $this->start = $_POST['planet'];
+            if (array_key_exists('orbital', $_POST)) $this->start = $_POST['orbital'];
+            if (array_key_exists('hidden', $_POST)) $this->start = $_POST['hidden'];
+        }
+
         if (array_key_exists('location', $_POST)) $this->location = $_POST['location'];
         if (array_key_exists('description', $_POST)) $this->description = $_POST['description'];
     }
@@ -76,13 +90,29 @@ class GeoBody {
      * Gets status
      */
     function get_status () {
-        $flags = array('hypership', 'start');
+        $flags = array('hypership','asteroid','moon','planet','star','orbital','hidden');
         foreach ($flags as $flag) {
-            if ($this->$flag == true) {
+            if ($this->$flag) {
                 $status[] = $flag;
             }
         }
         return implode(',', $status);
+    }
+    
+    /*
+     * Gets the kind of place the body is (e.g. asteroid)
+     */
+    function kind () {
+        //If a location can be described by 2 flags, order the relevant flags list
+        //by priority, as it'll return the first trigerred.
+        //e.g. a moon converted in hypership will be "hypership" and not "moon".
+        $relevantFlags = array('hypership','asteroid','moon','planet','star','orbital');
+        foreach ($relevantFlags as $flag) {
+            if ($this->$flag) {
+                return $flag;
+            }
+        }
+        return "";
     }
     
     /*
@@ -111,5 +141,3 @@ class GeoBody {
 }
     
 ?>
-
-
