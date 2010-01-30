@@ -1,6 +1,9 @@
-        var tour = {
-            //Lang
+        var tour = {           
+            //Default language
             lang: "en",
+            
+            //Translated in
+            langs: "en,fr",
             
             //Current highlight showed
             current: -1,
@@ -32,6 +35,7 @@
                 }
             },
             
+            //Determines if we're inside the #Tour id
             isInside: function (pageX, pageY) {
                 var tourOffset = $("#Tour").offset();
                 return pageX >= tourOffset.left && pageY >= tourOffset.top
@@ -60,6 +64,7 @@
                 }
             },
             
+            //Hides highlight
             hideall: function () {
                 if (this.current > -1) {
                     this.current = -1;
@@ -69,21 +74,28 @@
             
             //Runs the animation
             run: function (delay) {
-                this.show(0);
+                //Highlight order
+                //[0, 1, 3, 2] is a counterwise move
+                var order = [0, 1, 3, 2];
+                                
+                //Prints first hightlight
+                this.show(order[0]);
                 
+                //Prints next highlights
                 n = this.highlights.length;
-                order = [0, 1, 3, 2];
                 for (i = 1 ; i < n ; i++) {
                     setTimeout('tour.show(' + order[i] + ')', delay * i);
                 }
-                setTimeout('tour.show(0)', delay * n);
+                
+                //Prints back the first, and enables rollover
+                setTimeout('tour.show(' + order[0] + ')', delay * n);
                 setTimeout('tour.enableRollover()', delay * n);
             },
                        
-            //Enable rollovers
+            //Enables rollovers
             enableRollover: function () {
                 //Enables panel on click
-                $('#Tour').bind("mousemove", function(e) {
+                $('#Tour').bind("mousemove mouseout", function(e) {
                     if (tour.isInside(e.pageX, e.pageY)) {
                         tour.showAt(e.pageX, e.pageY);
                     } else {
@@ -92,14 +104,31 @@
                 });
             },            
             
+            //Gets client language
+            getLanguage: function () {
+                var lang = navigator.language;
+                if (lang == undefined) lang = navigator.userLanguage;
+                if (lang == undefined) return "";
+                
+                //fr-be -> fr
+                var pos = lang.indexOf('-');
+                if (pos > -1) lang = lang.substring(0, pos);
+                
+                return lang.toLowerCase();
+            },
+            
             //Initializes tour
             init: function () {
-                //this.enableRollover();
+                //Tries to localize
+                var lang = this.getLanguage();
+                if (this.langs.indexOf(lang) > -1) this.lang = lang;
+                
+                //Runs tour animation
+                //The rollover will be enabled at anim end
                 this.run(900);
             }
         }
                 
         $(document).ready(function() {
-          tour.lang = 'fr';
-          tour.init();
+          tour.init();          
         });

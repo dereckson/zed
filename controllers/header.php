@@ -23,6 +23,13 @@ $smarty->assign('WALL_USER_URL', get_url('user', $row['username']));
 // HTML output
 //
 
+//Defines DOJO if needed, and assigns DOJO/DIJIT smarty variables
+if (!defined('DOJO')) define('DOJO', defined('DIJIT'));
+if (defined('DIJIT')) $smarty->assign('DIJIT', true);
+$smarty->assign('DOJO', DOJO);
+
+//Prints the template
 $smarty->display('header.tpl');
+
 define('HEADER_PRINTED', true);
 ?>

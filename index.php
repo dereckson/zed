@@ -21,6 +21,7 @@ $IP = encode_ip($_SERVER["REMOTE_ADDR"]);
 session_start();
 $_SESSION[ID] = session_id();
 session_update(); //updates or creates the session
+
 include("includes/login.php"); //login/logout
 $CurrentUser = get_logged_user(); //Gets current user infos
 
@@ -39,6 +40,7 @@ require('includes/Smarty/Smarty.class.php');
 $smarty = new Smarty();
 $current_dir = dirname(__FILE__);
 $smarty->template_dir = $current_dir . '/skins/' . THEME;
+
 $smarty->compile_dir = $current_dir . '/cache/compiled';
 $smarty->cache_dir = $current_dir . '/cache';
 $smarty->config_dir = $current_dir;
@@ -84,6 +86,7 @@ if ($_POST['form'] == 'perso.create') {
         $smarty->assign('NOTIFY', lang_get('NewCharacterCreated'));
         $CurrentPerso = $perso;
         set_info('perso_id', $perso->id);
+        $CurrentPerso->setflag("site.lastlogin", $_SERVER['REQUEST_TIME']);
     } else {
         $smarty->assign('WAP', join("<br />", $errors));
         $smarty->assign('perso', $perso);
@@ -94,11 +97,12 @@ if (!$CurrentPerso) {
     if ($_GET['action'] == 'perso.select') {
         //Users have selected a perso
         $CurrentPerso = new Perso($_GET['perso_id']);
-        set_info('perso_id', $CurrentPerso->id);
         if ($CurrentPerso->user_id != $CurrentUser->id) {
             //Hack
             message_die(HACK_ERROR, "This isn't your perso.");
         }
+        set_info('perso_id', $CurrentPerso->id);
+        $CurrentPerso->setflag("site.lastlogin", $_SERVER['REQUEST_TIME']);
     }
     
     switch ($count = Perso::get_persos_count($CurrentUser->id)) {
@@ -111,6 +115,7 @@ if (!$CurrentPerso) {
             //Autoselect
             $CurrentPerso = Perso::get_first_perso($CurrentUser->id);
             set_info('perso_id', $CurrentPerso->id);
+            $CurrentPerso->setflag("site.lastlogin", $_SERVER['REQUEST_TIME']);
             break;
             
         default:
@@ -132,10 +137,9 @@ $smarty->assign('CurrentPerso', $CurrentPerso);
 
 //If the perso location is unknown, ejects it to an asteroid
 if (!$CurrentPerso->location_global) {
-    require_once('includes/objects/place.php');
+    require_once('includes/geo/place.php');
     $smarty->assign('NOTIFY', lang_get('NewLocationNotify'));
-    $CurrentPerso->location_global = GeoPlace::get_start_location();
-    $CurrentPerso->save_field('location_global');
+    $CurrentPerso->move_to(GeoPlace::get_start_location());
 }
 
 //SmartLine
@@ -157,4 +161,5 @@ switch ($controller = $url[0]) {
     //TODO: returns a 404 error
     dieprint_r($url, 'Unknown URL');
 }
+
 ?>

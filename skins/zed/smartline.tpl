@@ -1,7 +1,7 @@
     <!-- SmartLine -->
     <div class="grid_16 alpha omega" id="SmartLine">
         <!-- SmartLine line -->
-        <form method="post" name="SmartLine">
+        <form method="post" name="SmartLine" action="{get_url()}">
 {if $SmartLineHistory}
             <div class="grid_4 left alpha">
                 <select name="SmartLineHistory" id="SmartLineHistory" class="black" onChange=UpdateSmartLine()>

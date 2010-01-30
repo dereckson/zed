@@ -1,6 +1,7 @@
 <?php
 //No register globals
 ini_set('register_globals', 'off');
+//error_reporting(E_ALL & ~E_NOTICE);
 error_reporting(E_ALL & ~E_NOTICE);
 
 //Load libraries
@@ -133,17 +134,18 @@ function get_extension ($file) {
  * Loads specified language Smarty configuration file
  *
  * @param string $file the file to load
+ * @param mixed $sections array of section names, single section or null
  */
-function lang_load ($file) {
+function lang_load ($file, $sections = null) {
     global $smarty;
     
     //Loads English file as fallback if some parameters are missing
     if (file_exists("lang/en/$file"))
-        $smarty->config_load("lang/en/$file");
+        $smarty->config_load("lang/en/$file", $sections);
     
     //Loads wanted file
     if (LANG != 'en' && file_exists('lang/' . LANG . '/' . $file))
-        $smarty->config_load('lang/' . LANG . '/' . $file);
+        $smarty->config_load('lang/' . LANG . '/' . $file, $sections);
 }
 
 /*
@@ -206,9 +208,18 @@ function to_timestamp ($unixtime = null, $format = 8) {
  * Converts a unixtime to the Hypership time format.
  */
 function get_hypership_time ($unixtime = null) {
+    //If unixtime is not specified, it's now
     if ($unixtime === null) $unixtime = time();
-    $days = floor(($unixtime - 1264377600) / 86400);
-    return sprintf("%d.%03d", $days, idate('B', $unixtime));
+    
+    //Hypership time is a count of days since launch @ 2010-01-25 00:00:00
+    //Followed by a fraction of the current day /1000, like the internet time
+    //but in UTC timezone and not Switzerland CET/CEST.
+    //We don't need to use floor(), as we output the result at int, truncating
+    //automatically decimal values instead of round it (like in C).
+    $seconds = $unixtime - 1264377600;
+    $days = $seconds / 86400;
+    $fraction = ($seconds % 86400) / 86.4;
+    return sprintf("%d.%03d", $days, $fraction);
 }
 
 /*
@@ -216,9 +227,14 @@ function get_hypership_time ($unixtime = null) {
  */
 function get_url () {
     global $Config;
-    $pieces = func_get_args();
-    return $Config['BaseURL'] . '/' . implode('/', $pieces);
+    if (func_num_args() > 0) {
+        $pieces = func_get_args();
+        return $Config['BaseURL'] . '/' . implode('/', $pieces);
+    } elseif ($Config['BaseURL'] == "" || $Config['BaseURL'] == "/index.php") {
+        return "/";
+    } else {
+        return $Config['BaseURL'];
+    }
 }
-
 
 ?>

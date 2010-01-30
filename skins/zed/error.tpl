@@ -30,11 +30,13 @@
     </div>
     <div class="clear"></div>
     <hr />
-    <div class="grid_12 alpha">
-        <p>[ {#Product#} / {#FatalErrorScreen#} ]</p>
-    </div>
-    <div class="grid_4 omega">
-        <p style="text-align: right">[ <a href="/?action=user.logout">{#Logout#}</a> ]</p>
+    <div id="footer">
+        <div class="grid_12 alpha">
+            <p>[ {#Product#} / {#FatalErrorScreen#} ]</p>
+        </div>
+        <div class="grid_4 omega">
+            <p style="text-align: right">[ <a href="/?action=user.logout">{#Logout#}</a> ]</p>
+        </div>
     </div>
 </div>
 </body>

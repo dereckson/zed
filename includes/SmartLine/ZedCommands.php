@@ -13,19 +13,94 @@
 /// Register commands
 ///
 
-$smartLine->register_object('goto', 'GotoLineCommand');
+$smartLine->register_object('goto', 'GotoSmartLineCommand');
+$smartLine->register_object('guid', 'GUIDSmartLineCommand');
 $smartLine->register_object('list', 'ListSmartLineCommand');
 $smartLine->register_object('unixtime', 'UnixTimeSmartLineCommand');
+$smartLine->register_object('whereami', 'WhereAmISmartLineCommand');
+
+///
+/// whereami
+///
+
+$lang['Help']['whereami'] = "Where am I?";
+
+class WhereAmISmartLineCommand extends SmartLineCommand {
+    public function run ($argv, $argc) {
+	global $CurrentPerso;
+	require_once("includes/geo/location.php");
+	$place = new GeoLocation($CurrentPerso->location_global);
+	$this->SmartLine->puts($CurrentPerso->location_global . ' - ' . $place);
+    }
+}
+
+///
+/// GUID
+///
+
+$lang['Help']['GUID'] = "Generate a GUID";
+
+class GUIDSmartLineCommand extends SmartLineCommand {
+    public function run ($argv, $argc) {
+	if ($argc > 1 && is_numeric($argv[1])) {
+	    for ($i = 0 ; $i < $argv[1] ; $i++) {
+		$this->SmartLine->puts(new_guid());
+	    }
+	    return;
+	}
+	
+	$this->SmartLine->puts(new_guid());
+	
+    }
+}
+
+///
+/// goto
+///
+
+$lang['Help']['goto'] = "Go to a location";
+
+class GotoSmartLineCommand extends SmartLineCommand {
+    public function run ($argv, $argc) {
+	global $CurrentPerso;
+	
+	if ($argc == 1) {
+	    $this->SmartLine->puts("Where do you want to go?", STDERR);
+	    return;
+	}
+	
+	require_once("includes/geo/location.php");	
+	try {
+	    $place = new GeoLocation($argv[1]);
+	} catch (Exception $ex) {
+	    $this->SmartLine->puts($ex->getMessage(), STDERR);
+	    return;
+	}
+	
+	if ($place->equals($CurrentPerso->location_global)) {
+	    $this->SmartLine->puts("You're already there.");
+	    return;
+	}
+	
+	if (!$place->exists()) {
+	    $this->SmartLine->puts("This place doesn't seem to exist.");
+	    return;
+	}
+	
+	$this->SmartLine->puts("TODO: code travel assistant");
+    }    
+}
 
 ///
 /// list
 ///
-$lang['Help']['list'] = "Lists specified objects (bodies)";
+
+$lang['Help']['list'] = "Lists specified objects (bodies, locations or places)";
 
 class ListSmartLineCommand extends SmartLineCommand {
     public function run ($argv, $argc) {
         if ($argc == 1) {
-            $this->SmartLine->puts("Available lists: bodies");
+            $this->SmartLine->puts("Available lists: bodies, locations, places");
             return;
         }
         
@@ -34,6 +109,11 @@ class ListSmartLineCommand extends SmartLineCommand {
                 $list = $this->get_list(TABLE_BODIES, "CONCAT('B', body_code)", "body_name");
                 $this->SmartLine->puts($list);
                 break;
+	    
+	    case 'locations':
+                $list = $this->get_list(TABLE_LOCATIONS, "location_code", "location_name");
+                $this->SmartLine->puts($list);
+                break;		
             
             case 'places':
                 if ($argv[2] == "-a" || $argv[2] == "--all") {
@@ -78,7 +158,7 @@ class ListSmartLineCommand extends SmartLineCommand {
             $rows .= "<tr><td>$row[key]</td><td>$row[value]</td></tr>";
         }
         $this->SmartLine->truncate(STDERR);
-        return "<table cellpadding=4><thead scope=\"row\"><tr><th>Key</th><th>Value</th></thead><tbody>$rows</tbody></table>";
+        return "<table cellspacing=\"8\"><thead style=\"color: white\" scope=\"row\"><tr><th>Key</th><th>Value</th></thead><tbody>$rows</tbody></table>";
     }
 }
 

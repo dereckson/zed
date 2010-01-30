@@ -16,6 +16,7 @@ function dieprint_r ($var, $title = '') {
 
 function message_die ($msg_code, $msg_text = '', $msg_title = '', $err_line = '', $err_file = '', $sql = '') {
     global $smarty, $db;
+
     if ($smarty) {
         $debug_text = $msg_text;
 
@@ -51,7 +52,7 @@ function message_die ($msg_code, $msg_text = '', $msg_title = '', $err_line = ''
         
         
         $smarty->assign('ERROR_TEXT', $debug_text);
-        $template = defined(HEADER_PRINTED) && HEADER_PRINTED ? "error_block.tpl" : "error.tpl";
+        $template = (defined('HEADER_PRINTED') &&  HEADER_PRINTED) ? "error_block.tpl" : "error.tpl";
 	$smarty->display($template);
         exit;
     } else {
@@ -102,10 +103,10 @@ function old_message_die($msg_code, $msg_text = '', $msg_title = '', $err_line =
 		if ( $sql_store != '' ) $debug_text .= "<br /><strong>$sql_store</strong>";
 	} elseif ($msg_code == GENERAL_ERROR) {
 	    $titre = $msg_title;
-		$debug_text = $msg_text;
-		if ($err_line && $err_file) {
-			$debug_text .= "<BR />$err_file, ligne $err_line";
-		}
+	    $debug_text = $msg_text;
+	    if ($err_line && $err_file) {
+		    $debug_text .= "<BR />$err_file, ligne $err_line";
+	    }
 	}	
 	
 	echo "

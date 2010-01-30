@@ -1,2 +1,2 @@
-<p><strong>Current location:</strong> {$CurrentPerso->where()}</p>
-<p><strong>Hypership time:</strong> {get_hypership_time()}</p>
+<h1>{#Welcome#}</h1>
+<div style="text-align: justify; text-indent: 2em;">{#WelcomeText#}</div>

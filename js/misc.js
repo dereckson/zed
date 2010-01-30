@@ -5,6 +5,39 @@ function UpdateSmartLine() {
     document.forms.SmartLine.C.focus();
 }
 
+/* Hypership time */
+function get_hypership_time () {
+    date = new Date();
+    unixtime = Math.floor(date.getTime() / 1000);
+    seconds = unixtime - 1264377600;
+    days = Math.floor(seconds / 86400);
+    fraction = Math.floor((seconds % 86400) / 86.4);
+    return days + "." + fraction;
+}
+
+/* We need to trigger an update in ... ms */
+function next_hypership_increase_in () {
+    date = new Date();
+    unixtime = Math.floor(date.getTime() / 1000);
+    seconds = unixtime - 1264377600;
+    days = Math.floor(seconds / 86400);
+    fraction1 = (seconds % 86400) / 86.4;
+    fraction2 = Math.floor(fraction1);
+    return (fraction1 - fraction2) * 86400;
+}
+
+//Autoupdates every 20 seconds
+//(should be every 86.4 seconds, after first timed call)
+function update_hypership_time () {
+    var item = document.getElementById("HypershipTime");
+    if (item != undefined) {
+        item.innerHTML = get_hypership_time();
+        setTimeout('update_hypership_time()', 86400);
+    }
+}
+
+setTimeout('update_hypership_time()', next_hypership_increase_in());
+
 /* Dumps a variable */
 
 function dump(arr,level) {

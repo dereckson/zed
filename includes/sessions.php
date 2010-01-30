@@ -40,7 +40,7 @@ function session_update () {
 	} else {
 		$sql = "UPDATE " . TABLE_SESSIONS . " SET online=1, HeureLimite = $heureActuelle + $time_online, SessionLimite= $heureActuelle + $time_session WHERE session_id = '$_SESSION[ID]'";
 		if ( !($result = $db->sql_query($sql)) ) message_die(SQL_ERROR, "Impossible de mettre à jour la session", '', __LINE__, __FILE__, $sql);
-	}	
+	}
 }
 
 function nbc () {

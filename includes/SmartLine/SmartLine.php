@@ -194,7 +194,11 @@ class SmartLine {
 		
 		//Executes command, intercepting error and returns result
 		set_error_handler("SmartLineHandler");
-		$result = $this->commands[$command]->run($argv, $argc);
+        try {
+            $result = $this->commands[$command]->run($argv, $argc);
+        } catch (Exception $ex) {
+            $this->puts("<pre>$ex</pre>", STDERR);
+        }
 		restore_error_handler();
 		return $result;
 	}

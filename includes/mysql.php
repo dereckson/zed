@@ -1,368 +1,97 @@
 <?php
-/***************************************************************************
- *                                 mysql.php
- *                            -------------------
- *   begin                : Saturday, Feb 13, 2001
- *   copyright            : (C) 2001 The phpBB Group
- *   email                : support@phpbb.com
+
+/*
+ * MySQL layer and helper class 
  *
- *   $Id: mysql.php,v 1.16 2002/03/19 01:07:36 psotfx Exp $
+ * @package Zed
+ * @subpackage Pluton
+ * @copyright Copyright (c) 2010, Dereckson
+ * @license Released under BSD license
+ * @version 0.1
  *
- ***************************************************************************/
+ */
 
-/***************************************************************************
- *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- ***************************************************************************/
+if (!defined('SQL_LAYER')) {
+	define('SQL_LAYER', 'mysql');
+    
+    class sql_db {
+        private $id;
+        
+        function __construct($host = 'localhost', $username = 'root', $password = '' , $database = '') {
+            $this->id = mysql_connect($host, $username, $password);
+            if ($database != '') {
+                mysql_select_db($database, $this->id);
+            }
+        }
+        
+        function sql_query ($query) {
+            return mysql_query($query, $this->id);
+        }
+        
+        function sql_fetchrow ($result) {
+            return mysql_fetch_array($result);
+        }
+        
+        function sql_error () {
+            $error['code'] = mysql_errno($this->id);
+            $error['message'] = mysql_error($this->id);
+            return $error;
+        }
+        
+        function sql_numrows ($result) {
+            return mysql_num_rows($result);
+        }
+        
+        function sql_nextid () {
+            return mysql_insert_id($this->id);
+        }
+        
+        /*
+         * Express query method, returns an immediate and unique result
+         *
+         * @param string $query the query to execute
+         * @param string $error_message the error message
+         * @param boolean $return_as_string return result as string, and not as an array
+         *
+         * @return mixed the row or the scalar result
+         */
+        function sql_query_express ($query = '', $error_message = "Impossible d'exécuter cette requête.", $return_as_string = true) {
+            if (!$query) {
+                return '';
+            } elseif (!$result = $this->sql_query($query)) {
+                message_die(SQL_ERROR, $error_message, '', __LINE__, __FILE__, $query);
+            } else {
+                $row = $this->sql_fetchrow($result);
+                return $return_as_string ? $row[0] : $row;                
+            }
+        }
+        
+        /*
+         * Escapes a SQL expression
+         *
+         * @param string expression The expression to escape
+         * @return string The escaped expression
+         */
+        function sql_escape ($expression) {
+            return mysql_real_escape_string($expression);
+        }
+        
+        function set_charset ($encoding) {
+            mysql_set_charset('utf8', $this->id);
+        }
+    }
+}
 
-if(!defined("SQL_LAYER"))
-{
 
-define("SQL_LAYER","mysql");
 
-class sql_db
-{
-
-	var $db_connect_id;
-	var $query_result;
-	var $row = array();
-	var $rowset = array();
-	var $num_queries = 0;
-
-	//
-	// Constructor
-	//
-	function sql_db($sqlserver, $sqluser, $sqlpassword, $database, $persistency = true)
-	{
-
-		$this->persistency = $persistency;
-		$this->user = $sqluser;
-		$this->password = $sqlpassword;
-		$this->server = $sqlserver;
-		$this->dbname = $database;
-
-		if($this->persistency)
-		{
-			$this->db_connect_id = @mysql_pconnect($this->server, $this->user, $this->password);
-		}
-		else
-		{
-			$this->db_connect_id = @mysql_connect($this->server, $this->user, $this->password);
-		}
-		if($this->db_connect_id)
-		{
-			if($database != "")
-			{
-				$this->dbname = $database;
-				$dbselect = @mysql_select_db($this->dbname);
-				if(!$dbselect)
-				{
-					@mysql_close($this->db_connect_id);
-					$this->db_connect_id = $dbselect;
-				}
-			}
-			return $this->db_connect_id;
-		}
-		else
-		{
-			return false;
-		}
-	}
-
-	//
-	// Other base methods
-	//
-	function sql_close()
-	{
-		if($this->db_connect_id)
-		{
-			if($this->query_result)
-			{
-				@mysql_free_result($this->query_result);
-			}
-			$result = @mysql_close($this->db_connect_id);
-			return $result;
-		}
-		else
-		{
-			return false;
-		}
-	}
-
-	//
-	// Base query method
-	//
-	function sql_query($query = "", $transaction = FALSE)
-	{
-		// Remove any pre-existing queries
-		unset($this->query_result);
-		if($query != "")
-		{
-			$this->num_queries++;
-			//echo "[DEBUG] $query<br>";
-			$this->query_result = @mysql_query($query, $this->db_connect_id);
-		}
-		if($this->query_result)
-		{
-			unset($this->row[$this->query_result]);
-			unset($this->rowset[$this->query_result]);
-			return $this->query_result;
-		}
-		else
-		{
-			return ( $transaction == END_TRANSACTION ) ? true : false;
-		}
-	}
-	
-	//
-	// Express query method ==> return an immediate and unique result
-	//
-	function sql_query_express($query = '', $erreur = "Impossible d'exécuter cette requête.", $returnString = 1)
-	{
-		if ($query == '') {
-			return;
-		} else {
-			if (!$result = $this->sql_query($query)) message_die(SQL_ERROR, $erreur, '', __LINE__, __FILE__, $query);
-			$row = $this->sql_fetchrow($result);
-			return ($returnString ? $row[0] : $row);
-		}
-	}
-	
-	//
-	// Other query methods
-	//
-	function sql_num_rows($query_id = 0) {
-		return $this->sql_numrows($query_id);
-	}
-	
-	function sql_numrows($query_id = 0)
-	{
-		if(!$query_id)
-		{
-			$query_id = $this->query_result;
-		}
-		if($query_id)
-		{
-			$result = @mysql_num_rows($query_id);
-			return $result;
-		}
-		else
-		{
-			return false;
-		}
-	}
-	function sql_affectedrows()
-	{
-		if($this->db_connect_id)
-		{
-			$result = @mysql_affected_rows($this->db_connect_id);
-			return $result;
-		}
-		else
-		{
-			return false;
-		}
-	}
-	function sql_numfields($query_id = 0)
-	{
-		if(!$query_id)
-		{
-			$query_id = $this->query_result;
-		}
-		if($query_id)
-		{
-			$result = @mysql_num_fields($query_id);
-			return $result;
-		}
-		else
-		{
-			return false;
-		}
-	}
-	function sql_fieldname($offset, $query_id = 0)
-	{
-		if(!$query_id)
-		{
-			$query_id = $this->query_result;
-		}
-		if($query_id)
-		{
-			$result = @mysql_field_name($query_id, $offset);
-			return $result;
-		}
-		else
-		{
-			return false;
-		}
-	}
-	function sql_fieldtype($offset, $query_id = 0)
-	{
-		if(!$query_id)
-		{
-			$query_id = $this->query_result;
-		}
-		if($query_id)
-		{
-			$result = @mysql_field_type($query_id, $offset);
-			return $result;
-		}
-		else
-		{
-			return false;
-		}
-	}
-	function sql_fetchrow($query_id = 0)
-	{
-		if(!$query_id)
-		{
-			$query_id = $this->query_result;
-		}
-		if($query_id)
-		{
-			$this->row[$query_id] = @mysql_fetch_array($query_id);
-			return $this->row[$query_id];
-		}
-		else
-		{
-			return false;
-		}
-	}
-	function sql_fetchrowset($query_id = 0)
-	{
-		if(!$query_id)
-		{
-			$query_id = $this->query_result;
-		}
-		if($query_id)
-		{
-			unset($this->rowset[$query_id]);
-			unset($this->row[$query_id]);
-			while($this->rowset[$query_id] = @mysql_fetch_array($query_id))
-			{
-				$result[] = $this->rowset[$query_id];
-			}
-			return $result;
-		}
-		else
-		{
-			return false;
-		}
-	}
-	function sql_fetchfield($field, $rownum = -1, $query_id = 0)
-	{
-		if(!$query_id)
-		{
-			$query_id = $this->query_result;
-		}
-		if($query_id)
-		{
-			if($rownum > -1)
-			{
-				$result = @mysql_result($query_id, $rownum, $field);
-			}
-			else
-			{
-				if(empty($this->row[$query_id]) && empty($this->rowset[$query_id]))
-				{
-					if($this->sql_fetchrow())
-					{
-						$result = $this->row[$query_id][$field];
-					}
-				}
-				else
-				{
-					if($this->rowset[$query_id])
-					{
-						$result = $this->rowset[$query_id][$field];
-					}
-					else if($this->row[$query_id])
-					{
-						$result = $this->row[$query_id][$field];
-					}
-				}
-			}
-			return $result;
-		}
-		else
-		{
-			return false;
-		}
-	}
-	function sql_rowseek($rownum, $query_id = 0){
-		if(!$query_id)
-		{
-			$query_id = $this->query_result;
-		}
-		if($query_id)
-		{
-			$result = @mysql_data_seek($query_id, $rownum);
-			return $result;
-		}
-		else
-		{
-			return false;
-		}
-	}
-	function sql_nextid(){
-		if($this->db_connect_id)
-		{
-			$result = @mysql_insert_id($this->db_connect_id);
-			return $result;
-		}
-		else
-		{
-			return false;
-		}
-	}
-	function sql_freeresult($query_id = 0){
-		if(!$query_id)
-		{
-			$query_id = $this->query_result;
-		}
-
-		if ( $query_id )
-		{
-			unset($this->row[$query_id]);
-			unset($this->rowset[$query_id]);
-
-			@mysql_free_result($query_id);
-
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-	function sql_error($query_id = 0)
-	{
-		$result["message"] = @mysql_error($this->db_connect_id);
-		$result["code"] = @mysql_errno($this->db_connect_id);
-
-		return $result;
-	} 
-
-	function sql_escape($query)
-	{
-		return mysql_real_escape_string($query, $this->db_connect_id);
-	}
-
-} // class sql_db
-
-} // if ... define
-
-$db = new sql_db($Config['sql']['host'], $Config['sql']['username'], $Config['sql']['password'], $Config['sql']['database'], false);
+$db = new sql_db($Config['sql']['host'], $Config['sql']['username'], $Config['sql']['password'], $Config['sql']['database']);
 
 unset($Config['sql']);
-if (!$db->db_connect_id) {
-	die(mysql_error());
+
+if ($db->lastError) {
+	die($db->lastError);
 }
 
 //Sets SQL connexion in UTF8. PHP 5.2.3+
-mysql_set_charset('utf8', $db->db_connect_id);
-
+$db->set_charset('utf8');
 ?>
