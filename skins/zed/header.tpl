@@ -44,10 +44,13 @@
     </div>
     <div class="clear"></div>
 {/if}
-<p class="info">
-    <strong>Current location</strong> {$CurrentPerso->where()}<br />
-    <strong>Hypership time</strong> <span id="HypershipTime">{get_hypership_time()}</span>
-</p>
+
+    <!-- Where? When? -->
+    <p class="info">
+        <strong>Current location</strong> {$CurrentPerso->where()}<br />
+        <strong>Hypership time</strong> <span id="HypershipTime">{get_hypership_time()}</span>
+    </p>
 {if $SmartLine_STDOUT || $SmartLine_STDERR}
 {include file="smartline_results.tpl"}
 {/if}
+

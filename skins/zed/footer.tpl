@@ -1,5 +1,9 @@
+
+
     <div class="clear"></div>
 {include file="smartline.tpl"}
+
+    <!-- Footer -->
     <hr />
     <div id="footer">
         <div class="grid_8 alpha">

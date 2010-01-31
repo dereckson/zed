@@ -109,6 +109,7 @@ class GeoScene {
                 default:
                     message_die(GENERAL_ERROR, "Can't handle $ext extension for $file scene", 'GeoScene render error', __LINE__, __FILE__);
             }
+            echo "\n\n";
         }
     }
     

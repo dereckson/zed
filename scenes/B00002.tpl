@@ -1,5 +1,6 @@
 {$code = substr($CurrentPerso->location_global, 0, 6)}
-<img src="/scenes/{$code}.png" alt="{sprintf(#SpaceAround#, $CurrentPerso->location->body->name)}" border="0" usemap="#SceneMap" />
-<map name="SceneMap" id="SceneMap">
-  <area shape="circle" coords="155,144,93" href="{get_url('explore', $code)}" alt="{$CurrentPerso->location->body->name}" />
-</map>
+    <!-- {$code} -->
+    <img src="/scenes/{$code}.png" alt="{sprintf(#SpaceAround#, $CurrentPerso->location->body->name)}" border="0" usemap="#SceneMap" />
+    <map name="SceneMap" id="SceneMap">
+        <area shape="circle" coords="155,144,93" href="{get_url('explore', $code)}" alt="{$CurrentPerso->location->body->name}" />
+    </map>
