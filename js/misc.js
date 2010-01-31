@@ -1,5 +1,4 @@
-/* SmartLine */
-
+/* Updates SmartLine */
 function UpdateSmartLine() {
     document.forms.SmartLine.C.value = document.forms.SmartLine.SmartLineHistory.value;
     document.forms.SmartLine.C.focus();
@@ -7,12 +6,19 @@ function UpdateSmartLine() {
 
 /* Hypership time */
 function get_hypership_time () {
+    //Gets time
     date = new Date();
     unixtime = Math.floor(date.getTime() / 1000);
     seconds = unixtime - 1264377600;
     days = Math.floor(seconds / 86400);
     fraction = Math.floor((seconds % 86400) / 86.4);
-    return days + "." + fraction;
+    
+    //Zerofills fraction
+    switch (new String(fraction).length) {
+        case 1: return days + "." + "00" + fraction;
+        case 2: return days + "." + "0" + fraction;
+        default: return days + "." + fraction;
+    }
 }
 
 /* We need to trigger an update in ... ms */

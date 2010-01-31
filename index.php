@@ -93,18 +93,22 @@ if ($_POST['form'] == 'perso.create') {
     }    
 }
 
-if (!$CurrentPerso) {
-    if ($_GET['action'] == 'perso.select') {
-        //Users have selected a perso
-        $CurrentPerso = new Perso($_GET['perso_id']);
-        if ($CurrentPerso->user_id != $CurrentUser->id) {
-            //Hack
-            message_die(HACK_ERROR, "This isn't your perso.");
-        }
-        set_info('perso_id', $CurrentPerso->id);
-        $CurrentPerso->setflag("site.lastlogin", $_SERVER['REQUEST_TIME']);
+if ($_GET['action'] == 'perso.logout') {
+    //User wants to change perso
+    $CurrentPerso = null;
+    set_info('perso_id', null);
+} elseif ($_GET['action'] == 'perso.select') {
+    //User have selected a perso
+    $CurrentPerso = new Perso($_GET['perso_id']);
+    if ($CurrentPerso->user_id != $CurrentUser->id) {
+        //Hack
+        message_die(HACK_ERROR, "This isn't your perso.");
     }
-    
+    set_info('perso_id', $CurrentPerso->id);
+    $CurrentPerso->setflag("site.lastlogin", $_SERVER['REQUEST_TIME']);
+}
+
+if (!$CurrentPerso) {   
     switch ($count = Perso::get_persos_count($CurrentUser->id)) {
         case 0:
             //Create a perso
@@ -120,7 +124,10 @@ if (!$CurrentPerso) {
             
         default:
             //Pick a perso
+            $persos = Perso::get_persos($CurrentUser->id);
+            $smarty->assign("PERSOS", $persos);
             $smarty->display("perso_select.tpl");
+            $_SESSION['UserWithSeveralPersos'] = true;
             exit;
     }
 }
@@ -154,12 +161,17 @@ $url = explode('/', substr($_SERVER['PATH_INFO'], 1));
 
 switch ($controller = $url[0]) {
     case '':
-    include('controllers/home.php');
-    break;
+        include('controllers/home.php');
+        break;
+
+    case 'request':
+        include("controllers/$controller.php");
+        break;
+
 
     default:
-    //TODO: returns a 404 error
-    dieprint_r($url, 'Unknown URL');
+        //TODO: returns a 404 error
+        dieprint_r($url, 'Unknown URL');
 }
 
 ?>

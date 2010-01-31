@@ -18,7 +18,7 @@ if (!defined('SQL_LAYER')) {
         private $id;
         
         function __construct($host = 'localhost', $username = 'root', $password = '' , $database = '') {
-            $this->id = mysql_connect($host, $username, $password);
+            $this->id = @mysql_connect($host, $username, $password) or die ("Can't connect to SQL server.");
             if ($database != '') {
                 mysql_select_db($database, $this->id);
             }
@@ -87,10 +87,6 @@ if (!defined('SQL_LAYER')) {
 $db = new sql_db($Config['sql']['host'], $Config['sql']['username'], $Config['sql']['password'], $Config['sql']['database']);
 
 unset($Config['sql']);
-
-if ($db->lastError) {
-	die($db->lastError);
-}
 
 //Sets SQL connexion in UTF8. PHP 5.2.3+
 $db->set_charset('utf8');

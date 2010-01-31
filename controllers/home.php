@@ -35,6 +35,11 @@ if ($_GET['action'] == 'msg_delete') {
 $messages = Message::get_messages($CurrentUser->id);
 $smarty->assign('MESSAGES', $messages);
 
+//Gets scene
+require_once("includes/geo/scene.php");
+$scene = new GeoScene($CurrentPerso->location);
+$smarty->assign('SCENE', $scene);
+
 //
 // HTML output
 //
@@ -44,6 +49,8 @@ $smarty->assign('PAGE_TITLE', lang_get('Welcome'));
 include('header.php'); 
 
 //Serves content
+if (!$scene->lastError)
+    $scene->render();
 $smarty->display('home.tpl');
 if ($messages)
     $smarty->display('messages.tpl');

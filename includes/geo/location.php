@@ -17,7 +17,15 @@ require_once('place.php');
  */
 class GeoLocation {
     private $data;
+
+    /*
+     * @var GeoBody a body object
+     */
     public $body = null;
+    
+    /*
+     * @var GeoPlace a place object
+     */
     public $place = null;
     
     function __construct ($global = null, $local = null) {
@@ -105,6 +113,12 @@ class GeoLocation {
                     }
                 }
                 return 'place';
+
+            case 'containsGlobalLocation':
+                return count($this->data) > 0;
+            
+            case 'containsLocalLocation':
+                return count($this->data) > 1;
             
             default:
                 throw new Exception("Unknown variable: $variable");

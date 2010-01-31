@@ -5,9 +5,12 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link rel="stylesheet" type="text/css" href="/css/960.css" media="screen" />
     <link rel="stylesheet" href="/css/zed/theme.css" />
-    <script src="/js/misc.js"></script>
+    <script type="text/javascript" src="/js/misc.js"></script>
+    {if $DOJO}
+    <script type="text/javascript" src="/js/dojo/dojo/dojo.js" djConfig="isDebug:false, parseOnLoad: true" ></script>
+    {/if}
 </head>
-<body>
+<body{if $DIJIT} class="tundra"{/if}>
 <div class="container_16">
     <!-- Header -->
     <div class="grid_16">

@@ -252,6 +252,19 @@ class Perso {
         return $db->sql_query_express($sql);
     }
     
+    public static function get_persos ($user_id) {
+        global $db;
+        $user_id = $db->sql_escape($user_id);
+        $sql = "SELECT perso_id FROM " . TABLE_PERSOS . " WHERE user_id = $user_id";
+        if (!$result = $db->sql_query($sql)) {
+            message_die(SQL_ERROR, "Can't get persos", '', __LINE__, __FILE__, $sql);
+        }
+        while ($row = $db->sql_fetchrow($result)) {
+            $persos[] = new Perso($row['perso_id']);
+        }
+        return $persos;
+    }
+    
     /*
      * Gets the first perso a user have
      * (typically to be used when get_persos_count returns 1 to autoselect)

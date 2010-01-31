@@ -1,0 +1,110 @@
+    ZzzzzzZ             zz      
+    Z    z               z    The spatial gallery / social network / lounge
+        z                z    (c) 2010, Dereckson, some rights reserved.
+        z    zzzzz   zzzzz    
+       z    z     z z    z    0.1   alpha technical preview
+      z     zzzzzzz z    z
+      z     z       z    z    Last update hypership time: 5.096
+     z    Z z     z z    z
+    ZzzzzzZ  zzzzz   zzzzzz
+
+===========
+ LOCATIONS
+===========
+
+ * Global location is a 9 letters code
+   <B,S> <body or spaceship id> <place where you are in this body/spaceship>
+         zerofilled 5 digits    zerofilled 3 digits
+         
+   You can also find 6 digits expressions e.g. B00001 is the hypership
+    
+  * Local location varies of the place.
+    - On hypership core (B00001002): Sector C<0-8> Level <z> Zone <x-y>
+        - 0 is the gravity center
+        - 1-8 the 8 cubes surrounding it: 1-4 below, 5-8 above
+    - On the ship tower (B00001001): Sector T<z> Couloir <1-6>
+        - z is the level
+        - couloir depends of your x, y position (polar coordinates could help)
+
+=================
+ HYPERSHIP TIME?
+=================
+
+  * the amount of days since hypership launch, January 25th 2010 00:00 UTC
+  * So the decimal part is like internet time, but in GMT and not CET/CEST
+
+===============
+ SIDE PROJECTS
+===============
+
+  * A pazaak game, to have something to play
+  * Will be an Arzakon client
+  
+=================
+ I WANT TO HELP!
+=================
+
+  * You can create new SmartLine commands
+  
+  * You can translate it in a new language
+    Start point: http://zed.dereckson.be/lang/en/core.conf
+  
+  * You can code a bit of adventure, places description, stuff to do
+    as long you don't transform it in ogame clone (we're building a community
+    who want or don't want to play, but not a mechanic game)
+    and as long no money is involved (if you ask why, read Iain M. Banks novels)
+    in the hypership (in far asteroids, orbitals, planets you do what you want)
+
+============
+ KNOWN BUGS
+============
+
+ * Javascript get_hypership_time will returns 5.94 instead 5.094
+   
+   Some %03d to add in /js/misc.js
+
+ * All URLs outside homepage will return Unknown URL
+   
+   Well... only the home controller is coded.
+   
+ * The floater rendering adds a black line under Opera
+   
+   dojox.layout.floatingPane bug, need to check with last dojo version
+   
+ * API /location query will break indent on location->body->location
+ 
+   beautify XML code to improve
+   
+=====
+ API
+======
+
+ * /api.php/time
+ 
+   Returns hypership time
+   Public access
+ 
+ * /api.php/perso/<perso_id>
+ 
+   Returns perso object
+   Created only to test extensively recursivity of api xml output
+   Requires a key
+ 
+ * /api.php/location/<location code or name>
+   
+   Returns location object
+   Tip: to get the full name, use string eg /api.php/location/Zeta?format=string
+   Requires a key
+   
+ * GET/POST API parameters
+   
+   - key
+      API key, ask it at zed at dereckson be, object [DEV] api key request
+     
+   - format
+     - preview  print_r representation, so you've an idea of the object
+     - json     json_encode() output
+     - php      serialize() output
+     - wddx     WDDX were an early universal serialization attempt
+     - xml      XML document
+     - string   output "as is" if it's an object, __toString() call
