@@ -6,6 +6,12 @@
     <link rel="stylesheet" type="text/css" href="/css/960.css" media="screen" />
     <link rel="stylesheet" href="/css/zed/theme.css" />
     <script type="text/javascript" src="/js/misc.js"></script>
+{foreach from=$PAGE_CSS item=css}
+    <link rel="stylesheet" href="/css/{$css}" />
+{/foreach}
+{foreach from=$PAGE_JS item=js}
+    <script src="/js/{$js}"></script>
+{/foreach}
     {if $DOJO}
     <script type="text/javascript" src="/js/dojo/dojo/dojo.js" djConfig="isDebug:false, parseOnLoad: true" ></script>
     {/if}

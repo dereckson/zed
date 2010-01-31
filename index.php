@@ -165,6 +165,7 @@ switch ($controller = $url[0]) {
         break;
 
     case 'request':
+    case 'page':
         include("controllers/$controller.php");
         break;
 
