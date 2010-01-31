@@ -206,6 +206,12 @@ class Perso {
         $this->flags[$key] = $value;
     }
     
+    public function request_flag ($flag, $threshold = 0) {
+        if (!array_key_exists($flag, $this->flags) || $this->flags[$flag] <= $threshold) {
+            message_die(HACK_ERROR, "You don't have $flag permission.", "Permissions");
+        } 
+    }
+    
     public static function is_available_id ($id) {
         global $db;
                    

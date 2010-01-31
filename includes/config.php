@@ -25,6 +25,7 @@ define('TABLE_LOG_SMARTLINE', $prefix . 'log_smartline');
 define('TABLE_MESSAGES', $prefix . 'messages');
 define('TABLE_MOTD', $prefix . 'motd');
 define('TABLE_PAGES', $prefix . 'pages');
+define('TABLE_PAGES_EDITS', $prefix . 'pages_edits');
 define('TABLE_PERSOS', $prefix . 'persos');
 define('TABLE_PERSOS_FLAGS', $prefix . 'persos_flags');
 define('TABLE_PROFILES', $prefix . 'profiles');

@@ -19,7 +19,7 @@ if ($_GET['action'] == 'msg_delete') {
     //Deletes message $_GET['id']
     $id = $_GET['id'];
     $messageToDelete = new Message($id);
-    if ($messageToDelete->to != $CurrentUser->id) {
+    if ($messageToDelete->to != $CurrentPerso->id) {
         //Not one of user message
         $smarty->assign('WAP', lang_get('NotYourMessage'));
     } elseif ($messageToDelete->flag == 2) {
