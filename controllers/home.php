@@ -32,7 +32,7 @@ if ($_GET['action'] == 'msg_delete') {
 }
 
 //Gets messages
-$messages = Message::get_messages($CurrentUser->id);
+$messages = Message::get_messages($CurrentPerso->id);
 $smarty->assign('MESSAGES', $messages);
 
 //Gets scene
