@@ -19,7 +19,10 @@
 <body{if $DIJIT} class="tundra"{/if}>
 <div class="container_16">
     <!-- Header -->
-    <div class="grid_16">
+    <div class="grid_4 alpha">
+        <a href="/"><img src="/img/zed/logo.png" src="Zed logo" /></a>
+    </div>
+    <div class="grid_12 omega">
         <div class="wall">
             <p>
                 {$WALL_TEXT}
