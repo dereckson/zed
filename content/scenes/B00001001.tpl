@@ -1,10 +1,10 @@
     <!-- JQuery -->
-    <script src="/js/jquery-1.3.2.min.js"></script>
+    <script src="{#StaticContentURL#}/js/jquery-1.3.2.min.js"></script>
     
     <!-- Tower navigation CSS -->
     <style>
     #tower {
-        background-image: url(/{$SCENE_URL}/{$CurrentPerso->location_global}/all.png);
+        background-image: url({$SCENE_URL}/{$CurrentPerso->location_global}/all.png);
         background-position: left;
         background-repeat: no-repeat;
         height: 442px;
@@ -21,7 +21,7 @@
     <script>
     var tower = {
         //The source to highlight picture
-        hl: '/{$SCENE_URL}/{$CurrentPerso->location_global}/hl.png',
+        hl: '{$SCENE_URL}/{$CurrentPerso->location_global}/hl.png',
         
         //The highlighted corridor (1-6). 0 = no hl
         i: 0,

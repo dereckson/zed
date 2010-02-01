@@ -2,13 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>{#SiteTitle#}</title>
-    <link rel="Stylesheet" href="/css/zed/login.css" type="text/css" />
+    <link rel="Stylesheet" href="{#StaticContentURL#}/css/zed/login.css" type="text/css" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 </head>
 <body>
 <!-- Login form -->
 <div id="LoginBox">
-    <form method="post" action="/">
+    <form method="post" action="{get_url()}">
         <div class="row">
             <label for="username">{#Login#}{#_t#}</label>
             <input type="text" id="username" name="username" value="{$username}" />

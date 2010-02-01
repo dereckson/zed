@@ -3,8 +3,8 @@
 <head>
     <title>{#SiteTitle#}</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <link rel="stylesheet" type="text/css" href="/css/960.css" media="screen" />
-    <link rel="stylesheet" href="/css/zed/theme.css" />
+    <link rel="stylesheet" type="text/css" href="{#StaticContentURL#}/css/960.css" media="screen" />
+    <link rel="stylesheet" href="{#StaticContentURL#}/css/zed/theme.css" />
 </head>
 <body>
 <div class="container_16">
@@ -26,7 +26,7 @@
     <div class="grid_16 alpha omega">
         <h1>{$TITLE}</h1>
         <p>{$ERROR_TEXT}</p>
-        <p><a href="/">{#BackToHome#}</a></p>
+        <p><a href="{get_url()}">{#BackToHome#}</a></p>
     </div>
     <div class="clear"></div>
     <hr />
@@ -35,7 +35,7 @@
             <p>[ {#Product#} / {#FatalErrorScreen#} ]</p>
         </div>
         <div class="grid_4 omega">
-            <p style="text-align: right">[ <a href="/?action=user.logout">{#Logout#}</a> ]</p>
+            <p style="text-align: right">[ <a href="{get_url()}?action=user.logout">{#Logout#}</a> ]</p>
         </div>
     </div>
 </div>

@@ -4,14 +4,14 @@
 {foreach from=$PERSOS item=perso}
         <!-- {$perso->name} -->
         <div class="avatar">
-            <a href="/?action=perso.select&perso_id={$perso->id}">
+            <a href="{get_url()}?action=perso.select&perso_id={$perso->id}">
 {if $perso->avatar}
-                <img src="/users/_avatars/{$perso->avatar}" />
+                <img src="{#StaticContentURL#}/content/users/_avatars/{$perso->avatar}" />
 {else}
-                <img src="/img/misc/NoAvatar.png" alt="{#NoAvatar#}" />
+                <img src="{#StaticContentURL#}/img/misc/NoAvatar.png" alt="{#NoAvatar#}" />
 {/if}
             </a>
-            <span class="avatar_name"><a href="/?action=perso.select&perso_id={$perso->id}">{$perso->name}</a></span>
+            <span class="avatar_name"><a href="{get_url()}?action=perso.select&perso_id={$perso->id}">{$perso->name}</a></span>
         </div>
         
 {/foreach}

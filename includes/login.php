@@ -39,7 +39,7 @@ function openid_login ($url) {
         if (!$db->sql_query($sql)) message_die(SQL_ERROR, "Impossible de procéder à la connexion", '', __LINE__, __FILE__, $sql);
         $LoginSuccessful = true;
         setcookie("LastOpenID", $url, time() + 2592000);
-        header("location: /");
+        header("location: " . get_url());
     } else {
         $LoginError = "To join Zed, you need an invite. Read the source to get one.";
     }
@@ -53,7 +53,7 @@ if ($_GET['action'] == 'openid.login') {
     //$consumer = get_openid_consumer();
     
     //Completes the OpenID transaction
-    $reply = $consumer->complete("http://" . $_SERVER["SERVER_NAME"] . $_SERVER["REQUEST_URI"]);
+    $reply = $consumer->complete(get_server_url() . $_SERVER['REQUEST_URI']);
     if ($reply->status == Auth_OpenID_SUCCESS) {
         openid_login($reply->endpoint->claimed_id);
     } elseif ($reply->message) {
@@ -72,7 +72,7 @@ if ($_GET['action'] == 'openid.login') {
             
         //Starts the OpenID transaction and redirects user to provider url
         if ($request = $consumer->begin($_POST['openid'])) {
-            $url = $request->redirectURL("http://zed.dereckson.be", "http://zed.dereckson.be/?action=openid.login", false);
+	    $url = $request->redirectURL(get_server_url(), "$Config[SiteURL]/?action=openid.login", false);
             header("location: $url");
             $LoginError = '<a href="' . $url . '">Click here to continue login</a>';
         } else {

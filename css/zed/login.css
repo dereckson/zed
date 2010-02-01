@@ -5,7 +5,7 @@ body {
 }
 
 #LoginBox {
-    background-image: url("/img/login/bg.jpg");
+    background-image: url("../../img/login/bg.jpg");
     width: 341px;
     height: 516px;
     margin: 0 auto 0 auto;
@@ -40,7 +40,7 @@ body {
     left: 50px;
     
     /* OpenID */
-    background-image: url("/img/login/openid.png");
+    background-image: url("../../img/login/openid.png");
     background-position: 0% 50%;
     background-repeat: no-repeat;
     padding-left: 20px;

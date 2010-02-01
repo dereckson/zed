@@ -11,6 +11,7 @@ define ("GENERAL_ERROR", 117);
 
 function dieprint_r ($var, $title = '') {
     if (!$title) $title = 'Debug';
+    
     message_die(GENERAL_ERROR, '<pre>' . print_r($var, true) .'</pre>', $title);
 }
 

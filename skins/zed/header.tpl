@@ -3,24 +3,24 @@
 <head>
     <title>{$PAGE_TITLE} - {#SiteTitle#}</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <link rel="stylesheet" type="text/css" href="/css/960.css" media="screen" />
-    <link rel="stylesheet" href="/css/zed/theme.css" />
-    <script type="text/javascript" src="/js/misc.js"></script>
+    <link rel="stylesheet" type="text/css" href="{#StaticContentURL#}/css/960.css" media="screen" />
+    <link rel="stylesheet" href="{#StaticContentURL#}/css/zed/theme.css" />
+    <script type="text/javascript" src="{#StaticContentURL#}/js/misc.js"></script>
 {foreach from=$PAGE_CSS item=css}
-    <link rel="stylesheet" href="/css/{$css}" />
+    <link rel="stylesheet" href="{#StaticContentURL#}/css/{$css}" />
 {/foreach}
 {foreach from=$PAGE_JS item=js}
-    <script src="/js/{$js}"></script>
+    <script src="{#StaticContentURL#}/js/{$js}"></script>
 {/foreach}
     {if $DOJO}
-    <script type="text/javascript" src="/js/dojo/dojo/dojo.js" djConfig="isDebug:false, parseOnLoad: true" ></script>
+    <script type="text/javascript" src="{#StaticContentURL#}/js/dojo/dojo/dojo.js" djConfig="isDebug:false, parseOnLoad: true" ></script>
     {/if}
 </head>
 <body{if $DIJIT} class="tundra"{/if}>
 <div class="container_16">
     <!-- Header -->
     <div class="grid_4 alpha">
-        <a href="/"><img src="/img/zed/logo.png" src="Zed logo" /></a>
+        <a href="{get_url()}"><img src="{#StaticContentURL#}/img/zed/logo.png" src="Zed logo" border=0 /></a>
     </div>
     <div class="grid_12 omega">
         <div class="wall">

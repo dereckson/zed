@@ -3,13 +3,13 @@
 <head>
     <title>{#SiteTitle#}</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <link rel="stylesheet" type="text/css" href="/css/960.css" media="screen" />
-    <link rel="stylesheet" href="/css/zed/theme.css" />
+    <link rel="stylesheet" type="text/css" href="{#StaticContentURL#}/css/960.css" media="screen" />
+    <link rel="stylesheet" href="{#StaticContentURL#}/css/zed/theme.css" />
     
     <!-- Calls dojo -->
-    <script src="/js/dojo/dojo/dojo.js" type="text/javascript"
+    <script src="/{#StaticContentURL#}js/dojo/dojo/dojo.js" type="text/javascript"
             djConfig="isDebug: false, parseOnLoad: true"></script>
-    <link rel="stylesheet" href="/css/zed/forms.css" />
+    <link rel="stylesheet" href="{#StaticContentURL#}/css/zed/forms.css" />
     <script type="text/javascript">
         dojo.require("dijit.form.Form");
         

@@ -46,6 +46,8 @@ $smarty->compile_dir = $current_dir . '/cache/compiled';
 $smarty->cache_dir = $current_dir . '/cache';
 $smarty->config_dir = $current_dir;
 
+$smarty->config_vars['StaticContentURL'] = $Config['StaticContentURL'];
+
 //Loads language files
 define('LANG', 'fr');
 lang_load('core.conf');
@@ -163,8 +165,8 @@ include("includes/SmartLine/ZedSmartLine.php");
 /// Calls the specific controller to serve the requested page
 ///
 
-$url = explode('/', substr($_SERVER['PATH_INFO'], 1));
-
+$url = get_current_url_fragments();
+    
 switch ($controller = $url[0]) {
     case '':
         include('controllers/home.php');

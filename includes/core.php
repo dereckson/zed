@@ -224,6 +224,7 @@ function get_hypership_time ($unixtime = null) {
 
 /*
  * Gets URL
+ * @return string URL
  */
 function get_url () {
     global $Config;
@@ -235,6 +236,85 @@ function get_url () {
     } else {
         return $Config['BaseURL'];
     }
+}
+
+/*
+ * Gets page URL
+ * @return string URL
+ */
+function get_page_url () {
+    $url = $_SERVER['SCRIPT_NAME'] . $_SERVER['PATH_INFO'];
+    if (substr($url, -10) == "/index.php") {
+	return substr($url, 0, -9);
+    }
+    return $url;
+}
+
+function get_server_url () {
+	switch ($port = $_SERVER['SERVER_PORT']) {
+		case '80':
+            return "http://$_SERVER[SERVER_NAME]";
+        
+        case '443':
+            return "https://$_SERVER[SERVER_NAME]";
+        
+        default:
+            return "http://$_SERVER[SERVER_NAME]:$_SERVER[SERVER_PORT]";
+	}
+}
+
+function get_current_url () {
+    return get_server_url() . $_SERVER['REQUEST_URI'];
+}
+
+function get_current_url_fragments () {
+    global $Config;
+            
+    //Gets relevant URL part from relevant $_SERVER variables
+    if (array_key_exists('PATH_INFO', $_SERVER)) {
+	//Without mod_rewrite, and url like /index.php/controller
+	//we use PATH_INFO. It's the easy case.
+	$url_source = $_SERVER["PATH_INFO"];
+    } elseif (array_key_exists('REDIRECT_URL', $_SERVER)) {
+	//With mod_rewrite, we can use REDIRECT_URL
+	$current_url = get_current_url();
+	
+	//Relevant URL part starts after the site URL
+	$len = strlen($Config['SiteURL']);
+	
+	//We need to assert it's the correct site
+	if (substr($current_url, 0, $len) != $Config['SiteURL']) {
+	    dieprint_r(GENERAL_ERROR, "Edit includes/config.php and specify the correct site URL<br /><strong>Current value:</strong> $Config[SiteURL]<br /><strong>Expected value:</strong> a string starting by " . get_server_url(), "Setup");
+	}
+	
+	//We takes the end of the URL, ie *FROM* $len position
+	$url_source = substr(get_server_url() . $_SERVER["REDIRECT_URL"], $len);
+    } else {
+	//Last possibility: use REQUEST_URI, but remove QUERY_STRING
+	//If you need to edit here, use $_SERVER['REQUEST_URI']
+	//but you need to discard $_SERVER['QUERY_STRING']
+	$current_url = get_current_url();
+	
+	//Relevant URL part starts after the site URL
+	$len = strlen($Config['SiteURL']);
+	
+	//We need to assert it's the correct site
+	if (substr($current_url, 0, $len) != $Config['SiteURL']) {
+	    dieprint_r(GENERAL_ERROR, "Edit includes/config.php and specify the correct site URL<br /><strong>Current value:</strong> $Config[SiteURL]<br /><strong>Expected value:</strong> a string starting by " . get_server_url(), "Setup");
+	}
+	
+	//We takes the end of the URL, ie *FROM* $len position
+	$url_source = substr(get_server_url() . $_SERVER["REQUEST_URI"], $len);
+
+	//But if there are a query string (?action=... we need to discard it)	
+	if ($_SERVER['QUERY_STRING']) {
+	    $url_source = substr($url_source, 0, strlen($url_source) - strlen($_SERVER['QUERY_STRING']) - 1);
+	}
+    }
+   
+    //$url_source = substr($current_url, $len);
+    if ($url_source == '/index.php') return array();
+    return explode('/', substr($url_source, 1));
 }
 
 ?>

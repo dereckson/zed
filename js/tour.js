@@ -55,7 +55,7 @@
             show: function (i) {
                 if (this.current != i) {
                     var filename = this.highlights[i][0] + "_" + this.lang + "." + this.extension;
-                    var code = '<img src="/img/tour/' +  filename + '" alt="' + this.highlights[i][0] + '" />';
+                    var code = '<img src="img/tour/' +  filename + '" alt="' + this.highlights[i][0] + '" />';
                     $('#TourHighlight').empty().html(code);
                     var o = document.getElementById("TourHighlight");
                     o.style.left = this.highlights[i][1] + "px";

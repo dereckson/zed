@@ -20,7 +20,7 @@ body {
     margin: 28px 0 0 0;
     
     background-color: #343434;
-    background-image: url("/img/zed/topborder.png");
+    background-image: url("../../img/zed/topborder.png");
     background-position: top;
     background-repeat: repeat-x;
 

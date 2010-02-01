@@ -99,7 +99,7 @@ class GeoScene {
                     global $smarty;
                     $template_dir = $smarty->template_dir;
                     $smarty->template_dir = getcwd();
-                    $smarty->assign("SCENE_URL", SCENE_DIR);
+                    $smarty->assign("SCENE_URL", defined('SCENE_URL') ? SCENE_URL : '/' . SCENE_DIR);
                     $smarty->display($file);
                     $smarty->template_dir = $template_dir;
                     break;
