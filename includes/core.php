@@ -1,7 +1,21 @@
 <?php
+
+/*
+ * Zed
+ * (c) 2010, Dereckson, some rights reserved
+ * Released under BSD license
+ *
+ * Core
+ */
+
+////////////////////////////////////////////////////////////////////////////////
+///                                                                          ///
+/// Configures PHP and loads site-wide used libraries                        ///
+///                                                                          ///
+////////////////////////////////////////////////////////////////////////////////
+
 //No register globals
 ini_set('register_globals', 'off');
-//error_reporting(E_ALL & ~E_NOTICE);
 error_reporting(E_ALL & ~E_NOTICE);
 
 //Load libraries
@@ -10,7 +24,11 @@ include_once("error.php");               //Error management
 include_once("mysql.php");              //MySQL layer
 include_once("sessions.php");          //Sessions handler
 
-//Helpers
+////////////////////////////////////////////////////////////////////////////////
+///                                                                          ///
+/// Information helper methods                                               ///
+///                                                                          ///
+////////////////////////////////////////////////////////////////////////////////
 
 //Gets username from specified user_id
 function get_name ($id) {
@@ -31,16 +49,20 @@ function get_userid ($username) {
 	return $row['user_id'];
 }
 
-// ------------------------------------------------------------------------- //
-// Chaîne aléatoire                                                          //
-// ------------------------------------------------------------------------- //
-// Auteur: Pierre Habart                                                     //
-// Email:  p.habart@ifrance.com                                              //
-// Web:                                                                      //
-// ------------------------------------------------------------------------- //
+////////////////////////////////////////////////////////////////////////////////
+///                                                                          ///
+/// Misc helper methods                                                      ///
+///                                                                          ///
+////////////////////////////////////////////////////////////////////////////////
 
-function genereString($format)
-{
+/*
+ * Generates a random string
+ * @author Pierre Habart <p.habart@ifrance.com>
+ *
+ * @param string $format The format e.g. AAA111
+ * @return string a random string
+ */
+function genereString ($format) {
     mt_srand((double)microtime()*1000000);
     $str_to_return="";
 
@@ -130,6 +152,12 @@ function get_extension ($file) {
     return substr($file, $dotPosition + 1);
 }
 
+////////////////////////////////////////////////////////////////////////////////
+///                                                                          ///
+/// Localization (l10n)                                                      ///
+///                                                                          ///
+////////////////////////////////////////////////////////////////////////////////
+
 /*
  * Loads specified language Smarty configuration file
  *
@@ -160,6 +188,12 @@ function lang_get ($key) {
     $smartyConfValue = $smarty->config_vars[$key];
     return $smartyConfValue ? $smartyConfValue : "#$key#";
 }
+
+////////////////////////////////////////////////////////////////////////////////
+///                                                                          ///
+/// Zed date and time helper methods                                         ///
+///                                                                          ///
+////////////////////////////////////////////////////////////////////////////////
 
 /*
  * Converts a YYYYMMDD or YYYY-MM-DD timestamp to unixtime
@@ -222,6 +256,12 @@ function get_hypership_time ($unixtime = null) {
     return sprintf("%d.%03d", $days, $fraction);
 }
 
+////////////////////////////////////////////////////////////////////////////////
+///                                                                          ///
+/// URL helpers functions                                                    ///
+///                                                                          ///
+////////////////////////////////////////////////////////////////////////////////
+
 /*
  * Gets URL
  * @return string URL
@@ -245,11 +285,16 @@ function get_url () {
 function get_page_url () {
     $url = $_SERVER['SCRIPT_NAME'] . $_SERVER['PATH_INFO'];
     if (substr($url, -10) == "/index.php") {
-	return substr($url, 0, -9);
+        return substr($url, 0, -9);
     }
     return $url;
 }
 
+/*
+ * Gets server URL
+ * @todo find a way to detect https:// on non standard port
+ * @return string the server URL
+ */
 function get_server_url () {
 	switch ($port = $_SERVER['SERVER_PORT']) {
 		case '80':
@@ -263,56 +308,57 @@ function get_server_url () {
 	}
 }
 
+/*
+ * Gets $_SERVER['PATH_INFO'] or computes the equivalent if not defined.
+ * @return string the relevant URL part
+ */
 function get_current_url () {
-    return get_server_url() . $_SERVER['REQUEST_URI'];
-}
-
-function get_current_url_fragments () {
     global $Config;
             
     //Gets relevant URL part from relevant $_SERVER variables
     if (array_key_exists('PATH_INFO', $_SERVER)) {
-	//Without mod_rewrite, and url like /index.php/controller
-	//we use PATH_INFO. It's the easy case.
-	$url_source = $_SERVER["PATH_INFO"];
-    } elseif (array_key_exists('REDIRECT_URL', $_SERVER)) {
-	//With mod_rewrite, we can use REDIRECT_URL
-	$current_url = get_current_url();
-	
-	//Relevant URL part starts after the site URL
-	$len = strlen($Config['SiteURL']);
-	
-	//We need to assert it's the correct site
-	if (substr($current_url, 0, $len) != $Config['SiteURL']) {
-	    dieprint_r(GENERAL_ERROR, "Edit includes/config.php and specify the correct site URL<br /><strong>Current value:</strong> $Config[SiteURL]<br /><strong>Expected value:</strong> a string starting by " . get_server_url(), "Setup");
-	}
-	
-	//We takes the end of the URL, ie *FROM* $len position
-	$url_source = substr(get_server_url() . $_SERVER["REDIRECT_URL"], $len);
-    } else {
-	//Last possibility: use REQUEST_URI, but remove QUERY_STRING
-	//If you need to edit here, use $_SERVER['REQUEST_URI']
-	//but you need to discard $_SERVER['QUERY_STRING']
-	$current_url = get_current_url();
-	
-	//Relevant URL part starts after the site URL
-	$len = strlen($Config['SiteURL']);
-	
-	//We need to assert it's the correct site
-	if (substr($current_url, 0, $len) != $Config['SiteURL']) {
-	    dieprint_r(GENERAL_ERROR, "Edit includes/config.php and specify the correct site URL<br /><strong>Current value:</strong> $Config[SiteURL]<br /><strong>Expected value:</strong> a string starting by " . get_server_url(), "Setup");
-	}
-	
-	//We takes the end of the URL, ie *FROM* $len position
-	$url_source = substr(get_server_url() . $_SERVER["REQUEST_URI"], $len);
-
-	//But if there are a query string (?action=... we need to discard it)	
-	if ($_SERVER['QUERY_STRING']) {
-	    $url_source = substr($url_source, 0, strlen($url_source) - strlen($_SERVER['QUERY_STRING']) - 1);
-	}
+        //Without mod_rewrite, and url like /index.php/controller
+        //we use PATH_INFO. It's the easiest case.
+        return $_SERVER["PATH_INFO"];
     }
-   
-    //$url_source = substr($current_url, $len);
+    
+    //In other cases, we'll need to get the relevant part of the URL
+    $current_url = get_server_url() . $_SERVER['REQUEST_URI'];
+    
+    //Relevant URL part starts after the site URL
+    $len = strlen($Config['SiteURL']);
+    
+    //We need to assert it's the correct site
+    if (substr($current_url, 0, $len) != $Config['SiteURL']) {
+        dieprint_r(GENERAL_ERROR, "Edit includes/config.php and specify the correct site URL<br /><strong>Current value:</strong> $Config[SiteURL]<br /><strong>Expected value:</strong> a string starting by " . get_server_url(), "Setup");
+    }
+    
+    if (array_key_exists('REDIRECT_URL', $_SERVER)) {
+        //With mod_rewrite, we can use REDIRECT_URL
+        //We takes the end of the URL, ie *FROM* $len position
+        return substr(get_server_url() . $_SERVER["REDIRECT_URL"], $len);
+    }
+    
+    //Last possibility: use REQUEST_URI, but remove QUERY_STRING
+    //If you need to edit here, use $_SERVER['REQUEST_URI']
+    //but you need to discard $_SERVER['QUERY_STRING']
+       
+    //We takes the end of the URL, ie *FROM* $len position
+    $url = substr(get_server_url() . $_SERVER["REQUEST_URI"], $len);
+    
+    //But if there are a query string (?action=... we need to discard it)	
+    if ($_SERVER['QUERY_STRING']) {
+        return substr($url, 0, strlen($url) - strlen($_SERVER['QUERY_STRING']) - 1);
+    }
+    
+    return $url;
+}
+
+/*
+ * Gets an array of url fragments to be processed by controller
+ */
+function get_current_url_fragments () {
+    $url_source = get_current_url();
     if ($url_source == '/index.php') return array();
     return explode('/', substr($url_source, 1));
 }

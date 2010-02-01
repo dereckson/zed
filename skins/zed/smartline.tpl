@@ -1,7 +1,7 @@
 
     <!-- SmartLine -->
     <div class="grid_16 alpha omega" id="SmartLine">
-        <form method="post" name="SmartLine" action="{get_page_url()}">
+        <form method="post" name="SmartLine" action="{get_current_url()}">
 {if $SmartLineHistory}
             <!-- SmartLine history -->
             <div class="grid_4 left alpha">

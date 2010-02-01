@@ -90,6 +90,13 @@ date_default_timezone_set("UTC");
  *     - $Config['SiteURL'] = 'http://zed.dereckson.be';
  *     - $Config['BaseURL'] = '';
  *
+ *     In .htaccess or your vhost definition:
+ *       RewriteEngine On
+ *       RewriteBase /
+ *       RewriteCond %{REQUEST_FILENAME} !-f
+ *       RewriteCond %{REQUEST_FILENAME} !-d
+ *       RewriteRule . /index.php [L]
+ *
  *
  * If you don't want to specify the server domain, you can use get_server_url:
  *      $Config['SiteURL'] = get_server_url() . '/hypership';
