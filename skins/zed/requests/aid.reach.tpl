@@ -1,8 +1,10 @@
+    <!-- DIJIT -->
     <script type="text/javascript">
-        //Dijit
         dojo.require("dijit.form.Form");
         dojo.require("dijit.form.ValidationTextBox");
     </script>
+    
+    <!-- Request form: aid.reach -->
     <h1>Communicator</h1>
     <h2>Send a request to the hypership</h2>
     <form dojoType="dijit.form.Form" name="aid.reach" method="post">

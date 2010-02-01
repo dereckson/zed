@@ -12,9 +12,14 @@
 {foreach from=$PAGE_JS item=js}
     <script src="{#StaticContentURL#}/js/{$js}"></script>
 {/foreach}
-    {if $DOJO}
+{if $DOJO}
+
+    <!-- DOJO -->
     <script type="text/javascript" src="{#StaticContentURL#}/js/dojo/dojo/dojo.js" djConfig="isDebug:false, parseOnLoad: true" ></script>
-    {/if}
+{if $DIJIT}
+    <link rel="stylesheet" type="text/css" href="{#StaticContentURL#}/css/zed/forms.css">
+{/if}
+{/if}
 </head>
 <body{if $DIJIT} class="tundra"{/if}>
 <div class="container_16">
