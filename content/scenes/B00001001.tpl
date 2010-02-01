@@ -4,7 +4,7 @@
     <!-- Tower navigation CSS -->
     <style>
     #tower {
-        background-image: url(/scenes/{$CurrentPerso->location_global}/all.png);
+        background-image: url(/{$SCENE_URL}/{$CurrentPerso->location_global}/all.png);
         background-position: left;
         background-repeat: no-repeat;
         height: 442px;
@@ -21,7 +21,7 @@
     <script>
     var tower = {
         //The source to highlight picture
-        hl: '/scenes/{$CurrentPerso->location_global}/hl.png',
+        hl: '/{$SCENE_URL}/{$CurrentPerso->location_global}/hl.png',
         
         //The highlighted corridor (1-6). 0 = no hl
         i: 0,
@@ -31,7 +31,7 @@
         
         //Gets CurrentPerso html code
         getHighlightCode: function () {
-            return "<img id='tower_hl' src='/scenes/{$CurrentPerso->location_global}/hl.png' alt='Corridor " + this.i + "' />";
+            return "<img id='tower_hl' src='" + this.hl + "' alt='Corridor " + this.i + "' />";
         },
         
         highlight: function (i) {

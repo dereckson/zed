@@ -14,7 +14,7 @@
  */
 
 require_once('location.php');
-if (!defined('SCENE_DIR')) define('SCENE_DIR', 'scenes');
+if (!defined('SCENE_DIR')) define('SCENE_DIR', 'content/scenes');
 
 class GeoScene {
     /*
@@ -99,6 +99,7 @@ class GeoScene {
                     global $smarty;
                     $template_dir = $smarty->template_dir;
                     $smarty->template_dir = getcwd();
+                    $smarty->assign("SCENE_URL", SCENE_DIR);
                     $smarty->display($file);
                     $smarty->template_dir = $template_dir;
                     break;
