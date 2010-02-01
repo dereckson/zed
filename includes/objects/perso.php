@@ -154,6 +154,7 @@ class Perso {
      * Moves the perso to a new location
      */
     public function move_to ($global = null, $local = null) {
+        
         //Sets global location
         if ($global != null) {
             $this->location_global = $global;
@@ -177,7 +178,7 @@ class Perso {
                 message_die(SQL_ERROR, "Can't save new $global $local location.", '', __LINE__, __FILE__, $sql);
         } elseif ($global != null) {
             $this->save_field('location_global');
-        } elseif ($global != null) {
+        } elseif ($local != null) {
             $this->save_field('location_local');
         }
         

@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+Zeta, Kaos
+Dereckson, 2010-01-31
+
+TODO: It's a start location. So it should provide a way to to reach hypership
+TODO: <section id="spatioport.entry"></section>
+TODO: <section id="mines.entry"></section>
+TODO: .en
+TODO: Écrire les chapitres The hole
+-->
+<story>
+  <title>Zeta, Kaos</title>
+  <section start="true" id="panorama">
+    <title>Panorama</title>
+    <description>
+        Zeta est une ville venteuse, plongée dans la nuit et le bruit.
+            
+À la surface travaillent d'honnêtes mineur de cobalt et de davyrium, ceinturant le sud de la ville.
+        
+Au nord de la ville, the hole, une ancienne mine dont les mineurs évitent de parler.
+        
+À l'est, un petit spatioport.
+    </description>
+    <choices>
+        <choice goto="hole.entry">Se diriger vers le hole</choice>
+        <choice goto="spatioport.entry">Se rendre au spatioport</choice>
+        <choice goto="mines.entry">Vers les mines</choice>
+    </choices>
+    <local>1</local>
+  </section>
+  <section id="hole.entry">
+    <title>The hole</title>
+    <description>
+        The hole. Une ancienne mine désaffectée depuis trois siècles. Aujourd'hui, un squat. L'endroit où tout se passe sur Zeta. Refuge des rebelles. Lieu d'exil de ce secteur de la galaxie. Lieu de tous les traffics. The hole.
+            
+        Une bande d'une douzaine jeunes armés de laser et de fouet neuroniques en garde l'entrée, deux vous regardant d'un œil plutôt menaçant.
+        
+        Ils vous refusent le passage.
+    </description>
+    <choices>
+        <choice goto="spatioport.entry">Se rendre au spatioport</choice>
+        <choice goto="mines.entry">Vers les mines</choice>
+    </choices>
+    <local>2</local>
+  </section>
+</story>

@@ -18,6 +18,7 @@ include('includes/core.php');
 
 //Session
 $IP = encode_ip($_SERVER["REMOTE_ADDR"]);
+require_once('includes/story/story.php'); //this class can be stored in session
 session_start();
 $_SESSION[ID] = session_id();
 session_update(); //updates or creates the session
@@ -49,8 +50,12 @@ $smarty->config_dir = $current_dir;
 define('LANG', 'fr');
 lang_load('core.conf');
 
-if ($CurrentUser->id < 1000) {
+if ($CurrentUser->id < 1000) {   
     //Anonymous user, proceed to login
+    if (array_key_exists('LastUsername', $_COOKIE))
+        $smarty->assign('username', $_COOKIE['LastUsername']);
+    if (array_key_exists('LastOpenID', $_COOKIE))
+        $smarty->assign('OpenID', $_COOKIE['LastOpenID']);
     $smarty->assign('LoginError', $LoginError);
     $smarty->display('login.tpl');
     exit;
@@ -97,6 +102,7 @@ if ($_GET['action'] == 'perso.logout') {
     //User wants to change perso
     $CurrentPerso = null;
     set_info('perso_id', null);
+    clean_session();
 } elseif ($_GET['action'] == 'perso.select') {
     //User have selected a perso
     $CurrentPerso = new Perso($_GET['perso_id']);
@@ -166,6 +172,7 @@ switch ($controller = $url[0]) {
 
     case 'request':
     case 'page':
+    case 'explore':
         include("controllers/$controller.php");
         break;
 

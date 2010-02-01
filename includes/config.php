@@ -49,8 +49,14 @@ $Config['DefaultTheme'] = "Zed";
 date_default_timezone_set("UTC");
 
 //Sessions
+
 //If you want to use a common table of sessions / user handling
 //with several websites, specify a different resource id for each site.
 $Config['ResourceID'] = 21;
+
+//PHP variables
+ini_set('session.serialize_handler', 'wddx');
+ini_set('session.save_path', 'cache/sessions');
+ini_set('session.gc_maxlifetime', 345600);  //4 days, for week-end story pause and continue url
 
 ?>

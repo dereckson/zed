@@ -11,7 +11,7 @@
     <form method="post" action="/">
         <div class="row">
             <label for="username">{#Login#}{#_t#}</label>
-            <input type="text" id="username" name="username" />
+            <input type="text" id="username" name="username" value="{$username}" />
         </div>
         <div class="row">
             <label for="password">{#Password#}{#_t#}</label>
@@ -19,7 +19,7 @@
         </div>
         <div class="row">
             <label for="openid">{#OpenID#}{#_t#}</label>
-            <input type="text" id="openid" name="openid" />
+            <input type="text" id="openid" name="openid" value="{$OpenID}" />
         </div>
         <div class="row">
             <input type="submit" id="submit" name="LogIn" value="{#OK#}" />

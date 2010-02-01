@@ -38,6 +38,7 @@ function openid_login ($url) {
         $sql = "UPDATE " . TABLE_SESSIONS . " SET user_id = '$user_id' WHERE session_id LIKE '$_SESSION[ID]'";
         if (!$db->sql_query($sql)) message_die(SQL_ERROR, "Impossible de procéder à la connexion", '', __LINE__, __FILE__, $sql);
         $LoginSuccessful = true;
+        setcookie("LastOpenID", $url, time() + 2592000);
         header("location: /");
     } else {
         $LoginError = "To join Zed, you need an invite. Read the source to get one.";
@@ -92,6 +93,7 @@ if ($_GET['action'] == 'openid.login') {
                 $sql = "UPDATE " . TABLE_SESSIONS . " SET user_id = '$row[user_id]' WHERE session_id LIKE '$_SESSION[ID]'";
                 if (!$db->sql_query($sql)) message_die(SQL_ERROR, "Impossible de procéder à la connexion", '', __LINE__, __FILE__, $sql);
                 $LoginSuccessful = true;
+                setcookie("LastUsername", $Login, time() + 2592000);
             }				
         } else {
             //Login n'existe pas

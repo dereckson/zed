@@ -12,7 +12,7 @@
 /// Tutorials div
 ///
 
-if ($CurrentPerso->flags['hypership.reached'] < 1) {
+if ($CurrentPerso->flags['hypership.reached'] < 1 && $controller != 'explore') {
     if (!DOJO) $smarty->display('tutorial/dojo.tpl');
     lang_load("tutorials.conf", "ReachHypership");
     $smarty->display('tutorial/hypership_reach.tpl');
@@ -24,6 +24,6 @@ if ($CurrentPerso->flags['hypership.reached'] < 1) {
 
 $smarty->assign('MultiPerso', isset($_SESSION['UserWithSeveralPersos']) && $_SESSION['UserWithSeveralPersos']);
 lang_load('footer.conf');
-$smarty->display('footer.tpl'); 
+$smarty->display('footer.tpl');
  
 ?>

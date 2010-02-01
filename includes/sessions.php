@@ -88,6 +88,15 @@ function set_info ($info, $value)
 }
 
 /*
+ * Destroys $_SESSION array values, help ID
+ */
+function clean_session () {
+    foreach ($_SESSION as $key => $value) {
+        if ($key != 'ID') unset($_SESSION[$key]);
+    }
+}
+
+/*
  * Logs out user
  */
 function logout () {
@@ -95,11 +104,7 @@ function logout () {
     global $db;
 	$sql = "UPDATE " . TABLE_SESSIONS . " SET user_id = '-1', perso_id = NULL WHERE session_id LIKE '$_SESSION[ID]'";
 	if (!$db->sql_query($sql)) message_die(SQL_ERROR, "Impossible de procéder à la déconnexion", '', __LINE__, __FILE__, $sql);
-    
-    //Destroys $_SESSION array values, help ID
-    foreach ($_SESSION as $key => $value) {
-        if ($key != 'ID') unset($_SESSION[$key]);
-    }
+    clean_session();
 }
 
 ?>
