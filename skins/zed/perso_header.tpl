@@ -22,6 +22,20 @@
     </script>
 </head>
 <body class="tundra">
+<!-- Header -->
+<div id="header">
+    <div id="header_content">
+        <div class="container_16">
+            <div class="grid_4 alpha omega suffix_8">
+                <a href="{get_url()}"><img src="{#StaticContentURL#}/img/zed/logo.png" src="Zed logo" border=0 /></a>
+            </div>
+            <div class="clear"></div>
+        </div>
+    </div>
+</div>
+<div class="clear"></div>
+
+<!-- Content -->
 <div class="container_16">
 {if $WAP}
     

@@ -1,5 +1,5 @@
     <!--  Faerie profile -->
-	<div class="grid_11 alpha profile">
+	<div class="grid_11 alpha profile" style="background-color: black">
         <div class="profile_id clearfix">
             <h1 class="profile_nick">{$NAME}</h1>
             <div class="profile_info">
