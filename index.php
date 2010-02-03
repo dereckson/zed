@@ -181,6 +181,10 @@ switch ($controller = $url[0]) {
     case 'who':
         include('controllers/profile.php'); //Azhàr controller
         break;
+    
+    case 'push':
+        include('controllers/motd.php'); //Azhàr controller
+        break;
 
     default:
         //TODO: returns a 404 error

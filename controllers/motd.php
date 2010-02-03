@@ -19,8 +19,8 @@ if ($_REQUEST['text']) {
     require_once('includes/objects/motd.php');
     $motd = new MOTD();
     $motd->text = $_REQUEST['text'];
-    $motd->user_id = $CurrentUser->id;
-    $motd->saveToDatabase();
+    $motd->perso_id = $CurrentPerso->id;
+    $motd->save_to_database();
     $smarty->assign('WAP', lang_get('Published'));
 }
 
