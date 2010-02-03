@@ -49,7 +49,7 @@ $smarty->config_dir = $current_dir;
 $smarty->config_vars['StaticContentURL'] = $Config['StaticContentURL'];
 
 //Loads language files
-define('LANG', 'fr');
+initialize_lang();
 lang_load('core.conf');
 
 if ($CurrentUser->id < 1000) {   

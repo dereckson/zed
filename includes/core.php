@@ -159,6 +159,89 @@ function get_extension ($file) {
 ////////////////////////////////////////////////////////////////////////////////
 
 /*
+ * Defines LANG constant to lang to print
+ */
+function initialize_lang () {
+    //If $_SESSION['lang'] doesn't exist yet, find a common language
+    if (!array_key_exists('lang', $_SESSION)) {
+        $lang = find_lang();
+        $_SESSION['lang'] = $lang ? $lang : '-';
+    }
+    
+    if ($_SESSION['lang'] != '-')
+        define('LANG', $_SESSION['lang']);
+}
+
+/*
+ * Gets a common lang spoken by the site and the user
+ * @return string the language
+ */    
+function find_lang () {
+    if (file_exists('lang') && is_dir('lang')) {
+        //Gets lang/ subdirectories: this is the list of available languages
+        $handle = opendir('lang');
+        while ($file = readdir($handle)) {
+            if ($file != '.' && $file != '..' && is_dir("lang/$file")) {
+                $langs[] = $file;
+            }
+        }
+
+        //The array $langs contains now the language available.
+        //Gets the langs the user should want:
+        if (!$userlangs = get_http_accept_languages())
+            return;
+        
+        //Gets the intersection between the both languages arrays
+        //If it matches, returns first result
+        $intersect = array_intersect($userlangs, $langs);
+        if (count($intersect)) {
+            return $intersect[0];
+        }
+        
+        //Now it's okay with Opera and Firefox but Internet Explorer
+        //will return en-US and not en or fr-BE and not fr, so second pass
+        foreach ($userlangs as $userlang) {
+            $lang = explode('-', $userlang);
+            if (count($lang) > 1)
+                $userlangs2[] = $lang[0];
+        }
+        $intersect = array_intersect($userlangs2, $langs);
+        if (count($intersect)) {
+            return $intersect[0];
+        }
+    }
+}
+
+/*
+ * Returns the languages accepted by the browser, by order of priority
+ * @return Array a array of languages string 
+ */
+
+function get_http_accept_languages () {
+    //What language to print is sent by browser in HTTP_ACCEPT_LANGUAGE var.
+    //This will be something like en,fr;q=0.8,fr-fr;q=0.5,en-us;q=0.3
+    
+    if (!array_key_exists('HTTP_ACCEPT_LANGUAGE', $_SERVER)) {
+        return null;
+    }
+    
+    $http_accept_language = explode(',', $_SERVER["HTTP_ACCEPT_LANGUAGE"]);
+    foreach ($http_accept_language as $language) {
+        $userlang = explode(';q=', $language);
+        if (count($userlang) == 1) {
+            $userlangs[] = array(1, $language);
+        } else {
+            $userlangs[] = array($userlang[1], $userlang[0]);
+        }
+    }
+    rsort($userlangs);
+    foreach ($userlangs as $userlang) {
+        $result[] = $userlang[1];
+    }
+    return $result;
+}
+
+/*
  * Loads specified language Smarty configuration file
  *
  * @param string $file the file to load
@@ -171,8 +254,8 @@ function lang_load ($file, $sections = null) {
     if (file_exists("lang/en/$file"))
         $smarty->config_load("lang/en/$file", $sections);
     
-    //Loads wanted file
-    if (LANG != 'en' && file_exists('lang/' . LANG . '/' . $file))
+    //Loads wanted file (if it exists and a language have been defined)
+    if (defined('LANG') && LANG != 'en' && file_exists('lang/' . LANG . '/' . $file))
         $smarty->config_load('lang/' . LANG . '/' . $file, $sections);
 }
 
