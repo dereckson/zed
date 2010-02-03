@@ -14,7 +14,7 @@
 class ProfileComment {
 
     public $id;
-    public $user_id;
+    public $perso_id;
     public $author;
     public $authorname; //should be read-only
     public $date;
@@ -23,30 +23,31 @@ class ProfileComment {
     function __construct ($id = '') {
         if ($id) {
             $this->id = $id;
-            $this->loadFromDatabase();
+            $this->load_from_database();
         } else {
             $this->date = time();
         }
     }
     
     //Loads the object comment (ie fill the properties) from the $_POST array
-    function loadFromForm () {
-          if (array_key_exists('user_id', $_POST)) $this->user_id = $_POST['user_id'];
+    function load_from_form () {
+          if (array_key_exists('perso_id', $_POST)) $this->perso_id = $_POST['perso_id'];
           if (array_key_exists('author', $_POST)) $this->author = $_POST['author'];
           if (array_key_exists('date', $_POST)) $this->date = $_POST['date'];
           if (array_key_exists('text', $_POST)) $this->text = $_POST['text'];
     }
     
     //Loads the object comment (ie fill the properties) from the database
-    function loadFromDatabase () {
+    function load_from_database () {
         global $db;
-        $sql = "SELECT c.*, u.user_longname as author FROM " . TABLE_PROFILES_COMMENTS . " c, " . TABLE_USERS . " u WHERE c.comment_id = '" . $this->id . "' AND u.user_id = c.comment_author";
+        $id = $db->sql_escape($this->id);
+        $sql = "SELECT c.*, p.perso_name as author FROM " . TABLE_PROFILES_COMMENTS . " c, " . TABLE_PERSOS . " p WHERE c.comment_id = '$id' AND p.perso_id = c.comment_author";
         if ( !($result = $db->sql_query($sql)) ) message_die(SQL_ERROR, "Unable to query azhar_profiles_comments", '', __LINE__, __FILE__, $sql);
         if (!$row = $db->sql_fetchrow($result)) {
             $this->lastError = "comment unkwown: " . $this->id;
             return false;
         }
-        $this->user_id = $row['user_id'];
+        $this->perso_id = $row['perso_id'];
         $this->author = $row['comment_author'];
         $this->authorname = $row['author'];
         $this->date = $row['comment_date'];
@@ -55,22 +56,16 @@ class ProfileComment {
     }
     
     //Saves the object to the database
-    function saveToDatabase () {
+    function save_to_database () {
         global $db;
         
-        $id = $db->sql_escape($this->id);
-        $user_id = $db->sql_escape($this->user_id);
+        $id = $this->id ? "'" . $db->sql_escape($this->id) . "'" : 'NULL';
+        $perso_id = $db->sql_escape($this->perso_id);
         $author = $db->sql_escape($this->author);
         $date = $db->sql_escape($this->date);
         $text = $db->sql_escape($this->text);
 
-        if ($id) {
-            //Updates
-            $sql = "REPLACE INTO " . TABLE_PROFILES_COMMENTS . " (`comment_id`, `user_id`, `comment_author`, `comment_date`, `comment_text`) VALUES ('$id', '$user_id', '$author', '$date', '$text')";
-        } else {
-            //Inserts
-            $sql = "INSERT INTO " . TABLE_PROFILES_COMMENTS . " (`user_id`, `comment_author`, `comment_date`, `comment_text`) VALUES ('$user_id', '$author', '$date', '$text')";
-        }
+        $sql = "REPLACE INTO " . TABLE_PROFILES_COMMENTS . " (`comment_id`, `perso_id`, `comment_author`, `comment_date`, `comment_text`) VALUES ($id, '$perso_id', '$author', '$date', '$text')";
         if (!$db->sql_query($sql)) {
             message_die(SQL_ERROR, "Unable to save", '', __LINE__, __FILE__, $sql);
         }
@@ -82,13 +77,13 @@ class ProfileComment {
     
     //Publishes the comment
     function publish () {
-        $this->saveToDatabase();
+        $this->save_to_database();
         //TODO: triggers new profile comment notifier
     }
     
-    static function get_comments ($user_id) {
+    static function get_comments ($perso_id) {
         global $db;
-        $sql = "SELECT comment_id FROM " . TABLE_PROFILES_COMMENTS . " WHERE user_id = " . $db->sql_escape($user_id);
+        $sql = "SELECT comment_id FROM " . TABLE_PROFILES_COMMENTS . " WHERE perso_id = " . $db->sql_escape($perso_id);
         if (!$result = $db->sql_query($sql)) {
             message_die(SQL_ERROR, "Unable to get comments", '', __LINE__, __FILE__, $sql);
         }

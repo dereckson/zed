@@ -33,9 +33,14 @@ class Perso {
      * Initializes a new instance
      * @param int $id the primary key
      */
-    function __construct ($id = null) {
-        if ($id) {
-            $this->id = $id;
+    function __construct ($data = null) {
+        if ($data) {
+            if (is_numeric($data)) {
+                $this->id = $data;
+            } else {
+                $this->nickname = $data;
+            }
+
             $this->load_from_database();
         } else {
             $this->generate_id();
@@ -63,13 +68,21 @@ class Perso {
         global $db;
         
         //Gets perso
-        $id = $db->sql_escape($this->id);
-        $sql = "SELECT * FROM " . TABLE_PERSOS . " WHERE perso_id = '" . $id . "'";
+        $sql = "SELECT * FROM " . TABLE_PERSOS;
+        if ($this->id) {
+            $id = $db->sql_escape($this->id);
+            $sql .= " WHERE perso_id = '" . $id . "'";
+        } else {
+            $nickname = $db->sql_escape($this->nickname);
+            $sql .= " WHERE perso_nickname = '" . $nickname . "'";
+        }
         if ( !($result = $db->sql_query($sql)) ) message_die(SQL_ERROR, "Unable to query persos", '', __LINE__, __FILE__, $sql);
         if (!$row = $db->sql_fetchrow($result)) {
             $this->lastError = "Perso unkwown: " . $this->id;
             return false;
         }
+        
+        $this->id = $row['perso_id'];
         $this->user_id = $row['user_id'];
         $this->name = $row['perso_name'];
         $this->nickname = $row['perso_nickname'];
@@ -132,7 +145,7 @@ class Perso {
     function save_field ($field) {
         global $db;
         if (!$this->id) {
-            message_die(GENERAL_ERROR, "You're trying to update a record not yet saved in the database");
+            message_die(GENERAL_ERROR, "You're trying to update a perso record not yet saved in the database: $field");
         }
         $id = $db->sql_escape($this->id);
         $value = $db->sql_escape($this->$field);
@@ -189,7 +202,7 @@ class Perso {
         );
     }
     
-    public function setflag ($key, $value) {
+    public function setflag ($key, $value = 1) {
         //Checks if flag isn't already set at this value
         if ($this->flags[$key] === $value)
             return;
@@ -266,6 +279,7 @@ class Perso {
         if (!$result = $db->sql_query($sql)) {
             message_die(SQL_ERROR, "Can't get persos", '', __LINE__, __FILE__, $sql);
         }
+        
         while ($row = $db->sql_fetchrow($result)) {
             $persos[] = new Perso($row['perso_id']);
         }

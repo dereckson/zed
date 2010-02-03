@@ -25,20 +25,27 @@ function get_section ($story) {
     //e.g. /explore/143f7200-766b-7b8b-e3f4-9fbfeeaeb5dd
     if (count($url) > 1) {
         $guid = $url[1];
-        if (!$choice = $_SESSION['Story']->get_choice($guid)) {
-            $smarty->assign('WAP', lang_get('InvalidStoryGUID'));
-        }
         
-        //TODO: add code here to handle actions defined in choices
-        //e.g. item added to inventory
-        
-        //Gets section
-        if ($section_id = $choice->goto) {
-            if (!array_key_exists($section_id, $story->sections)) {
-                message_die(GENERAL_ERROR, "Choice <em>$choice->text</em> redirects to <em>$section_id</em> but this section doesn't exist.", "Story error");
+        //Ensures we've a StorySection object in the Story variable
+        if (!array_key_exists('Story', $_SESSION)) {
+            $smarty->assign('WAP', lang_get('ExpiredStorySession'));
+        } else {
+            //Gets StoryChoice matching the guid
+            if (!$choice = $_SESSION['Story']->get_choice($guid)) {
+                $smarty->assign('WAP', lang_get('InvalidStoryGUID'));
             }
-            return $story->sections[$section_id];
             
+            //TODO: add code here to handle actions defined in choices
+            //e.g. item added to inventory
+            
+            //Gets section
+            if ($section_id = $choice->goto) {
+                if (!array_key_exists($section_id, $story->sections)) {
+                    message_die(GENERAL_ERROR, "Choice <em>$choice->text</em> redirects to <em>$section_id</em> but this section doesn't exist.", "Story error");
+                }
+                return $story->sections[$section_id];
+                
+            }
         }
     }
     
@@ -54,8 +61,6 @@ function get_section ($story) {
 //
 // Opens .xml file
 //
-
-if (!defined(STORIES_DIR)) define('STORIES_DIR', "content/stories");
 
 $file = STORIES_DIR . '/' . $CurrentPerso->location_global . '.xml';
 if (!file_exists($file)) {

@@ -177,7 +177,10 @@ switch ($controller = $url[0]) {
     case 'explore':
         include("controllers/$controller.php");
         break;
-
+    
+    case 'who':
+        include('controllers/profile.php'); //Azhàr controller
+        break;
 
     default:
         //TODO: returns a 404 error

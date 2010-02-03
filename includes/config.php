@@ -101,9 +101,6 @@ date_default_timezone_set("UTC");
  * If you don't want to specify the server domain, you can use get_server_url:
  *      $Config['SiteURL'] = get_server_url() . '/hypership';
  *      $Config['SiteURL'] = get_server_url();
- *  
- * $Config['StaticContentURL'] is used to serve js, css, img and content
- * directories. To improve site performance, you can use a CDN for that.
  * 
  * !!! No trailing slash !!!
  *   
@@ -112,12 +109,47 @@ date_default_timezone_set("UTC");
 $Config['SiteURL'] = get_server_url();
 $Config['BaseURL'] = '';
 
-$Config['StaticContentURL'] = $Config['SiteURL'];
-define('SCENE_URL', "$Config[StaticContentURL]/content/scenes");
+////////////////////////////////////////////////////////////////////////////////
+///                                                                          ///
+/// IV. Static content                                                       ///
+///                                                                          ///
+////////////////////////////////////////////////////////////////////////////////
+
+//Where the static content is located?
+//Static content = 4 directories: js, css, img and content
+//On default installation, those directories are at site root.
+//To improve site performance, you can use a CDN for that.
+//To use 
+//
+//Recommanded setting: $Config['StaticContentURL'] = $Config['SiteURL'];
+//Or if Zed is the site root: $Config['StaticContentURL'] = '';
+//With CoralCDN: $Config['StaticContentURL'] =  . '.nyud.net';
+//
+$Config['StaticContentURL'] = '';
+//$Config['StaticContentURL'] = get_server_url() . '.nyud.net';
+
+//Scenes
+define('SCENE_DIR', 'content/scenes');
+define('SCENE_URL', $Config['StaticContentURL'] . '/' . SCENE_DIR);
+
+//Stories
+define('STORIES_DIR', "content/stories");
+
+//Profile's photos
+define('PHOTOS_DIR', 'content/users/_photos');
+define('PHOTOS_URL', $Config['StaticContentURL'] . '/' . PHOTOS_DIR);
+
+//ImageMagick paths
+//Be careful on Windows platform convert could match the NTFS convert command.
+$Config['ImageMagick']['convert'] = 'convert';
+$Config['ImageMagick']['mogrify'] = 'mogrify';
+$Config['ImageMagick']['composite'] = 'composite';
+$Config['ImageMagick']['identify'] = 'identify';
+
 
 ////////////////////////////////////////////////////////////////////////////////
 ///                                                                          ///
-/// IV. Sessions                                                             ///
+/// V. Sessions                                                              ///
 ///                                                                          ///
 ////////////////////////////////////////////////////////////////////////////////
 

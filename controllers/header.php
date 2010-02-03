@@ -18,7 +18,7 @@ if (!$result = $db->sql_query($sql)) message_die(SQL_ERROR, "Can't query MOTD", 
 $row = $db->sql_fetchrow($result);
 $smarty->assign('WALL_TEXT', $row['motd_text']);
 $smarty->assign('WALL_USER', $row['username']);
-$smarty->assign('WALL_USER_URL', get_url('user', $row['username']));
+$smarty->assign('WALL_USER_URL', get_url('who', $row['username']));
 
 //
 // HTML output

@@ -1,75 +1,70 @@
 <?php
 /*
- * Azhàr, faeries intranet
- * (c) 2009-2010, Wolfæym, some rights reserved
+ * Zed
+ * (c) 2010, Dereckson, some rights reserved
  * Released under BSD license
  *
- * Homepage
+ * This code is maintained in // with Azhàr
+ *
+ * User profile
  */
 
 //Loads language file
 lang_load('profile.conf');
  
-//Gets username from URL
-$username = $url[1];
+//Gets perso nickname from URL
+$who = $url[1];
 
-switch ($username) {
+switch ($who) {
     case 'edit':
-	$mode = 'edit';
-	$username = $CurrentUser->username;
-	break;
+        $mode = 'edit';
+        $who = $CurrentPerso->nickname;
+        break;
     
     case 'random':
-	$mode = 'view';
-	$username = $db->sql_query_express("SELECT user_id FROM azhar_profiles ORDER  BY rand() LIMIT 1");
-	break;
+        $mode = 'view';
+        $who = $db->sql_query_express("SELECT perso_id FROM " . TABLE_PROFILES . " ORDER  BY rand() LIMIT 1");
+        break;
        
     default:
-	$mode = 'view';
+        $mode = 'view';
 }
  
-if (!$username) {
-	$title = lang_get('UnknownFaerie');
-	$smarty->assign('CONTENT', lang_get('Who'));
-	include('raw.php');
-	die();
+if (!$who) {
+    message_die(GENERAL_ERROR, "Who?", "URL error");
 }
 
 //Libs
 require_once('includes/objects/profile.php');
 require_once('includes/objects/profilecomment.php');
 require_once('includes/objects/profilephoto.php');
-require_once('includes/objects/phone.php');
-require_once('includes/objects/resources.php');
 
-//Gets user information
-require_once('includes/objects/user.php');
-$user = new User($username);
-if ($user->lastError) {
-	$title = lang_get('UnknownFaerie');
-	$smarty->assign('CONTENT', sprintf(lang_get('WhoIsFaerie'), $username));
-	include('raw.php');
-	die();
+//Gets perso information
+require_once('includes/objects/perso.php');
+$perso = new Perso($who);
+if ($perso->lastError) {
+    message_die(GENERAL_ERROR, $perso->lastError, "Error");
 }
 
 //Gets profile
-$profile = new Profile($user->id);
+$profile = new Profile($perso->id);
 
 //Handles form
 if ($_POST['EditProfile']) {
-    $profile->loadFromForm();
+    $profile->load_from_form();
     $profile->updated = time();
-    $profile->saveToDatabase();
+    $profile->save_to_database();
     $mode = 'view';
 } elseif ($_POST['UserAccount']) {
-    $user->loadFromForm(false);
+    $smarty->assign('WAP', "Your form haven't been handled. Remember Dereckson to code this, profile.php line 59.");
+    //$perso->load_from_form(false);
     $mode = 'view';
 } elseif ($_POST['message_type'] == 'private_message') {
     //Sends a message
     require_once('includes/objects/message.php');
     $msg = new Message();
-    $msg->from = $CurrentUser->id;
-    $msg->to = $user->id;
+    $msg->from = $CurrentPerso->id;
+    $msg->to = $perso->id;
     $msg->text = $_POST['message'];
     $msg->send();
     if ($msg->from == $msg->to) {
@@ -80,8 +75,8 @@ if ($_POST['EditProfile']) {
 } elseif ($_POST['message_type'] == 'profile_comment') {
     //New profile comment
     $comment = new ProfileComment();
-    $comment->author = $CurrentUser->id;
-    $comment->user_id = $user->id;
+    $comment->author = $CurrentPerso->id;
+    $comment->perso_id = $perso->id;
     $comment->text = $_POST['message'];
     $comment->publish();
     $smarty->assign('NOTIFY', lang_get('CommentPublished'));    
@@ -90,7 +85,7 @@ if ($_POST['EditProfile']) {
     
     $hash = md5(microtime() . serialize($_FILES));
     $extension = get_extension($_FILES['photo']['name']);
-    $filename = $CurrentUser->id . '_' . $hash . '.' . $extension;
+    $filename = $CurrentPerso->id . '_' . $hash . '.' . $extension;
 
 	#We ignore $_FILES[photo][error] 4, this means no file has been uploaded
 	#(so user doesn't want upload a new file)
@@ -100,20 +95,21 @@ if ($_POST['EditProfile']) {
 		case 0:
 		#There is no error, the file uploaded with success.
 
-		if (!move_uploaded_file($_FILES['photo']['tmp_name'], DIR_PHOTOS . '/' . $filename)) {
+		if (!move_uploaded_file($_FILES['photo']['tmp_name'], PHOTOS_DIR . '/' . $filename)) {
 			$errors[] = "Upload successful, but error saving it.";
 		} else {
 			//Attaches the picture to the profile
 			$photo = new ProfilePhoto();
 			$photo->name = $filename;
-			$photo->user_id = $CurrentUser->id;
+			$photo->perso_id = $CurrentPerso->id;
 			$photo->description = $_POST['description'];
-			$photo->safe = $_POST['SafeForWork'];
-			if ($photo->avatar) $photo->promoteToAvatar();
-			$photo->saveToDatabase();
+			if ($photo->avatar) $photo->promote_to_avatar();
+			$photo->save_to_database();
 			
 			//Generates thumbnail
-			@exec('c:\WebServer\wwwroot\folleterre.org\faeries\pics\tn\c.bat');
+			if (!$photo->generate_thumbnail()) {
+                $smarty->assign('WAP', "Error generating thumbnail.");
+            }
 			
 			$smarty->assign('NOTIFY', lang_get('PhotoUploaded'));
 			$mode = 'view';
@@ -140,18 +136,18 @@ if ($_POST['EditProfile']) {
     if ($photo->lastError) {
         $smarty->assign('WAP', $photo->lastError);
         $mode = 'view';
-    } elseif ($photo->user_id != $CurrentUser->id) {
+    } elseif ($photo->perso_id != $CurrentPerso->id) {
         $smarty->assign('WAP', lang_get('NotYourPic'));
         $mode = 'view';
     } else {
         //OK
-	$wereAvatar = $photo->avatar;
-        $photo->loadFromForm();
-	if (!$wereAvatar && $photo->avatar) {
-	    //Promote to avatar
-	    $photo->promoteToAvatar();
-	}
-        $photo->saveToDatabase();
+        $wereAvatar = $photo->avatar;
+        $photo->load_from_form();
+        if (!$wereAvatar && $photo->avatar) {
+            //Promote to avatar
+            $photo->promote_to_avatar();
+        }
+        $photo->save_to_database();
     }
 }
 
@@ -166,71 +162,36 @@ if ($mode == 'view') {
     require_once('includes/objects/profilephoto.php');
     
     //Self profile?
-    $self = $CurrentUser->id == $profile->user_id;
+    $self = $CurrentPerso->id == $profile->perso_id;
     
     //Gets profiles comments, photos
-    $comments = ProfileComment::get_comments($profile->user_id);
-    $photos   = ProfilePhoto::get_photos($profile->user_id);
-    
-    //Gets phone
-    $ids = Resources::getChildIds('User', $profile->user_id, 'Phone');
-    if (count($ids)) {
-        foreach ($ids as $id) {
-            $phone = new Phone($id);
-            //We avoid faxes or private numbers
-            if (!$phone->isPrivate && $phone->isVoice) {
-               $smarty->assign('PHONE', $phone->number);
-               break;
-            }
-        }
-    }
+    $comments = ProfileComment::get_comments($profile->perso_id);
+    $photos   = ProfilePhoto::get_photos($profile->perso_id);
     
     //Records timestamp, to be able to track new comments
-    if ($self) record_timestamp('profile');
-    
-    //Warning for new accounts
-    if (!$user->active)
-	$smarty->assign('NOTIFY', lang_get('InactivatedUser'));
-	
-    //TODO: move to sidebar manager
-    //Sidebar content - gets photos.folleterre.org most recent upload
-    $sql = "SELECT CONCAT(filepath, 'thumb_', filename) AS url FROM cpg14x_pictures WHERE owner_id = $profile->user_id ORDER BY ctime DESC LIMIT 2";
-    if (!$result = $db->sql_query($sql)) {
-	message_die(SQL_ERROR, "Unable to query the table", '', __LINE__, __FILE__, $sql);
-    }
-    $i = 0;
-    while ($row = $db->sql_fetchrow($result)) {
-	$lastpics[$i]->link  = "http://photos.folleterre.org/displayimage.php?album=lastupby&amp;cat=0&amp;pos=$i&amp;uid=";
-	$lastpics[$i]->link .= $profile->user_id;
-	$lastpics[$i]->url   = "http://photos.folleterre.org/albums/" . $row['url'];
-	$i++;
-    }
-    $smarty->assign('SIDEBAR_LASTPICS_URL', 'http://photos.folleterre.org/thumbnails.php?album=lastupby&uid=' . $profile->user_id);
-    $smarty->assign('SIDEBAR_LASTPICS', $lastpics);
-       
+    if ($self) $CurrentPerso->setflag('profile.lastvisit', time());
+         
     //Template
     $smarty->assign('PROFILE_COMMENTS', $comments);
     $smarty->assign('PROFILE_SELF', $self);
-    $smarty->assign('USERNAME', $user->username);
-    $smarty->assign('NAME', $user->longname ? $user->longname : $user->username);
-    $smarty->assign('MAIL', $user->email);
+    $smarty->assign('USERNAME', $perso->username);
+    $smarty->assign('NAME', $perso->name ? $perso->name : $perso->nickname);
     $template = 'profile.tpl';
 } elseif ($mode == 'edit') {
     switch ($url[2]) {
         case 'profile':
-            $smarty->assign('USERNAME', $user->longname);
-	    $smarty->assign('DIJIT', true);
-	    $css[] = 'forms.css';
-	    $template = 'profile_edit.tpl';	    
+            $smarty->assign('USERNAME', $perso->name);
+            $smarty->assign('DIJIT', true);
+            $css[] = 'forms.css';
+            $template = 'profile_edit.tpl';	    
             break;
         
         case 'account':
-	    $smarty->assign('user', $user);
-	    $smarty->assign('DIJIT', true);
-	    $css[] = 'forms.css';
+            $smarty->assign('user', $CurrentUser);
+            $smarty->assign('DIJIT', true);
+            $css[] = 'forms.css';
             $template = 'user_account.tpl';
             break;
-        
 	
         case '':
             $smarty->assign('NOTIFY', "What do you want to edit ? Append /profile, /account or /photos to the URL");
@@ -238,74 +199,75 @@ if ($mode == 'view') {
 
         case 'photo':
         case 'photos':
-            $smarty->assign('USERNAME', $user->longname);
-	    switch ($action = $url[3]) {
+            $smarty->assign('USERNAME', $perso->name);
+            switch ($action = $url[3]) {
                 case '':
-                //Nothing to do
-                break;
+                    //Nothing to do
+                    break;
                 
                 case 'delete':
-                //Deletes a picture
-                if (!$id = $url[4]) {
-                    $smarty->assign('WAP', "URL error. Parameter missing: picture id.");
-                } else {
-                    $photo = new ProfilePhoto($id);
-                    if ($photo->lastError) {
-                        //Probably an non existent id (e.g. double F5, photo already deleted)
-                        $smarty->assign('WAP', $photo->lastError);
-                    } elseif ($photo->user_id != $CurrentUser->id) {
-                        $smarty->assign('WAP', lang_get('NotYourPic'));
+                    //Deletes a picture
+                    if (!$id = $url[4]) {
+                        $smarty->assign('WAP', "URL error. Parameter missing: picture id.");
                     } else {
-                        //OK we can delete it
-                        $photo->delete();
-                        $smarty->assign('NOTIFY', lang_get('PictureDeleted'));
+                        $photo = new ProfilePhoto($id);
+                        if ($photo->lastError) {
+                            //Probably an non existent id (e.g. double F5, photo already deleted)
+                            $smarty->assign('WAP', $photo->lastError);
+                        } elseif ($photo->perso_id != $CurrentPerso->id) {
+                            $smarty->assign('WAP', lang_get('NotYourPic'));
+                        } else {
+                            //OK we can delete it
+                            $photo->delete();
+                            $smarty->assign('NOTIFY', lang_get('PictureDeleted'));
+                        }
                     }
-                }
-                break;
+                    break;
                 
                 case 'edit':
-                if (!$id = $url[4]) {
-                    $smarty->assign('WAP', "URL error. Parameter missing: picture id.");
-                } else {
-                    $photo = new ProfilePhoto($id);
-                    if ($photo->lastError) {
-                        //Probably an non existent id (e.g. double F5, photo already deleted)
-                        $smarty->assign('WAP', $photo->lastError);
-                    } elseif ($photo->user_id != $CurrentUser->id) {
-                        $smarty->assign('WAP', lang_get('NotYourPic'));
+                    if (!$id = $url[4]) {
+                        $smarty->assign('WAP', "URL error. Parameter missing: picture id.");
                     } else {
-                        //Photo information edit form
-                        $smarty->assign('photo', $photo);
-                        $template = 'profile_photo_edit.tpl';
+                        $photo = new ProfilePhoto($id);
+                        if ($photo->lastError) {
+                            //Probably an non existent id (e.g. double F5, photo already deleted)
+                            $smarty->assign('WAP', $photo->lastError);
+                        } elseif ($photo->perso_id != $CurrentPerso->id) {
+                            $smarty->assign('WAP', lang_get('NotYourPic'));
+                        } else {
+                            //Photo information edit form
+                            $smarty->assign('photo', $photo);
+                            $template = 'profile_photo_edit.tpl';
+                        }
                     }
-                }
-                break;
+                    break;
 	    
-		case 'avatar':
-                //Deletes a picture
-                if (!$id = $url[4]) {
-                    $smarty->assign('WAP', "URL error. Parameter missing: picture id.");
-                } else {
-                    $photo = new ProfilePhoto($id);
-                    if ($photo->lastError) {
-                        $smarty->assign('WAP', $photo->lastError);
-                    } elseif ($photo->user_id != $CurrentUser->id) {
-                        $smarty->assign('WAP', lang_get('NotYourPic'));
+                case 'avatar':
+                    //Promotes a picture to avatar
+                    if (!$id = $url[4]) {
+                        $smarty->assign('WAP', "URL error. Parameter missing: picture id.");
                     } else {
-                        //OK, promote it to avatar
-                        $photo->promoteToAvatar();
-			$photo->saveToDatabase();
-                        $smarty->assign('NOTIFY', lang_get('PromotedToAvatar'));
+                        $photo = new ProfilePhoto($id);
+                        if ($photo->lastError) {
+                            $smarty->assign('WAP', $photo->lastError);
+                        } elseif ($photo->perso_id != $CurrentPerso->id) {
+                            $smarty->assign('WAP', lang_get('NotYourPic'));
+                        } else {
+                            //OK, promote it to avatar
+                            $photo->promote_to_avatar();
+                            $photo->save_to_database();
+                            $smarty->assign('NOTIFY', lang_get('PromotedToAvatar'));
+                        }
                     }
-                }
-		break;
+                    break;
                 
                 default:
-                $smarty->assign('WAP', "Unknown URL. To delete a picture it's /delete/<picture id>. To edit it /edit/<picture id>");
-                break;
+                    $smarty->assign('WAP', "Unknown URL. To delete a picture it's /delete/<picture id>. To edit it /edit/<picture id>");
+                    break;
             }
+            
             if (!$template) {
-                $photos = ProfilePhoto::get_photos($profile->user_id);
+                $photos = ProfilePhoto::get_photos($profile->perso_id);
                 if (!$smarty->_tpl_vars['NOTIFY'])
                     $smarty->assign('NOTIFY', "Your feedback is valued. Report any bug or suggestion on the graffiti wall.");
                 $template = 'profile_photo.tpl';
@@ -324,7 +286,7 @@ if ($mode == 'view') {
 
 //Photos
 if (count($photos) || $photo) {
-    $smarty->assign('URL_PICS', '/' . DIR_PHOTOS);
+    $smarty->assign('URL_PICS', PHOTOS_URL);
     $css[] = 'lightbox.css';
     $smarty->assign('PAGE_JS', array('prototype.js', 'scriptaculous.js?load=effects', 'lightbox.js'));
     $smarty->assign('PICS', $photos);
@@ -333,8 +295,8 @@ if (count($photos) || $photo) {
 //Serves header
 $css[] = "profile.css";
 $smarty->assign('PAGE_CSS', $css);
-$smarty->assign('PAGE_TITLE', $user->longname);
-include('header.php'); 
+$smarty->assign('PAGE_TITLE', $perso->name);
+include('header.php');
 
 //Serves content
 if ($template) $smarty->display($template);
