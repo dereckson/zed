@@ -81,7 +81,7 @@ var ar2215 = {
         window.document.onkeydown = function (e) {
             ar2215.input += e ? e.keyCode : event.keyCode;
             if (ar2215.input == ar2215.pattern) {
-                ar2215.code("/index.php/push");
+                ar2215.code("/push");
                 clearTimeout(ar2215.clear);
                 return;
             }
