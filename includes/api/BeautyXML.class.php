@@ -20,11 +20,9 @@
 
 class BeautyXML {
     
-  var $how_to_ident = "    "; // you can user also \t or more/less spaces
-  var $wrap = false; // wrap long tekst ? 
-  var $wrap_cont = 90; // where wrap words 
-	
-	var $colors = array('green', 'red', 'pink', 'yellow', 'gray');
+    var $how_to_ident = "    "; // you can user also \t or more/less spaces
+    var $wrap = false; // wrap long tekst ? 
+    var $wrap_cont = 90; // where wrap words 
 
     // gives ident to string
     function ident(&$str, $level) {
@@ -33,7 +31,6 @@ class BeautyXML {
             $spaces .= $this->how_to_ident;
         return $spaces .= $str;
     }
-    
 
     // main funcion
     function format($str) {

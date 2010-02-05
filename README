@@ -75,9 +75,9 @@
  
    beautify XML code to improve
    
-=====
- API
-======
+=======================
+ API - General methods
+=======================
 
  * /api.php/time
  
@@ -88,6 +88,9 @@
  
    Returns perso object
    Created only to test extensively recursivity of api xml output
+   It's disabled since 10.811 on zed.dereckson.be, if you need an alternative,
+   open a bug report with the fields you need. Ship API should be able to manage
+   inventory if user is on. Ship API must also be able to get/set custom flags.
    Requires a key
  
  * /api.php/location/<location code or name>
@@ -107,4 +110,12 @@
      - php      serialize() output
      - wddx     WDDX were an early universal serialization attempt
      - xml      XML document
-     - string   output "as is" if it's an object, __toString() call
+     - string   output "as is" (or if it's an object, calls __toString())
+     
+============
+ API - Ship
+=============
+
+ * /api.php/ship/authenticate/<perso nickname>
+ 
+    Allows 

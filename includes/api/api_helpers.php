@@ -28,7 +28,7 @@ function toXml($data, $rootNodeName = 'data', $xml = null, $unknownNodeName = 'u
 	if ($xml == null) {
         if (!is_array($data) && !is_object($data)) {
             //We've a singleton
-            return "<?xml version='1.0' encoding='utf-8'?><$rootNodeName>$data<$rootNodeName>";
+            return "<?xml version='1.0' encoding='utf-8'?><$rootNodeName>$data</$rootNodeName>";
         }
 
         //Starts with simple document
