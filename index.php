@@ -177,6 +177,14 @@ switch ($controller = $url[0]) {
     case 'explore':
         include("controllers/$controller.php");
         break;
+        
+    
+    case 'api':
+        //Should be directly called
+        array_shift($url);
+        $_SERVER['PATH_INFO'] = '/' . implode('/', $url);
+        include('api.php');
+        exit;
     
     case 'who':
         include('controllers/profile.php'); //Azhàr controller
