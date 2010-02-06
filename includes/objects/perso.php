@@ -31,7 +31,7 @@ class Perso {
     
     /*
      * Initializes a new instance
-     * @param int $id the primary key
+     * @param mixed $data perso ID or nickname
      */
     function __construct ($data = null) {
         if ($data) {

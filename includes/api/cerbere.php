@@ -9,7 +9,7 @@
  * 
  */
 
-define('ALLOW_LOCALHOST',false);
+define('ALLOW_LOCALHOST', false);
 define('OUTPUT_ERROR', true);
 define('FORMAT_ERROR', false);
 if (!defined('TABLE_API_KEYS')) define('TABLE_API_KEYS', 'api_keys');

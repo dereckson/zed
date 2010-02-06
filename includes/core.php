@@ -33,7 +33,8 @@ include_once("sessions.php");          //Sessions handler
 //Gets username from specified user_id
 function get_name ($id) {
 	global $db;
-	$sql = 'SELECT perso_nickname FROM '. TABLE_PERSOS . " WHERE perso_id = '$id'";
+	$id = $db->sql_escape($id);
+    $sql = 'SELECT perso_nickname FROM '. TABLE_PERSOS . " WHERE perso_id = '$id'";
 	if (!$result = $db->sql_query($sql)) message_die(SQL_ERROR, "Can't query persos table.", '', __LINE__, __FILE__, $sql);
 	$row = $db->sql_fetchrow($result);
 	return $row['perso_nickname'];
