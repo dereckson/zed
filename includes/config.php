@@ -35,6 +35,7 @@ define('TABLE_PERSOS_FLAGS', $prefix . 'persos_flags');
 define('TABLE_PROFILES', $prefix . 'profiles');
 define('TABLE_PROFILES_COMMENTS', $prefix . 'profiles_comments');
 define('TABLE_PROFILES_PHOTOS', $prefix . 'profiles_photos');
+define('TABLE_REGISTRY', $prefix . 'registry');
 define('TABLE_SESSIONS', $prefix . 'sessions');
 define('TABLE_USERS', $prefix . 'users');
 define('TABLE_USERS_OPENID', $prefix . 'users_openid');

@@ -50,6 +50,25 @@ function get_userid ($username) {
 	return $row['user_id'];
 }
 
+function registry_get ($key) {
+    global $db;
+    $key = $db->sql_escape($key);
+    $sql = "SELECT registry_value FROM " . TABLE_REGISTRY . " WHERE registry_key = '$key'";
+		if (!$result = $db->sql_query($sql)) message_die(SQL_ERROR, "Can't read registry.", '', __LINE__, __FILE__, $sql);
+
+    $row = $db->sql_fetchrow($result);
+	return $row['registry_value'];
+}
+
+function registry_set ($key, $value) {
+    global $db;
+    $key = $db->sql_escape($key);
+    $value = $db->sql_escape($value);
+    $sql = "REPLACE INTO " . TABLE_REGISTRY . " (registry_key, registry_value) VALUES ('$key', '$value')";
+    if (!$db->sql_query($sql))
+        message_die(SQL_ERROR, "Can't update registry", '', __LINE__, __FILE__, $sql);
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 ///                                                                          ///
 /// Misc helper methods                                                      ///
