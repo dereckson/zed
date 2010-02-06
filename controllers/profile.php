@@ -169,7 +169,7 @@ if ($mode == 'view') {
     $photos   = ProfilePhoto::get_photos($profile->perso_id);
     
     //Records timestamp, to be able to track new comments
-    if ($self) $CurrentPerso->setflag('profile.lastvisit', time());
+    if ($self) $CurrentPerso->set_flag('profile.lastvisit', time());
          
     //Template
     $smarty->assign('PROFILE_COMMENTS', $comments);

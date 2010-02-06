@@ -202,7 +202,7 @@ class Perso {
         );
     }
     
-    public function setflag ($key, $value = 1) {
+    public function set_flag ($key, $value = 1) {
         //Checks if flag isn't already set at this value
         if ($this->flags[$key] === $value)
             return;

@@ -93,7 +93,7 @@ if ($_POST['form'] == 'perso.create') {
         $smarty->assign('NOTIFY', lang_get('NewCharacterCreated'));
         $CurrentPerso = $perso;
         set_info('perso_id', $perso->id);
-        $CurrentPerso->setflag("site.lastlogin", $_SERVER['REQUEST_TIME']);
+        $CurrentPerso->set_flag("site.lastlogin", $_SERVER['REQUEST_TIME']);
     } else {
         $smarty->assign('WAP', join("<br />", $errors));
         $smarty->assign('perso', $perso);
@@ -113,7 +113,7 @@ if ($_GET['action'] == 'perso.logout') {
         message_die(HACK_ERROR, "This isn't your perso.");
     }
     set_info('perso_id', $CurrentPerso->id);
-    $CurrentPerso->setflag("site.lastlogin", $_SERVER['REQUEST_TIME']);
+    $CurrentPerso->set_flag("site.lastlogin", $_SERVER['REQUEST_TIME']);
 }
 
 if (!$CurrentPerso) {   
@@ -127,7 +127,7 @@ if (!$CurrentPerso) {
             //Autoselect
             $CurrentPerso = Perso::get_first_perso($CurrentUser->id);
             set_info('perso_id', $CurrentPerso->id);
-            $CurrentPerso->setflag("site.lastlogin", $_SERVER['REQUEST_TIME']);
+            $CurrentPerso->set_flag("site.lastlogin", $_SERVER['REQUEST_TIME']);
             break;
             
         default:
