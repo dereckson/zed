@@ -28,6 +28,7 @@ function toXml($data, $rootNodeName = 'data', $xml = null, $unknownNodeName = 'u
 	if ($xml == null) {
         if (!is_array($data) && !is_object($data)) {
             //We've a singleton
+            if (is_bool($data)) $data = $data ? 'true' : 'false';
             return "<?xml version='1.0' encoding='utf-8'?><$rootNodeName>$data</$rootNodeName>";
         }
 
@@ -71,6 +72,8 @@ function toXml($data, $rootNodeName = 'data', $xml = null, $unknownNodeName = 'u
             //$array = array();
             //$node = $xml->addChild($key);
             //toXml($value, $rootNodeName, $node, $unknownNodeName);
+        } elseif (is_bool($value)) {
+            $xml->addChild($key, $value ? 'true' : 'false');
         } else {
 			//Adds single node.
             if ($value || $value === 0) {
@@ -116,7 +119,7 @@ function api_output ($reply, $xmlRoot = null, $xmlChildren = null) {
             break;
         
         case 'string':
-            echo $reply;           
+            echo $reply;
             break;
 		
 		default:
