@@ -23,6 +23,8 @@ if ($CurrentPerso->flags['hypership.reached'] < 1 && $controller != 'explore') {
 ///
 
 $smarty->assign('MultiPerso', isset($_SESSION['UserWithSeveralPersos']) && $_SESSION['UserWithSeveralPersos']);
+$smarty->assign('SmartLineFormMethod', $CurrentPerso->get_flag('site.smartline.method'));
+    
 lang_load('footer.conf');
 $smarty->display('footer.tpl');
  

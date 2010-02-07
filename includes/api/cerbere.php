@@ -53,6 +53,9 @@ function cerbere () {
     }
 }
 
+/*
+ * Prints a message in raw or API format, then exits.
+ */
 function cerbere_die ($message) {
     if (OUTPUT_ERROR) {
         if (FORMAT_ERROR) {

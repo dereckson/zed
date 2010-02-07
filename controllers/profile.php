@@ -41,7 +41,7 @@ require_once('includes/objects/profilephoto.php');
 
 //Gets perso information
 require_once('includes/objects/perso.php');
-$perso = new Perso($who);
+$perso = Perso::get($who);
 if ($perso->lastError) {
     message_die(GENERAL_ERROR, $perso->lastError, "Error");
 }

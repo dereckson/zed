@@ -166,10 +166,29 @@ function is_guid ($expression) {
     return true;
 }
 
-//Gets file extension
+/*
+ * Gets file extension
+ * @param string $file the file to get the extension
+ */
 function get_extension ($file) {
     $dotPosition = strrpos($file, ".");
     return substr($file, $dotPosition + 1);
+}
+
+/*
+ * Determines if a string starts with specified substring
+ * @param string $haystack the string to check
+ * @param string $needle the substring to determines if it's the start
+ * @param boolean $case_sensitive determines if the search must be case sensitive
+ * @return boolean true if $haystack starts with $needle ; otherwise, false.
+ */
+function string_starts_with ($haystack, $needle, $case_sensitive = true) {
+    if (!$case_sensitive) {
+        $haystack = strtoupper($haystack);
+        $needle = strtoupper($needle);
+    }
+    if ($haystack == $needle) return true;
+    return strpos($haystack, $needle) === 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

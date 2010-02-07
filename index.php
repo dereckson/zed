@@ -102,9 +102,8 @@ if ($_POST['form'] == 'perso.create') {
 
 if ($_GET['action'] == 'perso.logout') {
     //User wants to change perso
+    $CurrentPerso->on_logout();
     $CurrentPerso = null;
-    set_info('perso_id', null);
-    clean_session();
 } elseif ($_GET['action'] == 'perso.select') {
     //User have selected a perso
     $CurrentPerso = new Perso($_GET['perso_id']);
@@ -112,26 +111,24 @@ if ($_GET['action'] == 'perso.logout') {
         //Hack
         message_die(HACK_ERROR, "This isn't your perso.");
     }
-    set_info('perso_id', $CurrentPerso->id);
-    $CurrentPerso->set_flag("site.lastlogin", $_SERVER['REQUEST_TIME']);
+    $CurrentPerso->on_select();
 }
 
-if (!$CurrentPerso) {   
+if (!$CurrentPerso) {
     switch ($count = Perso::get_persos_count($CurrentUser->id)) {
         case 0:
-            //Create a perso
+            //User have to create a perso
             $smarty->display("perso_create.tpl");
             exit;
         
         case 1:
-            //Autoselect
+            //Autoselects only perso
             $CurrentPerso = Perso::get_first_perso($CurrentUser->id);
-            set_info('perso_id', $CurrentPerso->id);
-            $CurrentPerso->set_flag("site.lastlogin", $_SERVER['REQUEST_TIME']);
+            $CurrentPerso->on_select();
             break;
             
         default:
-            //Pick a perso
+            //User have to pick a perso
             $persos = Perso::get_persos($CurrentUser->id);
             $smarty->assign("PERSOS", $persos);
             $smarty->display("perso_select.tpl");
@@ -160,6 +157,11 @@ if (!$CurrentPerso->location_global) {
 //SmartLine
 include("includes/SmartLine/ZedSmartLine.php");
 
+//Redirects user to user request controller if site.requests flag on
+if (defined('PersoSelected') && array_key_exists('site.requests', $CurrentPerso->flags) && $CurrentPerso->flags['site.requests']) {
+    include('controllers/persorequest.php');
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 ///
 /// Calls the specific controller to serve the requested page
@@ -177,14 +179,6 @@ switch ($controller = $url[0]) {
     case 'explore':
         include("controllers/$controller.php");
         break;
-        
-    
-    case 'api':
-        //Should be directly called
-        array_shift($url);
-        $_SERVER['PATH_INFO'] = '/' . implode('/', $url);
-        include('api.php');
-        exit;
     
     case 'who':
         include('controllers/profile.php'); //Azhàr controller
@@ -192,6 +186,15 @@ switch ($controller = $url[0]) {
     
     case 'push':
         include('controllers/motd.php'); //Azhàr controller
+        break;
+    
+    case 'quux':
+        //It's like a test/debug console/sandbox, you put what you want into
+        if (file_exists('dev/quux.php')) {
+            include('dev/quux.php');
+        } else {
+            message_die(GENERAL_ERROR, "Quux lost in Hollywood.", "Nay");
+        }
         break;
 
     default:

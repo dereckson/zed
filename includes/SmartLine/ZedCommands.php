@@ -17,13 +17,24 @@ $smartLine->register_object('goto', 'GotoSmartLineCommand');
 $smartLine->register_object('guid', 'GUIDSmartLineCommand');
 $smartLine->register_object('list', 'ListSmartLineCommand');
 $smartLine->register_object('unixtime', 'UnixTimeSmartLineCommand');
+$smartLine->register_object('requests', 'RequestsSmartLineCommand');
 $smartLine->register_object('whereami', 'WhereAmISmartLineCommand');
+
+
+///
+/// Help (todo: move $lang array in lang folder)
+///
+
+$lang['Help']['goto'] = "Go to a location";
+$lang['Help']['guid'] = "Generate a GUID";
+$lang['Help']['list'] = "Lists specified objects (bodies, locations or places)";
+$lang['Help']['requests'] = "Checks if there are waiting requests";
+$lang['Help']['unixtime'] = "Prints current unixtime (seconds elapsed since 1970-01-01 00:00, UTC) or the specified unixtime date.";
+$lang['Help']['whereami'] = "Where am I?";
 
 ///
 /// whereami
 ///
-
-$lang['Help']['whereami'] = "Where am I?";
 
 class WhereAmISmartLineCommand extends SmartLineCommand {
     public function run ($argv, $argc) {
@@ -38,8 +49,6 @@ class WhereAmISmartLineCommand extends SmartLineCommand {
 /// GUID
 ///
 
-$lang['Help']['GUID'] = "Generate a GUID";
-
 class GUIDSmartLineCommand extends SmartLineCommand {
     public function run ($argv, $argc) {
 	if ($argc > 1 && is_numeric($argv[1])) {
@@ -50,15 +59,28 @@ class GUIDSmartLineCommand extends SmartLineCommand {
 	}
 	
 	$this->SmartLine->puts(new_guid());
-	
+    }
+}
+
+///
+/// Requests
+///
+
+class RequestsSmartLineCommand extends SmartLineCommand {
+    public function run ($argv, $argc) {
+	global $CurrentPerso;
+	if (array_key_exists('site.requests', $CurrentPerso->flags) && $CurrentPerso->flags['site.requests']) {
+		global $controller;
+		$controller = 'controllers/persorequest.php';
+	} else {
+	    $this->SmartLine->puts("No request waiting.");
+	}	
     }
 }
 
 ///
 /// goto
 ///
-
-$lang['Help']['goto'] = "Go to a location";
 
 class GotoSmartLineCommand extends SmartLineCommand {
     public function run ($argv, $argc) {
@@ -94,8 +116,6 @@ class GotoSmartLineCommand extends SmartLineCommand {
 ///
 /// list
 ///
-
-$lang['Help']['list'] = "Lists specified objects (bodies, locations or places)";
 
 class ListSmartLineCommand extends SmartLineCommand {
     public function run ($argv, $argc) {
@@ -165,8 +185,6 @@ class ListSmartLineCommand extends SmartLineCommand {
 ///
 /// unixtime
 ///
-
-$lang['Help']['unixtime'] = "Prints current unixtime (seconds elapsed since 1970-01-01 00:00, UTC) or the specified unixtime date.";
 
 class UnixTimeSmartLineCommand extends SmartLineCommand {
     public function run ($argv, $argc) {

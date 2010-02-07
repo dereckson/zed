@@ -57,6 +57,9 @@ $Config['DefaultTheme'] = "Zed";
 //Dates
 date_default_timezone_set("UTC");
 
+//Secret key, used for some verification hashes in URLs or forms.
+$Config['SecretKey'] = 'Je balaye les petits ewoks comme le vent balaye les feuilles mortes';
+
 ////////////////////////////////////////////////////////////////////////////////
 ///                                                                          ///
 /// III. Script URLs                                                         ///
@@ -109,6 +112,9 @@ date_default_timezone_set("UTC");
 
 $Config['SiteURL'] = get_server_url();
 $Config['BaseURL'] = '';
+
+//AJAX callbacks URL
+$Config['DoURL'] = $Config['SiteURL'] . "/do.php";
 
 ////////////////////////////////////////////////////////////////////////////////
 ///                                                                          ///

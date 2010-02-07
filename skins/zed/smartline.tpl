@@ -1,11 +1,11 @@
 
     <!-- SmartLine -->
     <div class="grid_16 alpha omega" id="SmartLine">
-        <form method="post" name="SmartLine" action="{get_current_url()}">
+        <form name="SmartLine" method="{if $SmartLineFormMethod}{$SmartLineFormMethod}{else}post{/if}" action="{get_current_url()}">
 {if $SmartLineHistory}
             <!-- SmartLine history -->
             <div class="grid_4 left alpha">
-                <select name="SmartLineHistory" id="SmartLineHistory" class="black" onChange=UpdateSmartLine()>
+                <select id="SmartLineHistory" class="black" onChange=UpdateSmartLine()>
                     <option value="">[ {#SmartLineHistory#} ]</option>
 {foreach from=$SmartLineHistory item=command}
                     <option value="{$command->text|escape}">{$command->time} | {$command->text|escape}</option>

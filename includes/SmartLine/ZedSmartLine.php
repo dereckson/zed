@@ -32,7 +32,7 @@ function log_C ($command, $isError = false) {
 /// Executes command
 ///
 	
-if ($C = $_POST['C']) {
+if ($C = $_REQUEST['C']) {
     //Initializes SmartLine object
     require_once("SmartLine.php");
     $smartLine = new SmartLine();
@@ -40,6 +40,7 @@ if ($C = $_POST['C']) {
     require_once("ZedCommands.php");
     
     //Executes SmartLine
+    $controller = '';
     $smartLine->execute($C);
      
     $error = $smartLine->count(STDERR) > 0;
@@ -49,7 +50,11 @@ if ($C = $_POST['C']) {
         
     if ($error)
         $smarty->assign("SmartLine_STDERR", $smartLine->gets_all(STDERR, '', '<br />'));
-        
+	
+    if ($controller != '') {
+	include($controller);
+    }
+    
     log_C($C, $error);
 }
 

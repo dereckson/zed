@@ -65,7 +65,7 @@
     <!-- Where? When? -->
     <div class="info">
         <div class="info_left">
-            <strong>Current location</strong> {$CurrentPerso->where()}
+            <strong>{#CurrentLocation#}</strong> {$CurrentPerso->where()}
         </div>
         <div class="info_right">
             <span id="HypershipTime">{get_hypership_time()}</span>
