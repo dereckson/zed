@@ -56,19 +56,19 @@ $lang = array_merge($lang, array(
 function SmartLineHandler($level, $error, $file, $line) {
     switch ($level) {
        case E_NOTICE:
-       $type = 'Notice';
-       break;
+        $type = 'Notice';
+        break;
 
        CASE E_WARNING:
-       $type = 'Warning';
-       break;
+        $type = 'Warning';
+        break;
        
        CASE E_ERROR:
-       $type = 'Error';
-       break;
+        $type = 'Error';
+        break;
        
        default:
-       $type = "#$level";
+        $type = "#$level";
     }
     $_SESSION['SmartLineOutput'][STDERR][] = "[PHP $type] $error ";
     return true;
