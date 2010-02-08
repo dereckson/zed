@@ -69,7 +69,8 @@ class GUIDSmartLineCommand extends SmartLineCommand {
 class RequestsSmartLineCommand extends SmartLineCommand {
     public function run ($argv, $argc) {
 	global $CurrentPerso;
-	if (array_key_exists('site.requests', $CurrentPerso->flags) && $CurrentPerso->flags['site.requests']) {
+	$force = ($argc > 1) && ($argv[1] == "-f" || $argv[1] == "--force");
+	if ($force || (array_key_exists('site.requests', $CurrentPerso->flags) && $CurrentPerso->flags['site.requests'])) {
 		global $controller;
 		$controller = 'controllers/persorequest.php';
 	} else {
