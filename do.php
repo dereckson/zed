@@ -104,6 +104,8 @@ class Actions {
      * @return boolean true if the request is valid and have been processed ; otherwise, false.
      */
     static function perso_request ($request_flag, $store, $key, $value, $hash) {
+        global $CurrentPerso;
+        
         //Ensures we've the correct amount of arguments
         if (func_num_args() < 4) return false;
         
@@ -116,7 +118,6 @@ class Actions {
         //Sets flag
         switch ($store) {
             case 'perso':
-                global $CurrentPerso;
                 $CurrentPerso->set_flag($key, $value);
                 break;
             
@@ -128,10 +129,11 @@ class Actions {
                 //Unknown storage location
                 return false;
         }
-        
+               
         //Clears request flag
-        if ($request_flag != 0)
+        if ((string)$request_flag !== "0") {
             $CurrentPerso->delete_flag($request_flag);
+        }
         
         return true;
     }
