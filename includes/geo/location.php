@@ -2,6 +2,7 @@
 
 require_once('body.php');
 require_once('place.php');
+require_once('includes/objects/ship.php');
 
 /*
  * Geo location class
@@ -27,6 +28,11 @@ class GeoLocation {
      * @var GeoPlace a place object
      */
     public $place = null;
+    
+    /*
+     * @var Ship a ship object
+     */
+    public $ship = null;
     
     function __construct ($global = null, $local = null) {
         if (!$global) {
@@ -59,7 +65,7 @@ class GeoLocation {
         
         //Loads global classes
         $global = $this->data[0];
-        $body_code = substr($global, 1, 5);
+        $code = substr($global, 1, 5);
         switch ($global[0]) {
             case 'B':
                 switch (strlen($global)) {
@@ -67,11 +73,13 @@ class GeoLocation {
                         $this->place = GeoPlace::from_code($global);
                         
                     case 6:
-                        $this->body = new GeoBody($body_code);
+                        $this->body = new GeoBody($code);
                         break;
                 }
                 break;
+            
             case 'S':
+                $this->ship = new Ship($code);
                 break;
         }
     }
@@ -105,12 +113,20 @@ class GeoLocation {
                     return substr($this->data[0], 6, 3);
                 }
                 return null;
+            
+            case 'ship_code':
+                if ($this->data[0][0] == 'S') {
+                    return substr($this->data[0], 1, 5);
+                }
+                return null;
 
             case 'body_kind':
                 if ($this->data[0][0] == 'B' && $this->body != null) {
                     if ($kind = $this->body->kind()) {
                         return $kind;
                     }
+                } elseif ($this->data[0][0] == 'S') {
+                    return 'ship';
                 }
                 return 'place';
 
@@ -193,7 +209,8 @@ class GeoLocation {
         
         switch ($this->data[0][0]) {
             case 'S':
-                message_die(GENERAL_ERROR, "Handle spaceship in GeoLocation __toString()", "TODO", __LINE__, __FILE__);
+                $ship = new Ship($this->ship_code);
+                $location[] = $ship->name;
                 break;
                 
             case 'B':
