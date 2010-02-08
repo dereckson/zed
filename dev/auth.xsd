@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="AuthSchema" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="auth">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="status" type="xs:integer" minOccurs="1" maxOccurs="1" />
+        <xs:element name="perso" minOccurs="0" maxOccurs="1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="id" type="xs:int" minOccurs="1" maxOccurs="1" />
+              <xs:element name="nickname" type="xs:string" minOccurs="1" maxOccurs="1" />
+              <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+              <xs:element name="onBoard" type="xs:boolean" minOccurs="1" maxOccurs="1" />
+              <xs:element name="location_local" type="xs:string" minOccurs="0" maxOccurs="1" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
