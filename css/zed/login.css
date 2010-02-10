@@ -1,8 +1,30 @@
+@charset "utf-8";
+
+/*  -------------------------------------------------------------
+    Zed
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    Author:         Dereckson
+    Tags:           space retro futurist
+    Filename:       login.css
+    Version:        1.0
+    Created:        2010-01-27
+    Updated:        2010-02-09
+    Licence:        Creative Commons BY 3.0
+    -------------------------------------------------------------    */
+
+/*  -------------------------------------------------------------
+    Page
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -    */
+
 body {
     margin: 0 0 0 0;
     background-color: #343434;
     font-family: "FixedSys", monospace;
 }
+
+/*  -------------------------------------------------------------
+    Login form
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -    */
 
 #LoginBox {
     background-image: url("../../img/login/bg.jpg");
@@ -60,4 +82,41 @@ body {
     text-align: right;
     color: #3b3f55;
     top: 274px;
+}
+
+/*  -------------------------------------------------------------
+    Bottom right vertical links
+    
+    Inspiration: mono lab "monochrome" wordpress theme
+    http://www.mono-lab.net
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -    */
+
+#link_tour a {
+    position: absolute;
+    position: fixed;
+    right: 15px;
+    bottom: 15px;
+    width: 18px;
+    height: 84px;
+    display: block;
+    background: url("../../img/login/tour.png") no-repeat left top;
+}
+
+#link_tour a:hover {
+    background:url("../../img/login/tour.png") no-repeat right top;
+}
+
+#link_blog a {
+    position:absolute;
+    position:fixed;
+    right:35px;
+    bottom:15px;
+    width:18px;
+    height:84px;
+    display:block;
+    background:url("../../img/login/blog.png") no-repeat left top;
+}
+
+#link_blog a:hover {
+    background:url("../../img/login/blog.png") no-repeat right top;
 }

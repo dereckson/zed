@@ -4,8 +4,13 @@
     <title>{#SiteTitle#}</title>
     <link rel="Stylesheet" href="{#StaticContentURL#}/css/zed/login.css" type="text/css" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script src="js/login.js"></script>
+    <script src="js/misc.js"></script>
+    <script src="js/prototype.js"></script>
+    <script src="js/effects.js"></script> 
 </head>
 <body>
+    
 <!-- Login form -->
 <div id="LoginBox">
     <form method="post" action="{get_url()}">
@@ -22,15 +27,20 @@
             <input type="text" id="openid" name="openid" value="{$OpenID}" />
         </div>
         <div class="row">
-            <input type="submit" id="submit" name="LogIn" value="{#OK#}" />
+            <input type="submit" id="submit" name="LogIn" value="{#OK#}" onClick="return OnLoginSubmit(this);" />
         </div>
     </form>
 {if $LoginError}
+        <!-- Ooops, something wrong -->
         <div class=row>
-            <p class="error">&nbsp;&nbsp;&nbsp;&nbsp;{$LoginError}</p>
+            <p id="error" class="error">&nbsp;&nbsp;&nbsp;&nbsp;{$LoginError}</p>
         </div>
 {/if}
 </div>
+
+<!-- Links -->
+<div id="link_tour"><a href="/tour.html"></a></div>
+<div id="link_blog"><a href="/blog"></a></div>
 
 {$code = genereString('AAA111')}
 <!--
@@ -61,5 +71,8 @@ Un petit aperçu de ce que l'on crée est sur http://zed.dereckson.be/tour.html
 Pour obtenir un accès, envoyez un mail à zedinvite (alt+64) dereckson.be
 en spécifiant le code suivant : {$code}
 -->
+<script>
+    slide.initialize('LoginBox');
+</script>
 </body>
 </html>
