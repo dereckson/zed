@@ -60,6 +60,9 @@ date_default_timezone_set("UTC");
 //Secret key, used for some verification hashes in URLs or forms.
 $Config['SecretKey'] = 'Je balaye les petits ewoks comme le vent balaye les feuilles mortes';
 
+//When reading files, buffer size
+define('BUFFER_SIZE', 4096);
+
 ////////////////////////////////////////////////////////////////////////////////
 ///                                                                          ///
 /// III. Script URLs                                                         ///
