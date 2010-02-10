@@ -23,9 +23,10 @@ class Ship {
      * ----------------------------------------------------------------------- *
      */
 
-    public $id;  
+    public $id;
     public $name;
-    public $location;
+    public $location_global;
+    public $location_local;
     public $api_key;
     public $description;
     
@@ -105,9 +106,31 @@ class Ship {
     
     /*
      * Gets ship code, e.g. S00001
+     * @return string the ship code
      */
     function get_code () {
         return sprintf("S%05d", $this->id);
+    }
+    
+    /*
+     * Determines if the ship is at a spatioport (or assimilated)
+     * @return boolean true if the ship is at a spatioport ; false if the ship is in space
+     */
+    function in_spatioport () {
+        return $this->location_local !== null;
+    }
+    
+    /*
+     *
+     * @param string $location_local the spatioport location
+     */
+    function fly_in ($location_local = null) {
+        //TODO: completes location global  e.g. B00001 -> B00001003
+        $this->location_local = ($location_local == null) ? 0 : $location_local;
+    }
+    
+    function fly_out () {
+        $this->location_local = null;
     }
     
     /*

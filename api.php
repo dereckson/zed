@@ -24,6 +24,14 @@ require_once('includes/api/cerbere.php');
 $url = explode('/', substr($_SERVER['PATH_INFO'], 1));
 
 switch ($module = $url[0]) {
+/*  -------------------------------------------------------------
+    Site API
+    
+    /time
+    /location
+    /perso              (disabled)
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -    */
+
     case '':
         //Nothing to do
         //TODO: offer documentation instead
@@ -52,6 +60,17 @@ switch ($module = $url[0]) {
     //    api_output($perso, "perso");
     //    break;
     
+/*  -------------------------------------------------------------
+    Ship API
+    
+    /authenticate
+    /appauthenticate
+    /appauthenticated
+    /move
+    /land
+    /flyout
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -    */
+    
     case 'ship':
         //Ship API
         
@@ -70,7 +89,7 @@ switch ($module = $url[0]) {
                 break;
             
             case 'appauthenticate':
-                //Allows desktop application to authenticate
+                //Allows desktop application to authenticate an user
                 $tmp_session_id = $url[2] or cerbere_die("/appauthenticate/ must be followed by any session identifier");
                 if ($_REQUEST['name']) {
                     //Perso will be offered auth invite at next login.
@@ -94,7 +113,7 @@ switch ($module = $url[0]) {
                 break;
             
             case 'appauthenticated':
-                //Checks the authentication
+                //Checks the user authentication
                 $tmp_session_id = $url[2] or cerbere_die("/appauthenticated/ must be followed by any session identifier you used in /appauthenticate");
                 $perso_id = $ship->get_perso_from_session($tmp_session_id);
                 if (!$isPersoAuth = $ship->is_perso_authenticated($perso_id)) {
@@ -119,9 +138,80 @@ switch ($module = $url[0]) {
                 }
                 api_output($auth, "auth");
                 break;
+            
+            case 'move':
+                //Moves the ship to a new location, given absolute coordinates
+                //TODO: handle relative moves
+                if (count($url) < 2) cerbere_die("/move/ must be followed by a location expression");
+                
+                //Gets location class
+                //It's allow: (1) to normalize locations between formats
+                //            (2) to ensure the syntax
+                //==> if the ship want to communicate free forms coordinates, must be added on GeoLocation a free format
+                try {
+                    $location = new GeoLocation($url[2]);
+                } catch (Exception $ex) {
+                    $reply->success = 0;
+                    $reply->error = $ex->getMessage();
+                    api_output($reply, "move");
+                    break;
+                }
+                
+                $ship->location_global = $location->global;
+                $ship->save_to_database();
+                
+                $reply->success = 1;
+                $reply->location = $ship->location;
+                api_output($reply, "move");
+                break;
+                
+            case 'land':
+            case 'flyin':
+                //Flies in
+                try {
+                    $location = new GeoLocation($location);
+                } catch (Exception $ex) {
+                    $reply->success = 0; 
+                    $reply->error = $ex->getMessage();
+                    api_output($reply, "land");
+                    break;
+                }
+                
+                break;
+            
+            case 'flyout':
+                //Flies out
+                
+                break;
+                
         }
         break;
     
+/*  -------------------------------------------------------------
+    Application API
+    
+    /checkuserkey
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -    */
+    
+    case 'app':
+        //Application API
+        require_once("includes/objects/application.php");
+        $app = Application::from_api_key($_REQUEST['key']) or cerbere_die("Invalid application API key");
+        
+        switch ($command = $url[1]) {
+            case '':
+                //Nothing to do
+                //TODO: offer documentation instead
+                die();
+                
+            case 'checkuserkey':
+                if (count($url) < 2) cerbere_die("/checkuserkey/ must be followed by an user key");
+                $reply = (boolean)$app->get_perso_id($url[2]);
+                api_output($reply, "check");
+                break;
+        }
+        break;
+        
     default:
         echo "Unknown module:";
         dprint_r($url);

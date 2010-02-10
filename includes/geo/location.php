@@ -53,9 +53,12 @@ class GeoLocation {
             throw new Exception("Invalid expression: $global");
         }
         
-        $this->load_classes();
+        //TODO: handle $local in a better way: from the global location, gets
+        //a local location handler. Or a some inheriance, like a class
+        //HypershipGeoLocation extending GeoLocation.
+        if ($local !== null) $this->data[1] = $local;
         
-        //TODO: handle $local
+        $this->load_classes();
     }
     
     function load_classes () {
@@ -174,7 +177,8 @@ class GeoLocation {
                 break;
             
             case 'S':
-                message_die(GENERAL_ERROR, "Handle S", 'TODO', __LINE__, __FILE__);
+                $ship = new Ship(substr($this->data[0], 1));
+                if ($body->lastError) return false;
                 break;
             
             default:
@@ -255,24 +259,38 @@ class GeoLocation {
                 break;
             
             case 'body_code':
-                if (ereg("[0-9]{1,3}", $value)) {
-                    $value = sprintf("%03d", $value);
+                if (ereg("[0-9]{1,5}", $value)) {
+                    $value = sprintf("%05d", $value);
                     if (!$this->data[0]) {
                         $this->data[0] = "B" . $value;
                         return;
                     } elseif ($this->data[0][0] == 'B') {
-                        $this->data[0] = "B" . $value . substr($this->data[0], 5);
+                        $this->data[0] = "B" . $value . substr($this->data[0], 6);
                         return;
                     }
                     throw new Exception("Global location isn't a body.");
                 }
                 throw new Exception("$value isn't a valid body code");
+                
+            case 'ship_code':
+                if (ereg("[0-9]{1,5}", $value)) {
+                    $value = sprintf("%05d", $value);
+                    if (!$this->data[0]) {
+                        $this->data[0] = "S" . $value;
+                        return;
+                    } elseif ($this->data[0][0] == 'S') {
+                        $this->data[0] = "S" . $value . substr($this->data[0], 6);
+                        return;
+                    }
+                    throw new Exception("Global location isn't a ship.");
+                }
+                throw new Exception("$value isn't a valid ship code");
             
             case 'place_code':
-                if (!ereg("[0-9]{1,5}", $value)) {
+                if (!ereg("[0-9]{1,3}", $value)) {
                     throw new Exception("$value isn't a valid place code");
                 }
-                $value = sprintf("%05d", $value);
+                $value = sprintf("%03d", $value);
                 if ($this->data[0][0] == 'B') {
                     $this->data[0] = substr($this->data[0], 0, 6) . $value;
                 }
