@@ -41,6 +41,7 @@ Au nord de la ville, the hole, une ancienne mine dont les mineurs évitent de pa
     <choices>
         <choice goto="spatioport.entry">Se rendre au spatioport</choice>
         <choice goto="mines.entry">Vers les mines</choice>
+        <choice goto="panorama">Retourner en ville</choice>
     </choices>
     <local>2</local>
   </section>
