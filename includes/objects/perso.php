@@ -360,7 +360,7 @@ class Perso {
         }
         
         while ($row = $db->sql_fetchrow($result)) {
-            $persos[] = Perso::get($user_id);
+            $persos[] = Perso::get($row[perso_id]);
         }
         return $persos;
     }
