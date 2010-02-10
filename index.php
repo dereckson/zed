@@ -100,7 +100,7 @@ if ($_POST['form'] == 'perso.create') {
     }    
 }
 
-if ($_GET['action'] == 'perso.logout') {
+if ($_GET['action'] == 'perso.logout' && $CurrentPerso != null) {
     //User wants to change perso
     $CurrentPerso->on_logout();
     $CurrentPerso = null;
@@ -167,7 +167,7 @@ if (defined('PersoSelected') && array_key_exists('site.requests', $CurrentPerso-
 /// Calls the specific controller to serve the requested page
 ///
 
-$url = get_current_url_fragments();
+$url = get_current_url_fragments(); 
     
 switch ($controller = $url[0]) {
     case '':
