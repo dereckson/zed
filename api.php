@@ -209,9 +209,95 @@ switch ($module = $url[0]) {
                 $reply = (boolean)$app->get_perso_id($url[2]);
                 api_output($reply, "check");
                 break;
+            
+            case 'pushuserdata':
+                if (count($url) < 3) cerbere_die("/pushuserdata/ must be followed by an user key");
+                $perso_id = $app->get_perso_id($url[2]) or cerbere_die("Invalid application user key");
+                //then, falls to 'pushdata'
+            
+            case 'pushdata':
+                $data_id = $_REQUEST['data'] ? $_REQUEST['data'] : new_guid();
+                //Gets data
+                switch ($mode = $_REQUEST['mode']) {
+                    case '':
+                        cerbere_die("Add in your data posted or in the URL mode=file to read data from the file posted (one file per api call) or mode=request to read data from \$_REQUEST['data'].");
+                        
+                    case 'request':
+                        $data = $_REQUEST['data'];
+                        $format = "raw";
+                        break;
+                    
+                    case 'file':
+                        $file = $_FILES['datafile']['tmp_name'] or cerbere_die("File is missing");
+                        if (!is_uploaded_file($file)) cerbere_die("Invalid form request");
+                        $data = "";
+                        if (ereg('\.tar$', $file)) {
+                            $format = "tar";
+                            $data = file_get_contents($file);
+                        } elseif (ereg('\.tar\.bz2$', $file)) {
+                            $format = "tar";
+                        } elseif (ereg('\.bz2$', $file)) {
+                            $format = "raw";
+                        } else {
+                            $format = "raw";
+                            $data = file_get_contents($file);
+                        }
+                        if ($data === "") {
+                            //.bz2
+                            $bz = bzopen($file, "r") or cerbere_die("Couldn't open $file");
+                            while (!feof($bz)) {
+                              $data .= bzread($bz, BUFFER_SIZE);
+                            }
+                            bzclose($bz);
+                        }
+                        unlink($file);
+                        break;
+                    
+                    default:
+                        cerbere_die("Invalid mode. Expected: file, request");
+                }
+                
+                //Saves data
+                global $db;
+                $data_id = $db->sql_escape($data_id);
+                $data = $db->sql_escape($data);
+                $perso_id = $perso_id ? $perso_id : 'NULL';
+                $sql = "REPLACE INTO applications_data (application_id, data_id, data_content, data_format, perso_id) VALUES ('$app->id', '$data_id', '$data', '$format', $perso_id)";
+                if (!$db->sql_query($sql))
+                    message_die(SQL_ERROR, "Can't save data", '', __LINE__, __FILE__, $sql);
+                    //cerbere_die("Can't save data");
+                    
+                //Returns
+                api_output($data_id);
+                break;
+            
+            case 'getuserdata':
+                //  /api.php/getuserdata/data_id/perso_key
+                //  /api.php/getdata/data_id
+                if (count($url) < 3) cerbere_die("/getuserdata/ must be followed by an user key");
+                $perso_id = $app->get_perso_id($url[2]) or cerbere_die("Invalid application user key");
+                //then, falls to 'getdata'
+            
+            case 'getdata':
+                if (count($url) < 2) cerbere_die('/' + $url[0] + '/ must be followed by the data ID');
+                if (!$perso_id) $perso_id = 'NULL';
+                $data_id = $db->sql_escape($url[1]);
+                $sql = "SELECT data_content FROM applications_data WHERE application_id = '$app->id' AND data_id = '$data_id' AND perso_id = $perso_id";
+                if (!$result = $db->sql_query($sql)) {
+                    message_die(SQL_ERROR, "Unable to query the table", '', __LINE__, __FILE__, $sql);
+                }
+                while ($row = $db->sql_fetchrow($result)) {
+                    
+                }
+                break;
+                
+            default:
+                echo "Unknown module:";
+                dprint_r($url);
+                break;
         }
         break;
-        
+    
     default:
         echo "Unknown module:";
         dprint_r($url);
