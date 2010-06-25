@@ -91,13 +91,13 @@ function genereString ($format) {
 
     for ($i=0;$i<strlen($format);$i++)
     {
-        if (ereg("^[a-zA-Z]",$format[$i]))
+        if (preg_match("/^[a-zA-Z]/",$format[$i]))
         {
             $add=$t_alphabet[mt_rand() % sizeof($t_alphabet)];
-            if (ereg("^[a-z]",$format[$i]))
+            if (preg_match("/^[a-z]/",$format[$i]))
                 $add=strtolower($add);
         }
-        elseif(ereg("^[0-9]",$format[$i]))
+        elseif(preg_match("/^[0-9]/",$format[$i]))
             $add=$t_number[mt_rand() % sizeof($t_number)];
         else $add="?";
 

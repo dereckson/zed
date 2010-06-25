@@ -231,12 +231,12 @@ switch ($module = $url[0]) {
                         $file = $_FILES['datafile']['tmp_name'] or cerbere_die("File is missing");
                         if (!is_uploaded_file($file)) cerbere_die("Invalid form request");
                         $data = "";
-                        if (ereg('\.tar$', $file)) {
+                        if (preg_match('/\.tar$/', $file)) {
                             $format = "tar";
                             $data = file_get_contents($file);
-                        } elseif (ereg('\.tar\.bz2$', $file)) {
+                        } elseif (preg_match('/\.tar\.bz2$/', $file)) {
                             $format = "tar";
-                        } elseif (ereg('\.bz2$', $file)) {
+                        } elseif (preg_match('/\.bz2$/', $file)) {
                             $format = "raw";
                         } else {
                             $format = "raw";

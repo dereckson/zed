@@ -45,11 +45,11 @@ class GeoLocation {
     function __construct ($global = null, $local = null) {
         if (!$global) {
             $this->data = array();
-        } elseif (ereg("[BS][0-9]{5}[0-9]{3}", $global)) {
+        } elseif (preg_match("/[BS][0-9]{5}[0-9]{3}/", $global)) {
             $this->data[0] = $global;
-        } elseif (ereg("[BS][0-9]{5}", $global)) {
+        } elseif (preg_match("/[BS][0-9]{5}/", $global)) {
             $this->data[0] = $global;
-        } elseif (ereg("^xyz\:", $global)) {
+        } elseif (preg_match("/^xyz\:/", $global)) {
             $coords = sscanf($global, "xyz: [%d, %d, %d]");
             if (count($coords) == 3) {
                 $this->data[0] = $global;

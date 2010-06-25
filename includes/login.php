@@ -13,8 +13,8 @@ if (!file_exists('/dev/urandom')) {
     define('Auth_OpenID_RAND_SOURCE', null);
 }
 
-require_once('Auth/OpenID/Consumer.php');
-require_once('Auth/OpenID/DumbStore.php');
+//require_once('Auth/OpenID/Consumer.php');
+//require_once('Auth/OpenID/DumbStore.php');
 //require_once('Auth/OpenID/FileStore.php');
 
 /*
@@ -46,6 +46,8 @@ function openid_login ($url) {
 }
 
 if ($_GET['action'] == 'openid.login') {
+    $LoginError = "OpenID temporarily disabled.";
+/*
     //Gets Auth_OpenID_Consumer instance
     $fs = new Auth_OpenID_DumbStore("rien n'est sûr mais c'est une piste");
     //$fs = new Auth_OpenID_FileStore('cache/openid');
@@ -61,9 +63,12 @@ if ($_GET['action'] == 'openid.login') {
     } else {
         $LoginError = "[OpenID] $reply->status";
     }    
+*/
 } elseif ($_POST['LogIn']) {
-	//User have filled login form
+    //User have filled login form
     if ($_POST['openid']) {        
+	$LoginError = "OpenID temporarily disabled.";
+/*
         //Gets Auth_OpenID_Consumer instance
         $fs = new Auth_OpenID_DumbStore("rien n'est sûr mais c'est une piste");
         //$fs = new Auth_OpenID_FileStore('cache/openid');
@@ -78,6 +83,7 @@ if ($_GET['action'] == 'openid.login') {
         } else {
             $LoginError = 'Invalid OpenID URL.';
         }
+*/
     } else {
         //GESTION LOGIN
         $Login = $_POST['username'];
