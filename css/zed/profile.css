@@ -1,0 +1,168 @@
+@charset "utf-8";
+
+/*  -------------------------------------------------------------
+    Zed
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    Author:         Dereckson
+    Tags:           space retro futurist
+    Filename:       profile.css
+    Version:        1.0
+    Created:        2010-01-27
+    Updated:        2010-02-11
+    Licence:        Creative Commons BY 3.0
+    -------------------------------------------------------------    */
+
+/*  -------------------------------------------------------------
+    Profile header
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -    */
+
+.profile_id {
+	height: 40px;
+    line-height: 1.2em;
+	background-color: black;
+	color: white;
+}
+
+.profile_id H1 {
+    color: #04acf8;
+}
+
+.profile_info {
+	float: right;
+    font-size: 0.90em;
+    padding-right: 1em;
+}
+
+.profile_info a {
+	color: white;
+}
+
+.profile_info a:hover {
+	color: white;
+	font-weight: bold;
+}
+
+.profile_nick {
+	float: left;
+    margin-top: 0;
+    height: 30px;
+	padding-left: 12px;
+    padding-top: 10px;
+	font-size: 1.25em;
+	font-weight: 500;
+    border-left: solid #04acf8 6px;
+}
+
+/*  -------------------------------------------------------------
+    Profile
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -    */
+
+.profile {
+    background-color: black;
+    color: white;
+    margin-bottom: 20px;
+    border: 2px solid #04acf8;
+}
+
+.profile_text {
+    margin-left: 10px;
+    margin-right: 10px;
+    padding-top: 1em;
+    font-size: 1em;
+    text-align: justify;
+}
+
+.profile_text img {
+    border: 0px;
+}
+
+.profile_text.fixedwidth {
+	font-family: Fixedsys, Fixed;
+	white-space: pre;
+}
+
+
+/*  -------------------------------------------------------------
+    Profile CSS I wrote for faeries.folleterre.org
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -    */
+/*
+.profile a {
+    color: white;
+    text-decoration: none;
+}
+
+.profile a:hover {
+    font-weight: 900;
+}
+
+.profile h1 {
+    color: white;
+}
+
+.profile h2 {
+    color: white;
+}
+
+.profile_separator {
+    height: 2px;
+    margin-top:2px;
+    background-color: black;
+}
+
+.profile_separator_light {
+    height: 1px;
+    margin-top:8px;
+    background-color: black;
+}
+
+.profile_photos {
+	border-bottom: solid 1px black;
+}
+
+.profile_photos img {
+    margin: 8px 0px 12px 20px;
+    border: 0px;
+}
+
+.profile_message {
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
+.profile_message h2 {
+    font-size: 1.25em;
+}
+*/
+
+/*  -------------------------------------------------------------
+    Profile comments
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -    */
+    
+.profile_comments {
+    background-color: #fafafa;
+    border: solid 1px #dedede; 
+}
+
+.profile_comments_info {
+    font-style: italic;
+}
+
+.profile_comments_text {
+    font-size: 1.25em;
+}
+
+/*  -------------------------------------------------------------
+    Profile editor
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -    */
+    
+.photos {
+}
+
+.photo img {
+    margin: 8px 0px 12px 20px;
+    border: 0;
+}
+
+.photo {
+    float: left;
+}

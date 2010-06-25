@@ -28,6 +28,9 @@ class Message {
         if ($id) {
             $this->id = $id;
             $this->load_from_database();
+        } else {
+            $this->date = time();
+            $this->flag = 0;        //unread
         }
     }
     
@@ -90,7 +93,7 @@ class Message {
      * Sends the message
      */
     function send () {
-        $this->saveToDatabase();
+        $this->save_to_database();
         //TODO: triggers new message notifier
     }
     

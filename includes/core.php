@@ -191,6 +191,25 @@ function string_starts_with ($haystack, $needle, $case_sensitive = true) {
     return strpos($haystack, $needle) === 0;
 }
 
+/*
+ * Inserts a message into the supralog
+ * @param string $category the entry category
+ * @param string $message the message to log
+ * @param string $source the entry source.
+ */
+function supralog ($category, $message, $source = null) {
+    global $db, $CurrentUser, $CurrentPerso;
+    $category = $db->sql_query_express($category);
+    $message = $db->sql_query_express($message);
+    $source = $db->sql_query_express($source ? $source : $_SERVER['SERVER_ADDR']);
+    $ip = $_SERVER['REMOTE_ADDR'];
+	$sql = "INSERT INTO " . TABLE_LOG .
+           " (entry_ip, user_id, perso_id, entry_category, entry_message, entry_source) VALUES 
+             ('$ip', $CurrentUser->id, $CurrentPerso->id, '$category', '$message', '$source')";
+	if ( !($result = $db->sql_query($sql)) )
+		message_die(SQL_ERROR, "Can't log this entry.", '', __LINE__, __FILE__, $sql);
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 ///                                                                          ///
 /// Localization (l10n)                                                      ///
@@ -237,8 +256,8 @@ function find_lang () {
             return $intersect[0];
         }
         
-        //Now it's okay with Opera and Firefox but Internet Explorer
-        //will return en-US and not en or fr-BE and not fr, so second pass
+        //Now it's okay with Opera and Firefox but Internet Explorer will
+        //by default return en-US and not en or fr-BE and not fr, so second pass
         foreach ($userlangs as $userlang) {
             $lang = explode('-', $userlang);
             if (count($lang) > 1)
@@ -483,6 +502,47 @@ function get_current_url_fragments () {
     $url_source = get_current_url();
     if ($url_source == '/index.php') return array();
     return explode('/', substr($url_source, 1));
+}
+
+////////////////////////////////////////////////////////////////////////////////
+///                                                                          ///
+/// URL xmlHttpRequest helpers functions                                     ///
+///                                                                          ///
+////////////////////////////////////////////////////////////////////////////////
+
+/*
+ * Gets an hash value to check the integrity of URLs in /do.php calls
+ * @param Array $args the args to compute the hash
+ * @return the hash paramater for your xmlHttpRequest url
+ */
+function get_xhr_hash ($args) {
+    global $Config;
+    
+    array_shift($args);
+    return md5($_SESSION['ID'] . $Config['SecretKey'] . implode('', $args));
+}
+
+/*
+ * Gets the URL to call do.php, the xmlHttpRequest controller
+ * @return string the xmlHttpRequest url, with an integrity hash
+ */
+function get_xhr_hashed_url () {   
+    global $Config;
+    
+    $args = func_get_args();
+    $args[] = get_xhr_hash($args);
+    return $Config['DoURL'] . '/' . implode('/', $args);
+}
+
+/*
+ * Gets the URL to call do.php, the xmlHttpRequest controller
+ * @return string the xmlHttpRequest url
+ */
+function get_xhr_url () {
+    global $Config;
+    
+    $args = func_get_args();
+    return $Config['DoURL'] . '/' .implode('/', $args);
 }
 
 ?>

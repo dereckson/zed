@@ -77,7 +77,7 @@ switch ($_GET['mode']) {
     default: 
         if ($row) {
             $smarty->assign('PAGE_TITLE', $row['page_title']);
-            $content = "<h1>$row[page_title]</h1>\n$row[page_content]";
+            $content = $row['page_content'];
         } else {
             $smarty->assign('PAGE_TITLE', lang_get('PageNotFound'));
             $content = lang_get('PageNotFound');

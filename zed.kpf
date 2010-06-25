@@ -39,6 +39,7 @@ while ($row = $db-&gt;sql_fetchrow($result)) {
 "c:\WebServer\MySQL\bin\mysql.exe" -uzed -pzed zed &lt; %F</command>
 <preference-set idref="4c047888-c287-4e11-a433-bff6e3ce2d9b">
   <boolean id="import_live">1</boolean>
-  <string id="mappedPaths">::http://zed.dereckson.be/apps/HelloWorldWebService.php##file:///C:/WebServer/wwwroot/dereckson.be/zed/apps/HelloWorldWebService.php</string>
+  <string id="mappedPaths">http://zed.dereckson.be/apps/HelloWorldWebService.php##file:///C:/WebServer/wwwroot/dereckson.be/zed/apps/HelloWorldWebService.php</string>
+  <string id="phpExtraPaths">H:\WebServer\wwwroot\lib;H:\WebServer\PHP5\PEAR</string>
 </preference-set>
 </project>

@@ -26,16 +26,17 @@
 <div id="header">
     <div id="header_content">
         <div class="container_16">
-            <div class="grid_4 alpha">
-                <a href="{get_url()}"><img src="{#StaticContentURL#}/img/zed/logo.png" src="Zed logo" border=0 /></a>
-            </div>
-            <div class="grid_12 omega">
-                <div class="wall">
-                    <p>
-                        {$WALL_TEXT}
-                        <br /><span class="wall_info">-- <a href="{$WALL_USER_URL}">{$WALL_USER}</a></span>
-                    </p>
+            <div class="grid_9">
+                <div class="wall" id="header_wall">
+                    {$WALL_TEXT}
+                    <br />
+                    <span class="wall_info">- - <a href="{$WALL_USER_URL}">{$WALL_USER}</a></span>
                 </div>
+                <div class="clear"></div>
+                <div id="HypershipTime">{get_hypership_time()}</div>
+            </div>
+            <div class="grid_7">
+                <a href="{get_url()}"><img src="{#StaticContentURL#}/img/zed/logo.png" src="Zed logo" border=0 /></a>
             </div>
             <div class="clear"></div>
         </div>
@@ -62,15 +63,6 @@
     <div class="clear"></div>
 {/if}
 
-    <!-- Where? When? -->
-    <div class="info">
-        <div class="info_left">
-            <strong>{#CurrentLocation#}</strong> {$CurrentPerso->where()}
-        </div>
-        <div class="info_right">
-            <span id="HypershipTime">{get_hypership_time()}</span>
-        </div>
-    </div>
 {if $SmartLine_STDOUT || $SmartLine_STDERR}
 {include file="smartline_results.tpl"}
 {/if}

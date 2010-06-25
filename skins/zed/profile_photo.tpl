@@ -23,8 +23,8 @@
             <div class="sidebar_content">
 		<h2>{#EditMyPage#}</h2>
 		<ul>
-                    <li><a href="{$URL_USER}/edit/profile">{#EditProfile#}</a></li>
-                    <li><a href="{$URL_USER}/edit/account">{#EditAccount#}</a></li>
+                    <li><a href="{get_url('who')}/edit/profile">{#EditProfile#}</a></li>
+                    <li><a href="{get_url('who')}/edit/account">{#EditAccount#}</a></li>
                     <li>{if $PICS}{#ManagePhotos#}{else}{#AddPhoto#}{/if}</a></li>
                 </ul>
             </div>
@@ -41,8 +41,8 @@
     <div class="photo" style="float: left">
         <a rel="lightbox" href="{$URL_PICS}/{$photo->name}" title="{$photo->description}"><img src="{$URL_PICS}/tn/{$photo->name}" alt="{$photo->description}" /></a>
         <br />
-        <a href="{$URL_USER}/edit/photos/edit/{$photo->id}" title="{#EditPictureProperties#}"><img src="/skins/VacuumCleanerBridge/images/open.gif" alt="{#PictureProperties#}"></a>
-        <a href="{$URL_USER}/edit/photos/delete/{$photo->id}" title="{#DeleteThisPicture#}"><img src="/skins/VacuumCleanerBridge/images/del.gif" alt="{#Delete#}"></a>
+        <a href="{get_url('who')}/edit/photos/edit/{$photo->id}" title="{#EditPictureProperties#}"><img src="/skins/VacuumCleanerBridge/images/open.gif" alt="{#PictureProperties#}"></a>
+        <a href="{get_url('who')}/edit/photos/delete/{$photo->id}" title="{#DeleteThisPicture#}"><img src="/skins/VacuumCleanerBridge/images/del.gif" alt="{#Delete#}"></a>
     </div>
 {/foreach}
     </div>

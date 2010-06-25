@@ -39,7 +39,7 @@
                             required="false"
                             onChange="document.getElementById('UserLongname').innerHTML = document.getElementById('longname').value;";
                     />
-                </div>
+                </div> 
                 <div class="row">
                     <label class="firstLabel" for="realname">{#RealName#}</label>
                     <input type="text" id="realname" name="realname" class="long"
@@ -54,12 +54,12 @@
                     <input type="text" id="email" name="email" class="long"
                             value="{$user->email}"
                             dojoType="dijit.form.ValidationTextBox"
-                            required="false"
+                            required="false" 
                             onChange="javascript:updateMail(arguments[0]);"
                     />
                 </div>
                 <div class="row">
-                    <button dojoType="dijit.form.Button" iconClass="dijitEditorIcon dijitEditorIconSave" type=submit onclick="document.forms[0].submit()">
+                    <button dojoType="dijit.form.Button" iconClass="dijitEditorIcon dijitEditorIconSave" type="submit" onclick="document.forms[0].submit()">
                             {#UpdateAccountInfo#}
                     </button>
                     <noscript>
@@ -78,9 +78,9 @@
 	    <div class="sidebar_content">
 		<h2>{#EditMyPage#}</h2>
 		<ul>
-		    <li><a href="{$URL_USER}/edit/profile">{#EditProfile#}</a></li>
+		    <li><a href="{get_url('who')}/edit/profile">{#EditProfile#}</a></li>
 		    <li>{#EditAccount#}</li>
-		    <li><a href="{$URL_USER}/edit/photos">{if $PICS}{#ManagePhotos#}{else}{#AddPhoto#}{/if}</a></li>
+		    <li><a href="{get_url('who')}/edit/photos">{if $PICS}{#ManagePhotos#}{else}{#AddPhoto#}{/if}</a></li>
 		</ul>
 	    </div>
             <div class="border_bottom"></div>

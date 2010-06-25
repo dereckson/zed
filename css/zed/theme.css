@@ -17,7 +17,7 @@
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -    */
 
 body {
-    margin: 0 0 0 0;
+    margin: 0.5em 0 0 0;
     
     background-attachment: fixed;
     background-color: #343434;
@@ -28,8 +28,10 @@ body {
     font-family: "Calibri", "Lucida Sans Unicode", "Trebuchet MS", "Helvetica", "Arial", sans-serif;
 
     min-height: 1200px;
-    
-    color: white;
+}
+
+.container_16 {
+	color: white;
 }
 
 #content {
@@ -39,10 +41,6 @@ body {
     background-repeat: no-repeat;
 }
 
-h1, h2, h3, h4, h5, h6 {
-    color: #04acf8;
-    font-weight: normal;
-}
 
 h1 {
     color: #19B5E7;
@@ -50,8 +48,18 @@ h1 {
     font-weight: normal;
 }
 
+h2, h3, h4, h5, h6 {
+    color: #04acf8;
+    font-weight: normal;
+}
+
 h2 {
     font-size: 19px;
+}
+
+h3 {
+	color: #04acf8;
+    font-size: 16px;
 }
 
 pre {
@@ -116,17 +124,25 @@ a:hover {
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -    */
 
 #header {
-    background-color: #1fbeba;
-    background-image: url("../../img/zed/bg_header.jpg");
-    background-repeat: repeat-x;
-    background-position: top left;
-    height: 81px;
-    margin-bottom: 3.14em;
+	background-image: url("../../img/zed/bg_header.png");
+	background-repeat: no-repeat;
+	margin: auto auto;
+	margin-bottom: 0.5em;
+    height: 104px;
+	width: 978px;
 }
 
 #header_content {
-    background-image: url("../../img/zed/bg_header_content.jpg");
-    height: 74px;
+	padding-top: 26px;
+}
+
+#HypershipTime {
+    color: white;
+	font-size: 0.8em;
+	background-image: url("../../img/zed/time.png");
+	background-position: center left;
+	background-repeat: no-repeat;
+	text-indent: 2em;
 }
 
 /*  -------------------------------------------------------------
@@ -135,60 +151,49 @@ a:hover {
 
 .wall {
     text-align: left;
-    float: right;
+	float:left;
+    color: white;
+	font-size: 0.8em;
+	background-image: url("../../img/zed/quote.png");
+	background-position: top left;
+	background-repeat: no-repeat;
+	text-indent: 2em;
+	margin-bottom: 0.8em;
 }
 
 .wall_info {
     display: block;
     text-align: right;
-    font-size: 80%;
+    /* font-size: 80%; */
 }
 
 .wall a {
-    color: white;
+    color: #a9a49e;
 }
 
 .wall a:hover {
-    color: #cae2fd;
-}
-
-/*  -------------------------------------------------------------
-    Info
-    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -    */
-
-.info {
-    width: 584px;
-    height: 25px;
-    background-image: url(/img/zed/bg_meta.png);
-    margin-bottom: 1em;
-    padding-top: 7px;
-    
-    font-size: 90%;
-}
-
-.info strong {
-    display: inline-block;
-    display: -moz-inline-box;
-    width: 9em;
-    min-width: 9em;
-    font-weight: 600;
     color: #fd9800;
 }
 
-.info_left {
-    float: left;
-    width: 415px;
-    margin-left: 20px;
-    margin-right: 18px;
+/*  -------------------------------------------------------------
+    Content (e.g. stories in /explore)
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -    */
+
+.content_wrapper {
+	background-color: #171717;
+	border: solid 5px black;
+	margin-bottom: 1em;
 }
 
-#HypershipTime {
-    color: red;
+.content_wrapper .content {
+	padding: 0 2em 0 2em;
 }
 
-.info_right {
-    float: left;
-    width: 130px;
+.content_wrapper H1 {
+	margin-top: 0;
+	padding: 0.25em 0 0.75em 1em;
+	background-color: black;
+	height: 1em;
 }
 
 /*  -------------------------------------------------------------
@@ -204,6 +209,10 @@ a:hover {
 
 .avatar_name {
     display: block;
+}
+
+.avatar a:hover {
+	color: white;
 }
 
 /*  -------------------------------------------------------------
@@ -250,6 +259,14 @@ a:hover {
 
 .message_info {
     color: #343434;
+}
+
+/*  -------------------------------------------------------------
+    Helper classes
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -    */
+
+.center {
+    text-align: center;
 }
 
 /*  -------------------------------------------------------------

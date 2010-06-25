@@ -34,7 +34,7 @@ Au nord de la ville, the hole, une ancienne mine dont les mineurs évitent de pa
     <description>
         The hole. Une ancienne mine désaffectée depuis trois siècles. Aujourd'hui, un squat. L'endroit où tout se passe sur Zeta. Refuge des rebelles. Lieu d'exil de ce secteur de la galaxie. Lieu de tous les traffics. The hole.
             
-        Une bande d'une douzaine jeunes armés de laser et de fouets neuroniques en garde l'entrée, deux vous regardant d'un œil plutôt menaçant.
+        Une bande d'une douzaine jeunes armés de laser et de fouet neuroniques en garde l'entrée, deux vous regardant d'un œil plutôt menaçant.
         
         Ils vous refusent le passage.
     </description>
@@ -44,5 +44,20 @@ Au nord de la ville, the hole, une ancienne mine dont les mineurs évitent de pa
         <choice goto="panorama">Retourner en ville</choice>
     </choices>
     <local>2</local>
+  </section>
+  <section id="spatioport.entry">
+    <title>Spatioport</title>
+    <description>
+    Le spatioport se présente sous la forme d'un large dôme cobalt où se reflète la lueur de Thétys, un astéroïde gravitant autour de Kaos tel une lune.
+    
+    À l'arrière, un cratère évasé peut accueillir une trentaine de vaisseaux de taille modeste et de conception variée.
+    </description>
+    <hooks>
+        <hook type="spatioport" />
+    </hooks>
+    <choices>
+        <choice goto="panorama">Retourner en ville</choice>
+    </choices>
+    <local>3</local>
   </section>
 </story>

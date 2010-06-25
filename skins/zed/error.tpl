@@ -11,10 +11,12 @@
 <div id="header">
     <div id="header_content">
         <div class="container_16">
-            <div class="grid_4 alpha omega suffix_8">
+            <div class="grid_9">
+                <div id="HypershipTime">{get_hypership_time()}</div>
+            </div>
+            <div class="grid_7">
                 <a href="{get_url()}"><img src="{#StaticContentURL#}/img/zed/logo.png" src="Zed logo" border=0 /></a>
             </div>
-            <div class="clear"></div>
         </div>
     </div>
 </div>
@@ -35,10 +37,13 @@
     </div>
 {/if}
 
-    <div class="grid_16 alpha omega">
+    <!-- Error -->
+    <div class="content_wrapper">
         <h1>{$TITLE}</h1>
-        <p>{$ERROR_TEXT}</p>
-        <p><a href="{get_url()}">{#BackToHome#}</a></p>
+        <div class="content">
+            <p>{$ERROR_TEXT}</p>
+            <p><a href="{get_url()}">{#BackToHome#}</a></p>
+        </div>
     </div>
     <div class="clear"></div>
     <hr />

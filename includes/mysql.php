@@ -18,10 +18,15 @@ if (!defined('SQL_LAYER')) {
         private $id;
         
         function __construct($host = 'localhost', $username = 'root', $password = '' , $database = '') {
-            $this->id = @mysql_connect($host, $username, $password) or die ("Can't connect to SQL server.");
+            $this->id = @mysql_connect($host, $username, $password) or $this->sql_die(); //or die ("Can't connect to SQL server.");
             if ($database != '') {
                 mysql_select_db($database, $this->id);
             }
+        }
+        
+        function sql_die () {
+            include('start.html');
+            exit;
         }
         
         function sql_query ($query) {

@@ -2,6 +2,7 @@
 
 require_once('body.php');
 require_once('place.php');
+require_once('point3D.php');
 require_once('includes/objects/ship.php');
 
 /*
@@ -14,6 +15,8 @@ require_once('includes/objects/ship.php');
  * @copyright Copyright (c) 2010, Dereckson
  * @license Released under BSD license
  * @version 0.1
+ *
+ * @todo initializes $point3D from $body or $ship own locations;
  *
  */
 class GeoLocation {
@@ -28,6 +31,11 @@ class GeoLocation {
      * @var GeoPlace a place object
      */
     public $place = null;
+
+    /*
+     * @var GeoPoint3D a point identified by x, y, z coordinates
+     */    
+    public $point3D = null;
     
     /*
      * @var Ship a ship object
@@ -41,6 +49,13 @@ class GeoLocation {
             $this->data[0] = $global;
         } elseif (ereg("[BS][0-9]{5}", $global)) {
             $this->data[0] = $global;
+        } elseif (ereg("^xyz\:", $global)) {
+            $coords = sscanf($global, "xyz: [%d, %d, %d]");
+            if (count($coords) == 3) {
+                $this->data[0] = $global;
+            } else {
+                throw new Exception("Invalid expression: $global");    
+            }
         } else {
             global $db;
             $name = $db->sql_escape($global);
@@ -83,6 +98,13 @@ class GeoLocation {
             
             case 'S':
                 $this->ship = new Ship($code);
+                break;
+            
+            case 'x':
+                $coords = sscanf($global, "xyz: [%d, %d, %d]");
+                if (count($coords) == 3) {
+                    $this->point3D = new GeoPoint3D($coords[0], $coords[1], $coords[2]);
+                }
                 break;
         }
     }
@@ -195,6 +217,18 @@ class GeoLocation {
     }
     
     function equals ($expression) {
+        //Are global location equals?
+        
+        //TODO: creates a better set of rules to define when 2 locations are equa l.
+        if (is_a($expression, 'GeoLocation')) {
+            if (!$this->equals($expression->data[0])) {
+                return false;
+            }
+            if (count($expression->data) + count($this->data) > 2) {
+                return $expression->data[1] == $this->data[1];
+            }
+        }
+
         if ($expression == $this->data[0]) return true;
         
         $n1 = strlen($expression);

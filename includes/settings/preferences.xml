@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+    <page id="account" title="Account">
+        <setting id="username">
+            <key>Username</key>
+            <field>text</field>
+            <object>CurrentUser</object>
+            <property>name</property>
+        </setting>
+        <setting id="password">
+            <key>Password</key>
+            <field>password</field>
+            <object>CurrentUser</object>
+            <method>set_password</method>
+        </setting>
+        <setting id="email">
+            <key>Email</key>
+            <field>text</field>
+            <object>CurrentUser</object>
+            <property>email</property>            
+        </setting>
+        <setting id="OpenID">
+            <key>OpenID</key>
+            <field>text</field>
+            <handler>
+                <get>
+<![CDATA[
+global $db, $CurrentUser;
+$sql = "SELECT openid_url FROM users_openid WHERE user_id = $CurrentUser->id LIMIT 1";
+return $db->sql_query_express($sql);
+]]>
+                </get>
+                <set>
+<![CDATA[
+global $db, $CurrentUser, $smarty;
+$openid = $db->sql_escape($value);
+$sql = "SELECT user_id FROM users_openid WHERE open_id_url LIKE '$openid'";
+if ($user_id = $db->sql_query_express($sql)) {
+    if ($user_id == $CurrentUser->id) {
+        $smarty->assign('WAP', "This OpenID is already linked to your account.");
+    } else {
+        $smarty->assign('WAP', "This OpenID is currently linked to another account.");
+        supralog('security', "User tried to add OpenID $openid which belongs to $user_id", "preferences");
+    }
+    return false;
+}
+$CurrentUser->set_OpenID($value);
+return true;
+]]>
+                </set>
+            </handler>
+        </setting>
+    </page>
+    
+    <page id="perso" title="Information">
+        <setting id="longname">
+            <key>Name</key>
+            <field>text</field>
+            <object>CurrentPerso</object>
+            <property>name</property>            
+        </setting>
+        <setting id="nickname">
+            <key>Nickname</key>
+            <field>validationtext</field>
+            <regExp>[a-z][a-z0-9 ]+</regExp>
+            <object>CurrentPerso</object>
+            <property>nickname</property>            
+        </setting>
+        <setting id="race">
+            <key>Race</key>
+            <field>text</field>
+            <object>CurrentPerso</object>
+            <property>race</property>            
+        </setting>
+        <setting id="sex">
+            <key>Sex</key>
+            <field>filteredlist</field>
+            <object>CurrentPerso</object>
+            <property>sex</property>   
+            <choices>
+                <choice>
+                    <key>male</key>
+                    <value>M</value>
+                </choice>
+                <choice>
+                    <key>female</key>
+                    <value>F</value>
+                </choice>
+                <choice>
+                    <key>neutral</key>
+                    <value>N</value>
+                </choice>
+                <choice>
+                    <key>both</key>
+                    <value>2</value>
+                </choice>
+            </choices>
+        </setting>
+    </page>
+    
+    <page id="smartline" title="SmartLine">
+        <setting id="show">
+            <key>SmartlineShow</key>
+            <field>checkbox</field>
+            <handler>
+                <set><![CDATA[
+global $CurrentPerso;
+$flag_value = $value ? 1 : 0;
+$CurrentPerso->set_flag('site.smartline.show', $flag_value);
+return true;
+                ]]></set>
+                <get><![CDATA[
+global $CurrentPerso;
+return (bool)$CurrentPerso->get_flag('site.smartline.show', true);
+                ]]></get>
+            </handler>
+        </setting>
+        <setting id="method">
+            <key>SmartlineMethod</key>
+            <field>checkbox</field>
+            <handler>
+                <set><![CDATA[
+global $CurrentPerso;
+$CurrentPerso->set_flag('site.smartline.method', $value ? 'post' : 'get');
+return true;
+                ]]></set>
+                <get><![CDATA[
+global $CurrentPerso;
+$flag = $CurrentPerso->get_flag('site.smartline.method', 'post');
+return $flag != "get";
+                ]]></get>
+            </handler>
+        </setting>
+    </page>
+</settings> 

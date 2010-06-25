@@ -45,6 +45,7 @@ $perso = Perso::get($who);
 if ($perso->lastError) {
     message_die(GENERAL_ERROR, $perso->lastError, "Error");
 }
+$smarty->assign('perso', $perso);
 
 //Gets profile
 $profile = new Profile($perso->id);
@@ -182,14 +183,14 @@ if ($mode == 'view') {
         case 'profile':
             $smarty->assign('USERNAME', $perso->name);
             $smarty->assign('DIJIT', true);
-            $css[] = 'forms.css';
+            $css[] = THEME . '/forms.css';
             $template = 'profile_edit.tpl';	    
             break;
         
         case 'account':
             $smarty->assign('user', $CurrentUser);
             $smarty->assign('DIJIT', true);
-            $css[] = 'forms.css';
+            $css[] = THEME . '/forms.css';
             $template = 'user_account.tpl';
             break;
 	
@@ -293,7 +294,7 @@ if (count($photos) || $photo) {
 }
 
 //Serves header
-$css[] = "profile.css";
+$css[] = THEME . "/profile.css";
 $smarty->assign('PAGE_CSS', $css);
 $smarty->assign('PAGE_TITLE', $perso->name);
 include('header.php');

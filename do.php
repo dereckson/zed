@@ -23,7 +23,7 @@
 ///
 
 //Standard return values
-define('USER_NOT_LOGGED', -9);
+define('USER_NOT_LOGGED',    -9);
 define('PERSO_NOT_SELECTED', -7);
 
 //Pluton library
@@ -59,6 +59,7 @@ if (!$CurrentPerso) {
 require('includes/Smarty/Smarty.class.php');
 $smarty = new Smarty();
 $current_dir = dirname(__FILE__);
+$smarty->template_dir = $current_dir . '/skins/zed';
 $smarty->compile_dir = $current_dir . '/cache/compiled';
 $smarty->cache_dir = $current_dir . '/cache';
 $smarty->config_dir = $current_dir;
@@ -66,7 +67,6 @@ $smarty->config_dir = $current_dir;
 //Loads language files
 initialize_lang();
 lang_load('core.conf');
-
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
@@ -136,6 +136,74 @@ class Actions {
         }
         
         return true;
+    }
+
+    /*
+     * Sets current perso's local location
+     * @param string $location_local the local location
+     * @return GeoLocation the current perso's GeoLocation object
+     *
+     * We don't require a security hash. If the users want to play with it, no problem.
+     * You generally moves inside a global location as you wish.
+     * So, if you write a story capturing a perso, use flags to handle this escape!
+     */
+    static function set_local_location ($location_local) {
+        global $CurrentPerso;
+        
+        //Ensures we've the correct amount of arguments
+        if (func_num_args() < 1) return null;
+
+        //Moves current perso to specified location        
+        $CurrentPerso->move_to(null, $location_local);
+        
+        //Returns GeoLocation relevant instance
+        return $CurrentPerso->location;
+    }
+    
+    /*
+     * Handles upload content form
+     * @return string new content path  
+     */
+    static function upload_content () {
+        global $CurrentPerso, $CurrentUser;
+        require_once('includes/objects/content.php');
+        
+        //Initializes a new content instance
+        $content = new Content();
+        
+        //Reads form
+        $content->load_from_form();
+        
+        //Sets current user/perso parameters
+        $content->user_id = $CurrentUser->id;
+        $content->perso_id = $CurrentPerso->id;
+        $content->location_global = $CurrentPerso->location_global;
+                
+        //Saves file
+        if ($content->handle_uploaded_file($_FILES['artwork'])) {
+            $content->save_to_database();
+            $content->generate_thumbnail();
+            return true;
+        }
+        
+        return false;
+    }
+    /*
+     * 
+     * @return Array content files
+     */
+    static function get_content ($location_global) {
+        //Ensures we've the correct amount of arguments
+        if (func_num_args() < 1) return null;
+
+        //Checks hash
+        $args = func_get_args();
+        if (!self::is_hash_valid($args)) {
+            return false;
+        }
+        
+        require_once('includes/objects/content.php');
+        return Content::get_local_content($location_global, $_GET['location_local']);
     }
 }
 

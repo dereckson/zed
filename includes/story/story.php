@@ -79,7 +79,7 @@ class Story {
         $this->title = (string)$this->xml->title;
         foreach ($this->xml->section as $section) {
             //Gets section
-            $section = StorySection::from_xml($section);
+            $section = StorySection::from_xml($section, $this);
             
             //Have we a start section?
             if ($section->start) {

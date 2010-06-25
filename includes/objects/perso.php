@@ -236,13 +236,20 @@ class Perso {
     /*
      * Gets the specified flag value
      * @param string $key flag key
+     * @param mixed $defaultValue default value if the flag doesn't exist
      * @return mixed the flag value (string) or null if not existing
      */    
-    public function get_flag ($key) {
-        if (array_key_exists($key, $this->flags)) {
-            return $this->flags[$key];
-        }
-        return null;
+    public function get_flag ($key, $defaultValue = null) {
+        return $this->flag_exists($key) ? $this->flags[$key] : $defaultValue;
+    }
+    
+    /*
+     * Determines if the specified flag exists
+     * @param string $key the flag key to check
+     * @return boolean true if the specified flag exists ; otherwise, false.
+     */ 
+    public function flag_exists ($key) {
+        return array_key_exists($key, $this->flags);
     }
     
     /*
@@ -293,6 +300,45 @@ class Perso {
         if (!array_key_exists($flag, $this->flags) || $this->flags[$flag] <= $threshold) {
             message_die(HACK_ERROR, "You don't have $flag permission.", "Permissions");
         }
+    }
+    
+    /*
+     * Gets the specified note
+     * @param string $code the note code
+     * @return string the note content
+     */ 
+    public function get_note ($code) {
+        global $db;
+        $id = $db->sql_escape($this->id);
+        $code = $db->sql_escape($code);
+        $sql = "SELECT note_text FROM " . TABLE_PERSOS_NOTES . " WHERE perso_id = '$id' AND note_code LIKE '$code'";
+        return $db->sql_query_express($sql);
+    }
+    
+    /*
+     * Sets the specified note
+     * @param string $code the note code
+     * @param string $text the note content
+     */ 
+    public function set_note ($code, $text) {
+        global $db;
+        $id = $db->sql_escape($this->id);
+        $code = $db->sql_escape($code);
+        $text = $db->sql_escape($text);
+        $sql = "REPLACE INTO " . TABLE_PERSOS_NOTES  . " (perso_id, note_code, note_text) VALUES ('$id', '$code', '$text')";
+        if (!$db->sql_query($sql))
+            message_die(SQL_ERROR, "Can't save note", '', __LINE__, __FILE__, $sql);
+    }
+    
+    /*
+     * Counts the amount of notes the perso have saved
+     * @return int the amount of notes assigned to the this perso
+     */
+    public function count_notes () {
+        global $db;
+        $id = $db->sql_escape($this->id);
+        $sql = "SELECT COUNT(*) FROM " . TABLE_PERSOS_NOTES . " WHERE perso_id = '$id'";
+        return $db->sql_query_express($sql);
     }
     
     /*
@@ -373,10 +419,21 @@ class Perso {
      */
     public static function get_first_perso ($user_id) {
         global $db;
-        $sql = "SELECT perso_id FROM " . TABLE_PERSOS . " WHERE user_id = $user_id LIMIT 1";
+        $sql = "SELECT perso_id FROM " . TABLE_PERSOS ."  WHERE user_id = $user_id LIMIT 1";
         if ($perso_id = $db->sql_query_express($sql)) {
             return new Perso($perso_id);
         }
+    }
+    
+    public function is_online () {
+        global $db;
+        $id = $db->sql_escape($this->id);
+        $sql = "SELECT MAX(online) FROM " . TABLE_SESSIONS ." WHERE perso_id = $id";
+        if (!$result = $db->sql_query($sql)) {
+            message_die(SQL_ERROR, "Unable to query the table", '', __LINE__, __FILE__, $sql);
+        }
+        $row = $db->sql_fetchrow($result);
+        return ($row[0] == 1);
     }
     
     public function on_select () {

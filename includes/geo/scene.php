@@ -99,7 +99,19 @@ class GeoScene {
                     global $smarty;
                     $template_dir = $smarty->template_dir;
                     $smarty->template_dir = getcwd();
+                    
+                    //$this->location is the object reference
+                    //Some objects like the hypership move, so we also need to know where there are.
+                    //From the template, this object location is assigned to $location
+                    //To get $this->location from template, use $CurrentPerso->location
+                    if ($this->location->body) {
+                        $smarty->assign("location", new GeoLocation($this->location->body->location));
+                    } elseif ($this->location->ship) {
+                        $smarty->assign("location", new GeoLocation($this->location->ship->location));
+                    }
+                    
                     $smarty->assign("SCENE_URL", defined('SCENE_URL') ? SCENE_URL : '/' . SCENE_DIR);
+                    lang_load('scenes.conf', $this->location->global);
                     $smarty->display($file);
                     $smarty->template_dir = $template_dir;
                     break;

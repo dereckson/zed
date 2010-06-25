@@ -28,8 +28,8 @@ function next_hypership_increase_in () {
     seconds = unixtime - 1264377600;
     days = Math.floor(seconds / 86400);
     fraction1 = (seconds % 86400) / 86.4;
-    fraction2 = Math.floor(fraction1);
-    return (fraction1 - fraction2) * 86400;
+    fraction2 = Math.ceil(fraction1);
+    return (fraction2 - fraction1) * 86400;
 }
 
 //Autoupdates every 20 seconds
@@ -144,3 +144,16 @@ var ar2215 = {
 }
 
 ar2215.load();
+
+/* Visual effects */
+function set_opacity (id, opacity) {
+    element = document.getElementById(id);
+    if (element != null) {
+        if (opacity == 0) {
+            element.style.backgroundImage = 'inherit';
+        } else {
+            property = 'url("/img/zed/opaque_' + opacity + '.png")';
+            element.style.backgroundImage = property;
+        }
+    }
+}

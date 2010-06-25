@@ -65,21 +65,15 @@ class ProfilePhoto {
     function save_to_database () {
         global $db;
     
-        $id = $db->sql_escape($this->id);
+        //Escapes fields
+        $id = $this->id ? "'" . $db->sql_escape($this->id) . "'" : 'NULL';
         $perso_id = $db->sql_escape($this->perso_id);
         $name = $db->sql_escape($this->name);
         $description = $db->sql_escape($this->description);
-        $safe = $this->safe ? 1 : 0;
         $avatar = $this->avatar ? 1 : 0;
     
-        if ($id) {
-            //Updates
-            $sql = "REPLACE INTO " . TABLE_PROFILES_PHOTOS . " (`photo_id`, `perso_id`, `photo_name`, `photo_description`, `photo_safe`, `photo_avatar`) VALUES ('$id', '$perso_id', '$name', '$description', $safe, $avatar)";
-        } else {
-            //Inserts
-            $sql = "INSERT INTO " . TABLE_PROFILES_PHOTOS . " (`perso_id`, `photo_name`, `photo_description`, `photo_safe`, `photo_avatar`) VALUES ('$perso_id', '$name', '$description', $safe, $avatar)";
-        }
-        
+        //Saves
+        $sql = "REPLACE INTO " . TABLE_PROFILES_PHOTOS . " (`photo_id`, `perso_id`, `photo_name`, `photo_description`, `photo_avatar`) VALUES ($id, '$perso_id', '$name', '$description', $avatar)";
         if (!$db->sql_query($sql)) {
             message_die(SQL_ERROR, "Unable to save", '', __LINE__, __FILE__, $sql);
         }

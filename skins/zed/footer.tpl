@@ -1,7 +1,9 @@
 
 
     <div class="clear"></div>
+{if $SmartLinePrint}
 {include file="smartline.tpl"}
+{/if}
 
     <!-- Footer -->
     <hr />

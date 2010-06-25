@@ -72,7 +72,7 @@ if ($_GET['action'] == 'openid.login') {
             
         //Starts the OpenID transaction and redirects user to provider url
         if ($request = $consumer->begin($_POST['openid'])) {
-	    $url = $request->redirectURL(get_server_url(), "$Config[SiteURL]/?action=openid.login", false);
+            $url = $request->redirectURL(get_server_url(), "$Config[SiteURL]/?action=openid.login", false);
             header("location: $url");
             $LoginError = '<a href="' . $url . '">Click here to continue login</a>';
         } else {
@@ -96,7 +96,18 @@ if ($_GET['action'] == 'openid.login') {
                 setcookie("LastUsername", $Login, time() + 2592000);
             }				
         } else {
-            //Login n'existe pas
+            //Idiot proof facility
+            //Redirects people using login page as invitation claim page
+            $sql = "SELECT * FROM " . TABLE_USERS_INVITES . " WHERE invite_for = '$Login'";
+            if (!$result = $db->sql_query($sql)) {
+                message_die(SQL_ERROR, "Can't get invites", '', __LINE__, __FILE__, $sql);
+            }
+            if ($row = $db->sql_fetchrow($result)) {
+                $url = get_url('invite', $Login, $_POST['password']);
+                header('location: ' . $url);
+            }
+            
+            //Login not found
             $LoginError = "Login not found.";
         }
     }

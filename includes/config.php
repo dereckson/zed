@@ -25,6 +25,7 @@ $Config['sql']['database'] = 'zed';
 $prefix = '';
 define('TABLE_API_KEYS', $prefix . 'api_keys');
 define('TABLE_COMMENTS', $prefix . 'comments');
+define('TABLE_LOG', $prefix . 'log');
 define('TABLE_LOG_SMARTLINE', $prefix . 'log_smartline');
 define('TABLE_MESSAGES', $prefix . 'messages');
 define('TABLE_MOTD', $prefix . 'motd');
@@ -32,17 +33,20 @@ define('TABLE_PAGES', $prefix . 'pages');
 define('TABLE_PAGES_EDITS', $prefix . 'pages_edits');
 define('TABLE_PERSOS', $prefix . 'persos');
 define('TABLE_PERSOS_FLAGS', $prefix . 'persos_flags');
+define('TABLE_PERSOS_NOTES', $prefix . 'persos_notes');
 define('TABLE_PROFILES', $prefix . 'profiles');
 define('TABLE_PROFILES_COMMENTS', $prefix . 'profiles_comments');
 define('TABLE_PROFILES_PHOTOS', $prefix . 'profiles_photos');
 define('TABLE_REGISTRY', $prefix . 'registry');
 define('TABLE_SESSIONS', $prefix . 'sessions');
+define('TABLE_SHIPS', $prefix . 'ships');
 define('TABLE_USERS', $prefix . 'users');
+define('TABLE_USERS_INVITES', $prefix . 'users_invites');
 define('TABLE_USERS_OPENID', $prefix . 'users_openid');
 
 //Geo tables
 define('TABLE_BODIES', $prefix . 'geo_bodies');
-define('TABLE_LOCATIONS', $prefix . 'geo_locations');   //Well... it's view
+define('TABLE_LOCATIONS', $prefix . 'geo_locations');   //Well... it's a view
 define('TABLE_PLACES', $prefix . 'geo_places');
 
 ////////////////////////////////////////////////////////////////////////////////

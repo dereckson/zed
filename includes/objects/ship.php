@@ -14,6 +14,7 @@
  */
 
 require_once("perso.php");
+require_once("includes/geo/location.php");
 
 class Ship {
     
@@ -30,15 +31,38 @@ class Ship {
     public $api_key;
     public $description;
     
+    private static $hashtable = array();
+    
     /*
      * Initializes a new instance
      * @param int $id the primary key
      */
     function __construct ($id = null) {
         if ($id) {
+            if (ereg("^S[0-9]{5}$", $id)) {
+                $id = substr($id, 1);
+            }
+            
             $this->id = $id;
             $this->load_from_database();
         }
+    }
+    
+    /*
+     * Initializes a new Ship instance if needed or gets already available one.
+     * @param mixed $data ship ID
+     * @eturn Ship the ship instance
+     */
+    static function get ($data = null) {
+        if ($data !== null) {
+            //Checks in the hashtable if we already have loaded this instance
+            if (array_key_exists($data, self::$hashtable)) {
+                return self::$hashtable[$data];
+            }
+        }
+        
+        $ship = new Ship($data);
+        return $ship;
     }
     
     /*
@@ -46,7 +70,8 @@ class Ship {
      */
     function load_from_form () {
         if (array_key_exists('name', $_POST)) $this->name = $_POST['name'];
-        if (array_key_exists('location', $_POST)) $this->location = $_POST['location'];
+        if (array_key_exists('location_global', $_POST)) $this->location = $_POST['location_global'];
+        if (array_key_exists('location_local', $_POST)) $this->location = $_POST['location_local'];
         if (array_key_exists('api_key', $_POST)) $this->api_key = $_POST['api_key'];
         if (array_key_exists('description', $_POST)) $this->description = $_POST['description'];
     }
@@ -64,9 +89,15 @@ class Ship {
             return false;
         }
         $this->name = $row['ship_name'];
-        $this->location = $row['ship_location'];
+        $this->location_global = $row['location_global'];
+        $this->location_local = $row['location_local'];
         $this->api_key = $row['api_key'];
         $this->description = $row['ship_description'];
+        
+        
+        //Puts object in hashtables
+        self::$hashtable[$this->id] = $this;
+        
         return true;
     }
     
@@ -96,6 +127,30 @@ class Ship {
     
     function __toString () {
         return $this->get_code();
+    }
+    
+    /*
+     * Get ships at specified location
+     * @param string $location_global global location
+     * @param string $location_local local location
+     */
+    static function get_ships_at ($location_global, $location_local = null) {
+        global $db;
+        
+        //Gets ships 
+        $sql = "SELECT ship_id, location_global, location_local FROM " . TABLE_SHIPS . " WHERE location_global IS NOT NULL";
+        if (!$result = $db->sql_query($sql)) {
+            message_die(SQL_ERROR, "Can't get ships", '', __LINE__, __FILE__, $sql);
+        }
+        $ships = array();
+        $location = new GeoLocation($location_global, $location_local);
+        while ($row = $db->sql_fetchrow($result)) {
+            $shipLocation = new GeoLocation($row['location_global'], $row['location_local']);
+            if ($location->equals($shipLocation)) {
+                $ships[] = self::get($row['ship_id']);
+            }
+        }
+        return $ships;
     }
     
     /*

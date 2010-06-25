@@ -45,6 +45,12 @@ $smarty->assign('SCENE', $scene);
 //
 
 //Serves header
+
+//TODO: Dojo loading here is currently a kludge, as dojo is required by
+//hypership .tpl scene. We should create an optionnal .meta xml file format
+//to set this kind of options
+if (!defined('DIJIT')) define('DIJIT', true);
+
 $smarty->assign('PAGE_TITLE', lang_get('Welcome'));
 include('header.php'); 
 

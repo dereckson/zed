@@ -39,9 +39,11 @@ hr {
 .small {
     width: 5em;
 }
+
 .medium {
     width: 12em;
 }
+
 .long {
     width: 20em;
 }

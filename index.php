@@ -52,14 +52,25 @@ $smarty->config_vars['StaticContentURL'] = $Config['StaticContentURL'];
 initialize_lang();
 lang_load('core.conf');
 
-if ($CurrentUser->id < 1000) {   
-    //Anonymous user, proceed to login
-    if (array_key_exists('LastUsername', $_COOKIE))
-        $smarty->assign('username', $_COOKIE['LastUsername']);
-    if (array_key_exists('LastOpenID', $_COOKIE))
-        $smarty->assign('OpenID', $_COOKIE['LastOpenID']);
-    $smarty->assign('LoginError', $LoginError);
-    $smarty->display('login.tpl');
+//Gets URL
+$url = get_current_url_fragments();
+
+//If anonymous, prints login
+if ($CurrentUser->id < 1000) {
+    //Anonymous user
+    if ($url[0] == 'invite') {
+        //Invitation form
+        message_die(GENERAL_ERROR, "<p>Invitation system not deployed. Contact Dereckson to enable your account.</p><p>Le système d'invitation n'a pas encore été codé, contacte Dereckson pour activer ton compte.</p>", "Invitation");
+        $smarty->display('invite.tpl');
+    } else {
+        //Login form
+        if (array_key_exists('LastUsername', $_COOKIE))
+            $smarty->assign('username', $_COOKIE['LastUsername']);
+        if (array_key_exists('LastOpenID', $_COOKIE))
+            $smarty->assign('OpenID', $_COOKIE['LastOpenID']);
+        $smarty->assign('LoginError', $LoginError);
+        $smarty->display('login.tpl');
+    }
     exit;
 }
 
@@ -166,9 +177,7 @@ if (defined('PersoSelected') && array_key_exists('site.requests', $CurrentPerso-
 ///
 /// Calls the specific controller to serve the requested page
 ///
-
-$url = get_current_url_fragments(); 
-    
+  
 switch ($controller = $url[0]) {
     case '':
         include('controllers/home.php');
@@ -177,6 +186,7 @@ switch ($controller = $url[0]) {
     case 'request':
     case 'page':
     case 'explore':
+    case 'ship':
         include("controllers/$controller.php");
         break;
     

@@ -49,8 +49,8 @@
                     <h2>{#EditMyPage#}</h2>
                     <ul>
                         <li>{#EditProfile#}</li>
-                        <li><a href="{$URL_USER}/edit/account">{#EditAccount#}</a></li>
-                        <li><a href="{$URL_USER}/edit/photos">{if $PICS}{#ManagePhotos#}{else}{#AddPhoto#}{/if}</a></li>
+                        <li><a href="{get_url('who')}/edit/account">{#EditAccount#}</a></li>
+                        <li><a href="{get_url('who')}/edit/photos">{if $PICS}{#ManagePhotos#}{else}{#AddPhoto#}{/if}</a></li>
                     </ul>
             	</div>
             <div class="border_bottom"></div>

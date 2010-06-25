@@ -9,6 +9,7 @@
  */
 
 require_once('choice.php');
+require_once('hook.php');
 
 class StorySection {
     /*
@@ -35,14 +36,30 @@ class StorySection {
      * @var Array the section choices (array of StoryChoice items)
      */
     public $choices = array();
+
+    /*
+     * @var Array the section hooks (array of StoryHook items)
+     */    
+    public $hooks = array();
     
     /*
      * @var boolean if true, it's the story start ; otherwise, false;
      */
     public $start;
+
+    /*
+     * @var Story the story calling the section
+     */
+    public $story;
     
-    function __construct ($id) {
+    /*
+     * Initializes a new instance of StorySection class
+     */
+    function __construct ($id, $story = null) {
         $this->id = $id;
+        if ($story !== null) {
+            $this->story = $story;
+        }
     }
 
     /*
@@ -59,11 +76,12 @@ class StorySection {
     }
     
     /*
-     * Intializes a story section from an XML document
-     * @param string $xml the XML document
+     * Intializes a story section from an SimpleXMLElement XML fragment
+     * @param SimpleXMLElement $xml the XML fragment
+     * @param Story $story the calling story
      * @return StorySection the section instance
      */
-    static function from_xml ($xml) {
+    static function from_xml ($xml, $story = null) {
         //Reads attributes
         $id = '';
         $start = false;
@@ -86,16 +104,29 @@ class StorySection {
             message_die(GENERAL_ERROR, "Section without id. Please add id='' in <section> tag", "Story error");
         }
         
-        $section = new StorySection($id);
+        $section = new StorySection($id, $story);
         $section->title = (string)$xml->title;
         $section->description = (string)$xml->description;
         $section->location_local = (string)$xml->local;
         $section->start = $start;
+        
+        //Adds choices
         if ($xml->choices) {
             foreach ($xml->choices->choice as $choice) {
                 $section->choices[] = StoryChoice::from_xml($choice);
             }
         }
+        
+        //Adds hooks
+        if ($xml->hooks) {
+            foreach ($xml->hooks->hook as $hook) {
+                //<hook type="spatioport" /> will assign 'spatioport' to $hook;
+                $hook = (string)$hook->attributes()->type;
+                require_once("hook_$hook.php");
+                $section->hooks[] = new $class($section->story, $section);
+            }
+        }
+        
         return $section;
     }
 }

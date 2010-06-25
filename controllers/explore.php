@@ -27,11 +27,13 @@ function get_section ($story) {
         $guid = $url[1];
         
         //Ensures we've a StorySection object in the Story variable
-        if (!array_key_exists('Story', $_SESSION)) {
+        if (!array_key_exists('StoryChoices', $_SESSION)) {
             $smarty->assign('WAP', lang_get('ExpiredStorySession'));
         } else {
-            //Gets StoryChoice matching the guid
-            if (!$choice = $_SESSION['Story']->get_choice($guid)) {
+            //Gets StoryChoice (creating a dummy section to use get_choice method)
+            $section = new StorySection("void");
+            $section->choices = $_SESSION['StoryChoices'];
+            if (!$choice = $section->get_choice($guid)) {
                 $smarty->assign('WAP', lang_get('InvalidStoryGUID'));
             }
             
@@ -88,7 +90,7 @@ if ($section->location_local) {
 }
 
 //Saves section in session, for choices handling
-$_SESSION['Story'] = $section;
+$_SESSION['StoryChoices'] = $section->choices;
 
 //
 // HTML output

@@ -116,6 +116,10 @@ class GeoBody {
         return "";
     }
     
+    function __toString () {
+        return $this->name;
+    }
+    
     /*
      * Saves to database
      */

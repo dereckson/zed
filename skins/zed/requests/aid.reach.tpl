@@ -2,6 +2,7 @@
     <script type="text/javascript">
         dojo.require("dijit.form.Form");
         dojo.require("dijit.form.ValidationTextBox");
+        dojo.require("dijit.form.Button");
     </script>
     
     <!-- Request form: aid.reach -->
@@ -11,6 +12,9 @@
         <div class="row">
             <label class="firstLabel" for="PostTitle">{#Title#}</label>
             <input dojoType="dijit.form.ValidationTextBox" value="{$request->title}" type="text" id="PostTitle" name="title" class="long" required="true" />
+        </div>
+        <div class="row">
+            <button dojoType="dijit.form.Button" iconClass="dijitEditorIcon dijitEditorIconSave" type="submit" value="Save" />Send</button>
         </div>
         <p>Your request will be sent to humans.</p>
     </form>
