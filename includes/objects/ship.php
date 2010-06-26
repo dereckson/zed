@@ -39,7 +39,7 @@ class Ship {
      */
     function __construct ($id = null) {
         if ($id) {
-            if (ereg("^S[0-9]{5}$", $id)) {
+            if (preg_match("/^S[0-9]{5}$/", $id)) {
                 $id = substr($id, 1);
             }
             
@@ -109,12 +109,13 @@ class Ship {
         
         $id = $this->id ? "'" . $db->sql_escape($this->id) . "'" : 'NULL';
         $name = $db->sql_escape($this->name);
-        $location = $db->sql_escape($this->location);
+        $location_global = $db->sql_escape($this->location_global);
+        $location_local = $db->sql_escape($this->location_local);
         $api_key = $db->sql_escape($this->api_key);
         $description = $db->sql_escape($this->description);
 
         //Updates or inserts
-        $sql = "REPLACE INTO ships (`ship_id`, `ship_name`, `ship_location`, `api_key`, `ship_description`) VALUES ($id, '$name', '$location', '$api_key', '$description')";
+        $sql = "REPLACE INTO ships (`ship_id`, `ship_name`, `location_global`, `location_local`, `api_key`, `ship_description`) VALUES ($id, '$name', '$location_global', '$location_location', '$api_key', '$description')";
         if (!$db->sql_query($sql)) {
             message_die(SQL_ERROR, "Unable to save", '', __LINE__, __FILE__, $sql);
         }

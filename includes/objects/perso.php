@@ -425,6 +425,11 @@ class Perso {
         }
     }
     
+    /*
+     * Determines wheter the perso is online
+     *
+     * @return boolean true if the perso is online ; otherwise, false.
+     */
     public function is_online () {
         global $db;
         $id = $db->sql_escape($this->id);
@@ -436,13 +441,19 @@ class Perso {
         return ($row[0] == 1);
     }
     
+    /*
+     * This event method is called when the user selects a new perso
+     */
     public function on_select () {
         //Session
         set_info('perso_id', $this->id);
         $this->set_flag("site.lastlogin", $_SERVER['REQUEST_TIME']);
         define("PersoSelected", true);
     }
-    
+
+    /*
+     * This event method is called when the user logs off its account or perso
+     */    
     public function on_logout () {
         //Clears perso information in $_SESSION and session table
         set_info('perso_id', null);

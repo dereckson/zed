@@ -1,8 +1,8 @@
 <?php
 
 /*
- * Azhàr, faeries intranet
- * (c) 2009-2010, Wolfæym, some rights reserved
+ * Zed
+ * (c) 2010, Dereckson, some rights reserved
  * Released under BSD license
  *
  * void content

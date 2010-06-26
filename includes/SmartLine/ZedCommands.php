@@ -206,4 +206,29 @@ class UnixTimeSmartLineCommand extends SmartLineCommand {
     }
 }
 
+///
+/// invite
+///
+
+class InviteSmartLineCommand extends SmartLineCommand {
+    public function run ($argv, $argc) {
+	require_once
+	//Checks if we could invite
+	date_default_timezone_set('UTC');
+	if ($argc == 1) {
+	    $this->SmartLine->puts(time());
+	} elseif ($argc == 2 && is_numeric($argv[1])) {
+	    $this->SmartLine->puts(strftime("%Y-%m-%d %X", $argv[1]));
+	} else {
+	    array_shift($argv);
+	    $date = implode(' ', $argv);
+	    if ($time = strtotime($date) !== false) {
+		    $this->SmartLine->puts("Unixtime from $date: <span class=\"highlight\">$time</span>");
+		} else {
+		    $this->SmartLine->puts("$date isn't a unixtime nor a valid date strtotime is able to parse.", STDERR);
+		}
+	}
+    }
+}
+
 ?>

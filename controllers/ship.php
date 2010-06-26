@@ -22,7 +22,7 @@ if  (count($url) < 2) {
 } else {
     //Code have been specified
     $code = $url[1];
-    if (!ereg("^S[0-9]{5}$", $code)) {
+    if (!preg_match("/^S[0-9]{5}$/", $code)) {
         message_die(GENERAL_ERROR, "/ship/ must be followed by valid ship code", "URL error");
     }
 }
