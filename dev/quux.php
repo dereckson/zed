@@ -3,10 +3,11 @@
     require_once('includes/objects/ship.php');
     require_once('includes/objects/port.php');
     require_once('includes/objects/application.php');
+    require_once('includes/objects/content.php');
         
     include('controllers/header.php');
     
-    $case = 'pushdata';
+    $case = 'thumbnail';
     switch ($case) {
         case 'pushdata';
             echo '
@@ -16,6 +17,13 @@
     <input type="submit" value="Send file" />   
 </form>
             ';
+            break;
+        
+        case 'thumbnail':
+            $content = new Content(1);
+            dprint_r($content);
+            $content->generate_thumbnail();
+            break;
         
         case 'port':
             echo '<h2>Port::from_location test</h2>';

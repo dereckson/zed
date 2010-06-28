@@ -182,12 +182,22 @@ class Content {
     }
     
     /*
+     * Creates a directory
+     */
+    function create_directory ($dir) {
+        if (!file_exists($dir)) {
+            @mkdir($dir); //Creates new directory, chmod 777
+        }
+    }
+    
+    /*
      * @return boolean true if the file have been handled
      */
     function handle_uploaded_file ($fileArray) {
         if (count($fileArray) && $fileArray['error'] == 0) {
+            $this->create_directory("content/users/$this->user_id");
             $this->path = "content/users/$this->user_id/$fileArray[name]";
-            if (!self::is_valid_extension(get_extension($file))) {
+            if (!self::is_valid_extension(get_extension($fileArray[name]))) {
                 return false;
             }
             if (move_uploaded_file($fileArray['tmp_name'], $this->path)) {
@@ -214,8 +224,9 @@ class Content {
         $thumbnailFile = substr($sourceFile, 0, $pos) . 'Square' . substr($sourceFile, $pos);
 
         //Executes imagemagick command
-        $command = $Config['ImageMagick']['convert'] . " $sourceFile -resize 162x162 $thumbnailFile";
-        @system($command, $code);
+        $command = $Config['ImageMagick']['convert'] . " \"$sourceFile\" -resize 162x162 \"$thumbnailFile\"";
+        echo "$command";
+        system($command, $code);
 
         //Returns true if the command have exited with errorcode 0 (= ok)
         return ($code == 0);

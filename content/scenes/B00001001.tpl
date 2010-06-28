@@ -117,11 +117,11 @@
             <input type="hidden" id="location_local" name="location_local" value='{$CurrentPerso->location_local}' />
             <input type="hidden" id="i" name="location_k" value="-1">
             <div class="row">
-                <label for="artwork" class="firstLabel">Picture (max. {ini_get('upload_max_filesize')})</label>
+                <label for="artwork" class="firstLabel">{#UploadNewArtworkPicture#} (max. {ini_get('upload_max_filesize')})</label>
                 <input type="file" name="artwork" id="artwork" class="long" />
             </div>
             <div class="row">
-                <label for="title" class="firstLabel">Title</label>
+                <label for="title" class="firstLabel">{#UploadNewArtworkTitle#}</label>
                 <input dojoType="dijit.form.TextBox" name="title" id="title" type="text" class="long" />
             </div>
             <div class="row center">

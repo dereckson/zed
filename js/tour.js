@@ -140,9 +140,15 @@ var tour = {
         //Runs tour animation
         //The rollover will be enabled at anim end
         this.run(900);
+        
+        //Makes the tour clickable
+        $('#Tour').bind("click", function(e) {
+            document.location.href = "/";
+        });
     }
 }
         
 $(document).ready(function() {
-  tour.init();          
+  tour.init();    
 });
+
