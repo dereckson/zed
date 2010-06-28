@@ -293,7 +293,7 @@ class GeoLocation {
                 break;
             
             case 'body_code':
-                if (ereg("[0-9]{1,5}", $value)) {
+                if (preg_match("/[0-9]{1,5}/", $value)) {
                     $value = sprintf("%05d", $value);
                     if (!$this->data[0]) {
                         $this->data[0] = "B" . $value;
@@ -307,7 +307,7 @@ class GeoLocation {
                 throw new Exception("$value isn't a valid body code");
                 
             case 'ship_code':
-                if (ereg("[0-9]{1,5}", $value)) {
+                if (preg_match("/[0-9]{1,5}/", $value)) {
                     $value = sprintf("%05d", $value);
                     if (!$this->data[0]) {
                         $this->data[0] = "S" . $value;
@@ -321,7 +321,7 @@ class GeoLocation {
                 throw new Exception("$value isn't a valid ship code");
             
             case 'place_code':
-                if (!ereg("[0-9]{1,3}", $value)) {
+                if (!preg_match("/[0-9]{1,3}/", $value)) {
                     throw new Exception("$value isn't a valid place code");
                 }
                 $value = sprintf("%03d", $value);

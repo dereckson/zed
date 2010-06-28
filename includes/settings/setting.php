@@ -62,7 +62,7 @@ class Setting {
     function set ($value) {
         //Validates data
         if ($this->regExp) {
-            if (!ereg('^' . $this->regExp . '$', $value)) {
+            if (!preg_match('/^' . $this->regExp . '$/', $value)) {
                 $this->lastError = "Invalid format for $this->key setting";
                 return false;
             }
