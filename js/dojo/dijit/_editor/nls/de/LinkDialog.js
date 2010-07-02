@@ -1,1 +1,1 @@
-({"set": "Festlegen", "text": "Text:", "title": "Link-URL", "url": "URL:", "urlInvalidMessage": "Ungültiger URL. Geben Sie einen vollständigen URL ein. Beispiel: 'http://www.dojotoolkit.org'"})
+({"text":"Beschreibung:","insertImageTitle":"Grafikeigenschaften","set":"Festlegen","newWindow":"Neues Fenster","topWindow":"Aktives Fenster","target":"Ziel:","createLinkTitle":"Linkeigenschaften","parentWindow":"Übergeordnetes Fenster","currentWindow":"Aktuelles Fenster","url":"URL:"})

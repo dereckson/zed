@@ -1,349 +1,322 @@
-if(!dojo._hasResource["dijit._Widget"]){ //_hasResource checks added by build. Do not use _hasResource directly in your code.
-dojo._hasResource["dijit._Widget"] = true;
+/*
+	Copyright (c) 2004-2009, The Dojo Foundation All Rights Reserved.
+	Available via Academic Free License >= 2.1 OR the modified BSD license.
+	see: http://dojotoolkit.org/license for details
+*/
+
+
+if(!dojo._hasResource["dijit._Widget"]){
+dojo._hasResource["dijit._Widget"]=true;
 dojo.provide("dijit._Widget");
-
 dojo.require("dijit._base");
-
-dojo.declare("dijit._Widget", null, {
-	// summary:
-	//		The foundation of dijit widgets. 	
-	//
-	// id: String
-	//		a unique, opaque ID string that can be assigned by users or by the
-	//		system. If the developer passes an ID which is known not to be
-	//		unique, the specified ID is ignored and the system-generated ID is
-	//		used instead.
-	id: "",
-
-	// lang: String
-	//	Language to display this widget in (like en-us).
-	//	Defaults to brower's specified preferred language (typically the language of the OS)
-	lang: "",
-
-	// dir: String
-	//  Bi-directional support, as defined by the HTML DIR attribute. Either left-to-right "ltr" or right-to-left "rtl".
-	dir: "",
-
-	// class: String
-	// HTML class attribute
-	"class": "",
-
-	// style: String
-	// HTML style attribute
-	style: "",
-
-	// title: String
-	// HTML title attribute
-	title: "",
-
-	// srcNodeRef: DomNode
-	//		pointer to original dom node
-	srcNodeRef: null,
-
-	// domNode: DomNode
-	//		this is our visible representation of the widget! Other DOM
-	//		Nodes may by assigned to other properties, usually through the
-	//		template system's dojoAttachPonit syntax, but the domNode
-	//		property is the canonical "top level" node in widget UI.
-	domNode: null,
-
-	// attributeMap: Object
-	//		A map of attributes and attachpoints -- typically standard HTML attributes -- to set
-	//		on the widget's dom, at the "domNode" attach point, by default.
-	//		Other node references can be specified as properties of 'this'
-	attributeMap: {id:"", dir:"", lang:"", "class":"", style:"", title:""},  // TODO: add on* handlers?
-
-	//////////// INITIALIZATION METHODS ///////////////////////////////////////
-
-	postscript: function(params, srcNodeRef){
-		this.create(params, srcNodeRef);
-	},
-
-	create: function(params, srcNodeRef){
-		// summary:
-		//		To understand the process by which widgets are instantiated, it
-		//		is critical to understand what other methods create calls and
-		//		which of them you'll want to override. Of course, adventurous
-		//		developers could override create entirely, but this should
-		//		only be done as a last resort.
-		//
-		//		Below is a list of the methods that are called, in the order
-		//		they are fired, along with notes about what they do and if/when
-		//		you should over-ride them in your widget:
-		//			
-		//			postMixInProperties:
-		//				a stub function that you can over-ride to modify
-		//				variables that may have been naively assigned by
-		//				mixInProperties
-		//			# widget is added to manager object here
-		//			buildRendering
-		//				Subclasses use this method to handle all UI initialization
-		//				Sets this.domNode.  Templated widgets do this automatically
-		//				and otherwise it just uses the source dom node.
-		//			postCreate
-		//				a stub function that you can over-ride to modify take
-		//				actions once the widget has been placed in the UI
-
-		// store pointer to original dom tree
-		this.srcNodeRef = dojo.byId(srcNodeRef);
-
-		// For garbage collection.  An array of handles returned by Widget.connect()
-		// Each handle returned from Widget.connect() is an array of handles from dojo.connect()
-		this._connects=[];
-
-		// _attaches: String[]
-		// 		names of all our dojoAttachPoint variables
-		this._attaches=[];
-
-		//mixin our passed parameters
-		if(this.srcNodeRef && (typeof this.srcNodeRef.id == "string")){ this.id = this.srcNodeRef.id; }
-		if(params){
-			dojo.mixin(this,params);
-		}
-		this.postMixInProperties();
-
-		// generate an id for the widget if one wasn't specified
-		// (be sure to do this before buildRendering() because that function might
-		// expect the id to be there.
-		if(!this.id){
-			this.id=dijit.getUniqueId(this.declaredClass.replace(/\./g,"_"));
-		}
-		dijit.registry.add(this);
-
-		this.buildRendering();
-
-		// Copy attributes listed in attributeMap into the [newly created] DOM for the widget.
-		// The placement of these attributes is according to the property mapping in attributeMap.
-		// Note special handling for 'style' and 'class' attributes which are lists and can
-		// have elements from both old and new structures, and some attributes like "type"
-		// cannot be processed this way as they are not mutable.
-		if(this.domNode){
-			for(var attr in this.attributeMap){
-				var mapNode = this[this.attributeMap[attr] || "domNode"];
-				var value = this[attr];
-				if(typeof value != "object" && (value !== "" || (params && params[attr]))){
-					switch(attr){
-					case "class":
-						dojo.addClass(mapNode, value);
-						break;
-					case "style":
-						if(mapNode.style.cssText){
-							mapNode.style.cssText += "; " + value;// FIXME: Opera
-						}else{
-							mapNode.style.cssText = value;
-						}
-						break;
-					default:
-						mapNode.setAttribute(attr, value);
-					}
-				}
-			}
-		}
-
-		if(this.domNode){
-			this.domNode.setAttribute("widgetId", this.id);
-		}
-		this.postCreate();
-
-		// If srcNodeRef has been processed and removed from the DOM (e.g. TemplatedWidget) then delete it to allow GC.
-		if(this.srcNodeRef && !this.srcNodeRef.parentNode){
-			delete this.srcNodeRef;
-		}	
-	},
-
-	postMixInProperties: function(){
-		// summary
-		//	Called after the parameters to the widget have been read-in,
-		//	but before the widget template is instantiated.
-		//	Especially useful to set properties that are referenced in the widget template.
-	},
-
-	buildRendering: function(){
-		// summary:
-		//		Construct the UI for this widget, setting this.domNode.
-		//		Most widgets will mixin TemplatedWidget, which overrides this method.
-		this.domNode = this.srcNodeRef || dojo.doc.createElement('div');
-	},
-
-	postCreate: function(){
-		// summary:
-		//		Called after a widget's dom has been setup
-	},
-
-	startup: function(){
-		// summary:
-		//		Called after a widget's children, and other widgets on the page, have been created.
-		//		Provides an opportunity to manipulate any children before they are displayed
-		//		This is useful for composite widgets that need to control or layout sub-widgets
-		//		Many layout widgets can use this as a wiring phase
-	},
-
-	//////////// DESTROY FUNCTIONS ////////////////////////////////
-
-	destroyRecursive: function(/*Boolean*/ finalize){
-		// summary:
-		// 		Destroy this widget and it's descendants. This is the generic
-		// 		"destructor" function that all widget users should call to
-		// 		cleanly discard with a widget. Once a widget is destroyed, it's
-		// 		removed from the manager object.
-		// finalize: Boolean
-		//		is this function being called part of global environment
-		//		tear-down?
-
-		this.destroyDescendants();
-		this.destroy();
-	},
-
-	destroy: function(/*Boolean*/ finalize){
-		// summary:
-		// 		Destroy this widget, but not its descendants
-		// finalize: Boolean
-		//		is this function being called part of global environment
-		//		tear-down?
-		this.uninitialize();
-		dojo.forEach(this._connects, function(array){
-			dojo.forEach(array, dojo.disconnect);
-		});
-		this.destroyRendering(finalize);
-		dijit.registry.remove(this.id);
-	},
-
-	destroyRendering: function(/*Boolean*/ finalize){
-		// summary:
-		//		Destroys the DOM nodes associated with this widget
-		// finalize: Boolean
-		//		is this function being called part of global environment
-		//		tear-down?
-
-		if(this.bgIframe){
-			this.bgIframe.destroy();
-			delete this.bgIframe;
-		}
-
-		if(this.domNode){
-			dojo._destroyElement(this.domNode);
-			delete this.domNode;
-		}
-
-		if(this.srcNodeRef){
-			dojo._destroyElement(this.srcNodeRef);
-			delete this.srcNodeRef;
-		}
-	},
-
-	destroyDescendants: function(){
-		// summary:
-		//		Recursively destroy the children of this widget and their
-		//		descendants.
-
-		// TODO: should I destroy in the reverse order, to go bottom up?
-		dojo.forEach(this.getDescendants(), function(widget){ widget.destroy(); });
-	},
-
-	uninitialize: function(){
-		// summary:
-		//		stub function. Over-ride to implement custom widget tear-down
-		//		behavior.
-		return false;
-	},
-
-	////////////////// MISCELLANEOUS METHODS ///////////////////
-
-	toString: function(){
-		// summary:
-		//		returns a string that represents the widget. When a widget is
-		//		cast to a string, this method will be used to generate the
-		//		output. Currently, it does not implement any sort of reversable
-		//		serialization.
-		return '[Widget ' + this.declaredClass + ', ' + (this.id || 'NO ID') + ']'; // String
-	},
-
-	getDescendants: function(){
-		// summary:
-		//	return all the descendant widgets
-		var list = dojo.query('[widgetId]', this.domNode);
-		return list.map(dijit.byNode);		// Array
-	},
-
-	nodesWithKeyClick : ["input", "button"],
-
-	connect: function(
-			/*Object|null*/ obj,
-			/*String*/ event,
-			/*String|Function*/ method){
-
-		// summary:
-		//		Connects specified obj/event to specified method of this object
-		//		and registers for disconnect() on widget destroy.
-		//		Special event: "ondijitclick" triggers on a click or enter-down or space-up
-		//		Similar to dojo.connect() but takes three arguments rather than four.
-		var handles =[];
-		if(event == "ondijitclick"){
-			var w = this;
-			// add key based click activation for unsupported nodes.
-			if(!this.nodesWithKeyClick[obj.nodeName]){
-				handles.push(dojo.connect(obj, "onkeydown", this,
-					function(e){
-						if(e.keyCode == dojo.keys.ENTER){
-							return (dojo.isString(method))?
-								w[method](e) : method.call(w, e);
-						}else if(e.keyCode == dojo.keys.SPACE){
-							// stop space down as it causes IE to scroll
-							// the browser window
-							dojo.stopEvent(e);
-						}
-			 		}));
-				handles.push(dojo.connect(obj, "onkeyup", this,
-					function(e){
-						if(e.keyCode == dojo.keys.SPACE){
-							return dojo.isString(method) ?
-								w[method](e) : method.call(w, e);
-						}
-			 		}));
-			}
-			event = "onclick";
-		}
-		handles.push(dojo.connect(obj, event, this, method));
-
-		// return handles for FormElement and ComboBox
-		this._connects.push(handles);
-		return handles;
-	},
-
-	disconnect: function(/*Object*/ handles){
-		// summary:
-		//		Disconnects handle created by this.connect.
-		//		Also removes handle from this widget's list of connects
-		for(var i=0; i<this._connects.length; i++){
-			if(this._connects[i]==handles){
-				dojo.forEach(handles, dojo.disconnect);
-				this._connects.splice(i, 1);
-				return;
-			}
-		}
-	},
-
-	isLeftToRight: function(){
-		// summary:
-		//		Checks the DOM to for the text direction for bi-directional support
-		// description:
-		//		This method cannot be used during widget construction because the widget
-		//		must first be connected to the DOM tree.  Parent nodes are searched for the
-		//		'dir' attribute until one is found, otherwise left to right mode is assumed.
-		//		See HTML spec, DIR attribute for more information.
-
-		if(typeof this._ltr == "undefined"){
-			this._ltr = dojo.getComputedStyle(this.domNode).direction != "rtl";
-		}
-		return this._ltr; //Boolean
-	},
-
-	isFocusable: function(){
-		// summary:
-		//		Return true if this widget can currently be focused
-		//		and false if not
-		return this.focus && (dojo.style(this.domNode, "display") != "none");
-	}
+dojo.connect(dojo,"_connect",function(_1,_2){
+if(_1&&dojo.isFunction(_1._onConnect)){
+_1._onConnect(_2);
+}
 });
-
+dijit._connectOnUseEventHandler=function(_3){
+};
+dijit._lastKeyDownNode=null;
+if(dojo.isIE){
+(function(){
+var _4=function(_5){
+dijit._lastKeyDownNode=_5.srcElement;
+};
+dojo.doc.attachEvent("onkeydown",_4);
+dojo.addOnWindowUnload(function(){
+dojo.doc.detachEvent("onkeydown",_4);
+});
+})();
+}else{
+dojo.doc.addEventListener("keydown",function(_6){
+dijit._lastKeyDownNode=_6.target;
+},true);
+}
+(function(){
+var _7={},_8=function(_9){
+var dc=_9.declaredClass;
+if(!_7[dc]){
+var r=[],_a,_b=_9.constructor.prototype;
+for(var _c in _b){
+if(dojo.isFunction(_b[_c])&&(_a=_c.match(/^_set([a-zA-Z]*)Attr$/))&&_a[1]){
+r.push(_a[1].charAt(0).toLowerCase()+_a[1].substr(1));
+}
+}
+_7[dc]=r;
+}
+return _7[dc]||[];
+};
+dojo.declare("dijit._Widget",null,{id:"",lang:"",dir:"","class":"",style:"",title:"",tooltip:"",srcNodeRef:null,domNode:null,containerNode:null,attributeMap:{id:"",dir:"",lang:"","class":"",style:"",title:""},_deferredConnects:{onClick:"",onDblClick:"",onKeyDown:"",onKeyPress:"",onKeyUp:"",onMouseMove:"",onMouseDown:"",onMouseOut:"",onMouseOver:"",onMouseLeave:"",onMouseEnter:"",onMouseUp:""},onClick:dijit._connectOnUseEventHandler,onDblClick:dijit._connectOnUseEventHandler,onKeyDown:dijit._connectOnUseEventHandler,onKeyPress:dijit._connectOnUseEventHandler,onKeyUp:dijit._connectOnUseEventHandler,onMouseDown:dijit._connectOnUseEventHandler,onMouseMove:dijit._connectOnUseEventHandler,onMouseOut:dijit._connectOnUseEventHandler,onMouseOver:dijit._connectOnUseEventHandler,onMouseLeave:dijit._connectOnUseEventHandler,onMouseEnter:dijit._connectOnUseEventHandler,onMouseUp:dijit._connectOnUseEventHandler,_blankGif:(dojo.config.blankGif||dojo.moduleUrl("dojo","resources/blank.gif")).toString(),postscript:function(_d,_e){
+this.create(_d,_e);
+},create:function(_f,_10){
+this.srcNodeRef=dojo.byId(_10);
+this._connects=[];
+this._subscribes=[];
+this._deferredConnects=dojo.clone(this._deferredConnects);
+for(var _11 in this.attributeMap){
+delete this._deferredConnects[_11];
+}
+for(_11 in this._deferredConnects){
+if(this[_11]!==dijit._connectOnUseEventHandler){
+delete this._deferredConnects[_11];
+}
+}
+if(this.srcNodeRef&&(typeof this.srcNodeRef.id=="string")){
+this.id=this.srcNodeRef.id;
+}
+if(_f){
+this.params=_f;
+dojo.mixin(this,_f);
+}
+this.postMixInProperties();
+if(!this.id){
+this.id=dijit.getUniqueId(this.declaredClass.replace(/\./g,"_"));
+}
+dijit.registry.add(this);
+this.buildRendering();
+if(this.domNode){
+this._applyAttributes();
+var _12=this.srcNodeRef;
+if(_12&&_12.parentNode){
+_12.parentNode.replaceChild(this.domNode,_12);
+}
+for(_11 in this.params){
+this._onConnect(_11);
+}
+}
+if(this.domNode){
+this.domNode.setAttribute("widgetId",this.id);
+}
+this.postCreate();
+if(this.srcNodeRef&&!this.srcNodeRef.parentNode){
+delete this.srcNodeRef;
+}
+this._created=true;
+},_applyAttributes:function(){
+var _13=function(_14,_15){
+if((_15.params&&_14 in _15.params)||_15[_14]){
+_15.attr(_14,_15[_14]);
+}
+};
+for(var _16 in this.attributeMap){
+_13(_16,this);
+}
+dojo.forEach(_8(this),function(a){
+if(!(a in this.attributeMap)){
+_13(a,this);
+}
+},this);
+},postMixInProperties:function(){
+},buildRendering:function(){
+this.domNode=this.srcNodeRef||dojo.create("div");
+},postCreate:function(){
+},startup:function(){
+this._started=true;
+},destroyRecursive:function(_17){
+this._beingDestroyed=true;
+this.destroyDescendants(_17);
+this.destroy(_17);
+},destroy:function(_18){
+this._beingDestroyed=true;
+this.uninitialize();
+var d=dojo,dfe=d.forEach,dun=d.unsubscribe;
+dfe(this._connects,function(_19){
+dfe(_19,d.disconnect);
+});
+dfe(this._subscribes,function(_1a){
+dun(_1a);
+});
+dfe(this._supportingWidgets||[],function(w){
+if(w.destroyRecursive){
+w.destroyRecursive();
+}else{
+if(w.destroy){
+w.destroy();
+}
+}
+});
+this.destroyRendering(_18);
+dijit.registry.remove(this.id);
+this._destroyed=true;
+},destroyRendering:function(_1b){
+if(this.bgIframe){
+this.bgIframe.destroy(_1b);
+delete this.bgIframe;
+}
+if(this.domNode){
+if(_1b){
+dojo.removeAttr(this.domNode,"widgetId");
+}else{
+dojo.destroy(this.domNode);
+}
+delete this.domNode;
+}
+if(this.srcNodeRef){
+if(!_1b){
+dojo.destroy(this.srcNodeRef);
+}
+delete this.srcNodeRef;
+}
+},destroyDescendants:function(_1c){
+dojo.forEach(this.getChildren(),function(_1d){
+if(_1d.destroyRecursive){
+_1d.destroyRecursive(_1c);
+}
+});
+},uninitialize:function(){
+return false;
+},onFocus:function(){
+},onBlur:function(){
+},_onFocus:function(e){
+this.onFocus();
+},_onBlur:function(){
+this.onBlur();
+},_onConnect:function(_1e){
+if(_1e in this._deferredConnects){
+var _1f=this[this._deferredConnects[_1e]||"domNode"];
+this.connect(_1f,_1e.toLowerCase(),_1e);
+delete this._deferredConnects[_1e];
+}
+},_setClassAttr:function(_20){
+var _21=this[this.attributeMap["class"]||"domNode"];
+dojo.removeClass(_21,this["class"]);
+this["class"]=_20;
+dojo.addClass(_21,_20);
+},_setStyleAttr:function(_22){
+var _23=this[this.attributeMap.style||"domNode"];
+if(dojo.isObject(_22)){
+dojo.style(_23,_22);
+}else{
+if(_23.style.cssText){
+_23.style.cssText+="; "+_22;
+}else{
+_23.style.cssText=_22;
+}
+}
+this.style=_22;
+},setAttribute:function(_24,_25){
+dojo.deprecated(this.declaredClass+"::setAttribute() is deprecated. Use attr() instead.","","2.0");
+this.attr(_24,_25);
+},_attrToDom:function(_26,_27){
+var _28=this.attributeMap[_26];
+dojo.forEach(dojo.isArray(_28)?_28:[_28],function(_29){
+var _2a=this[_29.node||_29||"domNode"];
+var _2b=_29.type||"attribute";
+switch(_2b){
+case "attribute":
+if(dojo.isFunction(_27)){
+_27=dojo.hitch(this,_27);
+}
+var _2c=_29.attribute?_29.attribute:(/^on[A-Z][a-zA-Z]*$/.test(_26)?_26.toLowerCase():_26);
+dojo.attr(_2a,_2c,_27);
+break;
+case "innerText":
+_2a.innerHTML="";
+_2a.appendChild(dojo.doc.createTextNode(_27));
+break;
+case "innerHTML":
+_2a.innerHTML=_27;
+break;
+case "class":
+dojo.removeClass(_2a,this[_26]);
+dojo.addClass(_2a,_27);
+break;
+}
+},this);
+this[_26]=_27;
+},attr:function(_2d,_2e){
+var _2f=arguments.length;
+if(_2f==1&&!dojo.isString(_2d)){
+for(var x in _2d){
+this.attr(x,_2d[x]);
+}
+return this;
+}
+var _30=this._getAttrNames(_2d);
+if(_2f>=2){
+if(this[_30.s]){
+_2f=dojo._toArray(arguments,1);
+return this[_30.s].apply(this,_2f)||this;
+}else{
+if(_2d in this.attributeMap){
+this._attrToDom(_2d,_2e);
+}
+this[_2d]=_2e;
+}
+return this;
+}else{
+return this[_30.g]?this[_30.g]():this[_2d];
+}
+},_attrPairNames:{},_getAttrNames:function(_31){
+var apn=this._attrPairNames;
+if(apn[_31]){
+return apn[_31];
+}
+var uc=_31.charAt(0).toUpperCase()+_31.substr(1);
+return (apn[_31]={n:_31+"Node",s:"_set"+uc+"Attr",g:"_get"+uc+"Attr"});
+},toString:function(){
+return "[Widget "+this.declaredClass+", "+(this.id||"NO ID")+"]";
+},getDescendants:function(){
+return this.containerNode?dojo.query("[widgetId]",this.containerNode).map(dijit.byNode):[];
+},getChildren:function(){
+return this.containerNode?dijit.findWidgets(this.containerNode):[];
+},nodesWithKeyClick:["input","button"],connect:function(obj,_32,_33){
+var d=dojo,dc=d._connect,_34=[];
+if(_32=="ondijitclick"){
+if(!this.nodesWithKeyClick[obj.tagName.toLowerCase()]){
+var m=d.hitch(this,_33);
+_34.push(dc(obj,"onkeydown",this,function(e){
+if((e.keyCode==d.keys.ENTER||e.keyCode==d.keys.SPACE)&&!e.ctrlKey&&!e.shiftKey&&!e.altKey&&!e.metaKey){
+dijit._lastKeyDownNode=e.target;
+d.stopEvent(e);
+}
+}),dc(obj,"onkeyup",this,function(e){
+if((e.keyCode==d.keys.ENTER||e.keyCode==d.keys.SPACE)&&e.target===dijit._lastKeyDownNode&&!e.ctrlKey&&!e.shiftKey&&!e.altKey&&!e.metaKey){
+dijit._lastKeyDownNode=null;
+return m(e);
+}
+}));
+}
+_32="onclick";
+}
+_34.push(dc(obj,_32,this,_33));
+this._connects.push(_34);
+return _34;
+},disconnect:function(_35){
+for(var i=0;i<this._connects.length;i++){
+if(this._connects[i]==_35){
+dojo.forEach(_35,dojo.disconnect);
+this._connects.splice(i,1);
+return;
+}
+}
+},subscribe:function(_36,_37){
+var d=dojo,_38=d.subscribe(_36,this,_37);
+this._subscribes.push(_38);
+return _38;
+},unsubscribe:function(_39){
+for(var i=0;i<this._subscribes.length;i++){
+if(this._subscribes[i]==_39){
+dojo.unsubscribe(_39);
+this._subscribes.splice(i,1);
+return;
+}
+}
+},isLeftToRight:function(){
+return dojo._isBodyLtr();
+},isFocusable:function(){
+return this.focus&&(dojo.style(this.domNode,"display")!="none");
+},placeAt:function(_3a,_3b){
+if(_3a.declaredClass&&_3a.addChild){
+_3a.addChild(this,_3b);
+}else{
+dojo.place(this.domNode,_3a,_3b);
+}
+return this;
+},_onShow:function(){
+this.onShow();
+},onShow:function(){
+},onHide:function(){
+}});
+})();
 }

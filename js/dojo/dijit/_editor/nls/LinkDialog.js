@@ -1,1 +1,1 @@
-({"set": "Set", "text": "Text:", "title": "Link URL", "url": "URL:", "urlInvalidMessage": "Invalid URL.  Enter a full URL like 'http://www.dojotoolkit.org'"})
+({"text":"Description:","insertImageTitle":"Image Properties","set":"Set","newWindow":"New Window","topWindow":"Topmost Window","target":"Target:","createLinkTitle":"Link Properties","parentWindow":"Parent Window","currentWindow":"Current Window","url":"URL:"})

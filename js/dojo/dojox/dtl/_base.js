@@ -1,632 +1,574 @@
-if(!dojo._hasResource["dojox.dtl._base"]){ //_hasResource checks added by build. Do not use _hasResource directly in your code.
-dojo._hasResource["dojox.dtl._base"] = true;
-dojo.provide("dojox.dtl._base");
+/*
+	Copyright (c) 2004-2009, The Dojo Foundation All Rights Reserved.
+	Available via Academic Free License >= 2.1 OR the modified BSD license.
+	see: http://dojotoolkit.org/license for details
+*/
 
+
+if(!dojo._hasResource["dojox.dtl._base"]){
+dojo._hasResource["dojox.dtl._base"]=true;
+dojo.provide("dojox.dtl._base");
 dojo.require("dojox.string.Builder");
 dojo.require("dojox.string.tokenize");
-
-dojox.dtl.Context = function(dict){
-	dojo.mixin(this, dict || {});
-	this._dicts = [];
-	this._this = {};
-}
-dojo.extend(dojox.dtl.Context, {
-	_dicts: [],
-	_this: {},
-	extend: function(/*dojox.dtl.Context|Object*/ obj){
-		// summary: Returns a clone of this context object, with the items from the
-		//		passed objecct mixed in.
-		var context = new dojox.dtl.Context();
-		var keys = this.getKeys();
-		for(var i = 0, key; key = keys[i]; i++){
-			if(typeof obj[key] != "undefined"){
-				context[key] = obj[key];
-			}else{
-				context[key] = this[key];
-			}
-		}
-
-		if(obj instanceof dojox.dtl.Context){
-			keys = obj.getKeys();
-		}else if(typeof obj == "object"){
-			keys = [];
-			for(var key in obj){
-				keys.push(key);
-			}
-		}
-
-		for(var i = 0, key; key = keys[i]; i++){
-			context[key] = obj[key];
-		}
-
-		return context;
-	},
-	filter: function(/*dojox.dtl.Context|Object|String...*/ filter){
-		// summary: Returns a clone of this context, only containing the items
-		//		defined in the filter.
-		var context = new dojox.dtl.Context();
-		var keys = [];
-		if(filter instanceof dojox.dtl.Context){
-			keys = filter.getKeys();
-		}else if(typeof filter == "object"){
-			for(var key in filter){
-				keys.push(key);
-			}
-		}else{
-			for(var i = 0, arg; arg = arguments[i]; i++){
-				if(typeof arg == "string"){
-					keys.push(arg);
-				}
-			}
-		}
-
-		for(var i = 0, key; key = keys[i]; i++){
-			context[key] = this[key];
-		}
-
-		return context;
-	},
-	setThis: function(/*Object*/ _this){
-		this._this = _this;
-	},
-	getThis: function(){
-		return this._this;
-	},
-	push: function(){
-		var dict = {};
-		var keys = this.getKeys();
-		for(var i = 0, key; key = keys[i]; i++){
-			dict[key] = this[key];
-			delete this[key];
-		}
-		this._dicts.unshift(dict);
-	},
-	pop: function(){
-		if(!this._dicts.length){
-			throw new Error("pop() has been called more times than push() on the Context");
-		}
-		var dict = this._dicts.shift();
-		dojo.mixin(this, dict);
-	},
-	hasKey: function(key){
-		if(typeof this[key] != "undefined"){
-			return true;
-		}
-
-		for(var i = 0, dict; dict = this._dicts[i]; i++){
-			if(typeof dict[key] != "undefined"){
-				return true;
-			}
-		}
-
-		return false;
-	},
-	getKeys: function(){
-		var keys = [];
-		for(var key in this){
-			if(isNaN(key)){
-				var found = false;
-				for(var protoKey in dojox.dtl.Context.prototype){
-					if(key == protoKey){
-						found = true;
-						break;
-					}
-				}
-				if(!found){
-					keys.push(key);
-				}
-			}
-		}
-		return keys;
-	},
-	get: function(key, otherwise){
-		if(typeof this[key] != "undefined"){
-			return this[key];
-		}
-
-		for(var i = 0, dict; dict = this._dicts[i]; i++){
-			if(typeof dict[key] != "undefined"){
-				return dict[key];
-			}
-		}
-
-		return otherwise;
-	},
-	update: function(dict){
-		this.push();
-		if(dict){
-			dojo.mixin(this, dict);
-		}
-	},
-	toString: function(){ return "dojox.dtl.Context"; }
-});
-
-dojox.dtl.text = {
-	types: {tag: -1, varr: -2,	text: 3},
-	pySplit: function(str){
-		// summary: Split a string according to Python's split function
-		str = str.replace(/^\s+|\s+$/, "");
-		if(!str.length){
-			return [];
-		}
-		return str.split(/\s+/g);
-	},
-	urlquote: function(/*String*/ url, /*String?*/ safe){
-		if(!safe){
-			safe = "/";
-		}
-		return dojox.string.tokenize(url, /([^\w-_.])/g, function(token){
-			if(safe.indexOf(token) == -1){
-				if(token == " "){
-					return "+";
-				}else{
-					return "%" + token.charCodeAt(0).toString(16).toUpperCase();
-				}
-			}
-			return token;
-		}).join("");
-	},
-	_get: function(module, name, errorless){
-		// summary: Used to find both tags and filters
-		var params = dojox.dtl.register.get(module, name, errorless);
-		if(!params) return;
-
-		var require = params.getRequire();
-		var obj = params.getObj();
-		var fn = params.getFn();
-
-		if(fn.indexOf(":") != -1){
-			var parts = fn.split(":");
-			fn = parts.pop();
-		}
-
-		dojo.requireIf(true, require);
-
-		var parent = window;
-		var parts = obj.split(".");
-		for(var i = 0, part; part = parts[i]; i++){
-			if(!parent[part]) return;
-			parent = parent[part];
-		}
-		return parent[fn || name] || parent[name + "_"];
-	},
-	getTag: function(name, errorless){
-		return dojox.dtl.text._get("tag", name, errorless);
-	},
-	getFilter: function(name, errorless){
-		return dojox.dtl.text._get("filter", name, errorless);
-	},
-	getTemplate: function(file){
-		return new dojox.dtl.Template(dojox.dtl.getTemplateString(file));
-	},
-	getTemplateString: function(file){
-		return dojo._getText(file.toString()) || "";
-	},
-	_re: /(?:\{\{\s*(.+?)\s*\}\}|\{%\s*(.+?)\s*%\})/g,
-	tokenize: function(str){
-		return dojox.string.tokenize(str, dojox.dtl.text._re, dojox.dtl.text._parseDelims);
-	},
-	_parseDelims: function(varr, tag){
-		var types = dojox.dtl.text.types;
-		if(varr){
-			return [types.varr, varr];
-		}else{
-			return [types.tag, tag];
-		}
-	}
-}
-
-dojox.dtl.Template = function(str){
-	var st = dojox.dtl;
-	var tokens = st.text.tokenize(str);
-	var parser = new st.Parser(tokens);
-	this.nodelist = parser.parse();
-}
-dojo.extend(dojox.dtl.Template, {
-	render: function(context, /*concatenatable?*/ buffer){
-		context = context || new dojox.dtl.Context({});
-		if(!buffer){
-			dojo.require("dojox.string.Builder");
-			buffer = new dojox.string.Builder();
-		}
-		return this.nodelist.render(context, buffer) + "";
-	},
-	toString: function(){ return "dojox.dtl.Template"; }
-});
-
-dojox.dtl.Filter = function(token){
-	// summary: Uses a string to find (and manipulate) a variable
-	if(!token) throw new Error("Filter must be called with variable name");
-	this.contents = token;
-	var key = null;
-	var re = this._re;
-	var matches, filter, arg, fn;
-	var filters = [];
-	while(matches = re.exec(token)){
-		if(key === null){
-			if(this._exists(matches, 3)){
-				// variable
-				key = matches[3];
-			}else if(this._exists(matches, 1)){
-				// _("text")
-				key = '"' + matches[1] + '"';
-			}else if(this._exists(matches, 2)){
-				// "text"
-				key = '"' + matches[2] + '"';
-			}else if(this._exists(matches, 9)){
-				// 'text'
-				key = '"' + matches[9] + '"';
-			}
-		}else{
-			if(this._exists(matches, 7)){
-				// :variable
-				arg = [true, matches[7]];
-			}else if(this._exists(matches, 5)){
-				// :_("text")
-				arg = [false, dojox.dtl.replace(matches[5], '\\"', '"')];
-			}else if(this._exists(matches, 6)){
-				// :"text"
-				arg = [false, dojox.dtl.replace(matches[6], '\\"', '"')];
-			}else if(this._exists(matches, 8)){
-				// :"text"
-				arg = [false, dojox.dtl.replace(matches[8], "\\'", "'")];
-			}
-			// Get a named filter
-			fn = dojox.dtl.text.getFilter(matches[4]);
-			if(typeof fn != "function") throw new Error(matches[4] + " is not registered as a filter");
-			filters.push([fn, arg]);
-		}
-	}
-
-	this.key = key;
-	this.filters = filters;
-} 
-dojo.extend(dojox.dtl.Filter, {
-	_re: /(?:^_\("([^\\"]*(?:\\.[^\\"])*)"\)|^"([^\\"]*(?:\\.[^\\"]*)*)"|^([a-zA-Z0-9_.]+)|\|(\w+)(?::(?:_\("([^\\"]*(?:\\.[^\\"])*)"\)|"([^\\"]*(?:\\.[^\\"]*)*)"|([a-zA-Z0-9_.]+)|'([^\\']*(?:\\.[^\\']*)*)'))?|^'([^\\']*(?:\\.[^\\']*)*)')/g,
-	_exists: function(arr, index){
-		if(typeof arr[index] != "undefined" && arr[index] !== ""){
-			return true;
-		}
-		return false;
-	},
-	resolve: function(context){
-		var str = this.resolvePath(this.key, context);
-		for(var i = 0, filter; filter = this.filters[i]; i++){
-			// Each filter has the function in [0], a boolean in [1][0] of whether it's a variable or a string
-			// and [1][1] is either the variable name of the string content.
-			if(filter[1]){
-				if(filter[1][0]){
-					str = filter[0](str, this.resolvePath(filter[1][1], context));
-				}else{
-					str = filter[0](str, filter[1][1]);
-				}
-			}else{
-				str = filter[0](str);
-			}
-		}
-		return str;
-	},
-	resolvePath: function(path, context){
-		var current, parts;
-		var first = path.charAt(0);
-		var last = path.charAt(path.length - 1);
-		if(!isNaN(parseInt(first))){
-			current = (path.indexOf(".") == -1) ? parseInt(path) : parseFloat(path);
-		}else if(first == '"' && first == last){
-			current = path.substring(1, path.length - 1);
-		}else{;
-			if(path == "true") return true;
-			if(path == "false") return false;
-			if(path == "null" || path == "None") return null;
-			parts = path.split(".");
-			current = context.get(parts.shift());
-			while(parts.length){
-				if(current && typeof current[parts[0]] != "undefined"){
-					current = current[parts[0]];
-					if(typeof current == "function"){
-						if(current.alters_data){
-							current = "";
-						}else{
-							current = current();
-						}
-					}
-				}else{
-					return "";
-				}
-				parts.shift();
-			}
-		}
-		return current;
-	},
-	toString: function(){ return "dojox.dtl.Filter"; }
-});
-
-dojox.dtl.Node = function(/*Object*/ obj){
-	// summary: Basic catch-all node
-	this.contents = obj;
-}
-dojo.extend(dojox.dtl.Node, {
-	render: function(context, buffer){
-		// summary: Adds content onto the buffer
-		return buffer.concat(this.contents);
-	},
-	toString: function(){ return "dojox.dtl.Node"; }
-});
-
-dojox.dtl.NodeList = function(/*Node[]*/ nodes){
-	// summary: Allows us to render a group of nodes
-	this.contents = nodes || [];
-}
-dojo.extend(dojox.dtl.NodeList, {
-	push: function(node){
-		// summary: Add a new node to the list
-		this.contents.push(node);
-	},
-	render: function(context, buffer){
-		// summary: Adds all content onto the buffer
-		for(var i = 0; i < this.contents.length; i++){
-			buffer = this.contents[i].render(context, buffer);
-			if(!buffer) throw new Error("Template node render functions must return their buffer");
-		}
-		return buffer;
-	},
-	unrender: function(context, buffer){ return buffer; },
-	clone: function(){ return this; },
-	toString: function(){ return "dojox.dtl.NodeList"; }
-});
-
-dojox.dtl.TextNode = dojox.dtl.Node;
-
-dojox.dtl.VarNode = function(str){
-	// summary: A node to be processed as a variable
-	this.contents = new dojox.dtl.Filter(str);
-}
-dojo.extend(dojox.dtl.VarNode, {
-	render: function(context, buffer){
-		var str = this.contents.resolve(context);
-		return buffer.concat(str);
-	},
-	toString: function(){ return "dojox.dtl.VarNode"; }
-});
-
-dojox.dtl.Parser = function(tokens){
-	// summary: Parser used during initialization and for tag groups.
-	this.contents = tokens;
-}
-dojo.extend(dojox.dtl.Parser, {
-	parse: function(/*Array?*/ stop_at){
-		// summary: Turns tokens into nodes
-		// description: Steps into tags are they're found. Blocks use the parse object
-		//		to find their closing tag (the stop_at array). stop_at is inclusive, it
-		//		returns the node that matched.
-		var st = dojox.dtl;
-		var types = st.text.types;
-		var terminators = {};
-		var tokens = this.contents;
-		stop_at = stop_at || [];
-		for(var i = 0; i < stop_at.length; i++){
-			terminators[stop_at[i]] = true;
-		}
-
-		var nodelist = new st.NodeList();
-		while(tokens.length){
-			token = tokens.shift();
-			if(typeof token == "string"){
-				nodelist.push(new st.TextNode(token));
-			}else{
-				var type = token[0];
-				var text = token[1];
-				if(type == types.varr){
-					nodelist.push(new st.VarNode(text));
-				}else if(type == types.tag){
-					if(terminators[text]){
-						tokens.unshift(token);
-						return nodelist;
-					}
-					var cmd = text.split(/\s+/g);
-					if(cmd.length){
-						cmd = cmd[0];
-						var fn = dojox.dtl.text.getTag(cmd);
-						if(fn){
-							nodelist.push(fn(this, text));
-						}
-					}
-				}
-			}
-		}
-
-		if(stop_at.length){
-			throw new Error("Could not find closing tag(s): " + stop_at.toString());
-		}
-
-		return nodelist;
-	},
-	next: function(){
-		// summary: Returns the next token in the list.
-		var token = this.contents.shift();
-		return {type: token[0], text: token[1]};
-	},
-	skipPast: function(endtag){
-		var types = dojox.dtl.text.types;
-		while(this.contents.length){
-			var token = this.contents.shift();
-			if(token[0] == types.tag && token[1] == endtag){
-				return;
-			}
-		}
-		throw new Error("Unclosed tag found when looking for " + endtag);
-	},
-	getVarNode: function(){
-		return dojox.dtl.VarNode;
-	},
-	getTextNode: function(){
-		return dojox.dtl.TextNode;
-	},
-	getTemplate: function(file){
-		return new dojox.dtl.Template(file);
-	},
-	toString: function(){ return "dojox.dtl.Parser"; }
-});
-
-dojox.dtl.register = function(module, cols, args, /*Function*/ normalize){
-	// summary: Used to create dojox.dtl.register[module] function, and as a namespace
-	// expand: Used if the call structure is reformatted for a more compact view.
-	//		Should return an array of normalized arguments.
-	// description: The function produced will accept a "name"
-	//		as the first parameter and all other parameters will
-	//		be associated with the parameter names listed in cols.
-	var ddr = dojox.dtl.register;
-	var registry = ddr._mod[module] = {
-		params: [],
-		Getter: function(params){
-			ddr._params = params || {};
-		}
-	};
-
-	cols.unshift("name");
-	for(var i = 0, col; col = cols[i]; i++){
-		registry.Getter.prototype["get" + col.substring(0, 1).toUpperCase() + col.substring(1, col.length)] = ddr._ret(i);
-	}
-
-	ddr[module] = function(/*String*/ name, /*mixed...*/ parameters){
-		if(normalize){
-			var normalized = normalize(arguments);
-		}else{
-			var normalized = [arguments];
-		}
-
-		for(var i = 0, args; args = normalized[i]; i++){
-			var params = [];
-			for(var j = 0; j < cols.length; j++){
-				params.push(args[j] || null);
-			}
-			if(typeof args[0] == "string"){
-				// Strings before regexes for speed
-				registry.params.unshift(params);
-			}else{
-				// break
-				// module RegExp
-				registry.params.push(params);
-			}
-		}
-	}
-
-	ddr[module].apply(null, args);
-}
-dojo.mixin(dojox.dtl.register, {
-	_mod: {},
-	_ret: function(i){
-		// summary: Just lets use i and _params within a closure
-		return function(){
-			return dojox.dtl.register._params[i] || "";
-		}
-	},
-	get: function(/*String*/ module, /*String*/ name, /*Boolean*/ errorless){
-		// summary: Returns a "Getter", based on the registry
-		// description: The getter functions correspond with the registered cols
-		//		used in dojo.register
-		var registry = this._mod[module] || {};
-		if(registry.params){
-			for(var i = 0, param; param = registry.params[i]; i++){
-				var search = param[0];
-				if(typeof search == "string"){
-					if(search == name){
-						return new registry.Getter(param);
-					}
-				}else if(name.match(search)){
-					var matches = search.exec(name);
-					var mixin = [];
-					dojo.mixin(mixin, param);
-					mixin[0] = matches[1];
-					return new registry.Getter(param);
-				}
-			}
-		}
-		if(!errorless) throw new Error("'" + module + "' of name '" + name + "' does not exist");
-	},
-	_normalize: function(args){
-		// summary:
-		//		Translates to the signature (/*String*/ name, /*String*/ require, /*String*/ obj, /*String*/ fn)
-		var items = args[2];
-		var output = [];
-		for(var i = 0, item; item = items[i]; i++){
-			if(typeof item == "string"){
-				output.push([item, args[0], args[1], item]);
-			}else{
-				output.push([item[0], args[0], args[1], item[1]]);
-			}
-		}
-		return output;
-	},
- 	tag: function(/*String*/ require, /*String*/ obj, /*String[]|[RegExp, String][]*/ fns){
-		// summary:
-		//		Specify the location of a given tag function.
-		// require:
-		//		The file this function is in
-		// obj:
-		//		The base object to use for lookups
-		// fn:
-		//		List of functions within obj to use
-		// description:
-		//		When we are looking up a tag as specified in a template, we either use a
-		//		string in the fns array, or the RegExp item of the [RegExp, String] pair.
-		//		When that string is found, it requires the file specified in the require
-		//		parameter, uses the base object as a starting point and checks for obj.fn
-		//		or obj.fn_ in case fn is a reserved word.
-		this("tag", ["require", "obj", "fn"], arguments, this._normalize);
-	},
-	filter: function(/*String*/ require, /*String*/ obj, /*String[]|[RegExp, String][]*/ fns){
-		// summary:
-		//		Specify the location of a given filter function.
-		// require:
-		//		The file this function is in
-		// obj:
-		//		The base object to use for lookups
-		// fn:
-		//		List of functions within obj to use
-		// description:
-		//		When we are looking up a tag as specified in a template, we either use a
-		//		string in the fns array, or the RegExp item of the [RegExp, String] pair.
-		//		When that string is found, it requires the file specified in the require
-		//		parameter, uses the base object as a starting point and checks for obj.fn
-		//		or obj.fn_ in case fn is a reserved word.
-		this("filter", ["require", "obj", "fn"], arguments, this._normalize);
-	}
-});
-
+dojo.experimental("dojox.dtl");
 (function(){
-	var register = dojox.dtl.register;
-	var dtt = "dojox.dtl.tag";
-	register.tag(dtt + ".logic", dtt + ".logic", ["if", "for"]);
-	register.tag(dtt + ".loader", dtt + ".loader", ["extends", "block"]);
-	register.tag(dtt + ".misc", dtt + ".misc", ["comment", "debug", "filter"]);
-	register.tag(dtt + ".loop", dtt + ".loop", ["cycle"]);
-
-	var dtf = "dojox.dtl.filter";
-	register.filter(dtf + ".dates", dtf + ".dates", ["date", "time", "timesince", "timeuntil"]);
-	register.filter(dtf + ".htmlstrings", dtf + ".htmlstrings", ["escape", "linebreaks", "linebreaksbr", "removetags", "striptags"]);
-	register.filter(dtf + ".integers", dtf + ".integers", ["add", "get_digit"]);
-	register.filter(dtf + ".lists", dtf + ".lists", ["dictsort", "dictsortreversed", "first", "join", "length", "length_is", "random", "slice", "unordered_list"]);
-	register.filter(dtf + ".logic", dtf + ".logic", ["default", "default_if_none", "divisibleby", "yesno"]);
-	register.filter(dtf + ".misc", dtf + ".misc", ["filesizeformat", "pluralize", "phone2numeric", "pprint"]);
-	register.filter(dtf + ".strings", dtf + ".strings", ["addslashes", "capfirst", "center", "cut", "fix_ampersands", "floatformat", "iriencode", "linenumbers", "ljust", "lower", "make_list", "rjust", "slugify", "stringformat", "title", "truncatewords", "truncatewords_html", "upper", "urlencode", "urlize", "urlizetrunc", "wordcount", "wordwrap"]);
+var dd=dojox.dtl;
+dd.TOKEN_BLOCK=-1;
+dd.TOKEN_VAR=-2;
+dd.TOKEN_COMMENT=-3;
+dd.TOKEN_TEXT=3;
+dd._Context=dojo.extend(function(_1){
+dojo._mixin(this,_1||{});
+this._dicts=[];
+},{push:function(){
+var _2=this;
+var _3=dojo.delegate(this);
+_3.pop=function(){
+return _2;
+};
+return _3;
+},pop:function(){
+throw new Error("pop() called on empty Context");
+},get:function(_4,_5){
+if(typeof this[_4]!="undefined"){
+return this._normalize(this[_4]);
+}
+for(var i=0,_6;_6=this._dicts[i];i++){
+if(typeof _6[_4]!="undefined"){
+return this._normalize(_6[_4]);
+}
+}
+return _5;
+},_normalize:function(_7){
+if(_7 instanceof Date){
+_7.year=_7.getFullYear();
+_7.month=_7.getMonth()+1;
+_7.day=_7.getDate();
+_7.date=_7.year+"-"+("0"+_7.month).slice(-2)+"-"+("0"+_7.day).slice(-2);
+_7.hour=_7.getHours();
+_7.minute=_7.getMinutes();
+_7.second=_7.getSeconds();
+_7.microsecond=_7.getMilliseconds();
+}
+return _7;
+},update:function(_8){
+var _9=this.push();
+if(_8){
+dojo._mixin(this,_8);
+}
+return _9;
+}});
+var _a=/("(?:[^"\\]*(?:\\.[^"\\]*)*)"|'(?:[^'\\]*(?:\\.[^'\\]*)*)'|[^\s]+)/g;
+var _b=/\s+/g;
+var _c=function(_d,_e){
+_d=_d||_b;
+if(!(_d instanceof RegExp)){
+_d=new RegExp(_d,"g");
+}
+if(!_d.global){
+throw new Error("You must use a globally flagged RegExp with split "+_d);
+}
+_d.exec("");
+var _f,_10=[],_11=0,i=0;
+while(_f=_d.exec(this)){
+_10.push(this.slice(_11,_d.lastIndex-_f[0].length));
+_11=_d.lastIndex;
+if(_e&&(++i>_e-1)){
+break;
+}
+}
+_10.push(this.slice(_11));
+return _10;
+};
+dd.Token=function(_12,_13){
+this.token_type=_12;
+this.contents=new String(dojo.trim(_13));
+this.contents.split=_c;
+this.split=function(){
+return String.prototype.split.apply(this.contents,arguments);
+};
+};
+dd.Token.prototype.split_contents=function(_14){
+var bit,_15=[],i=0;
+_14=_14||999;
+while(i++<_14&&(bit=_a.exec(this.contents))){
+bit=bit[0];
+if(bit.charAt(0)=="\""&&bit.slice(-1)=="\""){
+_15.push("\""+bit.slice(1,-1).replace("\\\"","\"").replace("\\\\","\\")+"\"");
+}else{
+if(bit.charAt(0)=="'"&&bit.slice(-1)=="'"){
+_15.push("'"+bit.slice(1,-1).replace("\\'","'").replace("\\\\","\\")+"'");
+}else{
+_15.push(bit);
+}
+}
+}
+return _15;
+};
+var ddt=dd.text={_get:function(_16,_17,_18){
+var _19=dd.register.get(_16,_17.toLowerCase(),_18);
+if(!_19){
+if(!_18){
+throw new Error("No tag found for "+_17);
+}
+return null;
+}
+var fn=_19[1];
+var _1a=_19[2];
+var _1b;
+if(fn.indexOf(":")!=-1){
+_1b=fn.split(":");
+fn=_1b.pop();
+}
+dojo["require"](_1a);
+var _1c=dojo.getObject(_1a);
+return _1c[fn||_17]||_1c[_17+"_"]||_1c[fn+"_"];
+},getTag:function(_1d,_1e){
+return ddt._get("tag",_1d,_1e);
+},getFilter:function(_1f,_20){
+return ddt._get("filter",_1f,_20);
+},getTemplate:function(_21){
+return new dd.Template(ddt.getTemplateString(_21));
+},getTemplateString:function(_22){
+return dojo._getText(_22.toString())||"";
+},_resolveLazy:function(_23,_24,_25){
+if(_24){
+if(_25){
+return dojo.fromJson(dojo._getText(_23))||{};
+}else{
+return dd.text.getTemplateString(_23);
+}
+}else{
+return dojo.xhrGet({handleAs:(_25)?"json":"text",url:_23});
+}
+},_resolveTemplateArg:function(arg,_26){
+if(ddt._isTemplate(arg)){
+if(!_26){
+var d=new dojo.Deferred();
+d.callback(arg);
+return d;
+}
+return arg;
+}
+return ddt._resolveLazy(arg,_26);
+},_isTemplate:function(arg){
+return (typeof arg=="undefined")||(typeof arg=="string"&&(arg.match(/^\s*[<{]/)||arg.indexOf(" ")!=-1));
+},_resolveContextArg:function(arg,_27){
+if(arg.constructor==Object){
+if(!_27){
+var d=new dojo.Deferred;
+d.callback(arg);
+return d;
+}
+return arg;
+}
+return ddt._resolveLazy(arg,_27,true);
+},_re:/(?:\{\{\s*(.+?)\s*\}\}|\{%\s*(load\s*)?(.+?)\s*%\})/g,tokenize:function(str){
+return dojox.string.tokenize(str,ddt._re,ddt._parseDelims);
+},_parseDelims:function(_28,_29,tag){
+if(_28){
+return [dd.TOKEN_VAR,_28];
+}else{
+if(_29){
+var _2a=dojo.trim(tag).split(/\s+/g);
+for(var i=0,_2b;_2b=_2a[i];i++){
+dojo["require"](_2b);
+}
+}else{
+return [dd.TOKEN_BLOCK,tag];
+}
+}
+}};
+dd.Template=dojo.extend(function(_2c,_2d){
+var str=_2d?_2c:ddt._resolveTemplateArg(_2c,true)||"";
+var _2e=ddt.tokenize(str);
+var _2f=new dd._Parser(_2e);
+this.nodelist=_2f.parse();
+},{update:function(_30,_31){
+return ddt._resolveContextArg(_31).addCallback(this,function(_32){
+var _33=this.render(new dd._Context(_32));
+if(_30.forEach){
+_30.forEach(function(_34){
+_34.innerHTML=_33;
+});
+}else{
+dojo.byId(_30).innerHTML=_33;
+}
+return this;
+});
+},render:function(_35,_36){
+_36=_36||this.getBuffer();
+_35=_35||new dd._Context({});
+return this.nodelist.render(_35,_36)+"";
+},getBuffer:function(){
+dojo.require("dojox.string.Builder");
+return new dojox.string.Builder();
+}});
+var _37=/\{\{\s*(.+?)\s*\}\}/g;
+dd.quickFilter=function(str){
+if(!str){
+return new dd._NodeList();
+}
+if(str.indexOf("{%")==-1){
+return new dd._QuickNodeList(dojox.string.tokenize(str,_37,function(_38){
+return new dd._Filter(_38);
+}));
+}
+};
+dd._QuickNodeList=dojo.extend(function(_39){
+this.contents=_39;
+},{render:function(_3a,_3b){
+for(var i=0,l=this.contents.length;i<l;i++){
+if(this.contents[i].resolve){
+_3b=_3b.concat(this.contents[i].resolve(_3a));
+}else{
+_3b=_3b.concat(this.contents[i]);
+}
+}
+return _3b;
+},dummyRender:function(_3c){
+return this.render(_3c,dd.Template.prototype.getBuffer()).toString();
+},clone:function(_3d){
+return this;
+}});
+dd._Filter=dojo.extend(function(_3e){
+if(!_3e){
+throw new Error("Filter must be called with variable name");
+}
+this.contents=_3e;
+var _3f=this._cache[_3e];
+if(_3f){
+this.key=_3f[0];
+this.filters=_3f[1];
+}else{
+this.filters=[];
+dojox.string.tokenize(_3e,this._re,this._tokenize,this);
+this._cache[_3e]=[this.key,this.filters];
+}
+},{_cache:{},_re:/(?:^_\("([^\\"]*(?:\\.[^\\"])*)"\)|^"([^\\"]*(?:\\.[^\\"]*)*)"|^([a-zA-Z0-9_.]+)|\|(\w+)(?::(?:_\("([^\\"]*(?:\\.[^\\"])*)"\)|"([^\\"]*(?:\\.[^\\"]*)*)"|([a-zA-Z0-9_.]+)|'([^\\']*(?:\\.[^\\']*)*)'))?|^'([^\\']*(?:\\.[^\\']*)*)')/g,_values:{0:"\"",1:"\"",2:"",8:"\""},_args:{4:"\"",5:"\"",6:"",7:"'"},_tokenize:function(){
+var pos,arg;
+for(var i=0,has=[];i<arguments.length;i++){
+has[i]=(typeof arguments[i]!="undefined"&&typeof arguments[i]=="string"&&arguments[i]);
+}
+if(!this.key){
+for(pos in this._values){
+if(has[pos]){
+this.key=this._values[pos]+arguments[pos]+this._values[pos];
+break;
+}
+}
+}else{
+for(pos in this._args){
+if(has[pos]){
+var _40=arguments[pos];
+if(this._args[pos]=="'"){
+_40=_40.replace(/\\'/g,"'");
+}else{
+if(this._args[pos]=="\""){
+_40=_40.replace(/\\"/g,"\"");
+}
+}
+arg=[!this._args[pos],_40];
+break;
+}
+}
+var fn=ddt.getFilter(arguments[3]);
+if(!dojo.isFunction(fn)){
+throw new Error(arguments[3]+" is not registered as a filter");
+}
+this.filters.push([fn,arg]);
+}
+},getExpression:function(){
+return this.contents;
+},resolve:function(_41){
+if(typeof this.key=="undefined"){
+return "";
+}
+var str=this.resolvePath(this.key,_41);
+for(var i=0,_42;_42=this.filters[i];i++){
+if(_42[1]){
+if(_42[1][0]){
+str=_42[0](str,this.resolvePath(_42[1][1],_41));
+}else{
+str=_42[0](str,_42[1][1]);
+}
+}else{
+str=_42[0](str);
+}
+}
+return str;
+},resolvePath:function(_43,_44){
+var _45,_46;
+var _47=_43.charAt(0);
+var _48=_43.slice(-1);
+if(!isNaN(parseInt(_47))){
+_45=(_43.indexOf(".")==-1)?parseInt(_43):parseFloat(_43);
+}else{
+if(_47=="\""&&_47==_48){
+_45=_43.slice(1,-1);
+}else{
+if(_43=="true"){
+return true;
+}
+if(_43=="false"){
+return false;
+}
+if(_43=="null"||_43=="None"){
+return null;
+}
+_46=_43.split(".");
+_45=_44.get(_46[0]);
+if(dojo.isFunction(_45)){
+var _49=_44.getThis&&_44.getThis();
+if(_45.alters_data){
+_45="";
+}else{
+if(_49){
+_45=_45.call(_49);
+}else{
+_45="";
+}
+}
+}
+for(var i=1;i<_46.length;i++){
+var _4a=_46[i];
+if(_45){
+var _4b=_45;
+if(dojo.isObject(_45)&&_4a=="items"&&typeof _45[_4a]=="undefined"){
+var _4c=[];
+for(var key in _45){
+_4c.push([key,_45[key]]);
+}
+_45=_4c;
+continue;
+}
+if(_45.get&&dojo.isFunction(_45.get)&&_45.get.safe){
+_45=_45.get(_4a);
+}else{
+if(typeof _45[_4a]=="undefined"){
+_45=_45[_4a];
+break;
+}else{
+_45=_45[_4a];
+}
+}
+if(dojo.isFunction(_45)){
+if(_45.alters_data){
+_45="";
+}else{
+_45=_45.call(_4b);
+}
+}else{
+if(_45 instanceof Date){
+_45=dd._Context.prototype._normalize(_45);
+}
+}
+}else{
+return "";
+}
+}
+}
+}
+return _45;
+}});
+dd._TextNode=dd._Node=dojo.extend(function(obj){
+this.contents=obj;
+},{set:function(_4d){
+this.contents=_4d;
+return this;
+},render:function(_4e,_4f){
+return _4f.concat(this.contents);
+},isEmpty:function(){
+return !dojo.trim(this.contents);
+},clone:function(){
+return this;
+}});
+dd._NodeList=dojo.extend(function(_50){
+this.contents=_50||[];
+this.last="";
+},{push:function(_51){
+this.contents.push(_51);
+return this;
+},concat:function(_52){
+this.contents=this.contents.concat(_52);
+return this;
+},render:function(_53,_54){
+for(var i=0;i<this.contents.length;i++){
+_54=this.contents[i].render(_53,_54);
+if(!_54){
+throw new Error("Template must return buffer");
+}
+}
+return _54;
+},dummyRender:function(_55){
+return this.render(_55,dd.Template.prototype.getBuffer()).toString();
+},unrender:function(){
+return arguments[1];
+},clone:function(){
+return this;
+},rtrim:function(){
+while(1){
+i=this.contents.length-1;
+if(this.contents[i] instanceof dd._TextNode&&this.contents[i].isEmpty()){
+this.contents.pop();
+}else{
+break;
+}
+}
+return this;
+}});
+dd._VarNode=dojo.extend(function(str){
+this.contents=new dd._Filter(str);
+},{render:function(_56,_57){
+var str=this.contents.resolve(_56);
+if(!str.safe){
+str=dd._base.escape(""+str);
+}
+return _57.concat(str);
+}});
+dd._noOpNode=new function(){
+this.render=this.unrender=function(){
+return arguments[1];
+};
+this.clone=function(){
+return this;
+};
+};
+dd._Parser=dojo.extend(function(_58){
+this.contents=_58;
+},{i:0,parse:function(_59){
+var _5a={},_5b;
+_59=_59||[];
+for(var i=0;i<_59.length;i++){
+_5a[_59[i]]=true;
+}
+var _5c=new dd._NodeList();
+while(this.i<this.contents.length){
+_5b=this.contents[this.i++];
+if(typeof _5b=="string"){
+_5c.push(new dd._TextNode(_5b));
+}else{
+var _5d=_5b[0];
+var _5e=_5b[1];
+if(_5d==dd.TOKEN_VAR){
+_5c.push(new dd._VarNode(_5e));
+}else{
+if(_5d==dd.TOKEN_BLOCK){
+if(_5a[_5e]){
+--this.i;
+return _5c;
+}
+var cmd=_5e.split(/\s+/g);
+if(cmd.length){
+cmd=cmd[0];
+var fn=ddt.getTag(cmd);
+if(fn){
+_5c.push(fn(this,new dd.Token(_5d,_5e)));
+}
+}
+}
+}
+}
+}
+if(_59.length){
+throw new Error("Could not find closing tag(s): "+_59.toString());
+}
+this.contents.length=0;
+return _5c;
+},next_token:function(){
+var _5f=this.contents[this.i++];
+return new dd.Token(_5f[0],_5f[1]);
+},delete_first_token:function(){
+this.i++;
+},skip_past:function(_60){
+while(this.i<this.contents.length){
+var _61=this.contents[this.i++];
+if(_61[0]==dd.TOKEN_BLOCK&&_61[1]==_60){
+return;
+}
+}
+throw new Error("Unclosed tag found when looking for "+_60);
+},create_variable_node:function(_62){
+return new dd._VarNode(_62);
+},create_text_node:function(_63){
+return new dd._TextNode(_63||"");
+},getTemplate:function(_64){
+return new dd.Template(_64);
+}});
+dd.register={_registry:{attributes:[],tags:[],filters:[]},get:function(_65,_66){
+var _67=dd.register._registry[_65+"s"];
+for(var i=0,_68;_68=_67[i];i++){
+if(typeof _68[0]=="string"){
+if(_68[0]==_66){
+return _68;
+}
+}else{
+if(_66.match(_68[0])){
+return _68;
+}
+}
+}
+},getAttributeTags:function(){
+var _69=[];
+var _6a=dd.register._registry.attributes;
+for(var i=0,_6b;_6b=_6a[i];i++){
+if(_6b.length==3){
+_69.push(_6b);
+}else{
+var fn=dojo.getObject(_6b[1]);
+if(fn&&dojo.isFunction(fn)){
+_6b.push(fn);
+_69.push(_6b);
+}
+}
+}
+return _69;
+},_any:function(_6c,_6d,_6e){
+for(var _6f in _6e){
+for(var i=0,fn;fn=_6e[_6f][i];i++){
+var key=fn;
+if(dojo.isArray(fn)){
+key=fn[0];
+fn=fn[1];
+}
+if(typeof key=="string"){
+if(key.substr(0,5)=="attr:"){
+var _70=fn;
+if(_70.substr(0,5)=="attr:"){
+_70=_70.slice(5);
+}
+dd.register._registry.attributes.push([_70.toLowerCase(),_6d+"."+_6f+"."+_70]);
+}
+key=key.toLowerCase();
+}
+dd.register._registry[_6c].push([key,fn,_6d+"."+_6f]);
+}
+}
+},tags:function(_71,_72){
+dd.register._any("tags",_71,_72);
+},filters:function(_73,_74){
+dd.register._any("filters",_73,_74);
+}};
+var _75=/&/g;
+var _76=/</g;
+var _77=/>/g;
+var _78=/'/g;
+var _79=/"/g;
+dd._base.escape=function(_7a){
+return dd.mark_safe(_7a.replace(_75,"&amp;").replace(_76,"&lt;").replace(_77,"&gt;").replace(_79,"&quot;").replace(_78,"&#39;"));
+};
+dd._base.safe=function(_7b){
+if(typeof _7b=="string"){
+_7b=new String(_7b);
+}
+if(typeof _7b=="object"){
+_7b.safe=true;
+}
+return _7b;
+};
+dd.mark_safe=dd._base.safe;
+dd.register.tags("dojox.dtl.tag",{"date":["now"],"logic":["if","for","ifequal","ifnotequal"],"loader":["extends","block","include","load","ssi"],"misc":["comment","debug","filter","firstof","spaceless","templatetag","widthratio","with"],"loop":["cycle","ifchanged","regroup"]});
+dd.register.filters("dojox.dtl.filter",{"dates":["date","time","timesince","timeuntil"],"htmlstrings":["linebreaks","linebreaksbr","removetags","striptags"],"integers":["add","get_digit"],"lists":["dictsort","dictsortreversed","first","join","length","length_is","random","slice","unordered_list"],"logic":["default","default_if_none","divisibleby","yesno"],"misc":["filesizeformat","pluralize","phone2numeric","pprint"],"strings":["addslashes","capfirst","center","cut","fix_ampersands","floatformat","iriencode","linenumbers","ljust","lower","make_list","rjust","slugify","stringformat","title","truncatewords","truncatewords_html","upper","urlencode","urlize","urlizetrunc","wordcount","wordwrap"]});
+dd.register.filters("dojox.dtl",{"_base":["escape","safe"]});
 })();
-
-dojox.dtl.replace = function(str, token, repl){
-	repl = repl || "";	
-	var pos, len = token.length;
-	while(1){
-		pos = str.indexOf(token);
-		if(pos == -1) break;
-		str = str.substring(0, pos) + repl + str.substring(pos + len);
-	}
-	return str;
-}
-
-dojox.dtl.resolveVariable = function(token, context){
-	// summary: Quickly resolve a variables
-	var filter = new dojox.dtl.Filter(token);
-	return filter.resolve(context);
-}
-
 }

@@ -1,185 +1,94 @@
-if(!dojo._hasResource["dojo.behavior"]){ //_hasResource checks added by build. Do not use _hasResource directly in your code.
-dojo._hasResource["dojo.behavior"] = true;
+/*
+	Copyright (c) 2004-2009, The Dojo Foundation All Rights Reserved.
+	Available via Academic Free License >= 2.1 OR the modified BSD license.
+	see: http://dojotoolkit.org/license for details
+*/
+
+
+if(!dojo._hasResource["dojo.behavior"]){
+dojo._hasResource["dojo.behavior"]=true;
 dojo.provide("dojo.behavior");
-
-dojo.behavior = new function(){
-	function arrIn(obj, name){
-		if(!obj[name]){ obj[name] = []; }
-		return obj[name];
-	}
-
-	var _inc = 0;
-
-	function forIn(obj, scope, func){
-		var tmpObj = {};
-		for(var x in obj){
-			if(typeof tmpObj[x] == "undefined"){
-				if(!func){
-					scope(obj[x], x);
-				}else{
-					func.call(scope, obj[x], x);
-				}
-			}
-		}
-	}
-
-	// FIXME: need a better test so we don't exclude nightly Safari's!
-	this._behaviors = {};
-	this.add = function(behaviorObj){
-		//	summary:
-		//		add the specified behavior to the list of behaviors which will
-		//		be applied the next time apply() is called. Calls to add() for
-		//		an already existing behavior do not replace the previous rules,
-		//		but are instead additive. New nodes which match the rule will
-		//		have all add()-ed behaviors applied to them when matched.
-		//
-		//	description:
-		//		behavior objects are specified in the following format(s):
-		//		
-		//			{ 
-		//			 	"#id": {
-		//					"found": function(element){
-		//						// ...
-		//					},
-		//			
-		//					"onblah": {targetObj: foo, targetFunc: "bar"},
-		//			
-		//					"onblarg": "/foo/bar/baz/blarg",
-		//			
-		//					"onevent": function(evt){
-		//					},
-		//			
-		//					"onotherevent: function(evt){
-		//						// ...
-		//					}
-		//				},
-		//			
-		//				"#id2": {
-		//					// ...
-		//				},
-		//			
-		//				"#id3": function(element){
-		//					// ...
-		//				},
-		//			
-		//				// publish the match on a topic
-		//				"#id4": "/found/topic/name",
-		//			
-		//				// match all direct descendants
-		//				"#id4 > *": function(element){
-		//					// ...
-		//				},
-		//			
-		//				// match the first child node that's an element
-		//				"#id4 > :first-child": { ... },
-		//			
-		//				// match the last child node that's an element
-		//				"#id4 > :last-child":  { ... },
-		//			
-		//				// all elements of type tagname
-		//				"tagname": {
-		//					// ...
-		//				},
-		//			
-		//				"tagname1 tagname2 tagname3": {
-		//					// ...
-		//				},
-		//			
-		//				".classname": {
-		//					// ...
-		//				},
-		//			
-		//				"tagname.classname": {
-		//					// ...
-		//				},
-		//			}
-		//		
-		//		The "found" method is a generalized handler that's called as soon
-		//		as the node matches the selector. Rules for values that follow also
-		//		apply to the "found" key.
-		//		
-		//		The "on*" handlers are attached with dojo.connect(). 
-		//		
-		//		If the value corresponding to the ID key is a function and not a
-		//		list, it's treated as though it was the value of "found".
-
-		var tmpObj = {};
-		forIn(behaviorObj, this, function(behavior, name){
-			var tBehavior = arrIn(this._behaviors, name);
-			if(typeof tBehavior["id"] != "number"){
-				tBehavior.id = _inc++;
-			}
-			var cversion = [];
-			tBehavior.push(cversion);
-			if((dojo.isString(behavior))||(dojo.isFunction(behavior))){
-				behavior = { found: behavior };
-			}
-			forIn(behavior, function(rule, ruleName){
-				arrIn(cversion, ruleName).push(rule);
-			});
-		});
-	}
-
-	var _applyToNode = function(node, action, ruleSetName){
-		if(dojo.isString(action)){
-			if(ruleSetName == "found"){
-				dojo.publish(action, [ node ]);
-			}else{
-				dojo.connect(node, ruleSetName, function(){
-					dojo.publish(action, arguments);
-				});
-			}
-		}else if(dojo.isFunction(action)){
-			if(ruleSetName == "found"){
-				action(node);
-			}else{
-				dojo.connect(node, ruleSetName, action);
-			}
-		}
-	}
-
-	this.apply = function(){
-		// summary:
-		//		applies all currently registered behaviors to the document,
-		//		taking care to ensure that only incremental updates are made
-		//		since the last time add() or apply() were called. If new
-		//		matching nodes have been added, all rules in a behavior will be
-		//		applied to that node. For previously matched nodes, only
-		//		behaviors which have been added since the last call to apply()
-		//		will be added to the nodes.
-		forIn(this._behaviors, function(tBehavior, id){
-			dojo.query(id).forEach( 
-				function(elem){
-					var runFrom = 0;
-					var bid = "_dj_behavior_"+tBehavior.id;
-					if(typeof elem[bid] == "number"){
-						runFrom = elem[bid];
-						// console.debug(bid, runFrom);
-						if(runFrom == (tBehavior.length)){
-							return;
-						}
-					}
-					// run through the versions, applying newer rules at each step
-
-					for(var x=runFrom, tver; tver = tBehavior[x]; x++){
-						// console.debug(tver);
-						forIn(tver, function(ruleSet, ruleSetName){
-							if(dojo.isArray(ruleSet)){
-								dojo.forEach(ruleSet, function(action){
-									_applyToNode(elem, action, ruleSetName);
-								});
-							}
-						});
-					}
-
-					// ensure that re-application only adds new rules to the node
-					elem[bid] = tBehavior.length;
-				}
-			);
-		});
-	}
+dojo.behavior=new function(){
+function _1(_2,_3){
+if(!_2[_3]){
+_2[_3]=[];
 }
-
-dojo.addOnLoad(dojo.behavior, "apply");
-
+return _2[_3];
+};
+var _4=0;
+function _5(_6,_7,_8){
+var _9={};
+for(var x in _6){
+if(typeof _9[x]=="undefined"){
+if(!_8){
+_7(_6[x],x);
+}else{
+_8.call(_7,_6[x],x);
+}
+}
+}
+};
+this._behaviors={};
+this.add=function(_a){
+var _b={};
+_5(_a,this,function(_c,_d){
+var _e=_1(this._behaviors,_d);
+if(typeof _e["id"]!="number"){
+_e.id=_4++;
+}
+var _f=[];
+_e.push(_f);
+if((dojo.isString(_c))||(dojo.isFunction(_c))){
+_c={found:_c};
+}
+_5(_c,function(_10,_11){
+_1(_f,_11).push(_10);
+});
+});
+};
+var _12=function(_13,_14,_15){
+if(dojo.isString(_14)){
+if(_15=="found"){
+dojo.publish(_14,[_13]);
+}else{
+dojo.connect(_13,_15,function(){
+dojo.publish(_14,arguments);
+});
+}
+}else{
+if(dojo.isFunction(_14)){
+if(_15=="found"){
+_14(_13);
+}else{
+dojo.connect(_13,_15,_14);
+}
+}
+}
+};
+this.apply=function(){
+_5(this._behaviors,function(_16,id){
+dojo.query(id).forEach(function(_17){
+var _18=0;
+var bid="_dj_behavior_"+_16.id;
+if(typeof _17[bid]=="number"){
+_18=_17[bid];
+if(_18==(_16.length)){
+return;
+}
+}
+for(var x=_18,_19;_19=_16[x];x++){
+_5(_19,function(_1a,_1b){
+if(dojo.isArray(_1a)){
+dojo.forEach(_1a,function(_1c){
+_12(_17,_1c,_1b);
+});
+}
+});
+}
+_17[bid]=_16.length;
+});
+});
+};
+};
+dojo.addOnLoad(dojo.behavior,"apply");
 }

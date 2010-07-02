@@ -1,1 +1,1 @@
-({"set": "Definir\n", "text": "Texto:\n", "title": "Vincular URL", "url": "URL:", "urlInvalidMessage": "URL inválida. Digite uma URL completa, como 'http://www.dojotoolkit.org'"})
+({"text":"Descrição:","insertImageTitle":"Propriedades de Imagem","set":"Definir","newWindow":"Nova Janela","topWindow":"Primeira Janela","target":"Destino:","createLinkTitle":"Propriedades de Link","parentWindow":"Janela Pai","currentWindow":"Janela Atual","url":"URL:"})

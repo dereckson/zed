@@ -1,1446 +1,984 @@
-if(!dojo._hasResource["dijit._editor.RichText"]){ //_hasResource checks added by build. Do not use _hasResource directly in your code.
-dojo._hasResource["dijit._editor.RichText"] = true;
-dojo.provide("dijit._editor.RichText");
+/*
+	Copyright (c) 2004-2009, The Dojo Foundation All Rights Reserved.
+	Available via Academic Free License >= 2.1 OR the modified BSD license.
+	see: http://dojotoolkit.org/license for details
+*/
 
+
+if(!dojo._hasResource["dijit._editor.RichText"]){
+dojo._hasResource["dijit._editor.RichText"]=true;
+dojo.provide("dijit._editor.RichText");
 dojo.require("dijit._Widget");
 dojo.require("dijit._editor.selection");
-dojo.require("dojo.i18n");
-dojo.requireLocalization("dijit", "Textarea", null, "ROOT");
-
-// used to restore content when user leaves this page then comes back
-// but do not try doing document.write if we are using xd loading.
-// document.write will only work if RichText.js is included in the dojo.js
-// file. If it is included in dojo.js and you want to allow rich text saving
-// for back/forward actions, then set djConfig.allowXdRichTextSave = true.
-if(!djConfig["useXDomain"] || djConfig["allowXdRichTextSave"]){
-	if(dojo._postLoad){
-		(function(){
-			var savetextarea = dojo.doc.createElement('textarea');
-			savetextarea.id = "dijit._editor.RichText.savedContent";
-			var s = savetextarea.style;
-			s.display='none';
-			s.position='absolute';
-			s.top="-100px";
-			s.left="-100px"
-			s.height="3px";
-			s.width="3px";
-			dojo.body().appendChild(savetextarea);
-		})();
-	}else{
-		//dojo.body() is not available before onLoad is fired
-		try {
-			dojo.doc.write('<textarea id="dijit._editor.RichText.savedContent" ' +
-				'style="display:none;position:absolute;top:-100px;left:-100px;height:3px;width:3px;overflow:hidden;"></textarea>');
-		}catch(e){ }
-	}
+dojo.require("dijit._editor.range");
+dojo.require("dijit._editor.html");
+if(!dojo.config["useXDomain"]||dojo.config["allowXdRichTextSave"]){
+if(dojo._postLoad){
+(function(){
+var _1=dojo.doc.createElement("textarea");
+_1.id=dijit._scopeName+"._editor.RichText.savedContent";
+dojo.style(_1,{display:"none",position:"absolute",top:"-100px",height:"3px",width:"3px"});
+dojo.body().appendChild(_1);
+})();
+}else{
+try{
+dojo.doc.write("<textarea id=\""+dijit._scopeName+"._editor.RichText.savedContent\" "+"style=\"display:none;position:absolute;top:-100px;left:-100px;height:3px;width:3px;overflow:hidden;\"></textarea>");
 }
-dojo.declare("dijit._editor.RichText", [ dijit._Widget ], {
-	constructor: function(){
-		// summary:
-		//		dijit._editor.RichText is the core of the WYSIWYG editor in dojo, which
-		//		provides the basic editing features. It also encapsulates the differences
-		//		of different js engines for various browsers
-		//
-		// contentPreFilters: Array
-		//		pre content filter function register array.
-		//		these filters will be executed before the actual
-		//		editing area get the html content
-		this.contentPreFilters = [];
-
-		// contentPostFilters: Array
-		//		post content filter function register array.
-		//		these will be used on the resulting html
-		//		from contentDomPostFilters. The resuling
-		//		content is the final html (returned by getValue())
-		this.contentPostFilters = [];
-
-		// contentDomPreFilters: Array
-		//		pre content dom filter function register array.
-		//		these filters are applied after the result from
-		//		contentPreFilters are set to the editing area
-		this.contentDomPreFilters = [];
-
-		// contentDomPostFilters: Array
-		//		post content dom filter function register array.
-		//		these filters are executed on the editing area dom
-		//		the result from these will be passed to contentPostFilters
-		this.contentDomPostFilters = [];
-
-		// editingAreaStyleSheets: Array
-		//		array to store all the stylesheets applied to the editing area
-		this.editingAreaStyleSheets=[];
-
-		this._keyHandlers = {};
-		this.contentPreFilters.push(dojo.hitch(this, "_preFixUrlAttributes"));
-		if(dojo.isMoz){
-			this.contentPreFilters.push(this._fixContentForMoz);
-		}
-		//this.contentDomPostFilters.push(this._postDomFixUrlAttributes);
-
-		this.onLoadDeferred = new dojo.Deferred();
-	},
-
-	// inheritWidth: Boolean
-	//		whether to inherit the parent's width or simply use 100%
-	inheritWidth: false,
-
-	// focusOnLoad: Boolean
-	//		whether focusing into this instance of richtext when page onload
-	focusOnLoad: false,
-
-	// name: String
-	//		If a save name is specified the content is saved and restored when the user
-	//		leave this page can come back, or if the editor is not properly closed after
-	//		editing has started.
-	name: "",
-
-	// styleSheets: String
-	//		semicolon (";") separated list of css files for the editing area
-	styleSheets: "",
-
-	// _content: String
-	//		temporary content storage
-	_content: "",
-
-	// height: String
-	//		set height to fix the editor at a specific height, with scrolling.
-	//		By default, this is 300px. If you want to have the editor always
-	//		resizes to accommodate the content, use AlwaysShowToolbar plugin
-	//		and set height=""
-	height: "300px",
-
-	// minHeight: String
-	//		The minimum height that the editor should have
-	minHeight: "1em",
-	
-	// isClosed: Boolean
-	isClosed: true,
-
-	// isLoaded: Boolean
-	isLoaded: false,
-
-	// _SEPARATOR: String
-	//		used to concat contents from multiple textareas into a single string
-	_SEPARATOR: "@@**%%__RICHTEXTBOUNDRY__%%**@@",
-
-	// onLoadDeferred: dojo.Deferred
-	//		deferred which is fired when the editor finishes loading
-	onLoadDeferred: null,
-
-	postCreate: function(){
-		// summary: init
-		dojo.publish("dijit._editor.RichText::init", [this]);
-		this.open();
-		this.setupDefaultShortcuts();
-	},
-
-	setupDefaultShortcuts: function(){
-		// summary: add some default key handlers
-		// description:
-		// 		Overwrite this to setup your own handlers. The default
-		// 		implementation does not use Editor commands, but directly
-		//		executes the builtin commands within the underlying browser
-		//		support.
-		var ctrl = this.KEY_CTRL;
-		var exec = function(cmd, arg){
-			return arguments.length == 1 ? function(){ this.execCommand(cmd); } :
-				function(){ this.execCommand(cmd, arg); }
-		}
-		this.addKeyHandler("b", ctrl, exec("bold"));
-		this.addKeyHandler("i", ctrl, exec("italic"));
-		this.addKeyHandler("u", ctrl, exec("underline"));
-		this.addKeyHandler("a", ctrl, exec("selectall"));
-		this.addKeyHandler("s", ctrl, function () { this.save(true); });
-
-		this.addKeyHandler("1", ctrl, exec("formatblock", "h1"));
-		this.addKeyHandler("2", ctrl, exec("formatblock", "h2"));
-		this.addKeyHandler("3", ctrl, exec("formatblock", "h3"));
-		this.addKeyHandler("4", ctrl, exec("formatblock", "h4"));
-
-		this.addKeyHandler("\\", ctrl, exec("insertunorderedlist"));
-		if(!dojo.isIE){
-			this.addKeyHandler("Z", ctrl, exec("redo"));
-		}
-	},
-
-	// events: Array
-	//		 events which should be connected to the underlying editing area
-	events: ["onKeyPress", "onKeyDown", "onKeyUp", "onClick"],
-
-	// events: Array
-	//		 events which should be connected to the underlying editing
-	//		 area, events in this array will be addListener with
-	//		 capture=true
-	captureEvents: [],
-
-	_editorCommandsLocalized: false,
-	_localizeEditorCommands: function(){
-		if(this._editorCommandsLocalized){
-			return;
-		}
-		this._editorCommandsLocalized = true;
-
-		//in IE, names for blockformat is locale dependent, so we cache the values here
-
-		//if the normal way fails, we try the hard way to get the list
-
-		//do not use _cacheLocalBlockFormatNames here, as it will
-		//trigger security warning in IE7
-
-		//in the array below, ul can not come directly after ol,
-		//otherwise the queryCommandValue returns Normal for it
-		var formats = ['p', 'pre', 'address', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ol', 'div', 'ul'];
-		var localhtml = "", format, i=0;
-		while((format=formats[i++])){
-			if(format.charAt(1) != 'l'){
-				localhtml += "<"+format+"><span>content</span></"+format+">";
-			}else{
-				localhtml += "<"+format+"><li>content</li></"+format+">";
-			}
-		}
-		//queryCommandValue returns empty if we hide editNode, so move it out of screen temporary
-		var div=document.createElement('div');
-		div.style.position = "absolute";
-		div.style.left = "-2000px";
-		div.style.top = "-2000px";
-		document.body.appendChild(div);
-		div.innerHTML = localhtml;
-		var node = div.firstChild;
-		while(node){
-			dijit._editor.selection.selectElement(node.firstChild);
-			dojo.withGlobal(this.window, "selectElement", dijit._editor.selection, [node.firstChild]);
-			var nativename = node.tagName.toLowerCase();
-			this._local2NativeFormatNames[nativename] = document.queryCommandValue("formatblock");//this.queryCommandValue("formatblock");
-			this._native2LocalFormatNames[this._local2NativeFormatNames[nativename]] = nativename;
-			node = node.nextSibling;
-		}
-		document.body.removeChild(div);
-	},
-
-	open: function(/*DomNode?*/element){
-		// summary:
-		//		Transforms the node referenced in this.domNode into a rich text editing
-		//		node. This will result in the creation and replacement with an <iframe>
-		//		if designMode(FF)/contentEditable(IE) is used.
-
-		if((!this.onLoadDeferred)||(this.onLoadDeferred.fired >= 0)){
-			this.onLoadDeferred = new dojo.Deferred();
-		}
-
-		if(!this.isClosed){ this.close(); }
-		dojo.publish("dijit._editor.RichText::open", [ this ]);
-
-		this._content = "";
-		if((arguments.length == 1)&&(element["nodeName"])){ this.domNode = element; } // else unchanged
-
-		if(	(this.domNode["nodeName"])&&
-			(this.domNode.nodeName.toLowerCase() == "textarea")){
-			// if we were created from a textarea, then we need to create a
-			// new editing harness node.
-			this.textarea = this.domNode;
-			this.name=this.textarea.name;
-			var html = this._preFilterContent(this.textarea.value);
-			this.domNode = dojo.doc.createElement("div");
-			this.domNode.setAttribute('widgetId',this.id);
-			this.textarea.removeAttribute('widgetId');
-			this.domNode.cssText = this.textarea.cssText;
-			this.domNode.className += " "+this.textarea.className;
-			dojo.place(this.domNode, this.textarea, "before");
-			var tmpFunc = dojo.hitch(this, function(){
-				//some browsers refuse to submit display=none textarea, so
-				//move the textarea out of screen instead
-				with(this.textarea.style){
-					display = "block";
-					position = "absolute";
-					left = top = "-1000px";
-
-					if(dojo.isIE){ //nasty IE bug: abnormal formatting if overflow is not hidden
-						this.__overflow = overflow;
-						overflow = "hidden";
-					}
-				}
-			});
-			if(dojo.isIE){
-				setTimeout(tmpFunc, 10);
-			}else{
-				tmpFunc();
-			}
-
-			// this.domNode.innerHTML = html;
-
-//				if(this.textarea.form){
-//					// FIXME: port: this used to be before advice!!!
-//					dojo.connect(this.textarea.form, "onsubmit", this, function(){
-//						// FIXME: should we be calling close() here instead?
-//						this.textarea.value = this.getValue();
-//					});
-//				}
-		}else{
-			var html = this._preFilterContent(this.getNodeChildrenHtml(this.domNode));
-			this.domNode.innerHTML = '';
-		}
-		if(html == ""){ html = "&nbsp;"; }
-
-		var content = dojo.contentBox(this.domNode);
-		// var content = dojo.contentBox(this.srcNodeRef);
-		this._oldHeight = content.h;
-		this._oldWidth = content.w;
-
-		this.savedContent = html;
-
-		// If we're a list item we have to put in a blank line to force the
-		// bullet to nicely align at the top of text
-		if(	(this.domNode["nodeName"]) &&
-			(this.domNode.nodeName == "LI") ){
-			this.domNode.innerHTML = " <br>";
-		}
-
-		this.editingArea = dojo.doc.createElement("div");
-		this.domNode.appendChild(this.editingArea);
-
-		if(this.name != "" && (!djConfig["useXDomain"] || djConfig["allowXdRichTextSave"])){
-			var saveTextarea = dojo.byId("dijit._editor.RichText.savedContent");
-			if(saveTextarea.value != ""){
-				var datas = saveTextarea.value.split(this._SEPARATOR), i=0, dat;
-				while((dat=datas[i++])){
-					var data = dat.split(":");
-					if(data[0] == this.name){
-						html = data[1];
-						datas.splice(i, 1);
-						break;
-					}
-				}
-			}
-
-			// FIXME: need to do something different for Opera/Safari
-			dojo.connect(window, "onbeforeunload", this, "_saveContent");
-			// dojo.connect(window, "onunload", this, "_saveContent");
-		}
-
-		this.isClosed = false;
-		// Safari's selections go all out of whack if we do it inline,
-		// so for now IE is our only hero
-		//if (typeof document.body.contentEditable != "undefined") {
-		if(dojo.isIE || dojo.isSafari || dojo.isOpera){ // contentEditable, easy
-			var ifr = this.iframe = dojo.doc.createElement('iframe');
-			ifr.src = 'javascript:void(0)';
-			this.editorObject = ifr;
-			ifr.style.border = "none";
-			ifr.style.width = "100%";
-			ifr.frameBorder = 0;
-//			ifr.style.scrolling = this.height ? "auto" : "vertical";
-			this.editingArea.appendChild(ifr);
-			this.window = ifr.contentWindow;
-			this.document = this.window.document;
-			this.document.open();
-			this.document.write(this._getIframeDocTxt(html));
-			this.document.close();
-
-			if(dojo.isIE >= 7){
-				if(this.height){
-					ifr.style.height = this.height;
-				}
-				if(this.minHeight){
-					ifr.style.minHeight = this.minHeight;
-				}
-			}else{
-				ifr.style.height = this.height ? this.height : this.minHeight;
-			}
-
-			if(dojo.isIE){
-				this._localizeEditorCommands();
-			}
-
-			this.onLoad();
-		}else{ // designMode in iframe
-			this._drawIframe(html);
-		}
-
-		// TODO: this is a guess at the default line-height, kinda works
-		if(this.domNode.nodeName == "LI"){ this.domNode.lastChild.style.marginTop = "-1.2em"; }
-		this.domNode.className += " RichTextEditable";
-	},
-
-	//static cache variables shared among all instance of this class
-	_local2NativeFormatNames: {},
-	_native2LocalFormatNames: {},
-	_localizedIframeTitles: null,
-
-	_getIframeDocTxt: function(/* String */ html){
-		var _cs = dojo.getComputedStyle(this.domNode);
-		if(!this.height && !dojo.isMoz){
-			html="<div>"+html+"</div>";
-		}
-		var font = [ _cs.fontWeight, _cs.fontSize, _cs.fontFamily ].join(" ");
-
-		// line height is tricky - applying a units value will mess things up.
-		// if we can't get a non-units value, bail out.
-		var lineHeight = _cs.lineHeight;
-		if(lineHeight.indexOf("px") >= 0){
-			lineHeight = parseFloat(lineHeight)/parseFloat(_cs.fontSize);
-			// console.debug(lineHeight);
-		}else if(lineHeight.indexOf("em")>=0){
-			lineHeight = parseFloat(lineHeight);
-		}else{
-			lineHeight = "1.0";
-		}
-		return [
-			this.isLeftToRight() ? "<html><head>" : "<html dir='rtl'><head>",
-			(dojo.isMoz ? "<title>" + this._localizedIframeTitles.iframeEditTitle + "</title>" : ""),
-			"<style>",
-			"body,html {",
-			"	background:transparent;",
-			"	padding: 0;",
-			"	margin: 0;",
-			"}",
-			// TODO: left positioning will cause contents to disappear out of view
-			//	   if it gets too wide for the visible area
-			"body{",
-			"	top:0px; left:0px; right:0px;",
-				((this.height||dojo.isOpera) ? "" : "position: fixed;"),
-			"	font:", font, ";",
-			// FIXME: IE 6 won't understand min-height?
-			"	min-height:", this.minHeight, ";",
-			"	line-height:", lineHeight,
-			"}",
-			"p{ margin: 1em 0 !important; }",
-			(this.height ?
-				"" : "body,html{overflow-y:hidden;/*for IE*/} body > div {overflow-x:auto;/*for FF to show vertical scrollbar*/}"
-			),
-			"li > ul:-moz-first-node, li > ol:-moz-first-node{ padding-top: 1.2em; } ",
-			"li{ min-height:1.2em; }",
-			"</style>",
-			this._applyEditingAreaStyleSheets(),
-			"</head><body>"+html+"</body></html>"
-		].join(""); // String
-	},
-
-	_drawIframe: function(/*String*/html){
-		// summary:
-		//		Draws an iFrame using the existing one if one exists.
-		//		Used by Mozilla, Safari, and Opera
-
-		if(!this.iframe){
-			var ifr = this.iframe = dojo.doc.createElement("iframe");
-			// this.iframe.src = "about:blank";
-			// document.body.appendChild(this.iframe);
-			// console.debug(this.iframe.contentDocument.open());
-			// dojo.body().appendChild(this.iframe);
-			var ifrs = ifr.style;
-			// ifrs.border = "1px solid black";
-			ifrs.border = "none";
-			ifrs.lineHeight = "0"; // squash line height
-			ifrs.verticalAlign = "bottom";
-//			ifrs.scrolling = this.height ? "auto" : "vertical";
-			this.editorObject = this.iframe;
-			// get screen reader text for mozilla here, too
-			this._localizedIframeTitles = dojo.i18n.getLocalization("dijit", "Textarea");
-			// need to find any associated label element and update iframe document title
-			var label=dojo.query('label[for="'+this.id+'"]');
-			if(label.length){
-				this._localizedIframeTitles.iframeEditTitle = label[0].innerHTML + " " + this._localizedIframeTitles.iframeEditTitle;
-			}
-		}
-		// opera likes this to be outside the with block
-		//	this.iframe.src = "javascript:void(0)";//dojo.uri.dojoUri("src/widget/templates/richtextframe.html") + ((dojo.doc.domain != currentDomain) ? ("#"+dojo.doc.domain) : "");
-		this.iframe.style.width = this.inheritWidth ? this._oldWidth : "100%";
-
-		if(this.height){
-			this.iframe.style.height = this.height;
-		}else{
-			this.iframe.height = this._oldHeight;
-		}
-
-		if(this.textarea){
-			var tmpContent = this.srcNodeRef;
-		}else{
-			var tmpContent = dojo.doc.createElement('div');
-			tmpContent.style.display="none";
-			tmpContent.innerHTML = html;
-			//append tmpContent to under the current domNode so that the margin
-			//calculation below is correct
-			this.editingArea.appendChild(tmpContent);
-		}
-
-		this.editingArea.appendChild(this.iframe);
-
-		//do we want to show the content before the editing area finish loading here?
-		//if external style sheets are used for the editing area, the appearance now
-		//and after loading of the editing area won't be the same (and padding/margin
-		//calculation above may not be accurate)
-		//	tmpContent.style.display = "none";
-		//	this.editingArea.appendChild(this.iframe);
-
-		var _iframeInitialized = false;
-		// console.debug(this.iframe);
-		// var contentDoc = this.iframe.contentWindow.document;
-
-
-		// note that on Safari lower than 420+, we have to get the iframe
-		// by ID in order to get something w/ a contentDocument property
-
-		var contentDoc = this.iframe.contentDocument;
-		contentDoc.open();
-		contentDoc.write(this._getIframeDocTxt(html));
-		contentDoc.close();
-
-		// now we wait for onload. Janky hack!
-		var ifrFunc = dojo.hitch(this, function(){
-			if(!_iframeInitialized){
-				_iframeInitialized = true;
-			}else{ return; }
-			if(!this.editNode){
-				try{
-					if(this.iframe.contentWindow){
-						this.window = this.iframe.contentWindow;
-						this.document = this.iframe.contentWindow.document
-					}else if(this.iframe.contentDocument){
-						// for opera
-						this.window = this.iframe.contentDocument.window;
-						this.document = this.iframe.contentDocument;
-					}
-					if(!this.document.body){
-						throw 'Error';
-					}
-				}catch(e){
-					setTimeout(ifrFunc,500);
-					_iframeInitialized = false;
-					return;
-				}
-
-				dojo._destroyElement(tmpContent);
-				this.document.designMode = "on";
-				//	try{
-				//	this.document.designMode = "on";
-				// }catch(e){
-				//	this._tryDesignModeOnClick=true;
-				// }
-
-				this.onLoad();
-			}else{
-				dojo._destroyElement(tmpContent);
-				this.editNode.innerHTML = html;
-				this.onDisplayChanged();
-			}
-			this._preDomFilterContent(this.editNode);
-		});
-
-		ifrFunc();
-	},
-
-	_applyEditingAreaStyleSheets: function(){
-		// summary:
-		//		apply the specified css files in styleSheets
-		var files = [];
-		if(this.styleSheets){
-			files = this.styleSheets.split(';');
-			this.styleSheets = '';
-		}
-
-		//empty this.editingAreaStyleSheets here, as it will be filled in addStyleSheet
-		files = files.concat(this.editingAreaStyleSheets);
-		this.editingAreaStyleSheets = [];
-
-		var text='', i=0, url;
-		while((url=files[i++])){
-			var abstring = (new dojo._Url(dojo.global.location, url)).toString();
-			this.editingAreaStyleSheets.push(abstring);
-			text += '<link rel="stylesheet" type="text/css" href="'+abstring+'"/>'
-		}
-		return text;
-	},
-
-	addStyleSheet: function(/*dojo._Url*/uri){
-		// summary:
-		//		add an external stylesheet for the editing area
-		// uri:	a dojo.uri.Uri pointing to the url of the external css file
-		var url=uri.toString();
-
-		//if uri is relative, then convert it to absolute so that it can be resolved correctly in iframe
-		if(url.charAt(0) == '.' || (url.charAt(0) != '/' && !uri.host)){
-			url = (new dojo._Url(dojo.global.location, url)).toString();
-		}
-
-		if(dojo.indexOf(this.editingAreaStyleSheets, url) > -1){
-			console.debug("dijit._editor.RichText.addStyleSheet: Style sheet "+url+" is already applied to the editing area!");
-			return;
-		}
-
-		this.editingAreaStyleSheets.push(url);
-		if(this.document.createStyleSheet){ //IE
-			this.document.createStyleSheet(url);
-		}else{ //other browser
-			var head = this.document.getElementsByTagName("head")[0];
-			var stylesheet = this.document.createElement("link");
-			with(stylesheet){
-				rel="stylesheet";
-				type="text/css";
-				href=url;
-			}
-			head.appendChild(stylesheet);
-		}
-	},
-
-	removeStyleSheet: function(/*dojo._Url*/uri){
-		// summary:
-		//		remove an external stylesheet for the editing area
-		var url=uri.toString();
-		//if uri is relative, then convert it to absolute so that it can be resolved correctly in iframe
-		if(url.charAt(0) == '.' || (url.charAt(0) != '/' && !uri.host)){
-			url = (new dojo._Url(dojo.global.location, url)).toString();
-		}
-		var index = dojo.indexOf(this.editingAreaStyleSheets, url);
-		if(index == -1){
-			console.debug("dijit._editor.RichText.removeStyleSheet: Style sheet "+url+" is not applied to the editing area so it can not be removed!");
-			return;
-		}
-		delete this.editingAreaStyleSheets[index];
-		dojo.withGlobal(this.window,'query', dojo, ['link:[href="'+url+'"]']).orphan()
-	},
-
-	disabled: false,
-	_mozSettingProps: ['styleWithCSS','insertBrOnReturn'],
-	setDisabled: function(/*Boolean*/ disabled){
-		if(dojo.isIE || dojo.isSafari || dojo.isOpera){
-			this.editNode.contentEditable=!disabled;
-		}else{ //moz
-			if(disabled){
-				this._mozSettings=[false,this.blockNodeForEnter==='BR'];
-			}
-			this.document.designMode=(disabled?'off':'on');
-			if(!disabled){
-				dojo.forEach(this._mozSettingProps, function(s,i){
-					this.document.execCommand(s,false,this._mozSettings[i]);
-				},this);
-			}
-//			this.document.execCommand('contentReadOnly', false, disabled);
-//				if(disabled){
-//					this.blur(); //to remove the blinking caret
-//				}
-//				
-		}
-		this.disabled=disabled;
-	},
-
-/* Event handlers
- *****************/
-
-	_isResized: function(){ return false; },
-
-	onLoad: function(/* Event */ e){
-		// summary: handler after the content of the document finishes loading
-		this.isLoaded = true;
-		if(this.height || dojo.isMoz){
-			this.editNode=this.document.body;
-		}else{
-			this.editNode=this.document.body.firstChild;
-		}
-		this.editNode.contentEditable = true; //should do no harm in FF
-		this._preDomFilterContent(this.editNode);
-
-		var events=this.events.concat(this.captureEvents),i=0,et;
-		while((et=events[i++])){
-			this.connect(this.document, et.toLowerCase(), et);
-		}
-		if(!dojo.isIE){
-			try{ // sanity check for Mozilla
-//					this.document.execCommand("useCSS", false, true); // old moz call
-				this.document.execCommand("styleWithCSS", false, false); // new moz call
-				//this.document.execCommand("insertBrOnReturn", false, false); // new moz call
-			}catch(e2){ }
-			// FIXME: when scrollbars appear/disappear this needs to be fired
-		}else{ // IE contentEditable
-			// give the node Layout on IE
-			this.editNode.style.zoom = 1.0;
-		}
-
-		if(this.focusOnLoad){
-			this.focus();
-		}
-
-		this.onDisplayChanged(e);
-		if(this.onLoadDeferred){
-			this.onLoadDeferred.callback(true);
-		}
-	},
-
-	onKeyDown: function(/* Event */ e){
-		// summary: Fired on keydown
-
-//		 console.info("onkeydown:", e.keyCode);
-
-		// we need this event at the moment to get the events from control keys
-		// such as the backspace. It might be possible to add this to Dojo, so that
-		// keyPress events can be emulated by the keyDown and keyUp detection.
-		if(dojo.isIE){
-			if(e.keyCode === dojo.keys.BACKSPACE && this.document.selection.type === "Control"){
-				// IE has a bug where if a non-text object is selected in the editor,
-		  // hitting backspace would act as if the browser's back button was
-		  // clicked instead of deleting the object. see #1069
-				dojo.stopEvent(e);
-				this.execCommand("delete");
-			}else if(	(65 <= e.keyCode&&e.keyCode <= 90) ||
-				(e.keyCode>=37&&e.keyCode<=40) // FIXME: get this from connect() instead!
-			){ //arrow keys
-				e.charCode = e.keyCode;
-				this.onKeyPress(e);
-			}
-		}
-		else if (dojo.isMoz){
-			if(e.keyCode == dojo.keys.TAB && !e.shiftKey && !e.ctrlKey && !e.altKey && this.iframe){
-				// update iframe document title for screen reader
-				this.iframe.contentDocument.title = this._localizedIframeTitles.iframeFocusTitle;
-				
-				// Place focus on the iframe. A subsequent tab or shift tab will put focus
-				// on the correct control.
-				this.iframe.focus();  // this.focus(); won't work
-				dojo.stopEvent(e);
-			}else if (e.keyCode == dojo.keys.TAB && e.shiftKey){
-				// if there is a toolbar, set focus to it, otherwise ignore
-				if (this.toolbar){
-					this.toolbar.focus();
-				}
-				dojo.stopEvent(e);
-			}
-		}
-	},
-
-	onKeyUp: function(e){
-		// summary: Fired on keyup
-		return;
-	},
-
-	KEY_CTRL: 1,
-	KEY_SHIFT: 2,
-
-	onKeyPress: function(e){
-		// summary: Fired on keypress
-
-//		 console.info("onkeypress:", e.keyCode);
-
-		// handle the various key events
-		var modifiers = e.ctrlKey ? this.KEY_CTRL : 0 | e.shiftKey?this.KEY_SHIFT : 0;
-
-		var key = e.keyChar||e.keyCode;
-		if(this._keyHandlers[key]){
-			// console.debug("char:", e.key);
-			var handlers = this._keyHandlers[key], i = 0, h;
-			while((h = handlers[i++])){
-				if(modifiers == h.modifiers){
-					if(!h.handler.apply(this,arguments)){
-						e.preventDefault();
-					}
-					break;
-				}
-			}
-		}
-
-		// function call after the character has been inserted
-		setTimeout(dojo.hitch(this, function(){
-			this.onKeyPressed(e);
-		}), 1);
-	},
-
-	addKeyHandler: function(/*String*/key, /*Int*/modifiers, /*Function*/handler){
-		// summary: add a handler for a keyboard shortcut
-		if(!dojo.isArray(this._keyHandlers[key])){ this._keyHandlers[key] = []; }
-		this._keyHandlers[key].push({
-			modifiers: modifiers || 0,
-			handler: handler
-		});
-	},
-
-	onKeyPressed: function(/*Event*/e){
-		this.onDisplayChanged(/*e*/); // can't pass in e
-	},
-
-	onClick: function(/*Event*/e){
-//			console.debug('onClick',this._tryDesignModeOnClick);
-//			if(this._tryDesignModeOnClick){
-//				try{
-//					this.document.designMode='on';
-//					this._tryDesignModeOnClick=false;
-//				}catch(e){}
-//			}
-		this.onDisplayChanged(e); },
-	_onBlur: function(e){
-		var _c=this.getValue(true);
-		if(_c!=this.savedContent){
-			this.onChange(_c);
-			this.savedContent=_c;
-		}
-		if (dojo.isMoz && this.iframe){
-			this.iframe.contentDocument.title = this._localizedIframeTitles.iframeEditTitle;
-		} 
-//			console.info('_onBlur')
-	},
-	_initialFocus: true,
-	_onFocus: function(/*Event*/e){
-//			console.info('_onFocus')
-		// summary: Fired on focus
-		if( (dojo.isMoz)&&(this._initialFocus) ){
-			this._initialFocus = false;
-			if(this.editNode.innerHTML.replace(/^\s+|\s+$/g, "") == "&nbsp;"){
-				this.placeCursorAtStart();
-//					this.execCommand("selectall");
-//					this.window.getSelection().collapseToStart();
-			}
-		}
-	},
-
-	blur: function(){
-		// summary: remove focus from this instance
-		if(this.iframe){
-			this.window.blur();
-		}else if(this.editNode){
-			this.editNode.blur();
-		}
-	},
-
-	focus: function(){
-		// summary: move focus to this instance
-		if(this.iframe && !dojo.isIE){
-			dijit.focus(this.iframe);
-		}else if(this.editNode && this.editNode.focus){
-			// editNode may be hidden in display:none div, lets just punt in this case
-			dijit.focus(this.editNode);
-		}else{
-			console.debug("Have no idea how to focus into the editor!");
-		}
-	},
-
-//		_lastUpdate: 0,
-	updateInterval: 200,
-	_updateTimer: null,
-	onDisplayChanged: function(/*Event*/e){
-		// summary:
-		//		This event will be fired everytime the display context
-		//		changes and the result needs to be reflected in the UI.
-		// description:
-		//		If you don't want to have update too often,
-		//		onNormalizedDisplayChanged should be used instead
-
-//			var _t=new Date();
-		if(!this._updateTimer){
-//				this._lastUpdate=_t;
-			if(this._updateTimer){
-				clearTimeout(this._updateTimer);
-			}
-			this._updateTimer=setTimeout(dojo.hitch(this,this.onNormalizedDisplayChanged),this.updateInterval);
-		}
-	},
-	onNormalizedDisplayChanged: function(){
-		// summary:
-		//		This event is fired every updateInterval ms or more
-		// description:
-		//		If something needs to happen immidiately after a
-		//		user change, please use onDisplayChanged instead
-		this._updateTimer=null;
-	},
-	onChange: function(newContent){
-		// summary:
-		//		this is fired if and only if the editor loses focus and
-		//		the content is changed
-
-//			console.log('onChange',newContent);
-	},
-	_normalizeCommand: function(/*String*/cmd){
-		// summary:
-		//		Used as the advice function by dojo.connect to map our
-		//		normalized set of commands to those supported by the target
-		//		browser
-
-		var command = cmd.toLowerCase();
-		if(command == "formatblock"){
-			if(dojo.isSafari){ command = "heading"; }
-		}else if(command == "hilitecolor" && !dojo.isMoz){
-			command = "backcolor";
-		}
-
-		return command;
-	},
-
-	queryCommandAvailable: function(/*String*/command){
-		// summary:
-		//		Tests whether a command is supported by the host. Clients SHOULD check
-		//		whether a command is supported before attempting to use it, behaviour
-		//		for unsupported commands is undefined.
-		// command: The command to test for
-		var ie = 1;
-		var mozilla = 1 << 1;
-		var safari = 1 << 2;
-		var opera = 1 << 3;
-		var safari420 = 1 << 4;
-
-		var gt420 = dojo.isSafari;
-
-		function isSupportedBy(browsers){
-			return {
-				ie: Boolean(browsers & ie),
-				mozilla: Boolean(browsers & mozilla),
-				safari: Boolean(browsers & safari),
-				safari420: Boolean(browsers & safari420),
-				opera: Boolean(browsers & opera)
-			}
-		}
-
-		var supportedBy = null;
-
-		switch(command.toLowerCase()){
-			case "bold": case "italic": case "underline":
-			case "subscript": case "superscript":
-			case "fontname": case "fontsize":
-			case "forecolor": case "hilitecolor":
-			case "justifycenter": case "justifyfull": case "justifyleft":
-			case "justifyright": case "delete": case "selectall":
-				supportedBy = isSupportedBy(mozilla | ie | safari | opera);
-				break;
-
-			case "createlink": case "unlink": case "removeformat":
-			case "inserthorizontalrule": case "insertimage":
-			case "insertorderedlist": case "insertunorderedlist":
-			case "indent": case "outdent": case "formatblock":
-			case "inserthtml": case "undo": case "redo": case "strikethrough":
-				supportedBy = isSupportedBy(mozilla | ie | opera | safari420);
-				break;
-
-			case "blockdirltr": case "blockdirrtl":
-			case "dirltr": case "dirrtl":
-			case "inlinedirltr": case "inlinedirrtl":
-				supportedBy = isSupportedBy(ie);
-				break;
-			case "cut": case "copy": case "paste":
-				supportedBy = isSupportedBy( ie | mozilla | safari420);
-				break;
-
-			case "inserttable":
-				supportedBy = isSupportedBy(mozilla | ie);
-				break;
-
-			case "insertcell": case "insertcol": case "insertrow":
-			case "deletecells": case "deletecols": case "deleterows":
-			case "mergecells": case "splitcell":
-				supportedBy = isSupportedBy(ie | mozilla);
-				break;
-
-			default: return false;
-		}
-
-		return (dojo.isIE && supportedBy.ie) ||
-			(dojo.isMoz && supportedBy.mozilla) ||
-			(dojo.isSafari && supportedBy.safari) ||
-			(gt420 && supportedBy.safari420) ||
-			(dojo.isOpera && supportedBy.opera);  // Boolean return true if the command is supported, false otherwise
-	},
-
-	execCommand: function(/*String*/command, argument){
-		// summary: Executes a command in the Rich Text area
-		// command: The command to execute
-		// argument: An optional argument to the command
-		var returnValue;
-
-		//focus() is required for IE to work
-		//In addition, focus() makes sure after the execution of
-		//the command, the editor receives the focus as expected
-		this.focus();
-
-		command = this._normalizeCommand(command);
-		if(argument != undefined){
-			if(command == "heading"){
-				throw new Error("unimplemented");
-			}else if((command == "formatblock") && dojo.isIE){
-				argument = '<'+argument+'>';
-			}
-		}
-		if(command == "inserthtml"){
-			//TODO: we shall probably call _preDomFilterContent here as well
-			argument=this._preFilterContent(argument);
-			if(dojo.isIE){
-				var insertRange = this.document.selection.createRange();
-				insertRange.pasteHTML(argument);
-				insertRange.select();
-				//insertRange.collapse(true);
-				returnValue=true;
-			}else if(dojo.isMoz && !argument.length){
-				//mozilla can not inserthtml an empty html to delete current selection
-				//so we delete the selection instead in this case
-				dojo.withGlobal(this.window,'remove',dijit._editor.selection); // FIXME
-				returnValue=true;
-			}else{
-				returnValue=this.document.execCommand(command, false, argument);
-			}
-		}else if(
-			(command == "unlink")&&
-			(this.queryCommandEnabled("unlink"))&&
-			(dojo.isMoz || dojo.isSafari)
-		){
-			// fix up unlink in Mozilla to unlink the link and not just the selection
-
-			// grab selection
-			// Mozilla gets upset if we just store the range so we have to
-			// get the basic properties and recreate to save the selection
-			var selection = this.window.getSelection();
-			//	var selectionRange = selection.getRangeAt(0);
-			//	var selectionStartContainer = selectionRange.startContainer;
-			//	var selectionStartOffset = selectionRange.startOffset;
-			//	var selectionEndContainer = selectionRange.endContainer;
-			//	var selectionEndOffset = selectionRange.endOffset;
-
-			// select our link and unlink
-			var a = dojo.withGlobal(this.window, "getAncestorElement",dijit._editor.selection, ['a']);
-			dojo.withGlobal(this.window, "selectElement", dijit._editor.selection, [a]);
-
-			returnValue=this.document.execCommand("unlink", false, null);
-		}else if((command == "hilitecolor")&&(dojo.isMoz)){
-//				// mozilla doesn't support hilitecolor properly when useCSS is
-//				// set to false (bugzilla #279330)
-
-			this.document.execCommand("styleWithCSS", false, true);
-			returnValue = this.document.execCommand(command, false, argument);
-			this.document.execCommand("styleWithCSS", false, false);
-
-		}else if((dojo.isIE)&&( (command == "backcolor")||(command == "forecolor") )){
-			// Tested under IE 6 XP2, no problem here, comment out
-			// IE weirdly collapses ranges when we exec these commands, so prevent it
-//				var tr = this.document.selection.createRange();
-			argument = arguments.length > 1 ? argument : null;
-			returnValue = this.document.execCommand(command, false, argument);
-
-			// timeout is workaround for weird IE behavior were the text
-			// selection gets correctly re-created, but subsequent input
-			// apparently isn't bound to it
-//				setTimeout(function(){tr.select();}, 1);
-		}else{
-			argument = arguments.length > 1 ? argument : null;
-//				if(dojo.isMoz){
-//					this.document = this.iframe.contentWindow.document
-//				}
-
-			if(argument || command!="createlink"){
-				returnValue = this.document.execCommand(command, false, argument);
-			}
-		}
-
-		this.onDisplayChanged();
-		return returnValue;
-	},
-
-	queryCommandEnabled: function(/*String*/command){
-		// summary: check whether a command is enabled or not
-		command = this._normalizeCommand(command);
-		if(dojo.isMoz || dojo.isSafari){
-			if(command == "unlink"){ // mozilla returns true always
-				// console.debug(dojo.withGlobal(this.window, "hasAncestorElement",dijit._editor.selection, ['a']));
-				return dojo.withGlobal(this.window, "hasAncestorElement",dijit._editor.selection, ['a']);
-			}else if (command == "inserttable"){
-				return true;
-			}
-		}
-		//see #4109
-		if(dojo.isSafari)
-			if(command == "copy"){
-				command="cut";
-			}else if(command == "paste"){
-				return true;
-		}
-
-		// return this.document.queryCommandEnabled(command);
-		var elem = (dojo.isIE) ? this.document.selection.createRange() : this.document;
-		return elem.queryCommandEnabled(command);
-	},
-
-	queryCommandState: function(command){
-		// summary: check the state of a given command
-		command = this._normalizeCommand(command);
-		return this.document.queryCommandState(command);
-	},
-
-	queryCommandValue: function(command){
-		// summary: check the value of a given command
-		command = this._normalizeCommand(command);
-		if(dojo.isIE && command == "formatblock"){
-			return this._local2NativeFormatNames[this.document.queryCommandValue(command)];
-		}
-		return this.document.queryCommandValue(command);
-	},
-
-	// Misc.
-
-	placeCursorAtStart: function(){
-		// summary:
-		//		place the cursor at the start of the editing area
-		this.focus();
-
-		//see comments in placeCursorAtEnd
-		var isvalid=false;
-		if(dojo.isMoz){
-			var first=this.editNode.firstChild;
-			while(first){
-				if(first.nodeType == 3){
-					if(first.nodeValue.replace(/^\s+|\s+$/g, "").length>0){
-						isvalid=true;
-						dojo.withGlobal(this.window, "selectElement", dijit._editor.selection, [first]);
-						break;
-					}
-				}else if(first.nodeType == 1){
-					isvalid=true;
-					dojo.withGlobal(this.window, "selectElementChildren",dijit._editor.selection, [first]);
-					break;
-				}
-				first = first.nextSibling;
-			}
-		}else{
-			isvalid=true;
-			dojo.withGlobal(this.window, "selectElementChildren",dijit._editor.selection, [this.editNode]);
-		}
-		if(isvalid){
-			dojo.withGlobal(this.window, "collapse", dijit._editor.selection, [true]);
-		}
-	},
-
-	placeCursorAtEnd: function(){
-		// summary:
-		//		place the cursor at the end of the editing area
-		this.focus();
-
-		//In mozilla, if last child is not a text node, we have to use selectElementChildren on this.editNode.lastChild
-		//otherwise the cursor would be placed at the end of the closing tag of this.editNode.lastChild
-		var isvalid=false;
-		if(dojo.isMoz){
-			var last=this.editNode.lastChild;
-			while(last){
-				if(last.nodeType == 3){
-					if(last.nodeValue.replace(/^\s+|\s+$/g, "").length>0){
-						isvalid=true;
-						dojo.withGlobal(this.window, "selectElement",dijit._editor.selection, [last]);
-						break;
-					}
-				}else if(last.nodeType == 1){
-					isvalid=true;
-					if(last.lastChild){
-						dojo.withGlobal(this.window, "selectElement",dijit._editor.selection, [last.lastChild]);
-					}else{
-						dojo.withGlobal(this.window, "selectElement",dijit._editor.selection, [last]);
-					}
-					break;
-				}
-				last = last.previousSibling;
-			}
-		}else{
-			isvalid=true;
-			dojo.withGlobal(this.window, "selectElementChildren",dijit._editor.selection, [this.editNode]);
-		}
-		if(isvalid){
-			dojo.withGlobal(this.window, "collapse", dijit._editor.selection, [false]);
-		}
-	},
-
-	getValue: function(/*Boolean?*/nonDestructive){
-		// summary:
-		//		return the current content of the editing area (post filters are applied)
-		if(this.textarea){
-			if(this.isClosed || !this.isLoaded){
-				return this.textarea.value;
-			}
-		}
-
-		return this._postFilterContent(null, nonDestructive);
-	},
-
-	setValue: function(/*String*/html){
-		// summary:
-		//		this function set the content. No undo history is preserved
-		if(this.textarea && (this.isClosed || !this.isLoaded)){
-			this.textarea.value=html;
-		}else{
-			html = this._preFilterContent(html);
-			if(this.isClosed){
-				this.domNode.innerHTML = html;
-				this._preDomFilterContent(this.domNode);
-			}else{
-				this.editNode.innerHTML = html;
-				this._preDomFilterContent(this.editNode);
-			}
-		}
-	},
-
-	replaceValue: function(/*String*/html){
-		// summary:
-		//		this function set the content while trying to maintain the undo stack
-		//		(now only works fine with Moz, this is identical to setValue in all
-		//		other browsers)
-		if(this.isClosed){
-			this.setValue(html);
-		}else if(this.window && this.window.getSelection && !dojo.isMoz){ // Safari
-			// look ma! it's a totally f'd browser!
-			this.setValue(html);
-		}else if(this.window && this.window.getSelection){ // Moz
-			html = this._preFilterContent(html);
-			this.execCommand("selectall");
-			if(dojo.isMoz && !html){ html = "&nbsp;" }
-			this.execCommand("inserthtml", html);
-			this._preDomFilterContent(this.editNode);
-		}else if(this.document && this.document.selection){//IE
-			//In IE, when the first element is not a text node, say
-			//an <a> tag, when replacing the content of the editing
-			//area, the <a> tag will be around all the content
-			//so for now, use setValue for IE too
-			this.setValue(html);
-		}
-	},
-
-	_preFilterContent: function(/*String*/html){
-		// summary:
-		//		filter the input before setting the content of the editing area
-		var ec = html;
-		dojo.forEach(this.contentPreFilters, function(ef){ if(ef){ ec = ef(ec); } });
-		return ec;
-	},
-	_preDomFilterContent: function(/*DomNode*/dom){
-		// summary:
-		//		filter the input
-		dom = dom || this.editNode;
-		dojo.forEach(this.contentDomPreFilters, function(ef){
-			if(ef && dojo.isFunction(ef)){
-				ef(dom);
-			}
-		}, this);
-	},
-
-	_postFilterContent: function(/*DomNode|DomNode[]?*/dom,/*Boolean?*/nonDestructive){
-		// summary:
-		//		filter the output after getting the content of the editing area
-		dom = dom || this.editNode;
-		if(this.contentDomPostFilters.length){
-			if(nonDestructive && dom['cloneNode']){
-				dom = dom.cloneNode(true);
-			}
-			dojo.forEach(this.contentDomPostFilters, function(ef){
-				dom = ef(dom);
-			});
-		}
-		var ec = this.getNodeChildrenHtml(dom);
-		if(!ec.replace(/^(?:\s|\xA0)+/g, "").replace(/(?:\s|\xA0)+$/g,"").length){ ec = ""; }
-
-		//	if(dojo.isIE){
-		//		//removing appended <P>&nbsp;</P> for IE
-		//		ec = ec.replace(/(?:<p>&nbsp;</p>[\n\r]*)+$/i,"");
-		//	}
-		dojo.forEach(this.contentPostFilters, function(ef){
-			ec = ef(ec);
-		});
-
-		return ec;
-	},
-
-	_saveContent: function(/*Event*/e){
-		// summary:
-		//		Saves the content in an onunload event if the editor has not been closed
-		var saveTextarea = dojo.byId("dijit._editor.RichText.savedContent");
-		saveTextarea.value += this._SEPARATOR + this.name + ":" + this.getValue();
-	},
-
-
-	escapeXml: function(/*String*/str, /*Boolean*/noSingleQuotes){
-		//summary:
-		//		Adds escape sequences for special characters in XML: &<>"'
-		//		Optionally skips escapes for single quotes
-		str = str.replace(/&/gm, "&amp;").replace(/</gm, "&lt;").replace(/>/gm, "&gt;").replace(/"/gm, "&quot;");
-		if(!noSingleQuotes){
-			str = str.replace(/'/gm, "&#39;");
-		}
-		return str; // string
-	},
-
-	getNodeHtml: function(/* DomNode */node){
-		switch(node.nodeType){
-			case 1: //element node
-				var output = '<'+node.tagName.toLowerCase();
-				if(dojo.isMoz){
-					if(node.getAttribute('type')=='_moz'){
-						node.removeAttribute('type');
-					}
-					if(node.getAttribute('_moz_dirty') != undefined){
-						node.removeAttribute('_moz_dirty');
-					}
-				}
-				//store the list of attributes and sort it to have the
-				//attributes appear in the dictionary order
-				var attrarray = [];
-				if(dojo.isIE){
-					var s = node.outerHTML;
-					s = s.substr(0,s.indexOf('>'));
-					s = s.replace(/(?:['"])[^"']*\1/g, '');//to make the following regexp safe
-					var reg = /([^\s=]+)=/g;
-					var m, key;
-					while((m = reg.exec(s)) != undefined){
-						key=m[1];
-						if(key.substr(0,3) != '_dj'){
-							if(key == 'src' || key == 'href'){
-								if(node.getAttribute('_djrealurl')){
-									attrarray.push([key,node.getAttribute('_djrealurl')]);
-									continue;
-								}
-							}
-							if(key == 'class'){
-								attrarray.push([key,node.className]);
-							}else{
-								attrarray.push([key,node.getAttribute(key)]);
-							}
-						}
-					}
-				}else{
-					var attr, i=0, attrs = node.attributes;
-					while((attr=attrs[i++])){
-						//ignore all attributes starting with _dj which are
-						//internal temporary attributes used by the editor
-						if(attr.name.substr(0,3) != '_dj' /*&&
-							(attr.specified == undefined || attr.specified)*/){
-							var v = attr.value;
-							if(attr.name == 'src' || attr.name == 'href'){
-								if(node.getAttribute('_djrealurl')){
-									v = node.getAttribute('_djrealurl');
-								}
-							}
-							attrarray.push([attr.name,v]);
-						}
-					}
-				}
-				attrarray.sort(function(a,b){
-					return a[0]<b[0]?-1:(a[0]==b[0]?0:1);
-				});
-				i=0;
-				while((attr=attrarray[i++])){
-					output += ' '+attr[0]+'="'+attr[1]+'"';
-				}
-				if(node.childNodes.length){
-					output += '>' + this.getNodeChildrenHtml(node)+'</'+node.tagName.toLowerCase()+'>';
-				}else{
-					output += ' />';
-				}
-				break;
-			case 3: //text
-				// FIXME:
-				var output = this.escapeXml(node.nodeValue,true);
-				break;
-			case 8: //comment
-				// FIXME:
-				var output = '<!--'+this.escapeXml(node.nodeValue,true)+'-->';
-				break;
-			default:
-				var output = "Element not recognized - Type: " + node.nodeType + " Name: " + node.nodeName;
-		}
-		return output;
-	},
-
-	getNodeChildrenHtml: function(/* DomNode */dom){
-		// summary: Returns the html content of a DomNode and children
-		var out = "";
-		if(!dom){ return out; }
-		var nodes = dom["childNodes"]||dom;
-		var i=0;
-		var node;
-		while((node=nodes[i++])){
-			out += this.getNodeHtml(node);
-		}
-		return out; // String
-	},
-
-	close: function(/*Boolean*/save, /*Boolean*/force){
-		// summary:
-		//		Kills the editor and optionally writes back the modified contents to the
-		//		element from which it originated.
-		// save:
-		//		Whether or not to save the changes. If false, the changes are discarded.
-		// force:
-		if(this.isClosed){return false; }
-
-		if(!arguments.length){ save = true; }
-		this._content = this.getValue();
-		var changed = (this.savedContent != this._content);
-
-		// line height is squashed for iframes
-		// FIXME: why was this here? if (this.iframe){ this.domNode.style.lineHeight = null; }
-
-		if(this.interval){ clearInterval(this.interval); }
-
-		if(this.textarea){
-			with(this.textarea.style){
-				position = "";
-				left = top = "";
-				if(dojo.isIE){
-					overflow = this.__overflow;
-					this.__overflow = null;
-				}
-			}
-			if(save){
-				this.textarea.value = this._content;
-			}else{
-				this.textarea.value = this.savedContent;
-			}
-			dojo._destroyElement(this.domNode);
-			this.domNode = this.textarea;
-		}else{
-			if(save){
-				//why we treat moz differently? comment out to fix #1061
-//					if(dojo.isMoz){
-//						var nc = dojo.doc.createElement("span");
-//						this.domNode.appendChild(nc);
-//						nc.innerHTML = this.editNode.innerHTML;
-//					}else{
-//						this.domNode.innerHTML = this._content;
-//					}
-				this.domNode.innerHTML = this._content;
-			}else{
-				this.domNode.innerHTML = this.savedContent;
-			}
-		}
-
-		dojo.removeClass(this.domNode, "RichTextEditable");
-		this.isClosed = true;
-		this.isLoaded = false;
-		// FIXME: is this always the right thing to do?
-		delete this.editNode;
-
-		if(this.window && this.window._frameElement){
-			this.window._frameElement = null;
-		}
-
-		this.window = null;
-		this.document = null;
-		this.editingArea = null;
-		this.editorObject = null;
-
-		return changed; // Boolean: whether the content has been modified
-	},
-
-	destroyRendering: function(){
-		// summary: stub	
-	}, 
-
-	destroy: function(){
-		this.destroyRendering();
-		if(!this.isClosed){ this.close(false); }
-		this.inherited("destroy",arguments);
-		//dijit._editor.RichText.superclass.destroy.call(this);
-	},
-
-	_fixContentForMoz: function(/* String */ html){
-		// summary:
-		//		Moz can not handle strong/em tags correctly, convert them to b/i
-		html = html.replace(/<(\/)?strong([ \>])/gi, '<$1b$2' );
-		html = html.replace(/<(\/)?em([ \>])/gi, '<$1i$2' );
-		return html; // String
-	},
-
-	_srcInImgRegex	: /(?:(<img(?=\s).*?\ssrc=)("|')(.*?)\2)|(?:(<img\s.*?src=)([^"'][^ >]+))/gi ,
-	_hrefInARegex	: /(?:(<a(?=\s).*?\shref=)("|')(.*?)\2)|(?:(<a\s.*?href=)([^"'][^ >]+))/gi ,
-
-	_preFixUrlAttributes: function(/* String */ html){
-		html = html.replace(this._hrefInARegex, '$1$4$2$3$5$2 _djrealurl=$2$3$5$2') ;
-		html = html.replace(this._srcInImgRegex, '$1$4$2$3$5$2 _djrealurl=$2$3$5$2') ;
-		return html; // String
-	}
+catch(e){
+}
+}
+}
+dojo.declare("dijit._editor.RichText",dijit._Widget,{constructor:function(_2){
+this.contentPreFilters=[];
+this.contentPostFilters=[];
+this.contentDomPreFilters=[];
+this.contentDomPostFilters=[];
+this.editingAreaStyleSheets=[];
+this.events=[].concat(this.events);
+this._keyHandlers={};
+this.contentPreFilters.push(dojo.hitch(this,"_preFixUrlAttributes"));
+if(dojo.isMoz){
+this.contentPreFilters.push(this._normalizeFontStyle);
+this.contentPostFilters.push(this._removeMozBogus);
+}
+if(dojo.isWebKit){
+this.contentPreFilters.push(this._removeWebkitBogus);
+this.contentPostFilters.push(this._removeWebkitBogus);
+}
+if(dojo.isIE){
+this.contentPostFilters.push(this._normalizeFontStyle);
+}
+this.onLoadDeferred=new dojo.Deferred();
+},inheritWidth:false,focusOnLoad:false,name:"",styleSheets:"",_content:"",height:"300px",minHeight:"1em",isClosed:true,isLoaded:false,_SEPARATOR:"@@**%%__RICHTEXTBOUNDRY__%%**@@",onLoadDeferred:null,isTabIndent:false,disableSpellCheck:false,postCreate:function(){
+if("textarea"==this.domNode.tagName.toLowerCase()){
+console.warn("RichText should not be used with the TEXTAREA tag.  See dijit._editor.RichText docs.");
+}
+dojo.publish(dijit._scopeName+"._editor.RichText::init",[this]);
+this.open();
+this.setupDefaultShortcuts();
+},setupDefaultShortcuts:function(){
+var _3=dojo.hitch(this,function(_4,_5){
+return function(){
+return !this.execCommand(_4,_5);
+};
 });
-
+var _6={b:_3("bold"),i:_3("italic"),u:_3("underline"),a:_3("selectall"),s:function(){
+this.save(true);
+},m:function(){
+this.isTabIndent=!this.isTabIndent;
+},"1":_3("formatblock","h1"),"2":_3("formatblock","h2"),"3":_3("formatblock","h3"),"4":_3("formatblock","h4"),"\\":_3("insertunorderedlist")};
+if(!dojo.isIE){
+_6.Z=_3("redo");
+}
+for(var _7 in _6){
+this.addKeyHandler(_7,true,false,_6[_7]);
+}
+},events:["onKeyPress","onKeyDown","onKeyUp","onClick"],captureEvents:[],_editorCommandsLocalized:false,_localizeEditorCommands:function(){
+if(this._editorCommandsLocalized){
+return;
+}
+this._editorCommandsLocalized=true;
+var _8=["div","p","pre","h1","h2","h3","h4","h5","h6","ol","ul","address"];
+var _9="",_a,i=0;
+while((_a=_8[i++])){
+if(_a.charAt(1)!="l"){
+_9+="<"+_a+"><span>content</span></"+_a+"><br/>";
+}else{
+_9+="<"+_a+"><li>content</li></"+_a+"><br/>";
+}
+}
+var _b=dojo.doc.createElement("div");
+dojo.style(_b,{position:"absolute",top:"-2000px"});
+dojo.doc.body.appendChild(_b);
+_b.innerHTML=_9;
+var _c=_b.firstChild;
+while(_c){
+dijit._editor.selection.selectElement(_c.firstChild);
+dojo.withGlobal(this.window,"selectElement",dijit._editor.selection,[_c.firstChild]);
+var _d=_c.tagName.toLowerCase();
+this._local2NativeFormatNames[_d]=document.queryCommandValue("formatblock");
+this._native2LocalFormatNames[this._local2NativeFormatNames[_d]]=_d;
+_c=_c.nextSibling.nextSibling;
+}
+dojo.body().removeChild(_b);
+},open:function(_e){
+if(!this.onLoadDeferred||this.onLoadDeferred.fired>=0){
+this.onLoadDeferred=new dojo.Deferred();
+}
+if(!this.isClosed){
+this.close();
+}
+dojo.publish(dijit._scopeName+"._editor.RichText::open",[this]);
+this._content="";
+if(arguments.length==1&&_e.nodeName){
+this.domNode=_e;
+}
+var dn=this.domNode;
+var _f;
+if(dn.nodeName&&dn.nodeName.toLowerCase()=="textarea"){
+var ta=(this.textarea=dn);
+this.name=ta.name;
+_f=ta.value;
+dn=this.domNode=dojo.doc.createElement("div");
+dn.setAttribute("widgetId",this.id);
+ta.removeAttribute("widgetId");
+dn.cssText=ta.cssText;
+dn.className+=" "+ta.className;
+dojo.place(dn,ta,"before");
+var _10=dojo.hitch(this,function(){
+dojo.style(ta,{display:"block",position:"absolute",top:"-1000px"});
+if(dojo.isIE){
+var s=ta.style;
+this.__overflow=s.overflow;
+s.overflow="hidden";
+}
+});
+if(dojo.isIE){
+setTimeout(_10,10);
+}else{
+_10();
+}
+if(ta.form){
+dojo.connect(ta.form,"onsubmit",this,function(){
+ta.value=this.getValue();
+});
+}
+}else{
+_f=dijit._editor.getChildrenHtml(dn);
+dn.innerHTML="";
+}
+var _11=dojo.contentBox(dn);
+this._oldHeight=_11.h;
+this._oldWidth=_11.w;
+this.savedContent=_f;
+if(dn.nodeName&&dn.nodeName=="LI"){
+dn.innerHTML=" <br>";
+}
+this.editingArea=dn.ownerDocument.createElement("div");
+dn.appendChild(this.editingArea);
+if(this.name!==""&&(!dojo.config["useXDomain"]||dojo.config["allowXdRichTextSave"])){
+var _12=dojo.byId(dijit._scopeName+"._editor.RichText.savedContent");
+if(_12.value!==""){
+var _13=_12.value.split(this._SEPARATOR),i=0,dat;
+while((dat=_13[i++])){
+var _14=dat.split(":");
+if(_14[0]==this.name){
+_f=_14[1];
+_13.splice(i,1);
+break;
+}
+}
+}
+dojo.addOnUnload(dojo.hitch(this,"_saveContent"));
+}
+this.isClosed=false;
+var ifr=(this.editorObject=this.iframe=dojo.doc.createElement("iframe"));
+ifr.id=this.id+"_iframe";
+this._iframeSrc=this._getIframeDocTxt();
+ifr.style.border="none";
+ifr.style.width="100%";
+if(this._layoutMode){
+ifr.style.height="100%";
+}else{
+if(dojo.isIE>=7){
+if(this.height){
+ifr.style.height=this.height;
+}
+if(this.minHeight){
+ifr.style.minHeight=this.minHeight;
+}
+}else{
+ifr.style.height=this.height?this.height:this.minHeight;
+}
+}
+ifr.frameBorder=0;
+ifr._loadFunc=dojo.hitch(this,function(win){
+this.window=win;
+this.document=this.window.document;
+if(dojo.isIE){
+this._localizeEditorCommands();
+}
+this.onLoad(_f);
+this.savedContent=this.getValue(true);
+});
+var s="javascript:parent."+dijit._scopeName+".byId(\""+this.id+"\")._iframeSrc";
+ifr.setAttribute("src",s);
+this.editingArea.appendChild(ifr);
+if(dojo.isSafari){
+setTimeout(function(){
+ifr.setAttribute("src",s);
+},0);
+}
+if(dn.nodeName=="LI"){
+dn.lastChild.style.marginTop="-1.2em";
+}
+dojo.addClass(this.domNode,"RichTextEditable");
+},_local2NativeFormatNames:{},_native2LocalFormatNames:{},_getIframeDocTxt:function(){
+var _15=dojo.getComputedStyle(this.domNode);
+var _16="";
+if(dojo.isIE||(!this.height&&!dojo.isMoz)){
+_16="<div></div>";
+}else{
+if(dojo.isMoz){
+this._cursorToStart=true;
+_16="&nbsp;";
+}
+}
+var _17=[_15.fontWeight,_15.fontSize,_15.fontFamily].join(" ");
+var _18=_15.lineHeight;
+if(_18.indexOf("px")>=0){
+_18=parseFloat(_18)/parseFloat(_15.fontSize);
+}else{
+if(_18.indexOf("em")>=0){
+_18=parseFloat(_18);
+}else{
+_18="normal";
+}
+}
+var _19="";
+this.style.replace(/(^|;)(line-|font-?)[^;]+/g,function(_1a){
+_19+=_1a.replace(/^;/g,"")+";";
+});
+var _1b=dojo.query("label[for=\""+this.id+"\"]");
+return [this.isLeftToRight()?"<html><head>":"<html dir='rtl'><head>",(dojo.isMoz&&_1b.length?"<title>"+_1b[0].innerHTML+"</title>":""),"<meta http-equiv='Content-Type' content='text/html'>","<style>","body,html {","\tbackground:transparent;","\tpadding: 1px 0 0 0;","\tmargin: -1px 0 0 0;",(dojo.isWebKit?"\twidth: 100%;":""),(dojo.isWebKit?"\theight: 100%;":""),"}","body{","\ttop:0px; left:0px; right:0px;","\tfont:",_17,";",((this.height||dojo.isOpera)?"":"position: fixed;"),"\tmin-height:",this.minHeight,";","\tline-height:",_18,"}","p{ margin: 1em 0; }",(this.height?"":"body,html{overflow-y:hidden;/*for IE*/} body > div {overflow-x:auto;/*FF:horizontal scrollbar*/ overflow-y:hidden;/*safari*/ min-height:"+this.minHeight+";/*safari*/}"),"li > ul:-moz-first-node, li > ol:-moz-first-node{ padding-top: 1.2em; } ","li{ min-height:1.2em; }","</style>",this._applyEditingAreaStyleSheets(),"</head><body onload='frameElement._loadFunc(window,document)' style='"+_19+"'>",_16,"</body></html>"].join("");
+},_applyEditingAreaStyleSheets:function(){
+var _1c=[];
+if(this.styleSheets){
+_1c=this.styleSheets.split(";");
+this.styleSheets="";
+}
+_1c=_1c.concat(this.editingAreaStyleSheets);
+this.editingAreaStyleSheets=[];
+var _1d="",i=0,url;
+while((url=_1c[i++])){
+var _1e=(new dojo._Url(dojo.global.location,url)).toString();
+this.editingAreaStyleSheets.push(_1e);
+_1d+="<link rel=\"stylesheet\" type=\"text/css\" href=\""+_1e+"\"/>";
+}
+return _1d;
+},addStyleSheet:function(uri){
+var url=uri.toString();
+if(url.charAt(0)=="."||(url.charAt(0)!="/"&&!uri.host)){
+url=(new dojo._Url(dojo.global.location,url)).toString();
+}
+if(dojo.indexOf(this.editingAreaStyleSheets,url)>-1){
+return;
+}
+this.editingAreaStyleSheets.push(url);
+this.onLoadDeferred.addCallback(dojo.hitch(function(){
+if(this.document.createStyleSheet){
+this.document.createStyleSheet(url);
+}else{
+var _1f=this.document.getElementsByTagName("head")[0];
+var _20=this.document.createElement("link");
+_20.rel="stylesheet";
+_20.type="text/css";
+_20.href=url;
+_1f.appendChild(_20);
+}
+}));
+},removeStyleSheet:function(uri){
+var url=uri.toString();
+if(url.charAt(0)=="."||(url.charAt(0)!="/"&&!uri.host)){
+url=(new dojo._Url(dojo.global.location,url)).toString();
+}
+var _21=dojo.indexOf(this.editingAreaStyleSheets,url);
+if(_21==-1){
+return;
+}
+delete this.editingAreaStyleSheets[_21];
+dojo.withGlobal(this.window,"query",dojo,["link:[href=\""+url+"\"]"]).orphan();
+},disabled:false,_mozSettingProps:{"styleWithCSS":false},_setDisabledAttr:function(_22){
+this.disabled=_22;
+if(!this.isLoaded){
+return;
+}
+_22=!!_22;
+if(dojo.isIE||dojo.isWebKit||dojo.isOpera){
+var _23=dojo.isIE&&(this.isLoaded||!this.focusOnLoad);
+if(_23){
+this.editNode.unselectable="on";
+}
+this.editNode.contentEditable=!_22;
+if(_23){
+var _24=this;
+setTimeout(function(){
+_24.editNode.unselectable="off";
+},0);
+}
+}else{
+try{
+this.document.designMode=(_22?"off":"on");
+}
+catch(e){
+return;
+}
+if(!_22&&this._mozSettingProps){
+var ps=this._mozSettingProps;
+for(var n in ps){
+if(ps.hasOwnProperty(n)){
+try{
+this.document.execCommand(n,false,ps[n]);
+}
+catch(e2){
+}
+}
+}
+}
+}
+this._disabledOK=true;
+},onLoad:function(_25){
+if(!this.window.__registeredWindow){
+this.window.__registeredWindow=true;
+this._iframeRegHandle=dijit.registerIframe(this.iframe);
+}
+if(!dojo.isIE&&(this.height||dojo.isMoz)){
+this.editNode=this.document.body;
+}else{
+this.editNode=this.document.body.firstChild;
+var _26=this;
+if(dojo.isIE){
+var _27=(this.tabStop=dojo.doc.createElement("<div tabIndex=-1>"));
+this.editingArea.appendChild(_27);
+this.iframe.onfocus=function(){
+_26.editNode.setActive();
+};
+}
+}
+this.focusNode=this.editNode;
+var _28=this.events.concat(this.captureEvents);
+var ap=this.iframe?this.document:this.editNode;
+dojo.forEach(_28,function(_29){
+this.connect(ap,_29.toLowerCase(),_29);
+},this);
+if(dojo.isIE){
+this.connect(this.document,"onmousedown","_onIEMouseDown");
+this.editNode.style.zoom=1;
+}
+if(dojo.isWebKit){
+this._webkitListener=this.connect(this.document,"onmouseup","onDisplayChanged");
+}
+if(dojo.isIE){
+try{
+this.document.execCommand("RespectVisibilityInDesign",true,null);
+}
+catch(e){
+}
+}
+this.isLoaded=true;
+this.attr("disabled",this.disabled);
+this.setValue(_25);
+if(this.onLoadDeferred){
+this.onLoadDeferred.callback(true);
+}
+this.onDisplayChanged();
+if(this.focusOnLoad){
+dojo.addOnLoad(dojo.hitch(this,function(){
+setTimeout(dojo.hitch(this,"focus"),this.updateInterval);
+}));
+}
+},onKeyDown:function(e){
+if(e.keyCode===dojo.keys.TAB&&this.isTabIndent){
+dojo.stopEvent(e);
+if(this.queryCommandEnabled((e.shiftKey?"outdent":"indent"))){
+this.execCommand((e.shiftKey?"outdent":"indent"));
+}
+}
+if(dojo.isIE){
+if(e.keyCode==dojo.keys.TAB&&!this.isTabIndent){
+if(e.shiftKey&&!e.ctrlKey&&!e.altKey){
+this.iframe.focus();
+}else{
+if(!e.shiftKey&&!e.ctrlKey&&!e.altKey){
+this.tabStop.focus();
+}
+}
+}else{
+if(e.keyCode===dojo.keys.BACKSPACE&&this.document.selection.type==="Control"){
+dojo.stopEvent(e);
+this.execCommand("delete");
+}else{
+if((65<=e.keyCode&&e.keyCode<=90)||(e.keyCode>=37&&e.keyCode<=40)){
+e.charCode=e.keyCode;
+this.onKeyPress(e);
+}
+}
+}
+}
+return true;
+},onKeyUp:function(e){
+return;
+},setDisabled:function(_2a){
+dojo.deprecated("dijit.Editor::setDisabled is deprecated","use dijit.Editor::attr(\"disabled\",boolean) instead",2);
+this.attr("disabled",_2a);
+},_setValueAttr:function(_2b){
+this.setValue(_2b);
+},_setDisableSpellCheckAttr:function(_2c){
+if(this.document){
+dojo.attr(this.document.body,"spellcheck",!_2c);
+}else{
+this.onLoadDeferred.addCallback(dojo.hitch(this,function(){
+dojo.attr(this.document.body,"spellcheck",!_2c);
+}));
+}
+this.disableSpellCheck=_2c;
+},onKeyPress:function(e){
+var c=(e.keyChar&&e.keyChar.toLowerCase())||e.keyCode,_2d=this._keyHandlers[c],_2e=arguments;
+if(_2d&&!e.altKey){
+dojo.some(_2d,function(h){
+if(!(h.shift^e.shiftKey)&&!(h.ctrl^e.ctrlKey)){
+if(!h.handler.apply(this,_2e)){
+e.preventDefault();
+}
+return true;
+}
+},this);
+}
+if(!this._onKeyHitch){
+this._onKeyHitch=dojo.hitch(this,"onKeyPressed");
+}
+setTimeout(this._onKeyHitch,1);
+return true;
+},addKeyHandler:function(key,_2f,_30,_31){
+if(!dojo.isArray(this._keyHandlers[key])){
+this._keyHandlers[key]=[];
+}
+this._keyHandlers[key].push({shift:_30||false,ctrl:_2f||false,handler:_31});
+},onKeyPressed:function(){
+this.onDisplayChanged();
+},onClick:function(e){
+this.onDisplayChanged(e);
+},_onIEMouseDown:function(e){
+if(!this._focused&&!this.disabled){
+this.focus();
+}
+},_onBlur:function(e){
+this.inherited(arguments);
+var _32=this.getValue(true);
+if(_32!=this.savedContent){
+this.onChange(_32);
+this.savedContent=_32;
+}
+},_onFocus:function(e){
+if(!this.disabled){
+if(!this._disabledOK){
+this.attr("disabled",false);
+}
+this.inherited(arguments);
+}
+},blur:function(){
+if(!dojo.isIE&&this.window.document.documentElement&&this.window.document.documentElement.focus){
+this.window.document.documentElement.focus();
+}else{
+if(dojo.doc.body.focus){
+dojo.doc.body.focus();
+}
+}
+},focus:function(){
+if(!dojo.isIE){
+dijit.focus(this.iframe);
+if(this._cursorToStart){
+delete this._cursorToStart;
+if(this.editNode.childNodes&&this.editNode.childNodes.length===1&&this.editNode.innerHTML==="&nbsp;"){
+this.placeCursorAtStart();
+}
+}
+}else{
+if(this.editNode&&this.editNode.focus){
+this.iframe.fireEvent("onfocus",document.createEventObject());
+}
+}
+},updateInterval:200,_updateTimer:null,onDisplayChanged:function(e){
+if(this._updateTimer){
+clearTimeout(this._updateTimer);
+}
+if(!this._updateHandler){
+this._updateHandler=dojo.hitch(this,"onNormalizedDisplayChanged");
+}
+this._updateTimer=setTimeout(this._updateHandler,this.updateInterval);
+},onNormalizedDisplayChanged:function(){
+delete this._updateTimer;
+},onChange:function(_33){
+},_normalizeCommand:function(cmd,_34){
+var _35=cmd.toLowerCase();
+if(_35=="formatblock"){
+if(dojo.isSafari&&_34===undefined){
+_35="heading";
+}
+}else{
+if(_35=="hilitecolor"&&!dojo.isMoz){
+_35="backcolor";
+}
+}
+return _35;
+},_qcaCache:{},queryCommandAvailable:function(_36){
+var ca=this._qcaCache[_36];
+if(ca!==undefined){
+return ca;
+}
+return (this._qcaCache[_36]=this._queryCommandAvailable(_36));
+},_queryCommandAvailable:function(_37){
+var ie=1;
+var _38=1<<1;
+var _39=1<<2;
+var _3a=1<<3;
+var _3b=1<<4;
+function _3c(_3d){
+return {ie:Boolean(_3d&ie),mozilla:Boolean(_3d&_38),webkit:Boolean(_3d&_39),webkit420:Boolean(_3d&_3b),opera:Boolean(_3d&_3a)};
+};
+var _3e=null;
+switch(_37.toLowerCase()){
+case "bold":
+case "italic":
+case "underline":
+case "subscript":
+case "superscript":
+case "fontname":
+case "fontsize":
+case "forecolor":
+case "hilitecolor":
+case "justifycenter":
+case "justifyfull":
+case "justifyleft":
+case "justifyright":
+case "delete":
+case "selectall":
+case "toggledir":
+_3e=_3c(_38|ie|_39|_3a);
+break;
+case "createlink":
+case "unlink":
+case "removeformat":
+case "inserthorizontalrule":
+case "insertimage":
+case "insertorderedlist":
+case "insertunorderedlist":
+case "indent":
+case "outdent":
+case "formatblock":
+case "inserthtml":
+case "undo":
+case "redo":
+case "strikethrough":
+case "tabindent":
+_3e=_3c(_38|ie|_3a|_3b);
+break;
+case "blockdirltr":
+case "blockdirrtl":
+case "dirltr":
+case "dirrtl":
+case "inlinedirltr":
+case "inlinedirrtl":
+_3e=_3c(ie);
+break;
+case "cut":
+case "copy":
+case "paste":
+_3e=_3c(ie|_38|_3b);
+break;
+case "inserttable":
+_3e=_3c(_38|ie);
+break;
+case "insertcell":
+case "insertcol":
+case "insertrow":
+case "deletecells":
+case "deletecols":
+case "deleterows":
+case "mergecells":
+case "splitcell":
+_3e=_3c(ie|_38);
+break;
+default:
+return false;
+}
+return (dojo.isIE&&_3e.ie)||(dojo.isMoz&&_3e.mozilla)||(dojo.isWebKit&&_3e.webkit)||(dojo.isWebKit>420&&_3e.webkit420)||(dojo.isOpera&&_3e.opera);
+},execCommand:function(_3f,_40){
+var _41;
+this.focus();
+_3f=this._normalizeCommand(_3f,_40);
+if(_40!==undefined){
+if(_3f=="heading"){
+throw new Error("unimplemented");
+}else{
+if((_3f=="formatblock")&&dojo.isIE){
+_40="<"+_40+">";
+}
+}
+}
+var _42="_"+_3f+"Impl";
+if(this[_42]){
+_41=this[_42](_40);
+}else{
+_40=arguments.length>1?_40:null;
+if(_40||_3f!="createlink"){
+_41=this.document.execCommand(_3f,false,_40);
+}
+}
+this.onDisplayChanged();
+return _41;
+},queryCommandEnabled:function(_43){
+if(this.disabled||!this._disabledOK){
+return false;
+}
+_43=this._normalizeCommand(_43);
+if(dojo.isMoz||dojo.isWebKit){
+if(_43=="unlink"){
+return this._sCall("hasAncestorElement",["a"]);
+}else{
+if(_43=="inserttable"){
+return true;
+}
+}
+}
+if(dojo.isWebKit){
+if(_43=="copy"){
+_43="cut";
+}else{
+if(_43=="paste"){
+return true;
+}
+}
+}
+var _44=dojo.isIE?this.document.selection.createRange():this.document;
+try{
+return _44.queryCommandEnabled(_43);
+}
+catch(e){
+return false;
+}
+},queryCommandState:function(_45){
+if(this.disabled||!this._disabledOK){
+return false;
+}
+_45=this._normalizeCommand(_45);
+try{
+return this.document.queryCommandState(_45);
+}
+catch(e){
+return false;
+}
+},queryCommandValue:function(_46){
+if(this.disabled||!this._disabledOK){
+return false;
+}
+var r;
+_46=this._normalizeCommand(_46);
+if(dojo.isIE&&_46=="formatblock"){
+r=this._native2LocalFormatNames[this.document.queryCommandValue(_46)];
+}else{
+if(dojo.isMoz&&_46==="hilitecolor"){
+var _47;
+try{
+_47=this.document.queryCommandValue("styleWithCSS");
+}
+catch(e){
+_47=false;
+}
+this.document.execCommand("styleWithCSS",false,true);
+r=this.document.queryCommandValue(_46);
+this.document.execCommand("styleWithCSS",false,_47);
+}else{
+r=this.document.queryCommandValue(_46);
+}
+}
+return r;
+},_sCall:function(_48,_49){
+return dojo.withGlobal(this.window,_48,dijit._editor.selection,_49);
+},placeCursorAtStart:function(){
+this.focus();
+var _4a=false;
+if(dojo.isMoz){
+var _4b=this.editNode.firstChild;
+while(_4b){
+if(_4b.nodeType==3){
+if(_4b.nodeValue.replace(/^\s+|\s+$/g,"").length>0){
+_4a=true;
+this._sCall("selectElement",[_4b]);
+break;
+}
+}else{
+if(_4b.nodeType==1){
+_4a=true;
+var tg=_4b.tagName?_4b.tagName.toLowerCase():"";
+if(/br|input|img|base|meta|area|basefont|hr|link/.test(tg)){
+this._sCall("selectElement",[_4b]);
+}else{
+this._sCall("selectElementChildren",[_4b]);
+}
+break;
+}
+}
+_4b=_4b.nextSibling;
+}
+}else{
+_4a=true;
+this._sCall("selectElementChildren",[this.editNode]);
+}
+if(_4a){
+this._sCall("collapse",[true]);
+}
+},placeCursorAtEnd:function(){
+this.focus();
+var _4c=false;
+if(dojo.isMoz){
+var _4d=this.editNode.lastChild;
+while(_4d){
+if(_4d.nodeType==3){
+if(_4d.nodeValue.replace(/^\s+|\s+$/g,"").length>0){
+_4c=true;
+this._sCall("selectElement",[_4d]);
+break;
+}
+}else{
+if(_4d.nodeType==1){
+_4c=true;
+if(_4d.lastChild){
+this._sCall("selectElement",[_4d.lastChild]);
+}else{
+this._sCall("selectElement",[_4d]);
+}
+break;
+}
+}
+_4d=_4d.previousSibling;
+}
+}else{
+_4c=true;
+this._sCall("selectElementChildren",[this.editNode]);
+}
+if(_4c){
+this._sCall("collapse",[false]);
+}
+},getValue:function(_4e){
+if(this.textarea){
+if(this.isClosed||!this.isLoaded){
+return this.textarea.value;
+}
+}
+return this._postFilterContent(null,_4e);
+},_getValueAttr:function(){
+return this.getValue(true);
+},setValue:function(_4f){
+if(!this.isLoaded){
+this.onLoadDeferred.addCallback(dojo.hitch(this,function(){
+this.setValue(_4f);
+}));
+return;
+}
+if(this.textarea&&(this.isClosed||!this.isLoaded)){
+this.textarea.value=_4f;
+}else{
+_4f=this._preFilterContent(_4f);
+var _50=this.isClosed?this.domNode:this.editNode;
+if(!_4f&&dojo.isWebKit){
+this._cursorToStart=true;
+_4f="&nbsp;";
+}
+_50.innerHTML=_4f;
+this._preDomFilterContent(_50);
+}
+this.onDisplayChanged();
+},replaceValue:function(_51){
+if(this.isClosed){
+this.setValue(_51);
+}else{
+if(this.window&&this.window.getSelection&&!dojo.isMoz){
+this.setValue(_51);
+}else{
+if(this.window&&this.window.getSelection){
+_51=this._preFilterContent(_51);
+this.execCommand("selectall");
+if(!_51){
+this._cursorToStart=true;
+_51="&nbsp;";
+}
+this.execCommand("inserthtml",_51);
+this._preDomFilterContent(this.editNode);
+}else{
+if(this.document&&this.document.selection){
+this.setValue(_51);
+}
+}
+}
+}
+},_preFilterContent:function(_52){
+var ec=_52;
+dojo.forEach(this.contentPreFilters,function(ef){
+if(ef){
+ec=ef(ec);
+}
+});
+return ec;
+},_preDomFilterContent:function(dom){
+dom=dom||this.editNode;
+dojo.forEach(this.contentDomPreFilters,function(ef){
+if(ef&&dojo.isFunction(ef)){
+ef(dom);
+}
+},this);
+},_postFilterContent:function(dom,_53){
+var ec;
+if(!dojo.isString(dom)){
+dom=dom||this.editNode;
+if(this.contentDomPostFilters.length){
+if(_53){
+dom=dojo.clone(dom);
+}
+dojo.forEach(this.contentDomPostFilters,function(ef){
+dom=ef(dom);
+});
+}
+ec=dijit._editor.getChildrenHtml(dom);
+}else{
+ec=dom;
+}
+if(!dojo.trim(ec.replace(/^\xA0\xA0*/,"").replace(/\xA0\xA0*$/,"")).length){
+ec="";
+}
+dojo.forEach(this.contentPostFilters,function(ef){
+ec=ef(ec);
+});
+return ec;
+},_saveContent:function(e){
+var _54=dojo.byId(dijit._scopeName+"._editor.RichText.savedContent");
+if(_54.value){
+_54.value+=this._SEPARATOR;
+}
+_54.value+=this.name+":"+this.getValue(true);
+},escapeXml:function(str,_55){
+str=str.replace(/&/gm,"&amp;").replace(/</gm,"&lt;").replace(/>/gm,"&gt;").replace(/"/gm,"&quot;");
+if(!_55){
+str=str.replace(/'/gm,"&#39;");
+}
+return str;
+},getNodeHtml:function(_56){
+dojo.deprecated("dijit.Editor::getNodeHtml is deprecated","use dijit._editor.getNodeHtml instead",2);
+return dijit._editor.getNodeHtml(_56);
+},getNodeChildrenHtml:function(dom){
+dojo.deprecated("dijit.Editor::getNodeChildrenHtml is deprecated","use dijit._editor.getChildrenHtml instead",2);
+return dijit._editor.getChildrenHtml(dom);
+},close:function(_57){
+if(this.isClosed){
+return false;
+}
+if(!arguments.length){
+_57=true;
+}
+this._content=this.getValue();
+var _58=(this.savedContent!=this._content);
+if(this.interval){
+clearInterval(this.interval);
+}
+if(this._webkitListener){
+this.disconnect(this._webkitListener);
+delete this._webkitListener;
+}
+if(dojo.isIE){
+this.iframe.onfocus=null;
+}
+this.iframe._loadFunc=null;
+if(this._iframeRegHandle){
+dijit.unregisterIframe(this._iframeRegHandle);
+delete this._iframeRegHandle;
+}
+if(this.textarea){
+var s=this.textarea.style;
+s.position="";
+s.left=s.top="";
+if(dojo.isIE){
+s.overflow=this.__overflow;
+this.__overflow=null;
+}
+this.textarea.value=_57?this._content:this.savedContent;
+dojo.destroy(this.domNode);
+this.domNode=this.textarea;
+}else{
+this.domNode.innerHTML=_57?this._content:this.savedContent;
+}
+delete this.iframe;
+dojo.removeClass(this.domNode,"RichTextEditable");
+this.isClosed=true;
+this.isLoaded=false;
+delete this.editNode;
+delete this.focusNode;
+if(this.window&&this.window._frameElement){
+this.window._frameElement=null;
+}
+this.window=null;
+this.document=null;
+this.editingArea=null;
+this.editorObject=null;
+return _58;
+},destroy:function(){
+if(!this.isClosed){
+this.close(false);
+}
+this.inherited(arguments);
+},_removeMozBogus:function(_59){
+return _59.replace(/\stype="_moz"/gi,"").replace(/\s_moz_dirty=""/gi,"").replace(/_moz_resizing="(true|false)"/gi,"");
+},_removeWebkitBogus:function(_5a){
+_5a=_5a.replace(/\sclass="webkit-block-placeholder"/gi,"");
+_5a=_5a.replace(/\sclass="apple-style-span"/gi,"");
+return _5a;
+},_normalizeFontStyle:function(_5b){
+return _5b.replace(/<(\/)?strong([ \>])/gi,"<$1b$2").replace(/<(\/)?em([ \>])/gi,"<$1i$2");
+},_preFixUrlAttributes:function(_5c){
+return _5c.replace(/(?:(<a(?=\s).*?\shref=)("|')(.*?)\2)|(?:(<a\s.*?href=)([^"'][^ >]+))/gi,"$1$4$2$3$5$2 _djrealurl=$2$3$5$2").replace(/(?:(<img(?=\s).*?\ssrc=)("|')(.*?)\2)|(?:(<img\s.*?src=)([^"'][^ >]+))/gi,"$1$4$2$3$5$2 _djrealurl=$2$3$5$2");
+},_inserthorizontalruleImpl:function(_5d){
+if(dojo.isIE){
+return this._inserthtmlImpl("<hr>");
+}
+return this.document.execCommand("inserthorizontalrule",false,_5d);
+},_unlinkImpl:function(_5e){
+if((this.queryCommandEnabled("unlink"))&&(dojo.isMoz||dojo.isWebKit)){
+var a=this._sCall("getAncestorElement",["a"]);
+this._sCall("selectElement",[a]);
+return this.document.execCommand("unlink",false,null);
+}
+return this.document.execCommand("unlink",false,_5e);
+},_hilitecolorImpl:function(_5f){
+var _60;
+if(dojo.isMoz){
+this.document.execCommand("styleWithCSS",false,true);
+_60=this.document.execCommand("hilitecolor",false,_5f);
+this.document.execCommand("styleWithCSS",false,false);
+}else{
+_60=this.document.execCommand("hilitecolor",false,_5f);
+}
+return _60;
+},_backcolorImpl:function(_61){
+if(dojo.isIE){
+_61=_61?_61:null;
+}
+return this.document.execCommand("backcolor",false,_61);
+},_forecolorImpl:function(_62){
+if(dojo.isIE){
+_62=_62?_62:null;
+}
+return this.document.execCommand("forecolor",false,_62);
+},_inserthtmlImpl:function(_63){
+_63=this._preFilterContent(_63);
+var rv=true;
+if(dojo.isIE){
+var _64=this.document.selection.createRange();
+if(this.document.selection.type.toUpperCase()=="CONTROL"){
+var n=_64.item(0);
+while(_64.length){
+_64.remove(_64.item(0));
+}
+n.outerHTML=_63;
+}else{
+_64.pasteHTML(_63);
+}
+_64.select();
+}else{
+if(dojo.isMoz&&!_63.length){
+this._sCall("remove");
+}else{
+rv=this.document.execCommand("inserthtml",false,_63);
+}
+}
+return rv;
+}});
 }

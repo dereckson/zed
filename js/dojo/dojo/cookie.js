@@ -1,77 +1,50 @@
-if(!dojo._hasResource["dojo.cookie"]){ //_hasResource checks added by build. Do not use _hasResource directly in your code.
-dojo._hasResource["dojo.cookie"] = true;
+/*
+	Copyright (c) 2004-2009, The Dojo Foundation All Rights Reserved.
+	Available via Academic Free License >= 2.1 OR the modified BSD license.
+	see: http://dojotoolkit.org/license for details
+*/
+
+
+if(!dojo._hasResource["dojo.cookie"]){
+dojo._hasResource["dojo.cookie"]=true;
 dojo.provide("dojo.cookie");
-
-/*=====
-dojo.__cookieProps = function(kwArgs){
-	//	expires: Date|Number?
-	//		If a number, seen as the number of days from today. If a date, the
-	//		date past which the cookie is invalid. If expires is in the past,
-	//		the cookie will be deleted If expires is left out or is 0, the
-	//		cookie will expire when the browser closes.
-	//	path: String?
-	//		The path to use for the cookie.
-	//	domain: String?
-	//		The domain to use for the cookie.
-	//	secure: Boolean?
-	//		Whether to only send the cookie on secure connections
+dojo.require("dojo.regexp");
+dojo.cookie=function(_1,_2,_3){
+var c=document.cookie;
+if(arguments.length==1){
+var _4=c.match(new RegExp("(?:^|; )"+dojo.regexp.escapeString(_1)+"=([^;]*)"));
+return _4?decodeURIComponent(_4[1]):undefined;
+}else{
+_3=_3||{};
+var _5=_3.expires;
+if(typeof _5=="number"){
+var d=new Date();
+d.setTime(d.getTime()+_5*24*60*60*1000);
+_5=_3.expires=d;
 }
-=====*/
-
-
-dojo.cookie = function(/*String*/name, /*String?*/value, /*dojo.__cookieProps?*/props){
-	//	summary: 
-	//		Get or set a cookie.
-	//	description:
-	// 		If you pass in one argument, the the value of the cookie is returned
-	//
-	// 		If you pass in two arguments, the cookie value is set to the second
-	// 		argument.
-	//
-	// 		If you pass in three arguments, the cookie value is set to the
-	// 		second argument, and the options on the third argument are used for
-	// 		extended properties on the cookie
-	//	name:
-	//		The name of the cookie
-	//	value:
-	//		Optional. The value for the cookie.
-	//	props: 
-	//		Optional additional properties for the cookie
-	//	example:
-	//		set a cookie with the JSON-serialized contents of an object which
-	//		will expire 5 days from now:
-	//	|	dojo.cookie("configObj", dojo.toJson(config), { expires: 5 });
-	//	
-	//	example:
-	//		de-serialize a cookie back into a JavaScript object:
-	//	|	var config = dojo.fromJson(dojo.cookie("configObj"));
-	//	
-	//	example:
-	//		delete a cookie:
-	//	|	dojo.cookie("configObj", null);
-	var c = document.cookie;
-	if(arguments.length == 1){
-		var idx = c.lastIndexOf(name+'=');
-		if(idx == -1){ return null; }
-		var start = idx+name.length+1;
-		var end = c.indexOf(';', idx+name.length+1);
-		if(end == -1){ end = c.length; }
-		return decodeURIComponent(c.substring(start, end)); 
-	}else{
-		props = props || {};
-		value = encodeURIComponent(value);
-		if(typeof(props.expires) == "number"){ 
-			var d = new Date();
-			d.setTime(d.getTime()+(props.expires*24*60*60*1000));
-			props.expires = d;
-		}
-		document.cookie = name + "=" + value 
-			+ (props.expires ? "; expires=" + props.expires.toUTCString() : "")
-			+ (props.path ? "; path=" + props.path : "")
-			+ (props.domain ? "; domain=" + props.domain : "")
-			+ (props.secure ? "; secure" : "");
-		return null;
-	}
+if(_5&&_5.toUTCString){
+_3.expires=_5.toUTCString();
+}
+_2=encodeURIComponent(_2);
+var _6=_1+"="+_2,_7;
+for(_7 in _3){
+_6+="; "+_7;
+var _8=_3[_7];
+if(_8!==true){
+_6+="="+_8;
+}
+}
+document.cookie=_6;
+}
 };
-
+dojo.cookie.isSupported=function(){
+if(!("cookieEnabled" in navigator)){
+this("__djCookieTest__","CookiesAllowed");
+navigator.cookieEnabled=this("__djCookieTest__")=="CookiesAllowed";
+if(navigator.cookieEnabled){
+this("__djCookieTest__","",{expires:-1});
+}
+}
+return navigator.cookieEnabled;
+};
 }

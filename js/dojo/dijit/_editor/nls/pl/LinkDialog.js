@@ -1,1 +1,1 @@
-({"set": "Ustaw", "text": "Tekst:", "title": "Adres URL odsyłacza", "url": "Adres URL:", "urlInvalidMessage": "Nieprawidłowy adres URL. Wprowadź pełny adres URL, na przykład http://www.dojotoolkit.org."})
+({"text":"Opis:","insertImageTitle":"Właściwości obrazu","set":"Ustaw","newWindow":"Nowe okno","topWindow":"Okno najwyższego poziomu","target":"Cel:","createLinkTitle":"Właściwości odsyłacza","parentWindow":"Okno macierzyste","currentWindow":"Bieżące okno","url":"Adres URL:"})

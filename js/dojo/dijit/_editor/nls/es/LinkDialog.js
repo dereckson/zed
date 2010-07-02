@@ -1,1 +1,1 @@
-({"set": "Establecer", "text": "Texto:", "title": "Enlazar URL", "url": "URL:", "urlInvalidMessage": "URL no válido. Especifique un URL completo como 'http://www.dojotoolkit.org'"})
+({"text":"Descripción: ","insertImageTitle":"Propiedades de la imagen","set":"Establecer","newWindow":"Nueva ventana","topWindow":"Ventana superior","target":"Destino: ","createLinkTitle":"Propiedades del enlace","parentWindow":"Ventana padre","currentWindow":"Ventana actual","url":"URL:"})

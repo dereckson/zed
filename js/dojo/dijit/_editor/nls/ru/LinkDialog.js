@@ -1,1 +1,1 @@
-({"set": "Задать", "text": "Текст:", "title": "URL ссылки", "url": "URL:", "urlInvalidMessage": "Недопустимый адрес URL.  Укажите полный URL, например: 'http://www.dojotoolkit.org'"})
+({"text":"Описание:","insertImageTitle":"Свойства изображения","set":"Задать","newWindow":"Новое окно","topWindow":"Окно верхнего уровня","target":"Целевой объект:","createLinkTitle":"Свойства ссылки","parentWindow":"Родительское окно","currentWindow":"Текущее окно","url":"URL:"})

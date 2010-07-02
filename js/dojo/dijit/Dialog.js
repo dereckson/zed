@@ -1,371 +1,252 @@
-if(!dojo._hasResource["dijit.Dialog"]){ //_hasResource checks added by build. Do not use _hasResource directly in your code.
-dojo._hasResource["dijit.Dialog"] = true;
+/*
+	Copyright (c) 2004-2009, The Dojo Foundation All Rights Reserved.
+	Available via Academic Free License >= 2.1 OR the modified BSD license.
+	see: http://dojotoolkit.org/license for details
+*/
+
+
+if(!dojo._hasResource["dijit.Dialog"]){
+dojo._hasResource["dijit.Dialog"]=true;
 dojo.provide("dijit.Dialog");
-
 dojo.require("dojo.dnd.move");
+dojo.require("dojo.dnd.TimedMoveable");
 dojo.require("dojo.fx");
-
 dojo.require("dijit._Widget");
 dojo.require("dijit._Templated");
+dojo.require("dijit.form._FormMixin");
+dojo.require("dijit._DialogMixin");
+dojo.require("dijit.DialogUnderlay");
 dojo.require("dijit.layout.ContentPane");
-dojo.require("dijit.form.Form");
-
-dojo.declare(
-	"dijit.DialogUnderlay",
-	[dijit._Widget, dijit._Templated],
-	{
-		// summary: the thing that grays out the screen behind the dialog
-
-		// Template has two divs; outer div is used for fade-in/fade-out, and also to hold background iframe.
-		// Inner div has opacity specified in CSS file.
-		templateString: "<div class=dijitDialogUnderlayWrapper id='${id}_underlay'><div class=dijitDialogUnderlay dojoAttachPoint='node'></div></div>",
-
-		postCreate: function(){
-			dojo.body().appendChild(this.domNode);
-			this.bgIframe = new dijit.BackgroundIframe(this.domNode);
-		},
-
-		layout: function(){
-			// summary
-			//		Sets the background to the size of the viewport (rather than the size
-			//		of the document) since we need to cover the whole browser window, even
-			//		if the document is only a few lines long.
-
-			var viewport = dijit.getViewport();
-			var is = this.node.style,
-				os = this.domNode.style;
-
-			os.top = viewport.t + "px";
-			os.left = viewport.l + "px";
-			is.width = viewport.w + "px";
-			is.height = viewport.h + "px";
-
-			// process twice since the scroll bar may have been removed
-			// by the previous resizing
-			var viewport2 = dijit.getViewport();
-			if(viewport.w != viewport2.w){ is.width = viewport2.w + "px"; }
-			if(viewport.h != viewport2.h){ is.height = viewport2.h + "px"; }
-		},
-
-		show: function(){
-			this.domNode.style.display = "block";
-			this.layout();
-			if(this.bgIframe.iframe){
-				this.bgIframe.iframe.style.display = "block";
-			}
-			this._resizeHandler = this.connect(window, "onresize", "layout");
-		},
-
-		hide: function(){
-			this.domNode.style.display = "none";
-			if(this.bgIframe.iframe){
-				this.bgIframe.iframe.style.display = "none";
-			}
-			this.disconnect(this._resizeHandler);
-		},
-
-		uninitialize: function(){
-			if(this.bgIframe){
-				this.bgIframe.destroy();
-			}
-		}
-	}
-);
-
-dojo.declare(
-	"dijit.Dialog",
-	[dijit.layout.ContentPane, dijit._Templated, dijit.form._FormMixin],
-	{
-		// summary:
-		//		Pops up a modal dialog window, blocking access to the screen
-		//		and also graying out the screen Dialog is extended from
-		//		ContentPane so it supports all the same parameters (href, etc.)
-
-		templateString: null,
-		templateString:"<div class=\"dijitDialog\">\n\t<div dojoAttachPoint=\"titleBar\" class=\"dijitDialogTitleBar\" tabindex=\"0\" waiRole=\"dialog\">\n\t<span dojoAttachPoint=\"titleNode\" class=\"dijitDialogTitle\">${title}</span>\n\t<span dojoAttachPoint=\"closeButtonNode\" class=\"dijitDialogCloseIcon\" dojoAttachEvent=\"onclick: hide\">\n\t\t<span dojoAttachPoint=\"closeText\" class=\"closeText\">x</span>\n\t</span>\n\t</div>\n\t\t<div dojoAttachPoint=\"containerNode\" class=\"dijitDialogPaneContent\"></div>\n\t<span dojoAttachPoint=\"tabEnd\" dojoAttachEvent=\"onfocus:_cycleFocus\" tabindex=\"0\"></span>\n</div>\n",
-
-		// open: Boolean
-		//		is True or False depending on state of dialog
-		open: false,
-
-		// duration: Integer
-		//		The time in milliseconds it takes the dialog to fade in and out
-		duration: 400,
-
-		_lastFocusItem:null,
-
-		attributeMap: dojo.mixin(dojo.clone(dijit._Widget.prototype.attributeMap),
-			{title: "titleBar"}),
-
-		postCreate: function(){
-			dojo.body().appendChild(this.domNode);
-			this.inherited("postCreate",arguments);
-			this.domNode.style.display="none";
-			this.connect(this, "onExecute", "hide");
-			this.connect(this, "onCancel", "hide");
-		},
-
-		onLoad: function(){
-			// summary: 
-			//		when href is specified we need to reposition the dialog after the data is loaded
-			this._position();
-			this.inherited("onLoad",arguments);
-		},
-
-		_setup: function(){
-			// summary:
-			//		stuff we need to do before showing the Dialog for the first
-			//		time (but we defer it until right beforehand, for
-			//		performance reasons)
-
-			this._modalconnects = [];
-
-			if(this.titleBar){
-				this._moveable = new dojo.dnd.Moveable(this.domNode, { handle: this.titleBar });
-			}
-
-			this._underlay = new dijit.DialogUnderlay();
-
-			var node = this.domNode;
-			this._fadeIn = dojo.fx.combine(
-				[dojo.fadeIn({
-					node: node,
-					duration: this.duration
-				 }),
-				 dojo.fadeIn({
-					node: this._underlay.domNode,
-					duration: this.duration,
-					onBegin: dojo.hitch(this._underlay, "show")
-				 })
-				]
-			);
-
-			this._fadeOut = dojo.fx.combine(
-				[dojo.fadeOut({
-					node: node,
-					duration: this.duration,
-					onEnd: function(){
-						node.style.display="none";
-					}
-				 }),
-				 dojo.fadeOut({
-					node: this._underlay.domNode,
-					duration: this.duration,
-					onEnd: dojo.hitch(this._underlay, "hide")
-				 })
-				]
-			);
-		},
-
-		uninitialize: function(){
-			if(this._underlay){
-				this._underlay.destroy();
-			}
-		},
-
-		_position: function(){
-			// summary: position modal dialog in center of screen
-			
-			if(dojo.hasClass(dojo.body(),"dojoMove")){ return; }
-			var viewport = dijit.getViewport();
-			var mb = dojo.marginBox(this.domNode);
-
-			var style = this.domNode.style;
-			style.left = Math.floor((viewport.l + (viewport.w - mb.w)/2)) + "px";
-			style.top = Math.floor((viewport.t + (viewport.h - mb.h)/2)) + "px";
-		},
-
-		_findLastFocus: function(/*Event*/ evt){
-			// summary:  called from onblur of dialog container to determine the last focusable item
-			this._lastFocused = evt.target;
-		},
-
-		_cycleFocus: function(/*Event*/ evt){
-			// summary: when tabEnd receives focus, advance focus around to titleBar
-
-			// on first focus to tabEnd, store the last focused item in dialog
-			if(!this._lastFocusItem){
-				this._lastFocusItem = this._lastFocused;
-			}
-			this.titleBar.focus();
-		},
-
-		_onKey: function(/*Event*/ evt){
-			if(evt.keyCode){
-				var node = evt.target;
-				// see if we are shift-tabbing from titleBar
-				if(node == this.titleBar && evt.shiftKey && evt.keyCode == dojo.keys.TAB){
-					if(this._lastFocusItem){
-						this._lastFocusItem.focus(); // send focus to last item in dialog if known
-					}
-					dojo.stopEvent(evt);
-				}else{
-					// see if the key is for the dialog
-					while(node){
-						if(node == this.domNode){
-							if(evt.keyCode == dojo.keys.ESCAPE){
-								this.hide(); 
-							}else{
-								return; // just let it go
-							}
-						}
-						node = node.parentNode;
-					}
-					// this key is for the disabled document window
-					if(evt.keyCode != dojo.keys.TAB){ // allow tabbing into the dialog for a11y
-						dojo.stopEvent(evt);
-					// opera won't tab to a div
-					}else if (!dojo.isOpera){
-						try{
-							this.titleBar.focus();
-						}catch(e){/*squelch*/}
-					}
-				}
-			}
-		},
-
-		show: function(){
-			// summary: display the dialog
-
-			// first time we show the dialog, there's some initialization stuff to do			
-			if(!this._alreadyInitialized){
-				this._setup();
-				this._alreadyInitialized=true;
-			}
-
-			if(this._fadeOut.status() == "playing"){
-				this._fadeOut.stop();
-			}
-
-			this._modalconnects.push(dojo.connect(window, "onscroll", this, "layout"));
-			this._modalconnects.push(dojo.connect(document.documentElement, "onkeypress", this, "_onKey"));
-
-			// IE doesn't bubble onblur events - use ondeactivate instead
-			var ev = typeof(document.ondeactivate) == "object" ? "ondeactivate" : "onblur";
-			this._modalconnects.push(dojo.connect(this.containerNode, ev, this, "_findLastFocus"));
-
-			dojo.style(this.domNode, "opacity", 0);
-			this.domNode.style.display="block";
-			this.open = true;
-			this._loadCheck(); // lazy load trigger
-
-			this._position();
-
-			this._fadeIn.play();
-
-			this._savedFocus = dijit.getFocus(this);
-
-			// set timeout to allow the browser to render dialog
-			setTimeout(dojo.hitch(this, function(){
-				dijit.focus(this.titleBar);
-			}), 50);
-		},
-
-		hide: function(){
-			// summary
-			//		Hide the dialog
-
-			// if we haven't been initialized yet then we aren't showing and we can just return		
-			if(!this._alreadyInitialized){
-				return;
-			}
-
-			if(this._fadeIn.status() == "playing"){
-				this._fadeIn.stop();
-			}
-			this._fadeOut.play();
-
-			if (this._scrollConnected){
-				this._scrollConnected = false;
-			}
-			dojo.forEach(this._modalconnects, dojo.disconnect);
-			this._modalconnects = [];
-
-			this.connect(this._fadeOut,"onEnd",dojo.hitch(this,function(){
-				dijit.focus(this._savedFocus);
-			}));
-			this.open = false;
-		},
-
-		layout: function() {
-			// summary: position the Dialog and the underlay
-			if(this.domNode.style.display == "block"){
-				this._underlay.layout();
-				this._position();
-			}
-		}
-	}
-);
-
-dojo.declare(
-	"dijit.TooltipDialog",
-	[dijit.layout.ContentPane, dijit._Templated, dijit.form._FormMixin],
-	{
-		// summary:
-		//		Pops up a dialog that appears like a Tooltip
-		// title: String
-		// 		Description of tooltip dialog (required for a11Y)
-		title: "",
-
-		_lastFocusItem: null,
-
-		templateString: null,
-		templateString:"<div class=\"dijitTooltipDialog\" >\n\t<div class=\"dijitTooltipContainer\">\n\t\t<div class =\"dijitTooltipContents dijitTooltipFocusNode\" dojoAttachPoint=\"containerNode\" tabindex=\"0\" waiRole=\"dialog\"></div>\n\t</div>\n\t<span dojoAttachPoint=\"tabEnd\" tabindex=\"0\" dojoAttachEvent=\"focus:_cycleFocus\"></span>\n\t<div class=\"dijitTooltipConnector\" ></div>\n</div>\n",
-
-		postCreate: function(){
-			this.inherited("postCreate",arguments);
-			this.connect(this.containerNode, "onkeypress", "_onKey");
-
-			// IE doesn't bubble onblur events - use ondeactivate instead
-			var ev = typeof(document.ondeactivate) == "object" ? "ondeactivate" : "onblur";
-			this.connect(this.containerNode, ev, "_findLastFocus");
-			this.containerNode.title=this.title;
-		},
-
-		orient: function(/*Object*/ corner){
-			// summary: configure widget to be displayed in given position relative to the button
-			this.domNode.className="dijitTooltipDialog " +" dijitTooltipAB"+(corner.charAt(1)=='L'?"Left":"Right")+" dijitTooltip"+(corner.charAt(0)=='T' ? "Below" : "Above");
-		},
-
-		onOpen: function(/*Object*/ pos){
-			// summary: called when dialog is displayed
-			this.orient(pos.corner);
-			this._loadCheck(); // lazy load trigger
-			this.containerNode.focus();
-		},
-
-		_onKey: function(/*Event*/ evt){
-			// summary: keep keyboard focus in dialog; close dialog on escape key
-			if(evt.keyCode == dojo.keys.ESCAPE){
-				this.onCancel();
-			}else if(evt.target == this.containerNode && evt.shiftKey && evt.keyCode == dojo.keys.TAB){
-				if (this._lastFocusItem){
-					this._lastFocusItem.focus();
-				}
-				dojo.stopEvent(evt);
-			}else if(evt.keyCode == dojo.keys.TAB){
-				// we want the browser's default tab handling to move focus
-				// but we don't want the tab to propagate upwards
-				evt.stopPropagation();
-			}
-		},
-
-		_findLastFocus: function(/*Event*/ evt){
-			// summary: called from onblur of dialog container to determine the last focusable item
-			this._lastFocused = evt.target;
-		},
-
-		_cycleFocus: function(/*Event*/ evt){
-			// summary: when tabEnd receives focus, advance focus around to containerNode
-
-			// on first focus to tabEnd, store the last focused item in dialog
-			if(!this._lastFocusItem){
-				this._lastFocusItem = this._lastFocused;
-			}
-			this.containerNode.focus();
-		}
-	}	
-);
-
-
+dojo.requireLocalization("dijit","common",null,"ROOT,ar,ca,cs,da,de,el,es,fi,fr,he,hu,it,ja,ko,nb,nl,pl,pt,pt-pt,ru,sk,sl,sv,th,tr,zh,zh-tw");
+dojo.declare("dijit._DialogBase",[dijit._Templated,dijit.form._FormMixin,dijit._DialogMixin],{templateString:dojo.cache("dijit","templates/Dialog.html","<div class=\"dijitDialog\" tabindex=\"-1\" waiRole=\"dialog\" waiState=\"labelledby-${id}_title\">\n\t<div dojoAttachPoint=\"titleBar\" class=\"dijitDialogTitleBar\">\n\t<span dojoAttachPoint=\"titleNode\" class=\"dijitDialogTitle\" id=\"${id}_title\"></span>\n\t<span dojoAttachPoint=\"closeButtonNode\" class=\"dijitDialogCloseIcon\" dojoAttachEvent=\"onclick: onCancel, onmouseenter: _onCloseEnter, onmouseleave: _onCloseLeave\" title=\"${buttonCancel}\">\n\t\t<span dojoAttachPoint=\"closeText\" class=\"closeText\" title=\"${buttonCancel}\">x</span>\n\t</span>\n\t</div>\n\t\t<div dojoAttachPoint=\"containerNode\" class=\"dijitDialogPaneContent\"></div>\n</div>\n"),attributeMap:dojo.delegate(dijit._Widget.prototype.attributeMap,{title:[{node:"titleNode",type:"innerHTML"},{node:"titleBar",type:"attribute"}],"aria-describedby":""}),open:false,duration:dijit.defaultDuration,refocus:true,autofocus:true,_firstFocusItem:null,_lastFocusItem:null,doLayout:false,draggable:true,"aria-describedby":"",postMixInProperties:function(){
+var _1=dojo.i18n.getLocalization("dijit","common");
+dojo.mixin(this,_1);
+this.inherited(arguments);
+},postCreate:function(){
+dojo.style(this.domNode,{display:"none",position:"absolute"});
+dojo.body().appendChild(this.domNode);
+this.inherited(arguments);
+this.connect(this,"onExecute","hide");
+this.connect(this,"onCancel","hide");
+this._modalconnects=[];
+},onLoad:function(){
+this._position();
+this.inherited(arguments);
+},_endDrag:function(e){
+if(e&&e.node&&e.node===this.domNode){
+this._relativePosition=dojo.position(e.node);
+}
+},_setup:function(){
+var _2=this.domNode;
+if(this.titleBar&&this.draggable){
+this._moveable=(dojo.isIE==6)?new dojo.dnd.TimedMoveable(_2,{handle:this.titleBar}):new dojo.dnd.Moveable(_2,{handle:this.titleBar,timeout:0});
+dojo.subscribe("/dnd/move/stop",this,"_endDrag");
+}else{
+dojo.addClass(_2,"dijitDialogFixed");
+}
+this.underlayAttrs={dialogId:this.id,"class":dojo.map(this["class"].split(/\s/),function(s){
+return s+"_underlay";
+}).join(" ")};
+this._fadeIn=dojo.fadeIn({node:_2,duration:this.duration,beforeBegin:dojo.hitch(this,function(){
+var _3=dijit._underlay;
+if(!_3){
+_3=dijit._underlay=new dijit.DialogUnderlay(this.underlayAttrs);
+}else{
+_3.attr(this.underlayAttrs);
+}
+var _4=948+dijit._dialogStack.length*2;
+dojo.style(dijit._underlay.domNode,"zIndex",_4);
+dojo.style(this.domNode,"zIndex",_4+1);
+_3.show();
+}),onEnd:dojo.hitch(this,function(){
+if(this.autofocus){
+this._getFocusItems(this.domNode);
+dijit.focus(this._firstFocusItem);
+}
+})});
+this._fadeOut=dojo.fadeOut({node:_2,duration:this.duration,onEnd:dojo.hitch(this,function(){
+_2.style.display="none";
+var ds=dijit._dialogStack;
+if(ds.length==0){
+dijit._underlay.hide();
+}else{
+dojo.style(dijit._underlay.domNode,"zIndex",948+ds.length*2);
+dijit._underlay.attr(ds[ds.length-1].underlayAttrs);
+}
+if(this.refocus){
+var _5=this._savedFocus;
+if(ds.length>0){
+var pd=ds[ds.length-1];
+if(!dojo.isDescendant(_5.node,pd.domNode)){
+pd._getFocusItems(pd.domNode);
+_5=pd._firstFocusItem;
+}
+}
+dijit.focus(_5);
+}
+})});
+},uninitialize:function(){
+var _6=false;
+if(this._fadeIn&&this._fadeIn.status()=="playing"){
+_6=true;
+this._fadeIn.stop();
+}
+if(this._fadeOut&&this._fadeOut.status()=="playing"){
+_6=true;
+this._fadeOut.stop();
+}
+if((this.open||_6)&&!dijit._underlay._destroyed){
+dijit._underlay.hide();
+}
+if(this._moveable){
+this._moveable.destroy();
+}
+this.inherited(arguments);
+},_size:function(){
+this._checkIfSingleChild();
+if(this._singleChild){
+if(this._singleChildOriginalStyle){
+this._singleChild.domNode.style.cssText=this._singleChildOriginalStyle;
+}
+delete this._singleChildOriginalStyle;
+}else{
+dojo.style(this.containerNode,{width:"auto",height:"auto"});
+}
+var mb=dojo.marginBox(this.domNode);
+var _7=dijit.getViewport();
+if(mb.w>=_7.w||mb.h>=_7.h){
+var w=Math.min(mb.w,Math.floor(_7.w*0.75)),h=Math.min(mb.h,Math.floor(_7.h*0.75));
+if(this._singleChild&&this._singleChild.resize){
+this._singleChildOriginalStyle=this._singleChild.domNode.style.cssText;
+this._singleChild.resize({w:w,h:h});
+}else{
+dojo.style(this.containerNode,{width:w+"px",height:h+"px",overflow:"auto",position:"relative"});
+}
+}else{
+if(this._singleChild&&this._singleChild.resize){
+this._singleChild.resize();
+}
+}
+},_position:function(){
+if(!dojo.hasClass(dojo.body(),"dojoMove")){
+var _8=this.domNode,_9=dijit.getViewport(),p=this._relativePosition,bb=p?null:dojo._getBorderBox(_8),l=Math.floor(_9.l+(p?p.x:(_9.w-bb.w)/2)),t=Math.floor(_9.t+(p?p.y:(_9.h-bb.h)/2));
+dojo.style(_8,{left:l+"px",top:t+"px"});
+}
+},_onKey:function(_a){
+var ds=dijit._dialogStack;
+if(ds[ds.length-1]!=this){
+return;
+}
+if(_a.charOrCode){
+var dk=dojo.keys;
+var _b=_a.target;
+if(_a.charOrCode===dk.TAB){
+this._getFocusItems(this.domNode);
+}
+var _c=(this._firstFocusItem==this._lastFocusItem);
+if(_b==this._firstFocusItem&&_a.shiftKey&&_a.charOrCode===dk.TAB){
+if(!_c){
+dijit.focus(this._lastFocusItem);
+}
+dojo.stopEvent(_a);
+}else{
+if(_b==this._lastFocusItem&&_a.charOrCode===dk.TAB&&!_a.shiftKey){
+if(!_c){
+dijit.focus(this._firstFocusItem);
+}
+dojo.stopEvent(_a);
+}else{
+while(_b){
+if(_b==this.domNode||dojo.hasClass(_b,"dijitPopup")){
+if(_a.charOrCode==dk.ESCAPE){
+this.onCancel();
+}else{
+return;
+}
+}
+_b=_b.parentNode;
+}
+if(_a.charOrCode!==dk.TAB){
+dojo.stopEvent(_a);
+}else{
+if(!dojo.isOpera){
+try{
+this._firstFocusItem.focus();
+}
+catch(e){
+}
+}
+}
+}
+}
+}
+},show:function(){
+if(this.open){
+return;
+}
+if(!this._alreadyInitialized){
+this._setup();
+this._alreadyInitialized=true;
+}
+if(this._fadeOut.status()=="playing"){
+this._fadeOut.stop();
+}
+this._modalconnects.push(dojo.connect(window,"onscroll",this,"layout"));
+this._modalconnects.push(dojo.connect(window,"onresize",this,function(){
+var _d=dijit.getViewport();
+if(!this._oldViewport||_d.h!=this._oldViewport.h||_d.w!=this._oldViewport.w){
+this.layout();
+this._oldViewport=_d;
+}
+}));
+this._modalconnects.push(dojo.connect(dojo.doc.documentElement,"onkeypress",this,"_onKey"));
+dojo.style(this.domNode,{opacity:0,display:""});
+this.open=true;
+this._onShow();
+this._size();
+this._position();
+dijit._dialogStack.push(this);
+this._fadeIn.play();
+this._savedFocus=dijit.getFocus(this);
+},hide:function(){
+var ds=dijit._dialogStack;
+if(!this._alreadyInitialized||this!=ds[ds.length-1]){
+return;
+}
+if(this._fadeIn.status()=="playing"){
+this._fadeIn.stop();
+}
+ds.pop();
+this._fadeOut.play();
+if(this._scrollConnected){
+this._scrollConnected=false;
+}
+dojo.forEach(this._modalconnects,dojo.disconnect);
+this._modalconnects=[];
+if(this._relativePosition){
+delete this._relativePosition;
+}
+this.open=false;
+this.onHide();
+},layout:function(){
+if(this.domNode.style.display!="none"){
+if(dijit._underlay){
+dijit._underlay.layout();
+}
+this._position();
+}
+},destroy:function(){
+dojo.forEach(this._modalconnects,dojo.disconnect);
+if(this.refocus&&this.open){
+setTimeout(dojo.hitch(dijit,"focus",this._savedFocus),25);
+}
+this.inherited(arguments);
+},_onCloseEnter:function(){
+dojo.addClass(this.closeButtonNode,"dijitDialogCloseIcon-hover");
+},_onCloseLeave:function(){
+dojo.removeClass(this.closeButtonNode,"dijitDialogCloseIcon-hover");
+}});
+dojo.declare("dijit.Dialog",[dijit.layout.ContentPane,dijit._DialogBase],{});
+dijit._dialogStack=[];
+dojo.require("dijit.TooltipDialog");
 }

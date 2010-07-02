@@ -1,35 +1,25 @@
-if(!dojo._hasResource["dijit.form.CurrencyTextBox"]){ //_hasResource checks added by build. Do not use _hasResource directly in your code.
-dojo._hasResource["dijit.form.CurrencyTextBox"] = true;
+/*
+	Copyright (c) 2004-2009, The Dojo Foundation All Rights Reserved.
+	Available via Academic Free License >= 2.1 OR the modified BSD license.
+	see: http://dojotoolkit.org/license for details
+*/
+
+
+if(!dojo._hasResource["dijit.form.CurrencyTextBox"]){
+dojo._hasResource["dijit.form.CurrencyTextBox"]=true;
 dojo.provide("dijit.form.CurrencyTextBox");
-
-//FIXME: dojo.experimental throws an unreadable exception?
-//dojo.experimental("dijit.form.CurrencyTextBox");
-
 dojo.require("dojo.currency");
 dojo.require("dijit.form.NumberTextBox");
-
-dojo.declare(
-	"dijit.form.CurrencyTextBox",
-	dijit.form.NumberTextBox,
-	{
-		// code: String
-		//		the ISO4217 currency code, a three letter sequence like "USD"
-		//		See http://en.wikipedia.org/wiki/ISO_4217
-		currency: "",
-
-		regExpGen: dojo.currency.regexp,
-		format: dojo.currency.format,
-		parse: dojo.currency.parse,
-
-		postMixInProperties: function(){
-			if(this.constraints === dijit.form.ValidationTextBox.prototype.constraints){
-				// declare a constraints property on 'this' so we don't overwrite the shared default object in 'prototype'
-				this.constraints = {};
-			}
-			this.constraints.currency = this.currency;
-			dijit.form.CurrencyTextBox.superclass.postMixInProperties.apply(this, arguments);
-		}
-	}
-);
-
+dojo.declare("dijit.form.CurrencyTextBox",dijit.form.NumberTextBox,{currency:"",regExpGen:function(_1){
+return "("+(this._focused?this.inherited(arguments,[dojo.mixin({},_1,this.editOptions)])+"|":"")+dojo.currency.regexp(_1)+")";
+},_formatter:dojo.currency.format,parse:function(_2,_3){
+var v=dojo.currency.parse(_2,_3);
+if(isNaN(v)&&/\d+/.test(_2)){
+return this.inherited(arguments,[_2,dojo.mixin({},_3,this.editOptions)]);
+}
+return v;
+},postMixInProperties:function(){
+this.constraints=dojo.currency._mixInDefaults(dojo.mixin(this.constraints,{currency:this.currency,exponent:false}));
+this.inherited(arguments);
+}});
 }

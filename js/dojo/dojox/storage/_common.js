@@ -1,18 +1,17 @@
-if(!dojo._hasResource["dojox.storage._common"]){ //_hasResource checks added by build. Do not use _hasResource directly in your code.
-dojo._hasResource["dojox.storage._common"] = true;
+/*
+	Copyright (c) 2004-2009, The Dojo Foundation All Rights Reserved.
+	Available via Academic Free License >= 2.1 OR the modified BSD license.
+	see: http://dojotoolkit.org/license for details
+*/
+
+
+if(!dojo._hasResource["dojox.storage._common"]){
+dojo._hasResource["dojox.storage._common"]=true;
 dojo.provide("dojox.storage._common");
 dojo.require("dojox.storage.Provider");
 dojo.require("dojox.storage.manager");
-
 dojo.require("dojox.storage.GearsStorageProvider");
-
-// FIXME: Find way to set isGears from offline.profile.js file; it didn't
-// work for me
-//dojo.requireIf(!dojo.isGears, "dojox.storage.FlashStorageProvider");
-//dojo.requireIf(!dojo.isGears, "dojox.storage.WhatWGStorageProvider");
-
-// now that we are loaded and registered tell the storage manager to
-// initialize itself
+dojo.require("dojox.storage.WhatWGStorageProvider");
+dojo.require("dojox.storage.FlashStorageProvider");
 dojox.storage.manager.initialize();
-
 }

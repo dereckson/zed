@@ -1,175 +1,86 @@
-if(!dojo._hasResource["dijit.form.FilteringSelect"]){ //_hasResource checks added by build. Do not use _hasResource directly in your code.
-dojo._hasResource["dijit.form.FilteringSelect"] = true;
+/*
+	Copyright (c) 2004-2009, The Dojo Foundation All Rights Reserved.
+	Available via Academic Free License >= 2.1 OR the modified BSD license.
+	see: http://dojotoolkit.org/license for details
+*/
+
+
+if(!dojo._hasResource["dijit.form.FilteringSelect"]){
+dojo._hasResource["dijit.form.FilteringSelect"]=true;
 dojo.provide("dijit.form.FilteringSelect");
-
 dojo.require("dijit.form.ComboBox");
-
-dojo.declare(
-	"dijit.form.FilteringSelect",
-	[dijit.form.MappedTextBox, dijit.form.ComboBoxMixin],
-	{
-		/*
-		 * summary
-		 *	Enhanced version of HTML's <select> tag.
-		 *
-		 *	Similar features:
-		 *	  - There is a drop down list of possible values.
-		 *	- You can only enter a value from the drop down list.  (You can't enter an arbitrary value.)
-		 *	- The value submitted with the form is the hidden value (ex: CA),
-		 *	  not the displayed value a.k.a. label (ex: California)
-		 *
-		 *	Enhancements over plain HTML version:
-		 *	- If you type in some text then it will filter down the list of possible values in the drop down list.
-		 *	- List can be specified either as a static list or via a javascript function (that can get the list from a server)
-		 */
-
-		// searchAttr: String
-		//		Searches pattern match against this field
-
-		// labelAttr: String
-		//		Optional.  The text that actually appears in the drop down.
-		//		If not specified, the searchAttr text is used instead.
-		labelAttr: "",
-
-		// labelType: String
-		//		"html" or "text"
-		labelType: "text",
-
-		_isvalid:true,
-
-		isValid:function(){
-			return this._isvalid;
-		},
-
-		_callbackSetLabel: function(/*Array*/ result, /*Object*/ dataObject, /*Boolean, optional*/ priorityChange){
-			// summary
-			//	Callback function that dynamically sets the label of the ComboBox
-
-			// setValue does a synchronous lookup,
-			// so it calls _callbackSetLabel directly,
-			// and so does not pass dataObject
-			// dataObject==null means do not test the lastQuery, just continue
-			if(dataObject&&dataObject.query[this.searchAttr]!=this._lastQuery){return;}
-			if(!result.length){
-				//#3268: do nothing on bad input
-				//this._setValue("", "");
-				//#3285: change CSS to indicate error
-				if(!this._hasFocus){ this.valueNode.value=""; }
-				dijit.form.TextBox.superclass.setValue.call(this, undefined, !this._hasFocus);
-				this._isvalid=false;
-				this.validate(this._hasFocus);
-			}else{
-				this._setValueFromItem(result[0], priorityChange);
-			}
-		},
-
-		_openResultList: function(/*Object*/ results, /*Object*/ dataObject){
-			// #3285: tap into search callback to see if user's query resembles a match
-			if(dataObject.query[this.searchAttr]!=this._lastQuery){return;}
-			this._isvalid=results.length!=0;
-			this.validate(true);
-			dijit.form.ComboBoxMixin.prototype._openResultList.apply(this, arguments);
-		},
-
-		getValue:function(){
-			// don't get the textbox value but rather the previously set hidden value
-			return this.valueNode.value;
-		},
-
-		_getValueField:function(){
-			// used for option tag selects
-			return "value";
-		},
-
-		_setValue:function(/*String*/ value, /*String*/ displayedValue, /*Boolean, optional*/ priorityChange){
-			this.valueNode.value = value;
-			dijit.form.FilteringSelect.superclass.setValue.call(this, value, priorityChange, displayedValue);
-			this._lastDisplayedValue = displayedValue;
-		},
-
-		setValue: function(/*String*/ value, /*Boolean, optional*/ priorityChange){
-			// summary
-			//	Sets the value of the select.
-			//	Also sets the label to the corresponding value by reverse lookup.
-
-			//#3347: fetchItemByIdentity if no keyAttr specified
-			var self=this;
-			var handleFetchByIdentity = function(item, priorityChange){
-				if(item){
-					if(self.store.isItemLoaded(item)){
-						self._callbackSetLabel([item], undefined, priorityChange);
-					}else{
-						self.store.loadItem({item:item, onItem: function(result, dataObject){self._callbackSetLabel(result, dataObject, priorityChange)}});
-					}
-				}else{
-					self._isvalid=false;
-					// prevent errors from Tooltip not being created yet
-					self.validate(false);
-				}
-			}
-			this.store.fetchItemByIdentity({identity: value, onItem: function(item){handleFetchByIdentity(item, priorityChange)}});
-		},
-
-		_setValueFromItem: function(/*item*/ item, /*Boolean, optional*/ priorityChange){
-			// summary
-			//	Set the displayed valued in the input box, based on a selected item.
-			//	Users shouldn't call this function; they should be calling setDisplayedValue() instead
-			this._isvalid=true;
-			this._setValue(this.store.getIdentity(item), this.labelFunc(item, this.store), priorityChange);
-		},
-
-		labelFunc: function(/*item*/ item, /*dojo.data.store*/ store){
-			// summary: Event handler called when the label changes
-			// returns the label that the ComboBox should display
-			return store.getValue(item, this.searchAttr);
-		},
-
-		onkeyup: function(/*Event*/ evt){
-			// summary: internal function
-			// FilteringSelect needs to wait for the complete label before committing to a reverse lookup
-			//this.setDisplayedValue(this.textbox.value);
-		},
-
-		_doSelect: function(/*Event*/ tgt){
-			// summary:
-			//	ComboBox's menu callback function
-			//	FilteringSelect overrides this to set both the visible and hidden value from the information stored in the menu
-			this.item = tgt.item;
-			this._setValueFromItem(tgt.item, true);
-		},
-
-		setDisplayedValue:function(/*String*/ label){
-			// summary:
-			//	Set textbox to display label
-			//	Also performs reverse lookup to set the hidden value
-			//	Used in InlineEditBox
-
-			if(this.store){
-				var query={};
-				this._lastQuery=query[this.searchAttr]=label;
-				// if the label is not valid, the callback will never set it,
-				// so the last valid value will get the warning textbox
-				// set the textbox value now so that the impending warning will make sense to the user
-				this.textbox.value=label;
-				this._lastDisplayedValue=label;
-				this.store.fetch({query:query, queryOptions:{ignoreCase:this.ignoreCase, deep:true}, onComplete: dojo.hitch(this, this._callbackSetLabel)});
-			}
-		},
-
-		_getMenuLabelFromItem:function(/*Item*/ item){
-			// internal function to help ComboBoxMenu figure out what to display
-			if(this.labelAttr){return {html:this.labelType=="html", label:this.store.getValue(item, this.labelAttr)};}
-			else{
-				// because this function is called by ComboBoxMenu, this.inherited tries to find the superclass of ComboBoxMenu
-				return dijit.form.ComboBoxMixin.prototype._getMenuLabelFromItem.apply(this, arguments);
-			}
-		},
-
-		postMixInProperties: function(){
-			dijit.form.ComboBoxMixin.prototype.postMixInProperties.apply(this, arguments);
-			dijit.form.MappedTextBox.prototype.postMixInProperties.apply(this, arguments);
-		}
-	}
-);
-
+dojo.declare("dijit.form.FilteringSelect",[dijit.form.MappedTextBox,dijit.form.ComboBoxMixin],{_isvalid:true,required:true,_lastDisplayedValue:"",isValid:function(){
+return this._isvalid||(!this.required&&this.attr("displayedValue")=="");
+},_callbackSetLabel:function(_1,_2,_3){
+if((_2&&_2.query[this.searchAttr]!=this._lastQuery)||(!_2&&_1.length&&this.store.getIdentity(_1[0])!=this._lastQuery)){
+return;
+}
+if(!_1.length){
+this.valueNode.value="";
+dijit.form.TextBox.superclass._setValueAttr.call(this,"",_3||(_3===undefined&&!this._focused));
+this._isvalid=false;
+this.validate(this._focused);
+this.item=null;
+}else{
+this.attr("item",_1[0],_3);
+}
+},_openResultList:function(_4,_5){
+if(_5.query[this.searchAttr]!=this._lastQuery){
+return;
+}
+this._isvalid=_4.length!=0;
+this.validate(true);
+dijit.form.ComboBoxMixin.prototype._openResultList.apply(this,arguments);
+},_getValueAttr:function(){
+return this.valueNode.value;
+},_getValueField:function(){
+return "value";
+},_setValueAttr:function(_6,_7){
+if(!this._onChangeActive){
+_7=null;
+}
+this._lastQuery=_6;
+if(_6===null||_6===""){
+this._setDisplayedValueAttr("",_7);
+return;
+}
+var _8=this;
+this.store.fetchItemByIdentity({identity:_6,onItem:function(_9){
+_8._callbackSetLabel([_9],undefined,_7);
+}});
+},_setItemAttr:function(_a,_b,_c){
+this._isvalid=true;
+this.inherited(arguments);
+this.valueNode.value=this.value;
+this._lastDisplayedValue=this.textbox.value;
+},_getDisplayQueryString:function(_d){
+return _d.replace(/([\\\*\?])/g,"\\$1");
+},_setDisplayedValueAttr:function(_e,_f){
+if(!this._created){
+_f=false;
+}
+if(this.store){
+this._hideResultList();
+var _10=dojo.clone(this.query);
+this._lastQuery=_10[this.searchAttr]=this._getDisplayQueryString(_e);
+this.textbox.value=_e;
+this._lastDisplayedValue=_e;
+var _11=this;
+var _12={query:_10,queryOptions:{ignoreCase:this.ignoreCase,deep:true},onComplete:function(_13,_14){
+_11._fetchHandle=null;
+dojo.hitch(_11,"_callbackSetLabel")(_13,_14,_f);
+},onError:function(_15){
+_11._fetchHandle=null;
+console.error("dijit.form.FilteringSelect: "+_15);
+dojo.hitch(_11,"_callbackSetLabel")([],undefined,false);
+}};
+dojo.mixin(_12,this.fetchProperties);
+this._fetchHandle=this.store.fetch(_12);
+}
+},postMixInProperties:function(){
+this.inherited(arguments);
+this._isvalid=!this.required;
+},undo:function(){
+this.attr("displayedValue",this._lastDisplayedValue);
+}});
 }

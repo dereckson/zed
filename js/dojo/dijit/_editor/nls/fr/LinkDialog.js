@@ -1,1 +1,1 @@
-({"set": "Définir", "text": "Texte :", "title": "URL du lien", "url": "URL :", "urlInvalidMessage": "Adresse URL non valide. Entrez une adresse URL complète de type 'http://www.dojotoolkit.org'"})
+({"text":"Description :","insertImageTitle":"Propriétés des images","set":"Définir","newWindow":"Nouvelle fenêtre","topWindow":"Première fenêtre","target":"Cible :","createLinkTitle":"Propriétés des liens","parentWindow":"Fenêtre parent","currentWindow":"Fenêtre en cours","url":"URL :"})

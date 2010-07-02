@@ -1,1 +1,1 @@
-({"set": "설정", "text": "텍스트:", "title": "URL 링크", "url": "URL:", "urlInvalidMessage": "유효하지 않은 URL입니다. 'http://www.dojotoolkit.org'와 같이 전체 URL을 입력하십시오. "})
+({"text":"설명:","insertImageTitle":"이미지 특성","set":"설정","newWindow":"새 창","topWindow":"최상위 창","target":"대상:","createLinkTitle":"링크 특성","parentWindow":"상위 창","currentWindow":"현재 창","url":"URL:"})
