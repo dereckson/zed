@@ -9,7 +9,7 @@ function get_hypership_time () {
     //Gets time
     date = new Date();
     unixtime = Math.floor(date.getTime() / 1000);
-    seconds = unixtime - 1264377600;
+    seconds = unixtime - 1278115200;
     days = Math.floor(seconds / 86400);
     fraction = Math.floor((seconds % 86400) / 86.4);
     
@@ -25,7 +25,7 @@ function get_hypership_time () {
 function next_hypership_increase_in () {
     date = new Date();
     unixtime = Math.floor(date.getTime() / 1000);
-    seconds = unixtime - 1264377600;
+    seconds = unixtime - 1278115200;
     days = Math.floor(seconds / 86400);
     fraction1 = (seconds % 86400) / 86.4;
     fraction2 = Math.ceil(fraction1);

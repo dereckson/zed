@@ -386,12 +386,12 @@ function get_hypership_time ($unixtime = null) {
     //If unixtime is not specified, it's now
     if ($unixtime === null) $unixtime = time();
     
-    //Hypership time is a count of days since launch @ 2010-01-25 00:00:00
+    //Hypership time is a count of days since launch @ 2010-07-03 00:00:00
     //Followed by a fraction of the current day /1000, like the internet time
     //but in UTC timezone and not Switzerland CET/CEST.
     //We don't need to use floor(), as we output the result at int, truncating
     //automatically decimal values instead of round it (like in C).
-    $seconds = $unixtime - 1264377600;
+    $seconds = $unixtime - 1278115200;
     $days = $seconds / 86400;
     $fraction = ($seconds % 86400) / 86.4;
     return sprintf("%d.%03d", $days, $fraction);
