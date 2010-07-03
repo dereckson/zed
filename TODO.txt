@@ -1,0 +1,8 @@
+If you find someone to code, first thank you to help us.
+
+Here some ideas:
+
+SUGGESTIONS
+===========
+A perso.reset method to allow someone to restart the stories, etc. [thenebros]
+Allow user to change language in preferences [dereckson]
