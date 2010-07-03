@@ -224,9 +224,7 @@ class Content {
         $thumbnailFile = substr($sourceFile, 0, $pos) . 'Square' . substr($sourceFile, $pos);
 
         //Executes imagemagick command
-        $command = $Config['ImageMagick']['convert'] . " \"$sourceFile\" -resize 162x162 \"$thumbnailFile\"";
-        echo "$command";
-        system($command, $code);
+        @system($command, $code);
 
         //Returns true if the command have exited with errorcode 0 (= ok)
         return ($code == 0);

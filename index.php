@@ -55,22 +55,9 @@ lang_load('core.conf');
 //Gets URL
 $url = get_current_url_fragments();
 
-//If anonymous, prints login
+//If the user isn't logged in (is anonymous), prints login/invite page & dies.
 if ($CurrentUser->id < 1000) {
-    //Anonymous user
-    if ($url[0] == 'invite') {
-        //Invitation form
-        message_die(GENERAL_ERROR, "<p>Invitation system not deployed. Contact Dereckson to enable your account.</p><p>Le système d'invitation n'a pas encore été codé, contacte Dereckson pour activer ton compte.</p>", "Invitation");
-        $smarty->display('invite.tpl');
-    } else {
-        //Login form
-        if (array_key_exists('LastUsername', $_COOKIE))
-            $smarty->assign('username', $_COOKIE['LastUsername']);
-        if (array_key_exists('LastOpenID', $_COOKIE))
-            $smarty->assign('OpenID', $_COOKIE['LastOpenID']);
-        $smarty->assign('LoginError', $LoginError);
-        $smarty->display('login.tpl');
-    }
+    include('controllers/anonymous.php');
     exit;
 }
 
@@ -100,11 +87,15 @@ if ($_POST['form'] == 'perso.create') {
     
     //Save or prints again forms
     if (!$errors) {
+        //Saves perso, logs in
         $perso->save_to_database();
         $smarty->assign('NOTIFY', lang_get('NewCharacterCreated'));
         $CurrentPerso = $perso;
         set_info('perso_id', $perso->id);
         $CurrentPerso->set_flag("site.lastlogin", $_SERVER['REQUEST_TIME']);
+        
+        //Notifies inviter
+        
     } else {
         $smarty->assign('WAP', join("<br />", $errors));
         $smarty->assign('perso', $perso);

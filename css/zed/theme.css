@@ -6,9 +6,9 @@
     Author:         Dereckson
     Tags:           space retro futurist
     Filename:       theme.css
-    Version:        1.0
+    Version:        1.1
     Created:        2010-01-27
-    Updated:        2010-01-27
+    Updated:        2010-07-02
     Licence:        Creative Commons BY 3.0
     -------------------------------------------------------------    */
 
@@ -33,14 +33,6 @@ body {
 .container_16 {
 	color: white;
 }
-
-#content {
-    width: 980px;
-    background-image: url("../../img/zed/bg_content.jpg");
-    background-position: top left;
-    background-repeat: no-repeat;
-}
-
 
 h1 {
     color: #19B5E7;
@@ -187,6 +179,7 @@ a:hover {
 
 .content_wrapper .content {
 	padding: 0 2em 0 2em;
+	color: white;
 }
 
 .content_wrapper H1 {
@@ -207,12 +200,16 @@ a:hover {
     text-align: center;
 }
 
+.avatar img {
+    border: solid 1px;
+}
+
 .avatar_name {
     display: block;
 }
 
 .avatar a:hover {
-	color: white;
+    color: white;
 }
 
 /*  -------------------------------------------------------------
@@ -415,4 +412,5 @@ a:hover {
 
 #footer {
     font-size: 80%;
+    color: white;
 }

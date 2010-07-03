@@ -96,20 +96,19 @@ if ($_GET['action'] == 'openid.login') {
                 //PASS NOT OK
                 $LoginError = "Incorrect password.";
             } else {
-                $sql = "UPDATE " . TABLE_SESSIONS . " SET user_id = '$row[user_id]' WHERE session_id LIKE '$_SESSION[ID]'";
-                if (!$db->sql_query($sql)) message_die(SQL_ERROR, "Impossible de procéder à la connexion", '', __LINE__, __FILE__, $sql);
+                login($row[user_id], $Login);
                 $LoginSuccessful = true;
-                setcookie("LastUsername", $Login, time() + 2592000);
             }				
         } else {
             //Idiot proof facility
             //Redirects people using login page as invitation claim page
-            $sql = "SELECT * FROM " . TABLE_USERS_INVITES . " WHERE invite_for = '$Login'";
+            $code = $db->sql_escape($_POST['password']);
+            $sql = "SELECT * FROM " . TABLE_USERS_INVITES . " WHERE invite_code = '$code'";
             if (!$result = $db->sql_query($sql)) {
                 message_die(SQL_ERROR, "Can't get invites", '', __LINE__, __FILE__, $sql);
             }
             if ($row = $db->sql_fetchrow($result)) {
-                $url = get_url('invite', $Login, $_POST['password']);
+                $url = get_url('invite', $_POST['password']);
                 header('location: ' . $url);
             }
             

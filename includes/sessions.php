@@ -96,6 +96,21 @@ function clean_session () {
     }
 }
 
+
+/*
+ * Logs in user
+ */
+		
+function login ($user_id, $username) {
+	global $db;
+	$sql = "UPDATE " . TABLE_SESSIONS . " SET user_id = '$user_id' WHERE session_id LIKE '$_SESSION[ID]'";
+    if (!$db->sql_query($sql)) message_die(SQL_ERROR, "Impossible de procéder à la connexion", '', __LINE__, __FILE__, $sql);
+	
+	//We send a cookie to print automatically the last username on the login
+	//page during 30 days.
+	setcookie("LastUsername", $username, time() + 2592000);
+}
+
 /*
  * Logs out user
  */

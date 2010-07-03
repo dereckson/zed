@@ -98,6 +98,14 @@
     }
     </style>
     
+    <!-- Javascript bits: dojo -->
+    <script>
+        dojo.require("dojo.parser");
+        dojo.require("dijit.Dialog");
+        dojo.require("dijit.form.Button");
+        dojo.require("dijit.form.TextBox");
+    </script>
+    
     <!-- Tower -->
     <!--
     <div id="tower"></div>
@@ -113,7 +121,7 @@
     <!-- Upload dialog -->
     <div dojoType="dijit.Dialog" id="uploadDialog" style="display: none;" title="{#UploadNewArtwork#}">
         <p>{#UploadNewArtworkDescription#}</p>
-        <form method="post" id="test" action="{get_xhr_hashed_url('upload_content', {$CurrentPerso->location_global})}" enctype="multipart/form-data">
+        <form method="post" id="test" action="{get_xhr_hashed_url('upload_content', {$CurrentPerso->location_global})}?redirectTo={get_url()}" enctype="multipart/form-data">
             <input type="hidden" id="location_local" name="location_local" value='{$CurrentPerso->location_local}' />
             <input type="hidden" id="i" name="location_k" value="-1">
             <div class="row">
@@ -133,13 +141,7 @@
     <!-- Javascript bits: script.aculo.us -->
     <script src="{#StaticContentURL#}/js/prototype.js"></script>
     <script src="{#StaticContentURL#}/js/effects.js"></script>
-    <!-- Javascript bits: dojo -->
-    <script>
-        dojo.require("dojo.parser");
-        dojo.require("dijit.Dialog");
-        dojo.require("dijit.form.Button");
-        dojo.require("dijit.form.TextBox");
-    </script>
+
     <!-- Javascript bits: tower and couloir/passage/corridor/gallery/whatNameYouGiveToIt -->
     <script src="{$SCENE_URL}/{$CurrentPerso->location_global}/tower.js"></script>
     <script>

@@ -18,6 +18,9 @@
         dojo.require("dijit.form.FilteringSelect");
         dojo.require("dijit.form.Button");
     
+        dojo.require("dojox.validate.regexp");
+        dojo.require("dojox.form.PasswordValidator");
+    
         dojo.require("dojo.parser");
     </script>
 </head>

@@ -12,6 +12,7 @@
             @import "{#StaticContentURL#}/js/dojo/dijit/themes/dijit.css";
     </style>
 
+
     <!-- Help to reach the hypership -->
     <div dojoType="dojox.layout.FloatingPane" title="Join the hypership" resizable="true" id="floaterHypershipReach" class="floatingPaneTutorial" duration="300">
 {if $CurrentPerso->location_global[0] == "S"}

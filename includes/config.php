@@ -34,6 +34,7 @@ define('TABLE_PAGES_EDITS', $prefix . 'pages_edits');
 define('TABLE_PERSOS', $prefix . 'persos');
 define('TABLE_PERSOS_FLAGS', $prefix . 'persos_flags');
 define('TABLE_PERSOS_NOTES', $prefix . 'persos_notes');
+define('TABLE_PORTS', $prefix . 'ports');
 define('TABLE_PROFILES', $prefix . 'profiles');
 define('TABLE_PROFILES_COMMENTS', $prefix . 'profiles_comments');
 define('TABLE_PROFILES_PHOTOS', $prefix . 'profiles_photos');

@@ -16,5 +16,5 @@
         <div class="row">
             <button dojoType="dijit.form.Button" iconClass="dijitEditorIcon dijitEditorIconSave" type="submit" value="Save" />Send</button>
         </div>
-        <p>Your request will be sent to humans.</p>
+        <p><strong>Warning:</strong> Your request will be sent to and handled by humans.</p>
     </form>

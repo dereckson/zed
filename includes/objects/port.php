@@ -26,7 +26,7 @@ class Port {
      * Initializes a new instance
      * @param int $id the primary key
      */
-    function __construct ($id = null) {
+    function __construct ($id = NULL) {
         if ($id) {
             $this->id = $id;
             $this->load_from_database();
@@ -52,7 +52,7 @@ class Port {
     function load_from_database () {
         global $db;
         $id = $db->sql_escape($this->id);
-        $sql = "SELECT * FROM ports WHERE port_id = '" . $id . "'";
+        $sql = "SELECT * FROM " . TABLE_PORTS . " WHERE port_id = '" . $id . "'";
         if ( !($result = $db->sql_query($sql)) ) message_die(SQL_ERROR, "Unable to query ports", '', __LINE__, __FILE__, $sql);
         if (!$row = $db->sql_fetchrow($result)) {
             $this->lastError = "Port unkwown: " . $this->id;
@@ -99,7 +99,7 @@ class Port {
         $status = $this->get_status();
 
         //Updates or inserts
-        $sql = "REPLACE INTO ports (`port_id`, `location_global`, `location_local`, `port_name`, `port_status`) VALUES ($id, '$location_global', '$location_local', '$name', '$status')";
+        $sql = "REPLACE INTO " . TABLE_PORTS . " (`port_id`, `location_global`, `location_local`, `port_name`, `port_status`) VALUES ($id, '$location_global', '$location_local', '$name', '$status')";
         if (!$db->sql_query($sql)) {
             message_die(SQL_ERROR, "Unable to save", '', __LINE__, __FILE__, $sql);
         }
@@ -116,7 +116,7 @@ class Port {
      * @return boolean true if there is a spatioport exactly at the specified location ; otherwise, false.
      */
     static function have_port ($location_global) {
-        return (get_port_id($location_global) === null) ? false : true; 
+        return (get_port_id($location_global) === NULL) ? false : true; 
     }
 
     /*
@@ -127,7 +127,7 @@ class Port {
     static function get_port_id ($location_global) {
         global $db;
         $location_global = $db->sql_escape($location_global);
-        $sql = "SELECT port_id FROM ports WHERE location_global = '$location_global'";
+        $sql = "SELECT port_id FROM " . TABLE_PORTS . " WHERE location_global = '$location_global'";
         if (!$result = $db->sql_query($sql)) {
             message_die(SQL_ERROR, "Unable to get ports", '', __LINE__, __FILE__, $sql);
         }
@@ -157,7 +157,7 @@ class Port {
             //==> B00001%
             global $db;
             $loc = $db->sql_escape(substr($location_global, 0, 6));
-            $sql = "SELECT port_id FROM ports WHERE location_global LIKE '$loc%'";
+            $sql = "SELECT port_id FROM " . TABLE_PORTS . " WHERE location_global LIKE '$loc%'";
             if (!$result = $db->sql_query($sql)) {
                 message_die(SQL_ERROR, "Can't get port", '', __LINE__, __FILE__, $sql);
             }
