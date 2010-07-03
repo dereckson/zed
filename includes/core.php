@@ -393,7 +393,7 @@ function get_hypership_time ($unixtime = null) {
     //automatically decimal values instead of round it (like in C).
     $seconds = $unixtime - 1278115200;
     $days = $seconds / 86400;
-    $fraction = ($seconds % 86400) / 86.4;
+    $fraction = (abs($seconds) % 86400) / 86.4;
     return sprintf("%d.%03d", $days, $fraction);
 }
 
