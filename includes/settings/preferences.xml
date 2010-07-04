@@ -11,7 +11,20 @@
             <key>Password</key>
             <field>password</field>
             <object>CurrentUser</object>
-            <method>set_password</method>
+            <handler>
+                <get>
+                    return "";
+                </get>
+                <set>
+<![CDATA[
+if ($value) {
+    global $CurrentUser;
+    $CurrentUser->set_password($value);
+    return true;
+}
+]]>
+                </set>
+            </handler>
         </setting>
         <setting id="email">
             <key>Email</key>
@@ -34,7 +47,7 @@ return $db->sql_query_express($sql);
 <![CDATA[
 global $db, $CurrentUser, $smarty;
 $openid = $db->sql_escape($value);
-$sql = "SELECT user_id FROM users_openid WHERE open_id_url LIKE '$openid'";
+$sql = "SELECT user_id FROM users_openid WHERE openid_url LIKE '$openid'";
 if ($user_id = $db->sql_query_express($sql)) {
     if ($user_id == $CurrentUser->id) {
         $smarty->assign('WAP', "This OpenID is already linked to your account.");

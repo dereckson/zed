@@ -6,7 +6,9 @@
  * Released under BSD license
  *
  * SmartLine
- * 
+ *
+ * TODO: SettingsSmartLineCommand - understand why dojo floating pane isn't
+ *       rendered if we est $controller instead to redirect
  */
 
 ///
@@ -18,8 +20,9 @@ $smartLine->register_object('guid', 'GUIDSmartLineCommand');
 $smartLine->register_object('invite', 'InviteSmartLineCommand');
 $smartLine->register_object('invites', 'InviteSmartLineCommand');
 $smartLine->register_object('list', 'ListSmartLineCommand');
-$smartLine->register_object('unixtime', 'UnixTimeSmartLineCommand');
 $smartLine->register_object('requests', 'RequestsSmartLineCommand');
+$smartLine->register_object('settings', 'SettingsSmartLineCommand');
+$smartLine->register_object('unixtime', 'UnixTimeSmartLineCommand');
 $smartLine->register_object('whereami', 'WhereAmISmartLineCommand');
 
 
@@ -41,10 +44,11 @@ $lang['Help']['invite'] = "Generate an invite. To see the generated invites, inv
 
 class WhereAmISmartLineCommand extends SmartLineCommand {
     public function run ($argv, $argc) {
-	global $CurrentPerso;
-	require_once("includes/geo/location.php");
-	$place = new GeoLocation($CurrentPerso->location_global);
-	$this->SmartLine->puts($CurrentPerso->location_global . ' - ' . $place);
+	    global $CurrentPerso;
+		
+	    require_once("includes/geo/location.php");
+	    $place = new GeoLocation($CurrentPerso->location_global);
+	    $this->SmartLine->puts($CurrentPerso->location_global . ' - ' . $place);
     }
 }
 
@@ -54,14 +58,14 @@ class WhereAmISmartLineCommand extends SmartLineCommand {
 
 class GUIDSmartLineCommand extends SmartLineCommand {
     public function run ($argv, $argc) {
-	if ($argc > 1 && is_numeric($argv[1])) {
-	    for ($i = 0 ; $i < $argv[1] ; $i++) {
-		$this->SmartLine->puts(new_guid());
-	    }
-	    return;
-	}
+		if ($argc > 1 && is_numeric($argv[1])) {
+			for ($i = 0 ; $i < $argv[1] ; $i++) {
+				 $this->SmartLine->puts(new_guid());
+			}
+			return;
+		}
 	
-	$this->SmartLine->puts(new_guid());
+	    $this->SmartLine->puts(new_guid());
     }
 }
 
@@ -71,14 +75,29 @@ class GUIDSmartLineCommand extends SmartLineCommand {
 
 class RequestsSmartLineCommand extends SmartLineCommand {
     public function run ($argv, $argc) {
-	global $CurrentPerso;
-	$force = ($argc > 1) && ($argv[1] == "-f" || $argv[1] == "--force");
-	if ($force || (array_key_exists('site.requests', $CurrentPerso->flags) && $CurrentPerso->flags['site.requests'])) {
-		global $controller;
-		$controller = 'controllers/persorequest.php';
-	} else {
-	    $this->SmartLine->puts("No request waiting.");
-	}	
+		global $CurrentPerso;
+		$force = ($argc > 1) && ($argv[1] == "-f" || $argv[1] == "--force");
+		if ($force || (array_key_exists('site.requests', $CurrentPerso->flags) && $CurrentPerso->flags['site.requests'])) {
+			global $controller;
+			$controller = 'controllers/persorequest.php';
+		} else {
+			$this->SmartLine->puts("No request waiting.");
+		}	
+    }
+}
+
+///
+/// Settings
+///
+
+class SettingsSmartLineCommand extends SmartLineCommand {
+    public function run ($argv, $argc) {
+		if (headers_sent()) {
+			global $controller;
+			$controller = 'controllers/settings.php';
+		} else {
+			header('location: ' . get_url('settings'));
+		}
     }
 }
 

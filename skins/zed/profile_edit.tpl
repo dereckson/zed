@@ -18,7 +18,7 @@
         </div>
         <div class="profile_separator"></div>
         <div class="profile_text">
-            <form action="" class="search_form" name="faerie" method="post">
+            <form action="" method="post">
                 <h2>{#ProfileTextTitle#}</h2>
                 <textarea style="font-family: Calibri" id="ProfileText" rows="16" cols="72" name="text" class="text">{$PROFILE_TEXT}</textarea><br />
                 <div class="row" style="background-color: white; color: black;">
@@ -49,7 +49,7 @@
                     <h2>{#EditMyPage#}</h2>
                     <ul>
                         <li>{#EditProfile#}</li>
-                        <li><a href="{get_url('who')}/edit/account">{#EditAccount#}</a></li>
+                        <li><a href="{get_url('settings','perso')}">{#EditAccount#}</a></li>
                         <li><a href="{get_url('who')}/edit/photos">{if $PICS}{#ManagePhotos#}{else}{#AddPhoto#}{/if}</a></li>
                     </ul>
             	</div>

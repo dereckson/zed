@@ -6,9 +6,12 @@
         dojo.require("dijit.form.Button");
         dojo.require("dijit.form.FilteringSelect");
         dojo.require("dijit.form.CheckBox");
+        
+        dojo.require("dojox.form.PasswordValidator");
     </script>
 
     <!-- Settings - #{$page->id} -->
+    <div class="grid_12 alpha">
     <h2>{#$page->title#}</h2>
     <form method="post">
     <input type="hidden" name="settings.page" value="{$page->id}" />
@@ -21,12 +24,13 @@
         <label for="{$setting->key}" class="firstLabel ">{#$setting->key#}</label>
         <input dojoType="dijit.form.TextBox" id="{$setting->key}" name="{$setting->key}" type="text" value="{$setting->get()}" class="long" />
 {elseif $setting->field == "password"}
-        <label for="{$setting->key}" class="firstLabel ">{#$setting->key#}</label>
-        <input dojoType="dijit.form.TextBox" id="{$setting->key}" name="{$setting->key}" type="password" value="{$setting->get()}" class="long" />
-    </div>
-    <div class="row">
-        <label for="{$setting->key}_confirm" class="firstLabel">{#$setting->key#} (confirm it)</label>
-        <input dojoType="dijit.form.TextBox" id="{$setting->key}_confirm" name="{$setting->key}_confirm" type="password" value="{$setting->get()}" class="long" />
+        <div dojoType="dojox.form.PasswordValidator" name="{$setting->key}">
+            <label for="{$setting->key}" class="firstLabel ">{#$setting->key#}</label>
+            <input type="password" pwType="new" id="{$setting->key}" name="{$setting->key}" value="{$setting->get()}" class="long" />
+            <br />
+            <label for="{$setting->key}_confirm" class="firstLabel">{#$setting->key#} {#PasswordConfirm#}</label>
+            <input type="password" pwType="verify" id="{$setting->key}_confirm" name="{$setting->key}_confirm" value="{$setting->get()}" class="long" />
+        </div>
 {elseif $setting->field == "filteredlist"}
         <label for="{$setting->key}" class="firstLabel ">{#$setting->key#}</label>
         <select id="{$setting->key}" name="{$setting->key}" dojoType="dijit.form.FilteringSelect" class="long">
@@ -44,3 +48,20 @@
         <button dojoType="dijit.form.Button" iconClass="dijitEditorIcon dijitEditorIconSave" type="submit" value="Save" />{#SaveSettings#}</button>
     </div>
     </form>
+    </div>
+    
+    <div class="grid_4 omega">
+        <h2>Settings</h2>
+        <ul style="list-style-type: cjk-ideographic; line-height: 2em;">
+{foreach from=$pages item=value key=key}
+{if $key == $page->id}
+            <li>{$value}</li>
+{else}
+            <li><a href="{get_url('settings', $key)}">{$value}</a></li>
+{/if}
+{/foreach}
+            <li><a href="{get_url('who', 'edit', 'profile')}">{#EditProfile#}</a></li>
+        </ul>
+    </div>
+    
+    <div class="clear"></div>

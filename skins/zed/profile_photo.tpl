@@ -24,7 +24,7 @@
 		<h2>{#EditMyPage#}</h2>
 		<ul>
                     <li><a href="{get_url('who')}/edit/profile">{#EditProfile#}</a></li>
-                    <li><a href="{get_url('who')}/edit/account">{#EditAccount#}</a></li>
+                    <li><a href="{get_url('settings','perso')}">{#EditAccount#}</a></li>
                     <li>{if $PICS}{#ManagePhotos#}{else}{#AddPhoto#}{/if}</a></li>
                 </ul>
             </div>

@@ -39,7 +39,7 @@ class Settings {
         }
         
         $this->file = $xmlFile;
-        $this->parse();     
+        $this->parse();
     }
 
     /*
