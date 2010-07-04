@@ -131,7 +131,7 @@ Au nord, The Hole, une ancienne mine dont les mineurs évitent de parler.
     <description>
       – « Qu'est-ce que vous gardez d'aussi important ? Pourquoi les mineurs évitent d'en parler ? »
       
-      — « Revenez quand vous saurez. »
+      – « Revenez quand vous saurez. »
     </description>
     <choices>
       <choice goto="panorama">Obtempérer et retourner en ville</choice>
