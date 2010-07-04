@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Gné
+Dimi, Inferno, DcK 2010-07-04
+
+TODO: .en
+TODO: playtesting
+-->
+<story>
+  <title>Gné, Gné</title>
+  <section start="true" id="panorama">
+    <title>Gné</title>
+    <description>
+        L'air est nauséabond, difficilement respirable, comme l'odeur des effluves d'une centaine d'humanoïdes crasseux et suant de tous pores.
+      
+Aucune vie animale ni végétale aux alentours, si ce n'est une étrange mousse ressemblant quelque peu à de la moisissure.
+
+L'on distingue peu de bâtiments, au profit de petites huttes dispersées dans un capharnaüm apparent.
+
+Derrière, s'élève un grand temple en terre cuite, aux formes tantôt arrondies, tantôt acerbes.
+    </description>
+    <choices>
+        <choice goto="huttes.entry">Explorer les huttes</choice>
+        <choice goto="temple.entry">Entrer dans le temple</choice>
+        <choice goto="spatioport.entry">Se rendre au spatioport</choice>
+    </choices>
+    <local>1</local>
+  </section>
+
+  <!--
+    Les huttes
+  -->
+  <section id="huttes.entry">
+    <title>Les huttes</title>
+    <description>
+      Quatre huttes retiennent particulièrement votre attention :
+    </description>
+    <choices>
+      <choice goto="huttes.A"></choice>
+      <choice goto="huttes.B"></choice>
+      <choice goto="huttes.C"></choice>
+      <choice goto="huttes.D">Se rendre dans la hutte où l'on entend des tambours</choice>
+    </choices>
+    <local>1</local>
+  </section>
+  
+  <section id="huttes.D">
+    <title>Les huttes</title>
+    <description>
+      Quatre huttes retiennent particulièrement votre attention :
+    </description>
+    <choices>
+      Des femmes dénudées 
+    </choices>
+  </section>
+  
+  <!--
+    Le spatioport
+  -->
+  <section id="spatioport.entry">
+    <title>Spatioport</title>
+    <description>
+      Le spatioport, à l'architecture se voulant l'allégorie de la sobriétété, ne comporte ni tourelle, ni dôme, ni technologie apparente, ni lumière accueillante, ni aide à l'amerrisage, comme s'il s'agissait d'un des tous premiers spatioport construit.
+    </description>
+    <hooks>
+      <hook type="spatioport" />
+    </hooks>
+    <choices>
+      <choice goto="panorama">Quitter le spatioport</choice>
+    </choices>    
+    <local>3</local>
+  </section>
+  
+  <!--
+    Le temple
+  -->
+</story>
