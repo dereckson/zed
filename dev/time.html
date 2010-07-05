@@ -1,0 +1,82 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+    "http://www.w3.org/TR/html4/strict.dtd"
+    >
+<html lang="en">
+<head>
+    <title>HyperShip Time</title>
+    <link rel="Stylesheet" href="../css/zed/theme.css" type="text/css" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <script type="text/javascript" src="/js/dojo/dojo/dojo.js" djConfig="isDebug:false, parseOnLoad: true"></script>
+</head>
+<body>
+    <div style="width: 960px; margin: auto; margin-top: 1em;" class="container_16">
+        <h1 style="font-size: 3em;">Zed</h1>
+        <h2>HyperShip time</h2>
+
+        <script type="text/javascript">
+          dojo.require("dojox.charting.Chart2D");
+          dojo.require("dojox.date.php");
+          dojo.require("dijit.form.NumberSpinner");
+        
+          var chartTime;
+          
+          //A method to get the decimal part of hypership time
+          function get_hypership_hour () {
+            //Gets time
+            date = new Date();
+            unixtime = Math.floor(date.getTime() / 1000);
+            seconds = unixtime - 1278115200;
+            return Math.floor((seconds % 86400) / 86.4);
+          }
+          
+          // The data to use.
+          var time = get_hypership_hour();
+          var timeData = [time, 1000 - time];
+          
+          // This function creates the chart, and is really all you
+          // need. All other code is to allow you to update it on the
+          // fly.
+          dojo.addOnLoad(function(){
+              chartTime = new dojox.charting.Chart2D("timechart");
+              chartTime.addPlot("default", {
+                type: "Pie",
+                fontColor: "white",
+                labelOffset: 40,
+                radius: 100
+              });
+              chartTime.addSeries("Time", timeData);
+              dojo.require("dojox.charting.themes.PlotKit.cyan");
+              chartTime.setTheme(dojox.charting.themes.PlotKit['cyan']);
+              chartTime.render();
+              
+              update_time(chartTime);
+          });
+          
+          function update_time (chart) {
+              //Updates chart
+              var time = get_hypership_hour();
+              chart.updateSeries("Time", [time, 1000 - time]);
+              chart.render();
+              
+              //Updates legend
+              var now = new Date();
+              dojo.byId("currentTime").innerHTML = dojox.date.php.format(now, 'H:i');
+              dojo.byId("currentTimeUTC").innerHTML = now.getUTCHours() + ':' + now.getUTCMinutes();
+              dojo.byId("currentHyperShipTime").innerHTML = time;
+          }
+
+        
+        </script>       
+        <dl>
+            <dt>Heure actuelle (fuseau local) :</dt>
+            <dd><span id="currentTime"></span></dd>
+            <dt>Heure actuelle (fuseau horaire UTC) :</dt>
+            <dd><span id="currentTimeUTC"></span></dd>
+            <dt>Heure actuelle (HyperShip Time) :</dt>
+            <dd><span id="currentHyperShipTime"></span></dd>
+        </dl>
+        <div id="timechart" style="width: 300px; height: 300px;"></div>
+    </div>
+</body>
+</html>
