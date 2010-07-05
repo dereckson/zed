@@ -140,6 +140,7 @@ class Invite {
         if (!$result = $db->sql_query($sql)) {
             message_die(SQL_ERROR, "Can't access invite users table", '', __LINE__, __FILE__, $sql);
         }
+        $codes = array();
         while ($row = $db->sql_fetchrow($result)) {
             $codes[] = $row['invite_code'];
         }

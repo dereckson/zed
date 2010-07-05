@@ -8,9 +8,6 @@
  * Raw text or HTML content
  */
 
-//Loads smarty language file
-lang_load('motd.conf');
-
 //
 // Handles form
 //
