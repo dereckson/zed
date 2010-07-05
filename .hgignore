@@ -1,3 +1,5 @@
 ^blog/
 ^cache/
 ^dev\/diff\.txt
+relre:^dev/parallax
+glob:dev/memcache.php
