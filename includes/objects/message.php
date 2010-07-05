@@ -111,7 +111,7 @@ class Message {
     /*
      * Gets messages from the specified perso
      */
-    static function get_messages ($perso_id, $mark_as_read = true) {
+    static function get_messages ($perso_id, $mark_as_read = true, &$countNewMessages = 0) {
         global $db;
         $sql = "SELECT message_id FROM " . TABLE_MESSAGES . " WHERE message_to = " . $db->sql_escape($perso_id) . " AND message_flag < 2 ORDER BY message_id DESC";
         if (!$result = $db->sql_query($sql)) {
@@ -121,6 +121,10 @@ class Message {
             $message = new Message($row[0]);
             $messages[] = $message;
             $ids[] = $message->id;
+            if ($message->flag == 0) {
+                //New message
+                $countNewMessages++;
+            }
         }
         if ($mark_as_read && count($ids)) {
             $ids = join($ids, ', ');

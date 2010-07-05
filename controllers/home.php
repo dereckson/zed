@@ -32,8 +32,11 @@ if ($_GET['action'] == 'msg_delete') {
 }
 
 //Gets messages
-$messages = Message::get_messages($CurrentPerso->id);
-$smarty->assign('MESSAGES', $messages);
+$newMessagesCount = 0;
+$messages = Message::get_messages($CurrentPerso->id, true, $newMessagesCount);
+if ($newMessagesCount > 0) {
+    $smarty->assign('NOTIFY', sprintf(lang_get("NewMessages"), $newMessagesCount, s($newMessagesCount)));
+}
 
 //Gets scene
 require_once("includes/geo/scene.php");
@@ -57,9 +60,13 @@ include('header.php');
 //Serves content
 if (!$scene->lastError)
     $scene->render();
+    
 $smarty->display('home.tpl');
-if ($messages)
+
+if ($messages) {
+    $smarty->assign('MESSAGES', $messages);
     $smarty->display('messages.tpl');
+}
 
 //Serves footer
 $smarty->assign("screen", "Home console");
