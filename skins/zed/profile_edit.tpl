@@ -19,14 +19,15 @@
         <div class="profile_separator"></div>
         <div class="profile_text">
             <form action="" method="post">
-                <h2>{#ProfileTextTitle#}</h2>
+                <input type="hidden" name="EditProfile" value="1" />
+				<h2>{#ProfileTextTitle#}</h2>
                 <textarea style="font-family: Calibri" id="ProfileText" rows="16" cols="72" name="text" class="text">{$PROFILE_TEXT}</textarea><br />
                 <div class="row" style="background-color: white; color: black;">
                     <span>{#ProfileFont#}{#_t#}</span>
                     <input type="radio" name="fixedwidth" id="fixedwidthNo" value="0" dojoType="dijit.form.RadioButton" {if !$PROFILE_FIXEDWIDTH}checked{/if} onclick="SetWidgetFont('ProfileText', 'Calibri')" />
-                    <label for="fixedwidthNo"><span style="font-family: Calibri, Arial; font-weight: 100; font-size: 1.25em;">{#Calibri#}</span></label>
+                    <label for="fixedwidthNo"><span style="font-family: Calibri, Arial; font-weight: 100; font-size: 1.25em; color: black;">{#Calibri#}</span></label>
                     <input type="radio" name="fixedwidth" id="fixedwidthYes" value="1" dojoType="dijit.form.RadioButton" {if $PROFILE_FIXEDWIDTH}checked={/if} onclick="SetWidgetFont('ProfileText', 'FixedSys')" />
-                    <label for="fixedwidthYes"><span style="font-family: Fixedsys, Fixed; font-weight: 100;">{#FixedSys#}</span></label>
+                    <label for="fixedwidthYes"><span style='font-family: "Fixedsys Excelsior 3.01", Fixedsys, Fixed; font-weight: 100; color: black;'>{#FixedSys#}</span></label>
 				</div>
                 <div class="row">
                     <button dojoType="dijit.form.Button" iconClass="dijitEditorIcon dijitEditorIconSave" type=submit onclick="document.forms[0].submit()">

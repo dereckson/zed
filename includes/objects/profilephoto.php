@@ -54,11 +54,21 @@ class ProfilePhoto {
         return true;
     }
     
+    /*
+     * Promots the photo to avatar
+     */
     function promote_to_avatar () {
         global $db;
+        
+        //1 - locally
         $sql = "UPDATE " . TABLE_PROFILES_PHOTOS . " SET photo_avatar = 0 WHERE perso_id = " . $this->perso_id;
         $db->sql_query_express($sql);
         $this->avatar = true;
+        
+        //2 - in perso table
+        $perso = Perso::get($this->perso_id);
+        $perso->avatar = $this->name;
+        $perso->saveToDatabase();
     }
     
     //Saves the object to the database

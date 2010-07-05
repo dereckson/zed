@@ -6,7 +6,7 @@
 			<h1 class="profile_nick">{$perso->name}</h1>
 			<div class="profile_info">
 				{$perso->location}&nbsp;<br />
-				{if $perso->is_online()}Online{/if}
+				{if $perso->is_online()}{#Online#}{/if}
 			</div>
 		</div>
 		<div class="clear">&nbsp;</div>
@@ -20,7 +20,7 @@
 			</div>
 {/if}
 			<!-- Text -->
-			<div class="profile_text{if $PROFILE_FIXEDWIDTH} fixedwidth{/if}">{if $PROFILE_TEXT != ""}{if $PROFILE_FIXEDWIDTH}{$PROFILE_TEXT}{else}{$PROFILE_TEXT|nl2br}{/if}{else}{if $PROFILE_SELF}<a href="{get_url('who')}/edit/profile">{/if}<img src="/skins/VacuumCleanerBridge/images/empty_profile.png" width="642" height="392" alt="Be creative ! Fill this space with your best words." />{if $PROFILE_SELF}</a>{/if}{/if}</div>
+			<div class="profile_text{if $PROFILE_FIXEDWIDTH} fixedwidth{/if}">{if $PROFILE_TEXT != ""}{if $PROFILE_FIXEDWIDTH}{$PROFILE_TEXT}{else}{$PROFILE_TEXT|nl2br}{/if}{else}{if $PROFILE_SELF}<a href="{get_url('who')}/edit/profile">{/if}<img src="{#StaticContentURL#}/img/zed/empty_profile.png" width="642" height="392" alt="Be creative ! Fill this space with your best words." />{if $PROFILE_SELF}</a>{/if}{/if}</div>
 			<div class="profile_separator_light"></div>
 			<div class="profile_message">
 				<h2 id="Message">{#DropMessage#}</h2>
@@ -33,7 +33,6 @@
 						</div>
 						<p><textarea rows="7" cols="64" name="message"></textarea></p>
 						<p><input id="MessageSubmit" type="submit" name="MessageSubmit" value="{#Send#}" /></p>
-					
 				</form>
 			</div>
 		</div>			
@@ -64,13 +63,13 @@
         </div>
     </div>
     
-{if $PROFILE_COMMENTS}    
+{if $PROFILE_COMMENTS}     
     <!-- Profile comments -->
     <div class="grid_16 alpha omega profile_comments" id="comments" style="margin-bottom: 1em;">
 {foreach from=$PROFILE_COMMENTS item=comment}
         <div class="comment black">
             <div class="profile_comments_text"><p>{$comment->text|nl2br}</p></div>
-            <div class="profile_comments_info">-- <a href="{get_url('who')}/{$comment->author}">{$comment->authorname}</a>, {$comment->date|date_format:"%Y-%m-%d %H:%M:%S"}.</div>
+            <div class="profile_comments_info">-- <a href="{get_url('who')}/{$comment->author}">{$comment->authorname}</a>, {get_hypership_time($comment->date)}</div>
         </div>
 {/foreach}
     </div>
