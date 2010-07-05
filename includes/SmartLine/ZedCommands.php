@@ -216,6 +216,7 @@ class UnixTimeSmartLineCommand extends SmartLineCommand {
 	    $this->SmartLine->puts(time());
 	} elseif ($argc == 2 && is_numeric($argv[1])) {
 	    $this->SmartLine->puts(strftime("%Y-%m-%d %X", $argv[1]));
+		$this->SmartLine->puts(get_hypership_time($argv[1]));
 	} else {
 	    array_shift($argv);
 	    $date = implode(' ', $argv);
@@ -234,48 +235,48 @@ class UnixTimeSmartLineCommand extends SmartLineCommand {
 
 class InviteSmartLineCommand extends SmartLineCommand {
     public function run ($argv, $argc) {
-	require_once('includes/objects/invite.php');
-	global $CurrentUser, $CurrentPerso;
-	
-	$command = ($argc > 1) ? strtolower($argv[1]) : '';
-	switch ($command) {
-	    case 'list':
-		$codes = Invite::get_invites_from($CurrentPerso->id);
-		if (!count($codes)) {
-		    $this->SmartLine->puts("No invite code.");
-		} else {
-		    foreach ($codes as $code) {
-			$this->SmartLine->puts($code);
-		    }
+		require_once('includes/objects/invite.php');
+		global $CurrentUser, $CurrentPerso;
+		
+		$command = ($argc > 1) ? strtolower($argv[1]) : '';
+		switch ($command) {
+			case 'list':
+				$codes = Invite::get_invites_from($CurrentPerso->id);
+				if (!count($codes)) {
+					$this->SmartLine->puts("No invite code.");
+				} else {
+					foreach ($codes as $code) {
+						$this->SmartLine->puts($code);
+					}
+				}
+				break;
+			
+			case 'add':
+			case '':
+				$code = Invite::create($CurrentUser->id, $CurrentPerso->id);
+				$url = get_server_url() . get_url('invite', $code);
+				$this->SmartLine->puts("New invite code created: $code<br />Invite URL: $url");
+				break;
+			
+			case 'del':
+				$code = $argv[2];
+				if (!preg_match("/^([A-Z]){3}([0-9]){3}$/i", $code)) {
+					$this->SmartLine->puts("Invalid code format. Use invite list to get all your invite codes.", STDERR);
+				} else {
+					$invite = new Invite($code);
+					if ($CurrentPerso->id == $invite->from_perso_id) {
+						$invite->delete();
+						$this->SmartLine->puts("Deleted");
+					} else {
+						$this->SmartLine->puts("Invalid code. Use invite list to get all your invite codes.", STDERR);
+					}
+				}
+				break;
+			
+			default:
+				$this->SmartLine->puts("Usage: invite [add|list|del <code>]", STDERR);
+				break;
 		}
-		break;
-	    
-	    case 'add':
-	    case '':
-		$code = Invite::create($CurrentUser->id, $CurrentPerso->id);
-		$url = get_server_url() . get_url('invite', $code);
-		$this->SmartLine->puts("New invite code created: $code<br />Invite URL: $url");
-		break;
-	    
-	    case 'del':
-		$code = $argv[2];
-		if (!preg_match("/^([A-Z]){3}([0-9]){3}$/i", $code)) {
-		    $this->SmartLine->puts("Invalid code format. Use invite list to get all your invite codes.", STDERR);
-		} else {
-		    $invite = new Invite($code);
-		    if ($CurrentPerso->id == $invite->from_perso_id) {
-			$invite->delete();
-			$this->SmartLine->puts("Deleted");
-		    } else {
-			$this->SmartLine->puts("Invalid code. Use invite list to get all your invite codes.", STDERR);
-		    }
-		}
-		break;
-	    
-	    default:
-		$this->SmartLine->puts("Usage: invite [add|list|del <code>]", STDERR);
-		break;
-	}
 	
     }
 }
