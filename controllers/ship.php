@@ -9,6 +9,13 @@
  */
 
 //
+// Load library and language file
+//
+
+require_once('includes/objects/ship.php');
+lang_load('ships.conf');
+
+//
 // Ship information
 //
 

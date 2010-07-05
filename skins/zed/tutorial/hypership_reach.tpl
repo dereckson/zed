@@ -1,6 +1,3 @@
-{if $DOJO}
-
-{/if}
 
     <!-- Floating panes -->
     <script type="text/javascript" src="{#StaticContentURL#}/js/dojo/dojox/layout/FloatingPane.js"></script>
@@ -14,7 +11,7 @@
 
 
     <!-- Help to reach the hypership -->
-    <div dojoType="dojox.layout.FloatingPane" title="Join the hypership" resizable="true" id="floaterHypershipReach" class="floatingPaneTutorial" duration="300">
+    <div dojoType="dojox.layout.FloatingPane" title="{#JoinHypership#}" resizable="true" id="floaterHypershipReach" class="floatingPaneTutorial" duration="300">
 {if $CurrentPerso->location_global[0] == "S"}
         <p>Congratulations! You found a ship.</p>
         <p>You're aboard the {$CurrentPerso->location->ship->name}.</p>
