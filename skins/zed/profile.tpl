@@ -21,6 +21,10 @@
 {/if}
 			<!-- Text -->
 			<div class="profile_text{if $PROFILE_FIXEDWIDTH} fixedwidth{/if}">{if $PROFILE_TEXT != ""}{if $PROFILE_FIXEDWIDTH}{$PROFILE_TEXT}{else}{$PROFILE_TEXT|nl2br}{/if}{else}{if $PROFILE_SELF}<a href="{get_url('who')}/edit/profile">{/if}<img src="{#StaticContentURL#}/img/zed/empty_profile.png" width="642" height="392" alt="Be creative ! Fill this space with your best words." />{if $PROFILE_SELF}</a>{/if}{/if}</div>
+			
+{$PROFILE_TAGS}
+			
+			<!-- Leave a message -->
 			<div class="profile_separator_light"></div>
 			<div class="profile_message">
 				<h2 id="Message">{#DropMessage#}</h2>

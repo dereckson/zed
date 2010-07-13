@@ -72,19 +72,38 @@ class Profile {
     /// Tags
     ///
     
-    function get_tags ($class) {
+    function get_tags () {
         global $db;
         $id = $db->sql_escape($this->perso_id);
-        $sql = "SELECT tag_code, tag_class FROM" . TABLE_PROFILES_TAGS
+        $sql = "SELECT tag_code, tag_class FROM " . TABLE_PROFILES_TAGS
              . " WHERE perso_id = '$id'";
-        if (!$db->sql_query($sql)) {
+        if (!$result = $db->sql_query($sql)) {
             message_die(SQL_ERROR, "Can't get tags", '', __LINE__, __FILE__, $sql);
         }
         $tags = array();
-        while (!$row = $db->sql_fetchrow($result)) {
+        while ($row = $db->sql_fetchrow($result)) {
             $tags[$row['tag_class']][] = $row['tag_code'];
         }
         return $tags;
+    }
+    
+    function get_cached_tags () {
+        require_once('includes/cache/cache.php');
+        $cache = Cache::load();
+        $key = 'zed_profile_tags_' . $this->perso_id;
+        if (!$tags_html = $cache->get($key)) {
+            //Regenerates tags cached html snippet
+            global $smarty;
+            $tags = $this->get_tags();
+            if (count($tags)) {
+                $smarty->assign('tags', $tags);
+                $tags_html = $smarty->fetch('profile_tags.tpl');
+            } else {
+                $tags_html = " ";
+            }
+            $cache->set($key, $tags_html);
+        }
+        return $tags_html;
     }
 }
     

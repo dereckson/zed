@@ -38,6 +38,7 @@ define('TABLE_PORTS', $prefix . 'ports');
 define('TABLE_PROFILES', $prefix . 'profiles');
 define('TABLE_PROFILES_COMMENTS', $prefix . 'profiles_comments');
 define('TABLE_PROFILES_PHOTOS', $prefix . 'profiles_photos');
+define('TABLE_PROFILES_TAGS', $prefix . 'profiles_tags');
 define('TABLE_REGISTRY', $prefix . 'registry');
 define('TABLE_SESSIONS', $prefix . 'sessions');
 define('TABLE_SHIPS', $prefix . 'ships');
@@ -168,8 +169,6 @@ $Config['ImageMagick']['identify'] = 'identify';
 ///                                                                          ///
 ////////////////////////////////////////////////////////////////////////////////
 
-//Sessions
-
 //If you want to use a common table of sessions / user handling
 //with several websites, specify a different resource id for each site.
 $Config['ResourceID'] = 21;
@@ -178,5 +177,17 @@ $Config['ResourceID'] = 21;
 ini_set('session.serialize_handler', 'wddx');
 ini_set('session.save_path', 'cache/sessions');
 ini_set('session.gc_maxlifetime', 345600);  //4 days, for week-end story pause and continue url
+
+
+////////////////////////////////////////////////////////////////////////////////
+///                                                                          ///
+/// VI. Caching                                                              ///
+///                                                                          ///
+////////////////////////////////////////////////////////////////////////////////
+
+
+$Config['cache']['engine'] = 'memcached';
+$Config['cache']['server'] = 'localhost';
+$Config['cache']['port']   = 11211;
 
 ?>

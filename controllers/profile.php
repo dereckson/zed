@@ -57,9 +57,7 @@ if ($_POST['EditProfile']) {
     $profile->save_to_database();
     $mode = 'view';
 } elseif ($_POST['UserAccount']) {
-    $smarty->assign('WAP', "Your form haven't been handled. Remember Dereckson to code this, profile.php line 59.");
-    //$perso->load_from_form(false);
-    $mode = 'view';
+    $smarty->assign('WAP', "This form have been deprecated. You can write instead settings in the SmartLine");
 } elseif ($_POST['message_type'] == 'private_message') {
     //Sends a message
     require_once('includes/objects/message.php');
@@ -165,9 +163,10 @@ if ($mode == 'view') {
     //Self profile?
     $self = $CurrentPerso->id == $profile->perso_id;
     
-    //Gets profiles comments, photos
+    //Gets profiles comments, photos, tags
     $comments = ProfileComment::get_comments($profile->perso_id);
     $photos   = ProfilePhoto::get_photos($profile->perso_id);
+	$tags     = $profile->get_cached_tags();
     
     //Records timestamp, to be able to track new comments
     if ($self) $CurrentPerso->set_flag('profile.lastvisit', time());
@@ -175,6 +174,7 @@ if ($mode == 'view') {
     //Template
     $smarty->assign('PROFILE_COMMENTS', $comments);
     $smarty->assign('PROFILE_SELF', $self);
+	if ($tags) $smarty->assign('PROFILE_TAGS', $tags);
     $smarty->assign('USERNAME', $perso->username);
     $smarty->assign('NAME', $perso->name ? $perso->name : $perso->nickname);
     $template = 'profile.tpl';

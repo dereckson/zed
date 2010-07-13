@@ -64,9 +64,12 @@
     border: 2px solid #04acf8;
 }
 
-.profile_text {
+.profile_text, .profile_message, .profile_tags {
     margin-left: 10px;
     margin-right: 10px;
+}
+
+.profile_text {
     padding-top: 1em;
     font-size: 1em;
     text-align: justify;
@@ -81,6 +84,19 @@
 	white-space: pre;
 }
 
+.profile_separator_light {
+    height: 1em;
+    border-bottom: 1px solid #04acf8;
+}
+
+.profile_tags dt {
+    font-weight: 900;
+    color: #04acf8;
+}
+
+.profile_tags dd {
+    text-align: justify;
+}
 
 /*  -------------------------------------------------------------
     Profile comments
