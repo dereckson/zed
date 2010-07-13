@@ -37,6 +37,8 @@ while ($row = $db-&gt;sql_fetchrow($result)) {
 }</snippet>
 <command cwd="" doNotOpenOutputWindow="0" env="" icon="chrome://openoffice/skin/icons/navigator-open-toolbar.png" id="90cf8021-64a3-4559-aec3-1aeda016875c" idref="be701072-b18f-4f3a-88d8-db22f59f7c30" insertOutput="0" keyboard_shortcut="" name="Run SQL script" operateOnSelection="0" parseOutput="0" parseRegex="" runIn="command-output-window" showParsedOutputList="0">
 "c:\WebServer\MySQL\bin\mysql.exe" -uzed -pzed zed &lt; %F</command>
+<command cwd="/home/wwwroot/dereckson.be/zed" doNotOpenOutputWindow="0" env="" icon="chrome://famfamfamsilk/skin/icons/world_go.png" id="cf5d3944-fbe5-425a-8826-a22878e6626c" idref="be701072-b18f-4f3a-88d8-db22f59f7c30" insertOutput="0" keyboard_shortcut="" name="hgtk commit" operateOnSelection="0" parseOutput="0" parseRegex="" runIn="no-console" showParsedOutputList="0">
+hgtk commit</command>
 <preference-set idref="4c047888-c287-4e11-a433-bff6e3ce2d9b">
   <boolean id="import_live">1</boolean>
   <string id="mappedPaths">http://zed.dereckson.be/apps/HelloWorldWebService.php##file:///C:/WebServer/wwwroot/dereckson.be/zed/apps/HelloWorldWebService.php</string>
