@@ -107,14 +107,25 @@
     </script>
     
     <!-- Tower -->
-    <!--
-    <div id="tower"></div>
-    -->
+    <!--<div id="tower"></div>-->
+    
+    <!-- Navigation -->
+    {$loc = explode('C', $CurrentPerso->location_local)}{$loc[0] = substr($loc[0], 1)}
+    <div class="grid_7 alpha">
+        Tour » étage <span id="TowerFloor">{$loc[0]}</span> » couloir <span id="TowerCouloir">{$loc[1]}</span>
+    </div>
+    <div class="grid_2" style="text-align: center">
+        [<span id="TowerLocation">{$CurrentPerso->location_local}</span>]
+    </div>
+    <div class="grid_7 omega" style="text-align: right">
+        Carte | <a href="{if $loc[0] == 1}#{else}/do.php/set_local_location/T{$loc[0] - 1}C{$loc[1]}?redirectTo={get_url()}{/if}" onClick="passage.goUp(); return false;">Monter</a> | <a href="/do.php/set_local_location/T{$loc[0] + 1}C{$loc[1]}?redirectTo={get_url()}" onClick="passage.goDown(); return false;">Descendre</a>
+    </div>
 
     <!-- Passage  -->
     <div class="grid_16 alpha omega">
         <div id="passage">
             <div id="passage_gallery"></div>
+            <!-- Navigation -->
         </div>
     </div>
     
@@ -147,7 +158,7 @@
     <script>
         //Initializes tower map
         //tower.hl = '{$SCENE_URL}/{$CurrentPerso->location_global}/hl.png';
-        //tower.highlight(3);
+        //tower.highlight(1);
         
         //Initializes passage view
         passage.bayPath = '{$SCENE_URL}/{$CurrentPerso->location_global}/couloir/bay/';

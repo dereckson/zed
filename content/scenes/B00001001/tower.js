@@ -117,8 +117,6 @@ var passage = {
         return [t, c];
     },
     
-    //TODO: t and c are strings, parse them into numbers
-    
     goLeft: function () {
         //TxC1 -> TxC6 -> TxC5 -> TxC4 -> TxC3 -> TxC2 -> TxC1
         tc = this.getLocalLocation();
@@ -128,7 +126,27 @@ var passage = {
         //New c coordinates
         var nc = (c == 1) ? 6 : c - 1;
         
-        this.moveTo('T' + t + 'C' + nc);
+        this.moveTo(t, nc);
+    },
+    
+    goUp: function () {
+        //TxCy -> T[x+1]Cy
+        tc = this.getLocalLocation();
+        t = tc[0];
+        c = tc[1];
+
+        if (t > 1) {
+            this.moveTo(--t, c);
+        }
+    },
+    
+    goDown: function () {
+        //TxCy -> T[x+1]Cy
+        tc = this.getLocalLocation();
+        t = tc[0];
+        c = tc[1];
+        
+        this.moveTo(++t, c);
     },
     
     goRight: function () {
@@ -140,13 +158,19 @@ var passage = {
         //New c coordinates
         var nc = (c == 6) ? 1 : eval(c) + 1;
         
-        this.moveTo('T' + t + 'C' + nc);
+        this.moveTo(t, nc);
     },
     
-    moveTo: function (local_location) {
+    moveTo: function (t, c) {
         //New local location
+        local_location = 'T' + t + 'C' + c;
         passage.persoLocalLocation = local_location;
-        document.getElementById('location_local').value = local_location;
+        
+        //Updates coordinates
+        dojo.byId('TowerCouloir').innerHTML = c;
+        dojo.byId('TowerFloor').innerHTML = t;
+        dojo.byId('TowerLocation').innerHTML = local_location;
+        dojo.byId('location_local').value = local_location;
 
         //Updates bays
         //passage.updateBay();
@@ -237,7 +261,7 @@ var passage = {
         this.shipGlobalLocation = shipGlobalLocation;
         this.persoLocalLocation = persoLocalLocation;
         if (persoLocalLocation == "") {
-            this.moveTo('T2C1');
+            this.moveTo(2, 1);
             
             //Notify (this code requires prototype.js (or jquery, but in this case, simplify it with a insertAfter call))
             //TODO: ensure this code have dojo as only dependency
