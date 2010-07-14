@@ -3,3 +3,4 @@
 ^dev\/diff\.txt
 relre:^dev/parallax
 glob:dev/memcache.php
+glob:dev/tower.html

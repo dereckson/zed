@@ -64,7 +64,7 @@ $Config['DefaultTheme'] = "Zed";
 date_default_timezone_set("UTC");
 
 //Secret key, used for some verification hashes in URLs or forms.
-$Config['SecretKey'] = 'Je balaye les petits ewoks comme le vent balaye les feuilles mortes';
+$Config['SecretKey'] = 'Lorem ipsum dolor';
 
 //When reading files, buffer size
 define('BUFFER_SIZE', 4096);
@@ -184,7 +184,6 @@ ini_set('session.gc_maxlifetime', 345600);  //4 days, for week-end story pause a
 /// VI. Caching                                                              ///
 ///                                                                          ///
 ////////////////////////////////////////////////////////////////////////////////
-
 
 $Config['cache']['engine'] = 'memcached';
 $Config['cache']['server'] = 'localhost';
