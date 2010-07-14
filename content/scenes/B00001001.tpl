@@ -112,13 +112,13 @@
     <!-- Navigation -->
     {$loc = explode('C', $CurrentPerso->location_local)}{$loc[0] = substr($loc[0], 1)}
     <div class="grid_7 alpha">
-        Tour » étage <span id="TowerFloor">{$loc[0]}</span> » couloir <span id="TowerCouloir">{$loc[1]}</span>
+        {#Tower#} » {#Floor#} <span id="TowerFloor">{$loc[0]}</span> » {#Couloir#} <span id="TowerCouloir">{$loc[1]}</span>
     </div>
     <div class="grid_2" style="text-align: center">
         [<span id="TowerLocation">{$CurrentPerso->location_local}</span>]
     </div>
     <div class="grid_7 omega" style="text-align: right">
-        Carte | <a href="{if $loc[0] == 1}#{else}/do.php/set_local_location/T{$loc[0] - 1}C{$loc[1]}?redirectTo={get_url()}{/if}" onClick="passage.goUp(); return false;">Monter</a> | <a href="/do.php/set_local_location/T{$loc[0] + 1}C{$loc[1]}?redirectTo={get_url()}" onClick="passage.goDown(); return false;">Descendre</a>
+        <a href="{if $loc[0] == 1}#{else}/do.php/set_local_location/T{$loc[0] - 1}C{$loc[1]}?redirectTo={get_url()}{/if}" onClick="passage.goUp(); return false;">{#GoUp#}</a> | <a href="/do.php/set_local_location/T{$loc[0] + 1}C{$loc[1]}?redirectTo={get_url()}" onClick="passage.goDown(); return false;">{#GoDown#}</a>
     </div>
 
     <!-- Passage  -->
