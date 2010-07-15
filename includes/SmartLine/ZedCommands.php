@@ -64,6 +64,28 @@ class VersionSmartLineCommand extends SmartLineCommand {
 			return false;
 		}
 		
+///
+
+class VersionSmartLineCommand extends SmartLineCommand {
+    public function run ($argv, $argc) {
+		//Gets .hg revision
+		if (file_exists('.hg/tags.cache')) {
+			$content = file_get_contents('.hg/tags.cache');
+			$info = explode(' ', $content, 2);
+			$info[] = "development environment";
+		} else if (file_exists('.hg_archival.txt')) {
+			$content = file('.hg_archival.txt');
+			foreach ($content as $line) {
+				$items = explode(' ', $line, 2);
+				if ($items[0] == 'node:') $info[1] = trim($items[1]);
+				if ($items[0] == 'latesttagdistance:') $info[0] = trim($items[1]);
+				$info[2] = 'production environment';
+			}
+		} else {
+			$this->SmartLine->puts("No version information available.", STDERR);
+			return false;
+		}
+		
 		$this->SmartLine->puts("r$info[0] ($info[2])");
 		$this->SmartLine->puts("Hash: $info[1]");
 	}
