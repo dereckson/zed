@@ -23,6 +23,7 @@ $smartLine->register_object('list', 'ListSmartLineCommand');
 $smartLine->register_object('requests', 'RequestsSmartLineCommand');
 $smartLine->register_object('settings', 'SettingsSmartLineCommand');
 $smartLine->register_object('unixtime', 'UnixTimeSmartLineCommand');
+$smartLine->register_object('version', 'VersionSmartLineCommand');
 $smartLine->register_object('whereami', 'WhereAmISmartLineCommand');
 
 
@@ -37,6 +38,36 @@ $lang['Help']['requests'] = "Checks if there are waiting requests";
 $lang['Help']['unixtime'] = "Prints current unixtime (seconds elapsed since 1970-01-01 00:00, UTC) or the specified unixtime date.";
 $lang['Help']['whereami'] = "Where am I?";
 $lang['Help']['invite'] = "Generate an invite. To see the generated invites, invite list.";
+$lang['Help']['version'] = "Gets Zed's software version info";
+
+///
+/// version
+///
+
+class VersionSmartLineCommand extends SmartLineCommand {
+    public function run ($argv, $argc) {
+		//Gets .hg revision
+		if (file_exists('.hg/tags.cache')) {
+			$content = file_get_contents('.hg/tags.cache');
+			$info = explode(' ', $content, 2);
+			$info[] = "development environment";
+		} else if (file_exists('.hg_archival.txt')) {
+			$content = file('.hg_archival.txt');
+			foreach ($content as $line) {
+				$items = explode(' ', $line, 2);
+				if ($items[0] == 'node:') $info[1] = trim($items[1]);
+				if ($items[0] == 'latesttagdistance:') $info[0] = trim($items[1]);
+				$info[2] = 'production environment';
+			}
+		} else {
+			$this->SmartLine->puts("No version information available.", STDERR);
+			return false;
+		}
+		
+		$this->SmartLine->puts("r$info[0] ($info[2])");
+		$this->SmartLine->puts("Hash: $info[1]");
+	}
+}
 
 ///
 /// whereami
@@ -51,6 +82,7 @@ class WhereAmISmartLineCommand extends SmartLineCommand {
 	    $this->SmartLine->puts($CurrentPerso->location_global . ' - ' . $place);
     }
 }
+
 
 ///
 /// GUID
