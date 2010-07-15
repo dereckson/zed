@@ -11,7 +11,7 @@
             <label class="firstLabel" for="name">{#FullName#}</label>
             <input type="text" id="name" name="name" maxlength="255" value="{$perso->name}" dojoType="dijit.form.TextBox" class="long" />
         </div>
-        <div class="row">}
+        <div class="row">
             <label class="firstLabel" for="nickname">{#Nickname#}</label>
             <input type="text" id="nickname" name="nickname" maxlength="31" value="{$perso->nickname}" dojoType="dijit.form.TextBox" class="medium" />
         </div>

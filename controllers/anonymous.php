@@ -79,32 +79,20 @@ switch ($url[0]) {
                     $message->send();
                     
                     //Logs in user
-                    login($row[user_id], $Login);
-                    
-                    //Prints confirm message
-                    $smarty->assign('WAP', lang_get("AccountCreated"));
-                    $template = 'void.tpl';
-                    
-                    //Redirects users to homepage
-                    header('refresh: 5; url=' . get_url());
-                    $message = new Message();
-                    $message->from = 0;
-                    $message->to = $invite->from_perso_id;
-                    $message->text =  sprintf(lang_get('InviteHaveBeenClaimed', $invite->code));
-                    $message->send();
-                    
-                    //Logs in user
-                    login($row[user_id], $Login);
-                    
-                    //Redirects users to homepage
-                    header('refresh: 5; url=' . get_url());
+                    login($user->id, $user->name);
                     
                     //Prints confirm message
                     $smarty->assign('WAP', lang_get("AccountCreated"));
                     
+                    //Redirects users to homepage
+                    header('refresh: 5; url=' . get_url());
+
+                    //Calls void controller
+                    $smarty->assign('screen', 'user.create');
+                    define('NO_FOOTER_EXTRA', true);
                     include("void.php");
 
-                    break;
+                    exit;
                 }
             }
             

@@ -259,7 +259,7 @@ class Perso {
      */
     public function set_flag ($key, $value = 1) {
         //Checks if flag isn't already set at this value
-        if (array_key_exists($key, $this->flags) && $this->flags[$key] === $value)
+        if ($this->flags != null && array_key_exists($key, $this->flags) && $this->flags[$key] === $value)
             return;
         
         //Saves flag to database
