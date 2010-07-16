@@ -313,6 +313,7 @@ a:hover {
 .red {
     background-color: #FFE4E1;
     border: solid 1px #DC7777;
+	color: #220000;
     
 }
 .red a {color: #993333;}
