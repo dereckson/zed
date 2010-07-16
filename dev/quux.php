@@ -4,11 +4,25 @@
     require_once('includes/objects/port.php');
     require_once('includes/objects/application.php');
     require_once('includes/objects/content.php');
+    require_once('includes/objects/message.php');
+    require_once('includes/objects/invite.php');
         
     include('controllers/header.php');
     
-    $case = 'thumbnail';
+    $case = 'perso.create.notify';
+    
     switch ($case) {
+        case 'perso.create.notify':
+            $testperso = Perso::get(4733);
+            $message = new Message();
+            $message->from = 0;
+            $message->to = invite::who_invited(4733);
+            $url = get_server_url() . get_url('who', $testperso->nickname);
+            $message->text =  sprintf(lang_get('InvitePersoCreated'), $testperso->name, $url);
+            $message->send();
+            dieprint_r($message);
+            break;
+        
         case 'pushdata';
             echo '
 <h2>/api.php/app/pushdata</h2>

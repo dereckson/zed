@@ -95,7 +95,17 @@ if ($_POST['form'] == 'perso.create') {
         $CurrentPerso->set_flag("site.lastlogin", $_SERVER['REQUEST_TIME']);
         
         //Notifies inviter
-        
+        require_once('includes/objects/message.php');
+        require_once('includes/objects/invite.php');
+        $message = new Message();
+        $message->from = 0;
+        $message->to = invite::who_invited($perso->id);
+        $message->text =  sprintf(
+            lang_get('InvitePersoCreated'),
+            $perso->name,
+            get_server_url() . get_url('who', $perso->nickname)
+        );
+        $message->send();
     } else {
         $smarty->assign('WAP', join("<br />", $errors));
         $smarty->assign('perso', $perso);

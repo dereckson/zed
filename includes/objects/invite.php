@@ -95,7 +95,7 @@ class Invite {
         $to_user_id = $this->to_user_id ? "'" . $db->sql_escape($this->to_user_id) . "'" : 'NULL';
 
         //Updates or inserts
-        $sql = "REPLACE INTO " . TABLE_USERS_INVITES . " (`invite_code`, `invite_date`, `invite_from_user_id`, `invite_from_perso_id`, `invite_to_user_id`) VALUES ('$code', '$date', '$from_perso_id', '$from_user_id', $to_user_id)";
+        $sql = "REPLACE INTO " . TABLE_USERS_INVITES . " (`invite_code`, `invite_date`, `invite_from_user_id`, `invite_from_perso_id`, `invite_to_user_id`) VALUES ('$code', '$date', '$from_user_id', '$from_perso_id', $to_user_id)";
         if (!$db->sql_query($sql)) {
             message_die(SQL_ERROR, "Unable to save invite code", '', __LINE__, __FILE__, $sql);
         }
