@@ -216,6 +216,11 @@ class GeoLocation {
         return true;
     }
     
+    /*
+     * Checks if the place is equals at the specified expression or place
+     *
+     * @return boolean true if the places are equals ; otherwise, false
+     */
     function equals ($expression) {
         //Are global location equals?
         
@@ -241,6 +246,11 @@ class GeoLocation {
         return false;
     }
     
+    /*
+     * Represents the current location instance as a string
+     *
+     * @return string a string representing the current location
+     */
     function __toString () {
         if (!$this->data[0])
             return "";

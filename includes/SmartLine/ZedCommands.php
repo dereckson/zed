@@ -41,6 +41,48 @@ $lang['Help']['version'] = "Gets Zed's software version info (Mercurial reposito
 $lang['Help']['whereami'] = "Where am I?";
 
 ///
+
+/*
+ * Zed
+ * (c) 2010, Dereckson, some rights reserved
+ * Released under BSD license
+ *
+ * SmartLine
+ *
+ * TODO: SettingsSmartLineCommand - understand why dojo floating pane isn't
+ *       rendered if we est $controller instead to redirect
+ */
+
+///
+/// Register commands
+///
+
+$smartLine->register_object('goto', 'GotoSmartLineCommand');
+$smartLine->register_object('guid', 'GUIDSmartLineCommand');
+$smartLine->register_object('invite', 'InviteSmartLineCommand');
+$smartLine->register_object('invites', 'InviteSmartLineCommand');
+$smartLine->register_object('list', 'ListSmartLineCommand');
+$smartLine->register_object('requests', 'RequestsSmartLineCommand');
+$smartLine->register_object('settings', 'SettingsSmartLineCommand');
+$smartLine->register_object('unixtime', 'UnixTimeSmartLineCommand');
+$smartLine->register_object('version', 'VersionSmartLineCommand');
+$smartLine->register_object('whereami', 'WhereAmISmartLineCommand');
+
+
+///
+/// Help (todo: move $lang array in lang folder)
+///
+
+$lang['Help']['goto'] = "Go to a location";
+$lang['Help']['guid'] = "Generate a GUID";
+$lang['Help']['invite'] = "Generate an invite. To see the generated invites, invite list.";
+$lang['Help']['list'] = "Lists specified objects (bodies, locations or places)";
+$lang['Help']['requests'] = "Checks if there are waiting requests";
+$lang['Help']['unixtime'] = "Prints current unixtime (seconds elapsed since 1970-01-01 00:00, UTC) or the specified unixtime date.";
+$lang['Help']['version'] = "Gets Zed's software version info (Mercurial repository version, node id and if you're on the dev or prod site)";
+$lang['Help']['whereami'] = "Where am I?";
+
+///
 /// goto
 ///
 
@@ -53,18 +95,31 @@ class GotoSmartLineCommand extends SmartLineCommand {
             return;
         }
         
-        require_once("includes/geo/location.php");	
+        require_once("includes/geo/location.php");
+        
+        $here = new GeoLocation($CurrentPerso->location_global, $CurrentPerso->location_local);
+        
         try {
             $place = new GeoLocation($argv[1]);
+            
+            if ($place->equals($CurrentPerso->location_global)) {
+                $this->SmartLine->puts("You're already there.");
+                return;
+            }
         } catch (Exception $ex) {
-            $this->SmartLine->puts($ex->getMessage(), STDERR);
-            return;
-        }
-        
-        if ($place->equals($CurrentPerso->location_global)) {
-            $this->SmartLine->puts("You're already there.");
-            return;
-        }
+            //Global location failed, trying local location
+            try {
+                $place = new GeoLocation($CurrentPerso->location_global, $argv[1]);
+            } catch (Exception $ex) {
+                $this->SmartLine->puts($ex->getMessage(), STDERR);
+                return;
+            }
+            
+            if ($place->equals($here)) {
+                $this->SmartLine->puts("You're already there.");
+                return;
+            }
+        }       
         
         if (!$place->exists()) {
             $this->SmartLine->puts("This place doesn't seem to exist.");
