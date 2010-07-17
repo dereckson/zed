@@ -12,6 +12,11 @@
  * @version 0.1
  *
  */
+
+//By default, local_location format is an (x, y, z) expression
+//The local_location format is a PCRE regular expression
+define('LOCATION_LOCAL_DEFAULT_FORMAT', '/([0-9]+( )*,( )*[0-9]+)( )*,( )*[0-9]+)/');
+
 class GeoPlace {
 
     public $id;  
@@ -19,6 +24,7 @@ class GeoPlace {
     public $code;
     public $name;
     public $description;
+    public $location_local_format;
     
     public $start;
     public $hidden;
@@ -43,6 +49,7 @@ class GeoPlace {
         if (array_key_exists('name', $_POST)) $this->name = $_POST['name'];
         if (array_key_exists('description', $_POST)) $this->description = $_POST['description'];
         if (array_key_exists('status', $_POST)) $this->status = $_POST['status'];
+        if (array_key_exists('location_local_format', $_POST)) $this->location_local_format = $_POST['location_local_format'];
     }
     
     /*
@@ -60,6 +67,7 @@ class GeoPlace {
         $this->code = $row['place_code'];
         $this->name = $row['place_name'];
         $this->description = $row['place_description'];
+        $this->location_local_format = $row['location_local_format'];
 
         //Explodes place_status SET field in boolean variables
         if ($row['place_status']) {
@@ -97,9 +105,10 @@ class GeoPlace {
         $name = $db->sql_escape($this->name);
         $description = $db->sql_escape($this->description);
         $status = $this->get_status();
+        $location_local_format = $db->sql_escape($this->location_local_format);
 
         //Updates or inserts
-        $sql = "REPLACE INTO geo_places (`place_id`, `body_code`, `place_code`, `place_name`, `place_description`, `place_status`) VALUES ($id, '$body_code', '$code', '$name', '$description', '$status')";
+        $sql = "REPLACE INTO geo_places (`place_id`, `body_code`, `place_code`, `place_name`, `place_description`, `place_status`, `location_local_format`) VALUES ($id, '$body_code', '$code', '$name', '$description', '$status', '$location_local_format')";
         if (!$db->sql_query($sql)) {
             message_die(SQL_ERROR, "Unable to save", '', __LINE__, __FILE__, $sql);
         }
@@ -110,6 +119,27 @@ class GeoPlace {
         }
     }
     
+    /*
+     * Determines if the specified local location is valid
+     */
+    function is_valid_local_location ($local_location) {
+        $format = $this->location_local_format ? $this->location_local_format : LOCATION_LOCAL_DEFAULT_FORMAT;
+        return preg_match($format, $local_location);
+    }
+
+    /*
+     * Gets a string representation of the current place
+     * @return string A Bxxxxxyyy string like B00001001, which represents the current place.
+     */    
+    function __tostring () {
+        return 'B' . $this->body_code . $this->code;
+    }
+    
+    /*
+     * Creates a Place instance, from the specified body/place code
+     * @param $code the place's code
+     * @return GeoPlace the place instance
+     */
     static function from_code ($code) {
         global $db;        
         $sql = "SELECT * FROM geo_places WHERE CONCAT('B', body_code, place_code) LIKE '$code'";
@@ -124,6 +154,7 @@ class GeoPlace {
         $place->code = $row['place_code'];
         $place->name = $row['place_name'];
         $place->description = $row['place_description'];
+        $place->location_local_format = $row['location_local_format'];
 
         //Explodes place_status SET field in boolean variables
         if ($row['place_status']) {
@@ -138,6 +169,7 @@ class GeoPlace {
     
     /*
      * Gets a start location
+     * @TODO sql optimisation (query contains ORDER BY RAND())
      */
     static function get_start_location () {
         global $db;
@@ -145,4 +177,5 @@ class GeoPlace {
         return $db->sql_query_express($sql);
     }
 }
+
 ?>

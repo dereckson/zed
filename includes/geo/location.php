@@ -76,6 +76,9 @@ class GeoLocation {
         $this->load_classes();
     }
     
+    /*
+     * Gets $place, $body and $ship instances if they're needed
+     */
     function load_classes () {
         //No data, no class to load
         if (!count($this->data))
@@ -109,7 +112,11 @@ class GeoLocation {
         }
     }
     
-    
+    /*
+     * Magic method called when a unknown property is get.
+     * Handles $global, $local, $type, $body_code, $ship_code, $place_code,
+     *         $body_kind, $containsGlobalLocation, $containsLocalLocation.
+     */
     function __get ($variable) {
         switch ($variable) {
             /* main variables */
@@ -278,6 +285,11 @@ class GeoLocation {
         return implode(", ", array_reverse($location));        
     }
     
+    
+    /*
+     * Magic method called when a unknown property is set.
+     * Handles $global, $local, $type, $body_code, $ship_code, $place_code
+     */
     function __set ($variable, $value) {
         switch ($variable) {
             /* main variables */
