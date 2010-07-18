@@ -169,7 +169,6 @@ var passage = {
         //Updates coordinates
         dojo.byId('TowerCouloir').innerHTML = c;
         dojo.byId('TowerFloor').innerHTML = t;
-        dojo.byId('TowerLocation').innerHTML = local_location;
         dojo.byId('location_local').value = local_location;
 
         //Updates bays
@@ -257,10 +256,14 @@ var passage = {
         }
     },
     
+    isValidLocalLocation: function (localLocation) {
+        return /^T[1-9][0-9]*C[1-6]$/.test(localLocation);
+    },
+    
     initialize: function (shipGlobalLocation, persoLocalLocation) {
         this.shipGlobalLocation = shipGlobalLocation;
         this.persoLocalLocation = persoLocalLocation;
-        if (persoLocalLocation == "") {
+        if (!this.isValidLocalLocation(persoLocalLocation)) {
             this.moveTo(2, 1);
             
             //Notify (this code requires prototype.js (or jquery, but in this case, simplify it with a insertAfter call))
