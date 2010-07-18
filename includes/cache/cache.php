@@ -23,10 +23,12 @@ class Cache {
             !array_key_exists('engine', $Config['cache'])
         ) {
             //cache is not configured or engine is not specified
-            return null;
+            $engine = 'void';
+        } else {
+            //engine is specified in the configuration
+            $engine = $Config['cache']['engine'];    
         }
-        
-        $engine = $Config['cache']['engine'];
+                
         $engine_file = 'includes/cache/' . $engine . '.php';
         $engine_class = 'Cache' . ucfirst($engine);
         
