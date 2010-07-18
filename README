@@ -117,5 +117,10 @@
 =============
 
  * /api.php/ship/authenticate/<perso nickname>
- 
-    Allows 
+    
+=================
+ ACKNOWLEDGEMENT
+=================
+
+Elfix, to have let me figure a regexp correction, instead to throw away regexp
+validation for places local location.

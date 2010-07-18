@@ -15,7 +15,7 @@
 
 //By default, local_location format is an (x, y, z) expression
 //The local_location format is a PCRE regular expression
-define('LOCATION_LOCAL_DEFAULT_FORMAT', '/([0-9]+( )*,( )*[0-9]+)( )*,( )*[0-9]+)/');
+define('LOCATION_LOCAL_DEFAULT_FORMAT', '/\([0-9]+( )*,( )*[0-9]+( )*,( )*[0-9]+\)/');
 
 class GeoPlace {
 
@@ -120,11 +120,12 @@ class GeoPlace {
     }
     
     /*
-     * Determines if the specified local location is valid
+     * Determines if the specified local location looks valid
+     * @return boolean true if the specified local location looks valid ; otherwise, false.r
      */
     function is_valid_local_location ($local_location) {
         $format = $this->location_local_format ? $this->location_local_format : LOCATION_LOCAL_DEFAULT_FORMAT;
-        return preg_match($format, $local_location);
+        return preg_match($format, $local_location) > 0;
     }
 
     /*
