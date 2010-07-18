@@ -217,7 +217,12 @@ class GeoLocation {
 
         
         if ($n > 1) {
-            message_die(GENERAL_ERROR, "Can't check if a local place exists yet.", "GeoLocation exists method", __LINE__, __FILE__);
+            if (!isset($place)) {
+                message_die(GENERAL_ERROR, "Can't check if a local place exists for the following location: " . $this->data[0], "GeoLocation exists method", __LINE__, __FILE__);
+            }
+            if  (!$place->is_valid_local_location($this->data[1])) {
+                return false;
+            }
         }
         
         return true;
