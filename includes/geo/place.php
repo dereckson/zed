@@ -15,7 +15,7 @@
 
 //By default, local_location format is an (x, y, z) expression
 //The local_location format is a PCRE regular expression
-define('LOCATION_LOCAL_DEFAULT_FORMAT', '/\([0-9]+( )*,( )*[0-9]+( )*,( )*[0-9]+\)/');
+define('LOCATION_LOCAL_DEFAULT_FORMAT', '/^\([0-9]+( )*,( )*[0-9]+( )*,( )*[0-9]+\)$/');
 
 class GeoPlace {
 

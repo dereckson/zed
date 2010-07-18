@@ -6,7 +6,7 @@ class GeoPlaceTest extends PHPUnit_Framework_TestCase {
     public function testIsValidLocation () {
         //Testing HyperShip Tower T2C3 format
         $p0 = new GeoPlace();
-        $p0->location_local_format = '/T[1-9][0-9]*C[1-6]/';
+        $p0->location_local_format = '/^T[1-9][0-9]*C[1-6]$/';
         $this->assertTrue($p0->is_valid_local_location("T1C1"));         // 1
         $this->assertTrue($p0->is_valid_local_location("T14C1"));        // 2
         $this->assertTrue($p0->is_valid_local_location("T14C6"));        // 3
