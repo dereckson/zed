@@ -25,13 +25,27 @@ class GeoPlaceTest extends PHPUnit_Framework_TestCase {
         
         //Testing default format
         $p1 = new GeoPlace();
-               
+              
         $this->assertTrue($p1->is_valid_local_location("(4,62,35)"));    //12
         $this->assertTrue($p1->is_valid_local_location("(4, 62, 35)"));  //13
         $this->assertTrue($p1->is_valid_local_location("(4, 62,35)"));   //14
         
         $this->assertFalse($p1->is_valid_local_location("(4,62,-35)"));  //15
         $this->assertFalse($p1->is_valid_local_location("(4, 62)"));     //16
+
+        
+        //Testing (x, y, -z) format
+        $p2 = new GeoPlace();
+        $p2->location_local_format = '/^\(\-?[0-9]+( )*,( )*\-?[0-9]+( )*,( )*\-?[0-9]+\)$/';
+              
+        $this->assertTrue($p2->is_valid_local_location("(4,62,35)"));    //17
+        $this->assertTrue($p2->is_valid_local_location("(4, 62, 35)"));  //18
+        $this->assertTrue($p2->is_valid_local_location("(4, 62,35)"));   //19
+        $this->assertTrue($p2->is_valid_local_location("(4,62,-35)"));   //20
+
+        $this->assertFalse($p2->is_valid_local_location("(4,62,- 35)")); //21
+        $this->assertFalse($p2->is_valid_local_location("(4,62, - 35)")); //22
+        $this->assertFalse($p2->is_valid_local_location("(4, 62)"));     //23
     }
 }
 ?>
