@@ -121,12 +121,23 @@ class GotoSmartLineCommand extends SmartLineCommand {
             }
         }       
         
+        //Determines if the place exists
         if (!$place->exists()) {
             $this->SmartLine->puts("This place doesn't seem to exist.");
             return;
         }
         
-        $this->SmartLine->puts("TODO: code travel assistant");
+        //Could we really go there?
+        require_once("includes/travel/travel.php");
+        $travel = Travel::load();
+        if (!$travel->can_travel($here, $place)) {
+            $this->SmartLine->puts("You can't reach that location.");
+            return;
+        }
+        
+        $CurrentPerso->move_to($place->global, $place->local);
+        $this->SmartLine->puts("You travel to that location.");
+        return;
     }    
 }
 

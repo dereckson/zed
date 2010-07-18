@@ -178,6 +178,7 @@ class GeoLocation {
      * Checks if the place exists
      *
      * @return boolean true if the place exists ; false otherwise
+     * @todo handles alias
      */
     function exists () {
         $n = count($this->data);

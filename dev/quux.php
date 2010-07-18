@@ -6,12 +6,29 @@
     require_once('includes/objects/content.php');
     require_once('includes/objects/message.php');
     require_once('includes/objects/invite.php');
+    require_once('includes/cache/cache.php');
         
     include('controllers/header.php');
     
-    $case = 'perso.create.notify';
+    $case = 'travel';
     
     switch ($case) {
+        case 'travel':
+            require_once('includes/travel/travel.php');
+            require_once('includes/travel/place.php');
+            
+            $cache = Cache::load();
+            $travel = $cache->get('zed_travel');
+            if ($travel == '') {
+                $travel_nocached = new Travel();
+                $travel_nocached->load_xml("content/travel.xml");
+                $cache->set('zed_travel', serialize($travel_nocached));
+            } else {
+                $travel = unserialize($travel);
+            }
+            dieprint_r($travel);
+            break;
+        
         case 'perso.create.notify':
             $testperso = Perso::get(4733);
             $message = new Message();

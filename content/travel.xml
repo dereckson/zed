@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    This document contains travel rules.
+
+    By default, travel inside a place is restricted and should be handled
+    by /explore mechanisms.
+    
+    To allow wheter a local move, wheter a move to another place, you've
+    to add an TravelPlace entry.
+    
+    When you need regular behavior, without any exception, you don't need
+    to list the place here.
+-->
+<Travel>
+    <TravelPlace code="B00001001" freeLocalMove="true">
+        <!--
+            HyperShip tower allows free movement, at least in corridors.
+            For other locations, we should trust /explore mechanism to
+            implement a security kick, if the perso have no access.
+            
+            Then, we allow travel to core and bays
+        -->
+        <GlobalTravelTo code="B00001002" />
+        <GlobalTravelTo code="B00001003" />
+    </TravelPlace>
+    
+    <TravelPlace code="B00001002">
+        <!-- From the HyperShip core, perso can travel to tower and bays -->
+        <GlobalTravelTo code="B00001001" />
+        <GlobalTravelTo code="B00001003" />
+        
+        <!-- And we add local travel exceptions allowing limited usage
+            to free travel movements to reach the 8 core cubes.
+        -->
+        <LocalMove local_location="(-10, 6, -4)" alias="C1" name="Secteur C1" />
+        <LocalMove local_location="(10, 6, -4)" alias="C2" name="Secteur C2" />
+        <LocalMove local_location="(-10, -6, -4)" alias="C3" name="Secteur C3" />
+        <LocalMove local_location="(10, -6, -4)" alias="C4" name="Secteur C4" />
+        <LocalMove local_location="(-10, 6, 4)" alias="C5" name="Secteur C5" />
+        <LocalMove local_location="(10, 6, 4)" alias="C6" name="Secteur C6" />
+        <LocalMove local_location="(-10, -6, 4)" alias="C7" name="Secteur C7" />
+        <LocalMove local_location="(10, -6, 4)" alias="C8" name="Secteur C8" />
+    </TravelPlace>
+    
+    <TravelPlace code="B00001003">
+        <!-- From the HyperShip core, perso can travel to core and tower -->
+        <GlobalTravelTo code="B00001001" />
+        <GlobalTravelTo code="B00001002" />
+    </TravelPlace>
+</Travel>

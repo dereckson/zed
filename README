@@ -75,6 +75,8 @@
  
    beautify XML code to improve
    
+ * do.php allows any local location move, discarding FrL status
+   
 =======================
  API - General methods
 =======================
