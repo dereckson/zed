@@ -7,3 +7,4 @@ SUGGESTIONS
 A perso.reset method to allow someone to restart the stories, etc. [thenebros]
 Allow user to change language in preferences [dereckson]
 Grab avatar from gravatar.com or the x avatar protocol [dereckson]
+Review all files and replace /* by /** to enable phpdoc [dereckson]
