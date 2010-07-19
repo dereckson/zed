@@ -23,6 +23,7 @@ include_once("config.php");               //Site config
 include_once("error.php");               //Error management
 include_once("mysql.php");              //MySQL layer
 include_once("sessions.php");          //Sessions handler
+include_once("autoload.php");         //__autoload()
 
 ////////////////////////////////////////////////////////////////////////////////
 ///                                                                          ///
