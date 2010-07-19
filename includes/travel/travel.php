@@ -33,7 +33,7 @@ class Travel {
         if (!$travel = $cache->get('zed_travel')) {
             //Initializes resource and caches it
             $travel = new Travel();
-            $travel>load_xml("content/travel.xml");
+            $travel->load_xml("content/travel.xml");
             $cache->set('zed_travel', serialize($travel));
             return $travel;
         }
@@ -46,6 +46,8 @@ class Travel {
      * @param string the path to the travel XML file 
      */
     function load_xml ($file) {
+        require_once('place.php');
+        
         $xml = simplexml_load_file($file);
         foreach ($xml->TravelPlace as $travelPlaceXml) {
             $travelPlace = TravelPlace::from_xml($travelPlaceXml);
