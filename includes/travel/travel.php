@@ -14,6 +14,7 @@
  * This class implements a singleton pattern.
  *
  */
+
 class Travel {
     /*
      * @var Array array of TravelPlace, each one a custom travel rule
@@ -26,7 +27,7 @@ class Travel {
      * Gets and initializes if needed the Travel instance
      */
     static function load () {
-        require_once('../cache/cache.php');
+        require_once('includes/cache/cache.php');
         $cache = Cache::load();
         
         if (!$travel = $cache->get('zed_travel')) {
@@ -45,8 +46,6 @@ class Travel {
      * @param string the path to the travel XML file 
      */
     function load_xml ($file) {
-        require_once('place.php');
-        
         $xml = simplexml_load_file($file);
         foreach ($xml->TravelPlace as $travelPlaceXml) {
             $travelPlace = TravelPlace::from_xml($travelPlaceXml);
@@ -63,8 +62,6 @@ class Travel {
      * @return true if the travel move is valid ; otherwise, false.
      */
     function can_travel ($from, &$to) {
-        require_once('../geo/location.php');
-
         if ($from->global != $to->global) {
             //Checks if we can locally from $from to $to place
             if (!array_key_exists($from->global, $this->globalTravelTo)) {
