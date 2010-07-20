@@ -41,48 +41,6 @@ $lang['Help']['version'] = "Gets Zed's software version info (Mercurial reposito
 $lang['Help']['whereami'] = "Where am I?";
 
 ///
-
-/*
- * Zed
- * (c) 2010, Dereckson, some rights reserved
- * Released under BSD license
- *
- * SmartLine
- *
- * TODO: SettingsSmartLineCommand - understand why dojo floating pane isn't
- *       rendered if we est $controller instead to redirect
- */
-
-///
-/// Register commands
-///
-
-$smartLine->register_object('goto', 'GotoSmartLineCommand');
-$smartLine->register_object('guid', 'GUIDSmartLineCommand');
-$smartLine->register_object('invite', 'InviteSmartLineCommand');
-$smartLine->register_object('invites', 'InviteSmartLineCommand');
-$smartLine->register_object('list', 'ListSmartLineCommand');
-$smartLine->register_object('requests', 'RequestsSmartLineCommand');
-$smartLine->register_object('settings', 'SettingsSmartLineCommand');
-$smartLine->register_object('unixtime', 'UnixTimeSmartLineCommand');
-$smartLine->register_object('version', 'VersionSmartLineCommand');
-$smartLine->register_object('whereami', 'WhereAmISmartLineCommand');
-
-
-///
-/// Help (todo: move $lang array in lang folder)
-///
-
-$lang['Help']['goto'] = "Go to a location";
-$lang['Help']['guid'] = "Generate a GUID";
-$lang['Help']['invite'] = "Generate an invite. To see the generated invites, invite list.";
-$lang['Help']['list'] = "Lists specified objects (bodies, locations or places)";
-$lang['Help']['requests'] = "Checks if there are waiting requests";
-$lang['Help']['unixtime'] = "Prints current unixtime (seconds elapsed since 1970-01-01 00:00, UTC) or the specified unixtime date.";
-$lang['Help']['version'] = "Gets Zed's software version info (Mercurial repository version, node id and if you're on the dev or prod site)";
-$lang['Help']['whereami'] = "Where am I?";
-
-///
 /// goto
 ///
 
