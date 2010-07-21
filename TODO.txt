@@ -1,4 +1,4 @@
-If you find someone to code, first thank you to help us.
+If you wish to contribute code, first thank you to help us.
 
 Here some ideas, yet to code:
 
