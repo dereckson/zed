@@ -42,7 +42,7 @@
 <div id="link_tour"><a href="/tour.html"></a></div>
 <div id="link_blog"><a href="/blog"></a></div>
 
-{$code = genereString('AAA111')}
+{$code = generate_random_string('AAA111')}
 <!--
 
             XXXXXXX             XX

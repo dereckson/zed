@@ -92,14 +92,14 @@ function registry_set ($key, $value) {
 ///                                                                          ///
 ////////////////////////////////////////////////////////////////////////////////
 
-/*
+/**
  * Generates a random string
  * @author Pierre Habart <p.habart@ifrance.com>
  *
  * @param string $format The format e.g. AAA111
  * @return string a random string
  */
-function genereString ($format) {
+function generate_random_string ($format) {
     mt_srand((double)microtime()*1000000);
     $str_to_return="";
 
