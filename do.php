@@ -107,7 +107,6 @@ lang_load('core.conf');
  * Don't echo the value but return it, so we can in the future implement custom
  * formats like api_output();
  */
-
 class Actions {
     /**
      * Checks the arguments hash and determines wheter it is valid.

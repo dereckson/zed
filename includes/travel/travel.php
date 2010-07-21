@@ -1,30 +1,57 @@
 <?php
 
-/*
+/**
  * Travel helper class
-  *
+ *
+ * Zed. The immensity of stars. The HyperShip. The people.
+ * 
+ * (c) 2010, Dereckson, some rights reserved.
+ * Released under BSD license.
+ *
  * 0.1    2010-07-18 22:05    DcK
- *
- * @package Zed
- * @subpackage Travel
- * @copyright Copyright (c) 2010, Dereckson
- * @license Released under BSD license
- * @version 0.1
- *
- * This class implements a singleton pattern.
- *
+ * 
+ * @package     Zed
+ * @subpackage  Travel
+ * @author      Sébastien Santoro aka Dereckson <dereckson@espace-win.org>
+ * @copyright   2010 Sébastien Santoro aka Dereckson
+ * @license     http://www.opensource.org/licenses/bsd-license.php BSD
+ * @version     0.1
+ * @link        http://scherzo.dereckson.be/doc/zed
+ * @link        http://zed.dereckson.be/
+ * @filesource
  */
 
+/**
+ * Travel helper class
+ *
+ * The Travel class reads content/travel.xml to get travel special rules
+ *
+ * It so be able to provide methods determining if a move is or not valid.
+ *
+ * This class implements a singleton pattern.
+ */
 class Travel {
-    /*
-     * @var Array array of TravelPlace, each one a custom travel rule
-     * This array is indeed by TravelPlace code.
+    /**
+     * Array of TravelPlace, each one a custom travel rule
+     * 
+     * This array is indexed by TravelPlace code.
+     * 
+     * @var Array
      */    
-    public $globalTravelTo = array();
+    public $globalTravelTo;
     
+    /**
+     * Constructor
+     */
+    function __construct () {
+        //Initializes array
+        $this->globalTravelTo = array();
+    }
     
-    /*
+    /**
      * Gets and initializes if needed the Travel instance
+     *
+     * @return Travel the Travel instance
      */
     static function load () {
         require_once('includes/cache/cache.php');
@@ -41,8 +68,9 @@ class Travel {
         return unserialize($travel);
     }
     
-    /*
+    /**
      * Loads a travel configuration XML file
+     * 
      * @param string the path to the travel XML file 
      */
     function load_xml ($file) {
@@ -55,13 +83,14 @@ class Travel {
         }
     }
     
-    /*
+    /**
      * Determines if a perso can travel from $from to $to
+     * 
      * If an alias have been used for $to local location, set correct location.
      * 
      * @param GeoLocation the location where the perso is
      * @param GeoLocation the location where the perso wants to go
-     * @return true if the travel move is valid ; otherwise, false.
+     * @return boolean if the travel move is valid ; otherwise, false.
      */
     function can_travel ($from, &$to) {
         if ($from->global != $to->global) {

@@ -130,10 +130,12 @@ class Ship {
         return $this->get_code();
     }
     
-    /*
+    /**
      * Get ships at specified location
+     * 
      * @param string $location_global global location
      * @param string $location_local local location
+     * @return array An array of Ship items, each one a ship at the specified location
      */
     static function get_ships_at ($location_global, $location_local = null) {
         global $db;

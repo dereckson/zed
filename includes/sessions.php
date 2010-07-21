@@ -1,5 +1,29 @@
 <?php
 
+/**
+ * Sessions
+ *
+ * Zed. The immensity of stars. The HyperShip. The people.
+ * 
+ * (c) 2010, Dereckson, some rights reserved.
+ * Released under BSD license.
+ *
+ * This file provides functions to manage sessions. It's not currently properly
+ * documented, as it's a temporary old session file, which will be updated soon.
+ * 
+ * @package     Zed
+ * @subpackage  Keruald
+ * @author      Sébastien Santoro aka Dereckson <dereckson@espace-win.org>
+ * @copyright   2010 Sébastien Santoro aka Dereckson
+ * @license     http://www.opensource.org/licenses/bsd-license.php BSD
+ * @version     0.1
+ * @link        http://scherzo.dereckson.be/doc/zed
+ * @link        http://zed.dereckson.be/
+ * @filesource
+ *
+ * @todo Replaces this code by the unified Keruald session class.
+ */
+
 function decode_ip ($int_ip) {
 	$hexipbang = explode('.', chunk_split($int_ip, 2, '.'));
 	return hexdec($hexipbang[0]). '.' . hexdec($hexipbang[1]) . '.' . hexdec($hexipbang[2]) . '.' . hexdec($hexipbang[3]);
@@ -87,7 +111,7 @@ function set_info ($info, $value)
 	if (!$db->sql_query($sql)) message_die(SQL_ERROR, "Impossible de définir $info", '', __LINE__, __FILE__, $sql);
 }
 
-/*
+/**
  * Destroys $_SESSION array values, help ID
  */
 function clean_session () {
@@ -97,7 +121,7 @@ function clean_session () {
 }
 
 
-/*
+/**
  * Logs in user
  */
 		
@@ -111,7 +135,7 @@ function login ($user_id, $username) {
 	setcookie("LastUsername", $username, time() + 2592000);
 }
 
-/*
+/**
  * Logs out user
  */
 function logout () {

@@ -26,7 +26,7 @@
 /// Initialization
 ///
 
-//Pluton library
+//Keruald (formelly Pluton) library
 include('includes/core.php');
 
 //Session

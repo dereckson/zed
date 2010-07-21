@@ -1,38 +1,62 @@
 <?php
 
-/*
- * Zed
- * (c) 2010, Dereckson, some rights reserved
- * Released under BSD license
+/**
+ * Story section class
  *
- * Story section
+ * Zed. The immensity of stars. The HyperShip. The people.
+ * 
+ * (c) 2010, Dereckson, some rights reserved.
+ * Released under BSD license.
+ *
+ * This class is a PHP mapping from the Story XML format's <section> tag.
+ *
+ * This class also a method to get the section where a specific choice links to.
+ *
+ * @package     Zed
+ * @subpackage  Story
+ * @author      Sébastien Santoro aka Dereckson <dereckson@espace-win.org>
+ * @copyright   2010 Sébastien Santoro aka Dereckson
+ * @license     http://www.opensource.org/licenses/bsd-license.php BSD
+ * @version     0.1
+ * @link        http://scherzo.dereckson.be/doc/zed
+ * @link        http://zed.dereckson.be/
+ * @filesource
  */
 
 require_once('choice.php');
 require_once('hook.php');
 
+/**
+ * Story section class
+ */
 class StorySection {
-    /*
-     * @var string the section ID
+    /**
+     * The section ID
+     *
+     * @var string
      */
     public $id;
 
-    /*
-     * @var string the section title
+    /**
+     * The section title
+     *
+     * @var string
      */
     public $title;
 
-    /*
-     * @var string the section description
+    /**
+     * The section description
+     *
+     * @var string
      */
     public $description;
     
-    /*
+    /**
      * @var string the local location
      */
     public $location_local;
     
-    /*
+    /**
      * @var Array the section choices (array of StoryChoice items)
      */
     public $choices = array();
@@ -42,17 +66,17 @@ class StorySection {
      */    
     public $hooks = array();
     
-    /*
+    /**
      * @var boolean if true, it's the story start ; otherwise, false;
      */
     public $start;
 
-    /*
+    /**
      * @var Story the story calling the section
      */
     public $story;
     
-    /*
+    /**
      * Initializes a new instance of StorySection class
      */
     function __construct ($id, $story = null) {
@@ -62,8 +86,9 @@ class StorySection {
         }
     }
 
-    /*
+    /**
      * Gets choice from specified guid
+     * 
      * @return StoryChoice the wanted choice, or null if it doesn't exist
      */
     function get_choice ($guid) {
@@ -75,8 +100,9 @@ class StorySection {
         return null;
     }
     
-    /*
-     * Intializes a story section from an SimpleXMLElement XML fragment
+    /**
+     * Initializes a story section from an SimpleXMLElement XML fragment
+     * 
      * @param SimpleXMLElement $xml the XML fragment
      * @param Story $story the calling story
      * @return StorySection the section instance

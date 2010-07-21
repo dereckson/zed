@@ -1,46 +1,71 @@
 <?php
 
-/*
- * Zed
- * (c) 2010, Dereckson, some rights reserved
- * Released under BSD license
+/**
+ * Story class
  *
- * Story
+ * Zed. The immensity of stars. The HyperShip. The people.
+ * 
+ * (c) 2010, Dereckson, some rights reserved.
+ * Released under BSD license.
+ *
+ * This class is a PHP mapping from the Story XML format.
+ *
+ * This class also provides a collection of helper methods to explore the story.
+ * 
+ * @package     Zed
+ * @subpackage  Story
+ * @author      Sébastien Santoro aka Dereckson <dereckson@espace-win.org>
+ * @copyright   2010 Sébastien Santoro aka Dereckson
+ * @license     http://www.opensource.org/licenses/bsd-license.php BSD
+ * @version     0.1
+ * @link        http://scherzo.dereckson.be/doc/zed
+ * @link        http://zed.dereckson.be/
+ * @filesource
  */
 
-require_once('section.php');
-
-/*
- * @package Zed
- * @subpackage story
+/**
+ * Story class
  */
 class Story {
-    /*
-     * @var string the file path
+    /**
+     * The file path
+     * 
+     * @var string
      */
     public $file;
     
-    /*
-     * @var string the story title
+    /**
+     * The story title
+     * 
+     * @var string
      */
     public $title;
-    /*
-     * @var Array an array of StorySection elements
+    
+    /**
+     * An array of StorySection elements
+     *
+     * @var Array 
      */
     public $sections = array();
     
-    /*
-     * @var SimpleXMLElement the SimpleXML parser
+    /**
+     * The SimpleXML parser
+     *
+     * @var SimpleXMLElement
      */
     private $xml;
     
-    /*
-     * @var string the index of start section in sections array
+    /**
+     * The index of start section in sections array
+     *
+     * @var string
      */
     private $startSection = null;
     
-    /*
-     * @var Array an array of StorySection elements, indexed by location
+    /**
+     * An array of StorySection elements, indexed by location
+     *
+     * @var Array
      */
     private $sectionsByLocation = array();
     
@@ -51,26 +76,28 @@ class Story {
         }
         
         $this->file = $file;
-        $this->parse();        
+        $this->parse();
     }
     
-    /*
+    /**
      * Gets start section
+     * 
      * @return StorySection the section where the story starts, or null if not defined
      */
     function get_start_section () {
         return ($this->startSection != null) ? $this->sections[$this->startSection] : null;
     }
     
-    /*
+    /**
      * Gets section from local location
+     * 
      * @return StorySection the default section at this location, or null if not defined
      */
     function get_section_from_location ($location) {
         return array_key_exists($location, $this->sectionsByLocation) ? $this->sectionsByLocation[$location] : null;
     }
     
-    /*
+    /**
      * Parses XML file
      */
     function parse () {

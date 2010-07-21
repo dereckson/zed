@@ -9,9 +9,9 @@
  * Released under BSD license.
  * 
  * @package     Zed
- * @subpackage  Pluton
- * @author      Sébastien Santoro aka Dereckson <dereckson@espace-win.org>
- * @copyright   2010 Sébastien Santoro aka Dereckson
+ * @subpackage  Keruald
+ * @author      SÃ©bastien Santoro aka Dereckson <dereckson@espace-win.org>
+ * @copyright   2010 SÃ©bastien Santoro aka Dereckson
  * @license     http://www.opensource.org/licenses/bsd-license.php BSD
  * @version     0.1
  * @link        http://scherzo.dereckson.be/doc/zed
@@ -43,9 +43,9 @@ include_once("autoload.php");         //__autoload()
 ////////////////////////////////////////////////////////////////////////////////
 
 /**
- * Gets the nickname from the specified perso
+ * Gets the nickname from the specified perso ID
  * 
- * @param integer $perso_id The specified perso's ID
+ * @param integer $perso_id The specified perso ID
  * @return string The perso's nickname
  */
 function get_name ($perso_id) {
@@ -57,7 +57,12 @@ function get_name ($perso_id) {
 	return $row['perso_nickname'];
 }
 
-//Gets user_id from specified username
+/**
+ * Gets the user ID from the specified username
+ *
+ * @param string $username The username
+ * @return integer the user ID
+ */
 function get_userid ($username) {
 	global $db;
 	$username = $db->sql_escape($username);
@@ -67,6 +72,12 @@ function get_userid ($username) {
 	return $row['user_id'];
 }
 
+/**
+ * Gets an information from the application global registry
+ * 
+ * @param string $key the registry's key
+ * @return string The key value
+ */
 function registry_get ($key) {
     global $db;
     $key = $db->sql_escape($key);
@@ -77,6 +88,12 @@ function registry_get ($key) {
 	return $row['registry_value'];
 }
 
+/**
+ * Sets an information in the application global registry
+ * 
+ * @param string $key the registry key
+ * @param string $value the value to store at the specified registry key
+ */
 function registry_set ($key, $value) {
     global $db;
     $key = $db->sql_escape($key);
@@ -93,7 +110,12 @@ function registry_set ($key, $value) {
 ////////////////////////////////////////////////////////////////////////////////
 
 /**
- * Generates a random string
+ * Generates a random string, according the specified format.
+ * 
+ * <code>
+ * echo generate_random_string('AAA111'); //this could output SDQ245.
+ * </code>
+ *
  * @author Pierre Habart <p.habart@ifrance.com>
  *
  * @param string $format The format e.g. AAA111
@@ -123,31 +145,37 @@ function generate_random_string ($format) {
     return $str_to_return;
 }
 
-function generer_hexa($longueur) {
-        mt_srand((double)microtime()*1000000);
-        $str_to_return="";
-        $t_number=explode(",","1,2,3,4,5,6,7,8,9,0,A,B,C,D,E,F");
-        for ($i = 0 ; $i < $longueur ; $i++) {
-                $str_to_return .= $t_number[mt_rand() % sizeof($t_number)];
-        }
-    return $str_to_return;
-}
-
 //Plural management
 
+/**
+ * Returns "s" when the $amount request a plural 
+ * This function is a French plural helper.
+ *
+ * @param $amount the amount of objects
+ * @return string 's' if $amount implies a plural ; '' if it implies a singular.
+ */
 function s ($amount) {
-	if ($amount > 1) return "s";
+	if ($amount >= 2 || $amount <= -2) return "s";
 }
 
+/**
+ * Returns "x" when the $amount request a plural 
+ * This function is a French plural helper.
+ *
+ * @param $amount the amount of objects
+ * @return string 'x' if $amount implies a plural ; '' if it implies a singular.
+ */
 function x ($amount) {
-	if ($amount > 1) return "x";
+	if ($amount >= 2 || $amount <= -2) return "x";
 }
 
 //Debug
 
 /**
- * Prints human-readable information about a variable  (like the print_r command),
- * enclosed in <pre></pre> tags, to have a preformatted HTML output.
+ * Prints human-readable information about a variable.
+ *
+ * It behaves like the print_r command, but the output is enclosed in pre tags,
+ * to have a preformatted HTML output.
  *
  * @param mixed The expression to be printed
  */
@@ -159,6 +187,15 @@ function dprint_r ($expression) {
 
 //GUID
 
+/**
+ * Generates a GUID, or more precisely an UUID
+ * @link http://en.wikipedia.org/wiki/Universally_Unique_Identifier Wikipedia, Universally Unique Identifier.
+ *
+ * A UUID is a 36 chars string of 32 hexadecimal and 4 dashes, with a
+ * very high probability to be unique.
+ *
+ * @return string the UUID
+ */
 function new_guid() {
 	$characters = explode(",","a,b,c,d,e,f,0,1,2,3,4,5,6,7,8,9");
 	$guid = "";
@@ -172,7 +209,13 @@ function new_guid() {
 	return $guid;
 }
 
-
+/**
+ * Determines if the expression is a valid UUID (a guid without {}).
+ * @see new_guid
+ * 
+ * @param string $expression the expression to chjeck
+ * @return boolean true if the specified expression is a valid UUID ; otherwise, false.
+ */
 function is_guid ($expression) {
     //We avoid regexp to speed up the check
     //A guid is a 36 characters string
@@ -191,17 +234,20 @@ function is_guid ($expression) {
     return true;
 }
 
-/*
+/**
  * Gets file extension
+ * 
  * @param string $file the file to get the extension
+ * @return string the extension froÃ¹m the specified tfile
  */
 function get_extension ($file) {
     $dotPosition = strrpos($file, ".");
     return substr($file, $dotPosition + 1);
 }
 
-/*
+/**
  * Determines if a string starts with specified substring
+ * 
  * @param string $haystack the string to check
  * @param string $needle the substring to determines if it's the start
  * @param boolean $case_sensitive determines if the search must be case sensitive
@@ -216,8 +262,9 @@ function string_starts_with ($haystack, $needle, $case_sensitive = true) {
     return strpos($haystack, $needle) === 0;
 }
 
-/*
+/**
  * Inserts a message into the supralog
+ * 
  * @param string $category the entry category
  * @param string $message the message to log
  * @param string $source the entry source.
@@ -241,8 +288,12 @@ function supralog ($category, $message, $source = null) {
 ///                                                                          ///
 ////////////////////////////////////////////////////////////////////////////////
 
-/*
- * Defines LANG constant to lang to print
+/**
+ * Defines the LANG constant, to lang to print
+ *
+ * This information is contained in the session, or if not yet defined,
+ * it's to determine according the user's browser preferences.
+ * @see find_lang
  */
 function initialize_lang () {
     //If $_SESSION['lang'] doesn't exist yet, find a common language
@@ -255,8 +306,10 @@ function initialize_lang () {
         define('LANG', $_SESSION['lang']);
 }
 
-/*
- * Gets a common lang spoken by the site and the user
+/**
+ * Gets a common lang spoken by the site and the user's browser
+ * @see get_http_accept_languages
+ * 
  * @return string the language
  */    
 function find_lang () {
@@ -295,11 +348,14 @@ function find_lang () {
     }
 }
 
-/*
- * Returns the languages accepted by the browser, by order of priority
- * @return Array a array of languages string 
+/**
+ * Gets the languages accepted by the browser, by order of priority.
+ *
+ * This will read the HTTP_ACCEPT_LANGUAGE variable sent by the browser in the
+ * HTTP request. 
+ * 
+ * @return Array an array of string, each item a language accepted by browser
  */
-
 function get_http_accept_languages () {
     //What language to print is sent by browser in HTTP_ACCEPT_LANGUAGE var.
     //This will be something like en,fr;q=0.8,fr-fr;q=0.5,en-us;q=0.3
@@ -324,7 +380,7 @@ function get_http_accept_languages () {
     return $result;
 }
 
-/*
+/**
  * Loads specified language Smarty configuration file
  *
  * @param string $file the file to load
@@ -342,7 +398,7 @@ function lang_load ($file, $sections = null) {
         $smarty->config_load('lang/' . LANG . '/' . $file, $sections);
 }
 
-/*
+/**
  * Gets a specified language expression defined in configuration file
  *
  * @param string $key the configuration key matching the value to get
@@ -361,8 +417,12 @@ function lang_get ($key) {
 ///                                                                          ///
 ////////////////////////////////////////////////////////////////////////////////
 
-/*
+/**
  * Converts a YYYYMMDD or YYYY-MM-DD timestamp to unixtime
+ * @link http://en.wikipedia.org/wiki/Unix_time Unix time
+ *
+ * @param string $timestamp the timestamp to convert
+ * @return inteeger the unixtime
  */
 function to_unixtime ($timestamp) {
 	switch (strlen($timestamp)) {
@@ -379,11 +439,13 @@ function to_unixtime ($timestamp) {
     }
 }
 
-/*
+/**
  * Converts a unixtime to the YYYYMMDD or YYYY-MM-DD timestamp format
+ * @see to_unixtime
  *
  * @param int $unixtime the time to convert
  * @param int $format 8 or 10. If 8 (default), will output YYYYMMDD. If 10, YYYY-MM-DD.
+ * @return string the timestamp
  */
 function to_timestamp ($unixtime = null, $format = 8) {   
 	//If no parameter is specified (or null, or false), current time is used
@@ -404,8 +466,13 @@ function to_timestamp ($unixtime = null, $format = 8) {
     }
 }
 
-/*
- * Converts a unixtime to the Hypership time format.
+/**
+ * Converts a unixtime to the Hypership time format or gets the current hypership time.
+ * @link http://en.wikipedia.org/wiki/Unix_time
+ * @link http://www.purl.org/NET/Zed/blog/HyperShipTime
+ *
+ * @param int $unixtime The unixtime to convert to HyperShip time. If omitted, the current unixtime.
+ * @return string The HyperShip time
  */
 function get_hypership_time ($unixtime = null) {
     //If unixtime is not specified, it's now
@@ -429,8 +496,16 @@ function get_hypership_time ($unixtime = null) {
 ////////////////////////////////////////////////////////////////////////////////
 
 /**
- * Gets URL
- * @return string URL
+ * Gets the URL matching the specified resource.
+ *
+ * Example:
+ * <code>
+ * $url = get_url('ship', $ship);
+ * echo $url; //if $ship contains S00001, this should print /ship/S00001
+ * </code>
+ *
+ * @param string $resource,... the resources
+ * @return string the URL matching the specified resource
  */
 function get_url () {
     global $Config;
@@ -444,9 +519,10 @@ function get_url () {
     }
 }
 
-/*
- * Gets page URL
- * @return string URL
+/**
+ * Gets the current page URL
+ * 
+ * @return string the current page URL
  */
 function get_page_url () {
     $url = $_SERVER['SCRIPT_NAME'] . $_SERVER['PATH_INFO'];
@@ -456,9 +532,10 @@ function get_page_url () {
     return $url;
 }
 
-/*
- * Gets server URL
+/**
+ * Gets the server URL
  * @todo find a way to detect https:// on non standard port
+ *
  * @return string the server URL
  */
 function get_server_url () {
@@ -474,8 +551,15 @@ function get_server_url () {
 	}
 }
 
-/*
+/**
  * Gets $_SERVER['PATH_INFO'] or computes the equivalent if not defined.
+ *
+ * This function allows the entry point controllers to get the current URL
+ * in a consistent way, for any redirection configuration
+ *
+ * So with /foo/bar, /index.php/foo/bar, /zed/index.php/foo/bar or /zed/foo/bar
+ * get_current_url will return /foo/bar
+ * 
  * @return string the relevant URL part
  */
 function get_current_url () {
@@ -520,8 +604,14 @@ function get_current_url () {
     return $url;
 }
 
-/*
+/**
  * Gets an array of url fragments to be processed by controller
+ * @see get_current_url
+ *
+ * This method is used by the controllers entry points to know the URL and
+ * call relevant subcontrollers.
+ *
+ * @return Array an array of string, one for each URL fragment
  */
 function get_current_url_fragments () {
     $url_source = get_current_url();
@@ -535,8 +625,9 @@ function get_current_url_fragments () {
 ///                                                                          ///
 ////////////////////////////////////////////////////////////////////////////////
 
-/*
+/**
  * Gets an hash value to check the integrity of URLs in /do.php calls
+ * 
  * @param Array $args the args to compute the hash
  * @return the hash paramater for your xmlHttpRequest url
  */
@@ -547,8 +638,9 @@ function get_xhr_hash ($args) {
     return md5($_SESSION['ID'] . $Config['SecretKey'] . implode('', $args));
 }
 
-/*
+/**
  * Gets the URL to call do.php, the xmlHttpRequest controller
+ * 
  * @return string the xmlHttpRequest url, with an integrity hash
  */
 function get_xhr_hashed_url () {   
@@ -559,8 +651,9 @@ function get_xhr_hashed_url () {
     return $Config['DoURL'] . '/' . implode('/', $args);
 }
 
-/*
+/**
  * Gets the URL to call do.php, the xmlHttpRequest controller
+ * 
  * @return string the xmlHttpRequest url
  */
 function get_xhr_url () {

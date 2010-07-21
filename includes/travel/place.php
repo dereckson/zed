@@ -1,38 +1,74 @@
 <?php
 
-/*
+/**
  * TravelPlace class
-  *
+ *
+ * Zed. The immensity of stars. The HyperShip. The people.
+ * 
+ * (c) 2010, Dereckson, some rights reserved.
+ * Released under BSD license.
+ *
  * 0.1    2010-07-19 22:10    DcK
+ * 
+ * @package     Zed
+ * @subpackage  Travel
+ * @author      Sébastien Santoro aka Dereckson <dereckson@espace-win.org>
+ * @copyright   2010 Sébastien Santoro aka Dereckson
+ * @license     http://www.opensource.org/licenses/bsd-license.php BSD
+ * @version     0.1
+ * @link        http://scherzo.dereckson.be/doc/zed
+ * @link        http://zed.dereckson.be/
+ * @filesource
+ */
+
+/**
+ * TravelPlace class
  *
- * @package Zed
- * @subpackage Travel
- * @copyright Copyright (c) 2010, Dereckson
- * @license Released under BSD license
- * @version 0.1
+ * The TravelPlace class is a set of rules determining which moves are valid
+ * in a specific place.
  *
+ * @see GeoPlace
+ * 
  */
 class TravelPlace {
-    /*
-     * @var string the place code
+    /**
+     * The place code
+     * 
+     * @var string
      */    
     public $code;
     
-    /*
-     * @var boolean determines if any local location move is valid
+    /**
+     * Determines if any local location move is valid
+     * 
+     * @var bool 
      */        
     public $freeLocalMove = false;
     
-    /*
-     * @var Array array of strings, each item another place reachable
+    /**
+     * Array of strings, each item another place reachable
+     *
+     * This matches GlobalTravelTo XML tags.
+     *
+     * @var Array 
      */    
     public $globalTravelTo = array();
     
-    /*
-     * @var Array array of array, containing [location, alias, name] entries
+    /**
+     * Aray of array, containing [location, alias, name] entries
+     *
+     * This matches LocalMove XML tags.
+     *
+     * @var Array
      */
     public $localMoves = array();
     
+    /**
+     * Initializes a new TravelPlace instance, from the specified XML fragment
+     *
+     * @param string $xml the XML fragment to parse
+     * @return TravelPlace the TravelPlace instance maching the specified XML fragment
+     */
     static function from_xml ($xml) {
         $travelPlace = new TravelPlace();
         
