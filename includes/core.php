@@ -1,11 +1,22 @@
 <?php
 
-/*
- * Zed
- * (c) 2010, Dereckson, some rights reserved
- * Released under BSD license
+/**
+ * Core: helper methods and main libraries loader
  *
- * Core
+ * Zed. The immensity of stars. The HyperShip. The people.
+ * 
+ * (c) 2010, Dereckson, some rights reserved.
+ * Released under BSD license.
+ * 
+ * @package     Zed
+ * @subpackage  Pluton
+ * @author      Sébastien Santoro aka Dereckson <dereckson@espace-win.org>
+ * @copyright   2010 Sébastien Santoro aka Dereckson
+ * @license     http://www.opensource.org/licenses/bsd-license.php BSD
+ * @version     0.1
+ * @link        http://scherzo.dereckson.be/doc/zed
+ * @link        http://zed.dereckson.be/
+ * @filesource
  */
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -31,11 +42,16 @@ include_once("autoload.php");         //__autoload()
 ///                                                                          ///
 ////////////////////////////////////////////////////////////////////////////////
 
-//Gets username from specified user_id
-function get_name ($id) {
+/**
+ * Gets the nickname from the specified perso
+ * 
+ * @param integer $perso_id The specified perso's ID
+ * @return string The perso's nickname
+ */
+function get_name ($perso_id) {
 	global $db;
-	$id = $db->sql_escape($id);
-    $sql = 'SELECT perso_nickname FROM '. TABLE_PERSOS . " WHERE perso_id = '$id'";
+	$perso_id = $db->sql_escape($perso_id);
+    $sql = 'SELECT perso_nickname FROM '. TABLE_PERSOS . " WHERE perso_id = '$perso_id'";
 	if (!$result = $db->sql_query($sql)) message_die(SQL_ERROR, "Can't query persos table.", '', __LINE__, __FILE__, $sql);
 	$row = $db->sql_fetchrow($result);
 	return $row['perso_nickname'];
@@ -129,8 +145,16 @@ function x ($amount) {
 
 //Debug
 
-function dprint_r ($mixed) {
-	echo "<pre>", print_r($mixed, true), "</pre>";
+/**
+ * Prints human-readable information about a variable  (like the print_r command),
+ * enclosed in <pre></pre> tags, to have a preformatted HTML output.
+ *
+ * @param mixed The expression to be printed
+ */
+function dprint_r ($expression) {
+	echo '<pre>';
+	print_r($expression);
+	echo '</pre>';
 }
 
 //GUID
@@ -404,7 +428,7 @@ function get_hypership_time ($unixtime = null) {
 ///                                                                          ///
 ////////////////////////////////////////////////////////////////////////////////
 
-/*
+/**
  * Gets URL
  * @return string URL
  */

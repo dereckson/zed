@@ -1,13 +1,25 @@
 <?php
 
-/*
- * Zed
- * (c) 2010, Dereckson, some rights reserved
- * Released under BSD license
- *
+/**
  * API entry point
+ *
+ * Zed. The immensity of stars. The HyperShip. The people.
  * 
+ * (c) 2010, Dereckson, some rights reserved.
+ * Released under BSD license.
+ * 
+ * @package     Zed
+ * @subpackage  EntryPoints
+ * @author      Sébastien Santoro aka Dereckson <dereckson@espace-win.org>
+ * @copyright   2010 Sébastien Santoro aka Dereckson
+ * @license     http://www.opensource.org/licenses/bsd-license.php BSD
+ * @version     0.1
+ * @link        http://scherzo.dereckson.be/doc/zed
+ * @link        http://zed.dereckson.be/
+ * @filesource
+ * @todo        Consider to output documentation on / and /ship queries
  */
+
 
 //API Preferences
 define('URL', 'http://' . $_SERVER['HTTP_HOST'] . '/index.php');

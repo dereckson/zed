@@ -1,30 +1,53 @@
 <?php
 
-/*
- * Zed
- * (c) 2010, Dereckson, some rights reserved
- * Released under BSD license
- *
+/**
  * AJAX callbacks
+ *
+ * Zed. The immensity of stars. The HyperShip. The people.
+ * 
+ * (c) 2010, Dereckson, some rights reserved.
+ * Released under BSD license.
  *
  * As main controller could potentially be interrupted (e.g. if site.requests
  * flag is at 1, user is redirected to controllers/userrequest.php), all AJAX
  * queries should be handled by this script and not directly by the controllers.
  *
  * Standard return values:
- *  -7  user is logged but perso isn't selected
- *  -9  user is not logged
- *
+ *  -7  user is logged but perso isn't selected,
+ *  -9  user is not logged.
+ * 
+ * @package     Zed
+ * @subpackage  EntryPoints
+ * @author      Sébastien Santoro aka Dereckson <dereckson@espace-win.org>
+ * @copyright   2010 Sébastien Santoro aka Dereckson
+ * @license     http://www.opensource.org/licenses/bsd-license.php BSD
+ * @version     0.1
+ * @link        http://scherzo.dereckson.be/doc/zed
+ * @link        http://zed.dereckson.be/
+ * @filesource
  */
+
+////////////////////////////////////////////////////////////////////////////////
+///
+/// Constants
+///
+
+//We define one negative number constant by standard erroneous return value.
+
+/**
+ * Magic number which indicates the user is not logged in.
+ */
+define('USER_NOT_LOGGED',    -9);
+
+/**
+ * Magic number which indicates the user is logged in, but haven't selected its perso.
+ */
+define('PERSO_NOT_SELECTED', -7);
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
 /// Initialization
 ///
-
-//Standard return values
-define('USER_NOT_LOGGED',    -9);
-define('PERSO_NOT_SELECTED', -7);
 
 //Pluton library
 include('includes/core.php');
@@ -73,8 +96,9 @@ lang_load('core.conf');
 /// Actions definitions
 ///
 
-/*
+/**
  * Actions class
+ * 
  * Each method is called by first part of your URL, other parts are arguments
  * e.g. /do.php/validate_quux_request/52 = Actions::validate_quux_request(52);
  *
@@ -85,17 +109,20 @@ lang_load('core.conf');
  */
 
 class Actions {
-    /*
-     * Checks the arguments hash
+    /**
+     * Checks the arguments hash and determines wheter it is valid.
+     * 
      * @param Array $args the arguments, the last being the hash
+     * @return boolean true if the hash is valid ; otherwise, false.
      */
     static private function is_hash_valid ($args) {
         global $Config;
         return array_pop($args) == md5($_SESSION['ID'] . $Config['SecretKey'] . implode('', $args));
     }
     
-    /*
-     * Handles a allow/deny perso request
+    /**
+     * Handles a allow/deny perso request.
+     * 
      * @param string $request_flag the request flag to clear
      * @param string $store 'perso' or 'registry'
      * @param string $key the perso flag or registry key
@@ -138,14 +165,15 @@ class Actions {
         return true;
     }
 
-    /*
-     * Sets current perso's local location
-     * @param string $location_local the local location
-     * @return GeoLocation the current perso's GeoLocation object
-     *
+    /**
+     * Sets current perso's local location.
+     * 
      * We don't require a security hash. If the users want to play with it, no problem.
      * You generally moves inside a global location as you wish.
      * So, if you write a story capturing a perso, use flags to handle this escape!
+     *
+     * @param string $location_local the local location
+     * @return GeoLocation the current perso's GeoLocation object
      */
     static function set_local_location ($location_local) {
         global $CurrentPerso;
@@ -160,8 +188,9 @@ class Actions {
         return $CurrentPerso->location;
     }
     
-    /*
-     * Handles upload content form
+    /**
+     * Handles upload content form.
+     * 
      * @return string new content path  
      */
     static function upload_content () {
@@ -187,9 +216,12 @@ class Actions {
         
         return false;
     }
-    /*
-     * 
-     * @return Array content files
+    
+    /**
+     * Gets multimedia content for the specified location
+     *
+     * @param string $location_global The global location (local is to specified in ?location_local parameter)
+     * @return Array an array of Content instances
      */
     static function get_content ($location_global) {
         //Ensures we've the correct amount of arguments
@@ -201,8 +233,14 @@ class Actions {
             return false;
         }
         
+        //Checks local location is specified somewhere (usually in $_GET)
+        if (!array_key_exists('location_local', $_REQUEST)) {
+            return false;
+        }
+        
+        //Gets content
         require_once('includes/objects/content.php');
-        return Content::get_local_content($location_global, $_GET['location_local']);
+        return Content::get_local_content($location_global, $_REQUEST['location_local']);
     }
 }
 
