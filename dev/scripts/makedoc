@@ -1,0 +1,26 @@
+#!/bin/sh
+
+#
+# Generates the Zed source code documentation
+# http://scherzo.dereckson.be/doc/zed
+#
+
+#For any debug purpose, the initial command line were:
+#phpdoc -d /home/dereckson/dev/zed/zed-repo -dn Zed --title "Zed. The source code to build a world." -s -ric README -o HTML:Smarty:HandS -i apps/,cache/,content/,css/,dev/,doc/ img/,js/,lang/,skins/,includes/Smarty -t /home/wwwroot/dereckson.be/scherzo/doc/zed
+
+#Config
+HG=/usr/local/bin/hg
+PHPDOC=/usr/local/bin/phpdoc
+REPO=/home/dereckson/dev/zed/zed-repo
+TARGETDOC=/home/wwwroot/dereckson.be/scherzo/doc/zed
+IGNORES=apps/,cache/compiled/,content/,css/,dev/,doc/,img/,js/,lang/,skins/,includes/Smarty/
+
+#Deletes previous doc
+echo Deleting previous documentation...
+rm -f -R $TARGETDOC/*
+
+#Make doc
+echo Generating changelog...
+$HG log -R $REPO --style zed > $REPO/CHANGELOG
+#echo Building new documentation...
+$PHPDOC -d $REPO -dn Zed --title "Zed. The source code to build a world." -s -ric README,CHANGELOG -o HTML:Smarty:Zed -i $IGNORES -t $TARGETDOC
