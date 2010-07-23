@@ -1,47 +1,106 @@
 <?php
 
+/**
+ * Geo location class.
+ *
+ * Zed. The immensity of stars. The HyperShip. The people.
+ * 
+ * (c) 2010, Dereckson, some rights reserved.
+ * Released under BSD license.
+ *
+ * 0.1    2010-01-28 18:52    DcK
+ *
+ * @package     Zed
+ * @subpackage  Geo
+ * @author      Sébastien Santoro aka Dereckson <dereckson@espace-win.org>
+ * @copyright   2010 Sébastien Santoro aka Dereckson
+ * @license     http://www.opensource.org/licenses/bsd-license.php BSD
+ * @version     0.1
+ * @link        http://scherzo.dereckson.be/doc/zed
+ * @link        http://zed.dereckson.be/
+ * @filesource
+ */
+
 require_once('body.php');
 require_once('place.php');
 require_once('point3D.php');
 require_once('includes/objects/ship.php');
 
-/*
+/**
  * Geo location class
  *
- * 0.1    2010-01-28 18:52    DcK
+ * This class contains properties to get, set or compare a location and
+ * explore the geo classes linked to.
  *
- * @package Zed
- * @subpackage Geo
- * @copyright Copyright (c) 2010, Dereckson
- * @license Released under BSD license
- * @version 0.1
+ * It quickly allow to parse through the location classes in templates and
+ * controllers.
  *
  * @todo initializes $point3D from $body or $ship own locations;
- *
+ * @todo improve GeoLocation documentation (especially magic properties)
  */
 class GeoLocation {
+    /**
+     * An array of strings containing location data.
+     *
+     * In the current class implementation,
+     * the first element is the global location 
+     * and the second element is the local location.
+     * 
+     * @var Aray
+     */
     private $data;
 
-    /*
-     * @var GeoBody a body object
+    /**
+     * A body object
+     *
+     * It contains a GeoBody value when the global location is a body
+     * ie if $this->data[0][0] == 'B'
+     *
+     * Otherwise, its value is null.
+     *
+     * @var GeoBody 
      */
     public $body = null;
     
-    /*
-     * @var GeoPlace a place object
+    /**
+     * A place object
+     *
+     * It contains a GeoPlacevalue when the global location is a place
+     * ie if $this->data[0][0] == 'B' && strlen($this->data[0]) == 9
+     *
+     * Otherwise, its value is null.
+     * 
+     * @var GeoPlace 
      */
     public $place = null;
 
-    /*
-     * @var GeoPoint3D a point identified by x, y, z coordinates
+    /**
+     * A point identified by x, y, z coordinates
+     * 
+     * @var GeoPoint3D
      */    
     public $point3D = null;
     
-    /*
-     * @var Ship a ship object
+    /**
+     * A ship object
+     *
+     * It contains a Ship value when the global location is a ship
+     * ie if $this->data[0][0] == 'S'
+     *
+     * Otherwise, its value is null.
+     * 
+     * @var Ship
      */
     public $ship = null;
     
+    /**
+     * Initializes a new location instance
+     *
+     * @param string $global the global location
+     * @param string local the locallocation
+     *
+     * @todo improve local location handling
+     */
     function __construct ($global = null, $local = null) {
         if (!$global) {
             $this->data = array();
@@ -76,7 +135,7 @@ class GeoLocation {
         $this->load_classes();
     }
     
-    /*
+    /**
      * Gets $place, $body and $ship instances if they're needed
      */
     function load_classes () {
@@ -112,8 +171,9 @@ class GeoLocation {
         }
     }
     
-    /*
+    /**
      * Magic method called when a unknown property is get.
+     * 
      * Handles $global, $local, $type, $body_code, $ship_code, $place_code,
      *         $body_kind, $containsGlobalLocation, $containsLocalLocation.
      */
@@ -174,10 +234,11 @@ class GeoLocation {
         }
     }
     
-    /*
+    /**
      * Checks if the place exists
      *
-     * @return boolean true if the place exists ; false otherwise
+     * @return bool true if the place exists ; otherwise, false.
+     * 
      * @todo handles alias
      */
     function exists () {
@@ -229,15 +290,17 @@ class GeoLocation {
         return true;
     }
     
-    /*
+    /**
      * Checks if the place is equals at the specified expression or place
      *
-     * @return boolean true if the places are equals ; otherwise, false
+     * @return bool true if the places are equals ; otherwise, false.
+     *
+     * @todo Create a better set of rules to define when 2 locations are equall.
      */
     function equals ($expression) {
         //Are global location equals?
         
-        //TODO: creates a better set of rules to define when 2 locations are equa l.
+        //TODO: create a better set of rules to define when 2 locations are equa l.
         if (is_a($expression, 'GeoLocation')) {
             if (!$this->equals($expression->data[0])) {
                 return false;
@@ -259,7 +322,7 @@ class GeoLocation {
         return false;
     }
     
-    /*
+    /**
      * Represents the current location instance as a string
      *
      * @return string a string representing the current location
@@ -292,8 +355,9 @@ class GeoLocation {
     }
     
     
-    /*
+    /**
      * Magic method called when a unknown property is set.
+     * 
      * Handles $global, $local, $type, $body_code, $ship_code, $place_code
      */
     function __set ($variable, $value) {

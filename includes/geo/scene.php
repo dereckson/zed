@@ -1,39 +1,65 @@
 <?php
 
-/*
- * Geo scene class
+/**
+ * Geo scene class.
+ *
+ * Zed. The immensity of stars. The HyperShip. The people.
+ * 
+ * (c) 2010, Dereckson, some rights reserved.
+ * Released under BSD license.
  *
  * 0.1    2010-01-30 17:42    DcK
  *
- * @package Zed
- * @subpackage Geo
- * @copyright Copyright (c) 2010, Dereckson
- * @license Released under BSD license
- * @version 0.1
- *
+ * @package     Zed
+ * @subpackage  Geo
+ * @author      Sébastien Santoro aka Dereckson <dereckson@espace-win.org>
+ * @copyright   2010 Sébastien Santoro aka Dereckson
+ * @license     http://www.opensource.org/licenses/bsd-license.php BSD
+ * @version     0.1
+ * @link        http://scherzo.dereckson.be/doc/zed
+ * @link        http://zed.dereckson.be/
+ * @filesource
  */
 
 require_once('location.php');
-if (!defined('SCENE_DIR')) define('SCENE_DIR', 'content/scenes');
 
+if (!defined('SCENE_DIR')) {
+    /**
+     * The directory containing scenes files
+     */
+    define('SCENE_DIR', 'content/scenes');
+}
+
+/**
+ * Geo scene class
+ *
+ * This class provides methods to determine and renders the local scene. 
+ */
 class GeoScene {
-    /*
-     * @var string Last error warning
+    /**
+     * Last error or warning
+     * 
+     * @var string
      */
     public $lastError;
     
-    /*
-     * @var string File scene to serve
+    /**
+     * File scene to serve
+     * 
+     * @var string
      */
     public $sceneFile;
        
-    /*
-     * @var GeoLocation the location to print the scene
+    /**
+     * The location of the scene to print 
+     * 
+     * @var GeoLocation
      */
     public $location;
     
-    /*
+    /**
      * Initializes a new GeoScene instance
+     * 
      * @param GeoLocation $location location the scene is to print
      */
     function __construct ($location) {
@@ -53,16 +79,18 @@ class GeoScene {
         $this->lastError = "No scene found.";
     }
     
-    /*
+    /**
      * Gets local scene
+     * 
      * @return boolean true if a scene have been found ; otherwise, false.
      */
     private function get_local_scene () {
         return false;
     }
     
-    /*
+    /**
      * Gets global scene
+     * 
      * @return boolean true if a scene have been found ; otherwise, false.
      */
     private function get_global_scene () {
@@ -80,11 +108,22 @@ class GeoScene {
         return false;
     }
     
+    /**
+     * Gets file extension
+     *
+     * @param string $file the file path
+     * @return string the file extension
+     */
     public static function get_file_extension ($file) {
         $pathinfo = pathinfo($file);
         return $pathinfo['extension'];
     }
     
+    /**
+     * Renders the file
+     *
+     * @todo Add standard code to render .swf Flash/ShockWave files.
+     */
     public function render () {
         if ($file = $this->sceneFile) {
             switch ($ext = GeoScene::get_file_extension($file)) {
@@ -126,6 +165,15 @@ class GeoScene {
         }
     }
     
+    /**
+     * Tries to get the scene file.
+     *
+     * It will tries to find in the scene directory a file with $code as name,
+     * and .tpl .png .gif .bmp .swf .html or .php as extension.
+     *
+     * @param string the location code (and filename)
+     * @return bool true if a scene file have been found and set ; otherwise, false.
+     */
     private function try_get_scene ($code) {
         $file = SCENE_DIR . "/$code";
         $extensions = array('tpl', 'png', 'jpg', 'gif', 'bmp', 'swf', 'html', 'php');

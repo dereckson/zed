@@ -1,17 +1,44 @@
 <?php
 
-/*
- * Zed
- * (c) 2010, Dereckson, some rights reserved
- * Released under BSD license
+/**
+ * Persos requests
+
+ * Zed. The immensity of stars. The HyperShip. The people.
+ * 
+ * (c) 2010, Dereckson, some rights reserved.
+ * Released under BSD license.
  *
- * Perso requests
+ * This controller handle the /requests URL.
+ *
+ * It can also be called with the requests SmartLine command.
+ *
+ * It allows to prints a content page.
+ *
+ * This controllers uses the persorequests.tpl view.
+ *
+ * This controller offer AJAX capabilities but degrades gracefully in JS.
+ *
+ * @package     Zed
+ * @subpackage  Controllers
+ * @author      Sébastien Santoro aka Dereckson <dereckson@espace-win.org>
+ * @copyright   2010 Sébastien Santoro aka Dereckson
+ * @license     http://www.opensource.org/licenses/bsd-license.php BSD
+ * @version     0.1
+ * @link        http://scherzo.dereckson.be/doc/zed
+ * @link        http://zed.dereckson.be/
+ * @filesource
+ *
+ * @todo move the get_ship function to a Ship::from_code method
+ * @todo Document the request system in the API documentation
  */
 
 ///
 /// Helper class and method
 ///
 
+/**
+ * A perso request
+ */
 class PersoRequest {
     public $message;
     public $requestFlag;
@@ -20,6 +47,13 @@ class PersoRequest {
     public $value_allow = 1;
     public $value_deny  = 0;
     
+    /**
+     * Initialies a perso request
+     *
+     * @param string $requestFlag the request's flag
+     * @param string $message the message to print
+     * @param string $message the flag to set, according the request approve/denial
+     */
     function __construct ($requestFlag, $message, $flag) {
         $this->requestFlag = $requestFlag;
         $this->message = $message;
@@ -27,8 +61,9 @@ class PersoRequest {
     }
 }
 
-/*
+/**
  * Gets ship from specified S00001 code
+ * 
  * @param string $ship_code the ship code (e.g. S00001)
  * @return Ship the Ship class instance
  */
@@ -40,28 +75,33 @@ function get_ship ($ship_code) {
     return $ships[$ship_id];
 }
 
-/*
+/**
  * Gets request allow URL
+ * 
  * @param PersoRequest $request the perso request to confirm
+ * @return string the URL to allow the request
  */
 function get_request_allow_url ($request) {
     return get_request_url($request->requestFlag, $request->store, $request->flag, $request->value_allow);
 }
 
-/*
+/**
  * Gets request deny URL
+ * 
  * @param PersoRequest $request the perso request to confirm
+ * @return string the URL to deny the request
  */
-
 function get_request_deny_url ($request) {
     return get_request_url($request->requestFlag, $request->store, $request->flag, $request->value_deny);
 }
 
-/*
+/**
  * Gets request URL
+ * 
  * @param string $store 'perso' or 'registry'
  * @param string $key the perso flag or registry key
  * @param string $value the value to store
+ * @return the request URL
  */
 function get_request_url ($requestFlag, $store, $key, $value) {
     global $Config;

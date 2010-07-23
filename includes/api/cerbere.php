@@ -1,21 +1,70 @@
 <?php
 
-/*
- * Zed
- * (c) 2010, Dereckson, some rights reserved
- * Released under BSD license
- *
+/**
  * API security
+ *
+ * Zed. The immensity of stars. The HyperShip. The people.
  * 
+ * (c) 2010, Dereckson, some rights reserved.
+ * Released under BSD license.
+ *
+ * This file provides a cerbere function, to assert the user is correctly
+ * authenticated in the API call.
+ * 
+ * @package     Zed
+ * @subpackage  API
+ * @author      Sébastien Santoro aka Dereckson <dereckson@espace-win.org>
+ * @copyright   2010 Sébastien Santoro aka Dereckson
+ * @license     http://www.opensource.org/licenses/bsd-license.php BSD
+ * @version     0.1
+ * @link        http://scherzo.dereckson.be/doc/zed
+ * @link        http://zed.dereckson.be/
+ * @filesource
  */
 
+/**
+ * Determines if localhost calls could be passed.
+ *
+ * If true, any call from localhost is valid. Otherwise, normal security rules are applied.
+ */
 define('ALLOW_LOCALHOST', false);
-define('OUTPUT_ERROR', true);
-define('FORMAT_ERROR', false);
-if (!defined('TABLE_API_KEYS')) define('TABLE_API_KEYS', 'api_keys');
 
-/*
- * Checks if creditentials are okay and exits after a message error if not
+/**
+ * Determines if error should be printed.
+ *
+ * If true, the error will be printed according the FORMAT_ERROR setting. Otherwise, a blank page will be served.
+ */
+define('OUTPUT_ERROR', true);
+
+/**
+ * Determines if the error must be formatted.
+ *
+ * If true, any error will be sent to api_output ; otherwise, it will be printed as is.
+ */
+define('FORMAT_ERROR', false);
+
+
+if (!defined('TABLE_API_KEYS')) {
+    /**
+     * The table where are located the API keys
+     */
+    define('TABLE_API_KEYS', 'api_keys');
+}
+
+/**
+ * Checks if creditentials are okay and exits if not
+ *
+ * If the creditentials aren't valid, it will prints an error message if
+ * OUTPUT_ERROR is defined and true.
+ *
+ * This error message will be formatted through the api_output function if
+ * FORMAT_ERROR is defined and true ; otherwise, it will be print as is.
+ *
+ * To help debug, you can also define ALLOW_LOCALHOST. If this constant is
+ * defined and true, any call from localhost will be accepted, without checking
+ * the key.
+ *
+ * @see cerbere_die
  */
 function cerbere () {
     //If ALLOW_LOCALHOST is true, we allow 127.0.0.1 queries
@@ -53,8 +102,13 @@ function cerbere () {
     }
 }
 
-/*
+/**
  * Prints a message in raw or API format, then exits.
+ *
+ * The error message will be formatted through api_output if the constant
+ * FORMAT_ERROR is defined and true. Otherwise, it will be printed as is.
+ *
+ * @param string $message The error message to print
  */
 function cerbere_die ($message) {
     if (OUTPUT_ERROR) {

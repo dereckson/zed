@@ -1,11 +1,34 @@
 <?php
 
-/*
- * Zed
- * (c) 2010, Dereckson, some rights reserved
- * Released under BSD license
- *
+/**
  * Homepage
+
+ * Zed. The immensity of stars. The HyperShip. The people.
+ * 
+ * (c) 2010, Dereckson, some rights reserved.
+ * Released under BSD license.
+ *
+ * This controller handle the / URL.
+ *
+ * It prints:
+ *      a scene rendering from where the perso is ;
+ *      the home.tpl view ;
+ *      the messages, using the messages.tpl view.
+ *
+ * The controller also handle messages, marking them red and allowing their
+ * suppression: /?action=msg_delete&id=8 to delete the message #8.
+ *
+ * @package     Zed
+ * @subpackage  Controllers
+ * @author      Sébastien Santoro aka Dereckson <dereckson@espace-win.org>
+ * @copyright   2010 Sébastien Santoro aka Dereckson
+ * @license     http://www.opensource.org/licenses/bsd-license.php BSD
+ * @version     0.1
+ * @link        http://scherzo.dereckson.be/doc/zed
+ * @link        http://zed.dereckson.be/
+ * @filesource
+ *
+ * @todo The homepage requires Dojo but Dojo loading here is currently a kludge, as dojo is required by hypership .tpl scene. We should create an optionnal .meta xml file format to set this kind of options.
  */
 
 //
@@ -52,7 +75,12 @@ $smarty->assign('SCENE', $scene);
 //TODO: Dojo loading here is currently a kludge, as dojo is required by
 //hypership .tpl scene. We should create an optionnal .meta xml file format
 //to set this kind of options
-if (!defined('DIJIT')) define('DIJIT', true);
+if (!defined('DIJIT')) {
+    /**
+     * This constant indicates we need to load the Dijit (and so Dojo) library.
+     */
+    define('DIJIT', true);
+}
 
 $smarty->assign('PAGE_TITLE', lang_get('Welcome'));
 include('header.php'); 

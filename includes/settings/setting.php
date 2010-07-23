@@ -1,16 +1,28 @@
 <?php
 
-/*
- * Zed
- * (c) 2010, Dereckson, some rights reserved
- * Released under BSD license
+/**
+ * Settings: an individual setting class
  *
- * Setting
+ * Zed. The immensity of stars. The HyperShip. The people.
+ * 
+ * (c) 2010, Dereckson, some rights reserved.
+ * Released under BSD license.
+ *
+ * @package     Zed
+ * @subpackage  Settings
+ * @author      Sébastien Santoro aka Dereckson <dereckson@espace-win.org>
+ * @copyright   2010 Sébastien Santoro aka Dereckson
+ * @license     http://www.opensource.org/licenses/bsd-license.php BSD
+ * @version     0.1
+ * @link        http://scherzo.dereckson.be/doc/zed
+ * @link        http://zed.dereckson.be/
+ * @filesource
  */
 
-/*
- * @package Zed
- * @subpackage settings
+/**
+ * Setting class
+ *
+ * This class map the <setting> XML block, from our settings XML format
  */
 class Setting {
     
@@ -30,8 +42,9 @@ class Setting {
     //error variable
     public $lastError;
     
-    /*
+    /**
      * Gets the current setting value
+     * 
      * @return string the setting value
      */
     function get () {
@@ -53,9 +66,9 @@ class Setting {
         message_die(GENERAL_ERROR, "Setting $this->key haven't any get indication. Please set <object> and <property> / or a custom <handler><get></get></handler> block.", "Settings error");
     }
     
-    
-    /*
+    /**
      * Sets a new value
+     * 
      * @param $value the setting new value
      * @return boolean true if the setting have been successfully set ; otherwise, false.
      */
@@ -90,8 +103,9 @@ class Setting {
         message_die(GENERAL_ERROR, "Setting $this->key haven't any set indication. Please set <object> (and wheter <method>, whether <property>) or a custom <handler><set></set></handler> block.", "Settings error");
     }
     
-    /*
+    /**
      * Saves setting
+     * 
      * @return mixed the SETTINGS_SAVE_METHOD method value, or false if there's no method call;
      */
     function save () {
@@ -105,8 +119,9 @@ class Setting {
         return false;
     }
 
-    /*
+    /**
      * Initializes a new instance of Setting class from a XML element
+     * 
      * @param SimpleXMLElement the xml element to parse
      * @return Setting the setting class
      */

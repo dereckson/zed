@@ -1,44 +1,79 @@
 <?php
 
-/*
- * Zed
- * (c) 2010, Dereckson, some rights reserved
- * Released under BSD license
+/**
+ * Settings: a settings page class
  *
- * Settings page
+ * Zed. The immensity of stars. The HyperShip. The people.
+ * 
+ * (c) 2010, Dereckson, some rights reserved.
+ * Released under BSD license.
+ *
+ * @package     Zed
+ * @subpackage  Settings
+ * @author      Sébastien Santoro aka Dereckson <dereckson@espace-win.org>
+ * @copyright   2010 Sébastien Santoro aka Dereckson
+ * @license     http://www.opensource.org/licenses/bsd-license.php BSD
+ * @version     0.1
+ * @link        http://scherzo.dereckson.be/doc/zed
+ * @link        http://zed.dereckson.be/
+ * @filesource
  */
 
 require_once("setting.php");
 
-/*
- * @package Zed
- * @subpackage settings
+/**
+ * This class maps the page XML element, from our Settings XML schema
+ *
+ * <page id="account" title="Account">
+ *     <setting ...>
+ *          ...
+ *     </setting>
+ *     <setting ...>
+ *          ...
+ *     </setting>
+ * <page>
+ *
+ * It provides method to print a form built from this page and to handle form.
  */
 class SettingsPage {
-    /*
+    /**
+     * The page ID
+     *
+     * This property maps the id attribute from the page XML tag
+     *
      * @var string the page ID
      */
     public $id;
 
-    /*
+    /**
+     * The page's title
+     *
+     * This property maps the title attribute from the page XML tag
+     * 
      * @var string the page title
      */
     public $title;
     
-    /*
-     * @var Array the settings (array of Setting items)
+    /**
+     * The settings
+     *
+     * This property is an array of Setting items and maps the <setting> tags
+     * @var Array 
      */
     public $settings = array();
     
-    /*
+    /**
      * Initializes a new instance of SettingsPage class
+     *
+     * @param string $id the page ID
      */
     function __construct ($id) {
         $this->id = $id;
     }
        
-    /*
-     * Intializes a settings page from an SimpleXMLElement XML fragment
+    /**
+     * Initializes a settings page from an SimpleXMLElement XML fragment
+     * 
      * @param SimpleXMLElement $xml the XML fragment
      * @return SettingsPage the section instance
      */
@@ -77,8 +112,9 @@ class SettingsPage {
         return $page;
     }
     
-    /*
+    /**
      * Handles form reading $_POST array, set new settings values and saves.
+     * 
      * @param Array $errors an array where the errors will be filled
      * @return boolean true if there isn't error ; otherwise, false.
      */

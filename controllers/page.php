@@ -1,11 +1,38 @@
 <?php
 
-/*
- * Zed
- * (c) 2010, Dereckson, some rights reserved
- * Released under BSD license
+/**
+ * Page
+
+ * Zed. The immensity of stars. The HyperShip. The people.
+ * 
+ * (c) 2010, Dereckson, some rights reserved.
+ * Released under BSD license.
  *
- * HTML content
+ * This controller handle the /page URL.
+ *
+ * It allows to prints a content page.
+ *
+ * The code of the content page to print must be included in the URL:
+ * /page/quux will print the quux page.
+ *
+ * To edit a page, append ?mode=edit to the URL.
+ *
+ * It usees the page_edit.tpl view to edit and the raw.tpl view to print pages.
+ *
+ * Versions of the edited pages are saved in a separate table
+ * but it's not a wiki, it's for backup purposes.
+ *
+ * @package     Zed
+ * @subpackage  Controllers
+ * @author      Sébastien Santoro aka Dereckson <dereckson@espace-win.org>
+ * @copyright   2010 Sébastien Santoro aka Dereckson
+ * @license     http://www.opensource.org/licenses/bsd-license.php BSD
+ * @version     0.1
+ * @link        http://scherzo.dereckson.be/doc/zed
+ * @link        http://zed.dereckson.be/
+ * @filesource
+ *
+ * @todo move "handle editor form" and some of the "gets page" code to a includes/objets/page.php file (rationale: cleaner model/controller separation)
  */
 
 if (!$code = $db->sql_escape($url[1])) {
@@ -91,7 +118,6 @@ switch ($_GET['mode']) {
         $smarty->assign('CONTENT', $content);
         break;
 }
-    
 
 //
 // HTML output
