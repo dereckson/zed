@@ -11,15 +11,15 @@
  * This controller handles the pages for not logged in users.
  *
  * It recognizes the following URLs:
- *      /tour       a redirect to tour.html file, a visite guidée drom Zed ;
+ *      /tour       a redirect to tour.html file, a visite guidÃ©e drom Zed ;
  *      /invite     the page to claim the invites.
  *
  * In all other cases, it prints the login form.
  *
  * @package     Zed
  * @subpackage  Controllers
- * @author      Sébastien Santoro aka Dereckson <dereckson@espace-win.org>
- * @copyright   2010 Sébastien Santoro aka Dereckson
+ * @author      SÃ©bastien Santoro aka Dereckson <dereckson@espace-win.org>
+ * @copyright   2010 SÃ©bastien Santoro aka Dereckson
  * @license     http://www.opensource.org/licenses/bsd-license.php BSD
  * @version     0.1
  * @link        http://scherzo.dereckson.be/doc/zed

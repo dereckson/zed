@@ -43,7 +43,7 @@ class CacheVoid {
     /**
      * Gets the cache instance, initializing it if needed
      * 
-     * @eturn Cache the cache instance, or null if nothing is cached
+     * @return Cache the cache instance, or null if nothing is cached
      */
     static function load () {       
         if (self::$instance === null) {

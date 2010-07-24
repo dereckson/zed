@@ -7,10 +7,6 @@
  * 
  * (c) 2010, Dereckson, some rights reserved.
  * Released under BSD license.
- *
- * This class is a PHP mapping from the Story XML format.
- *
- * This class also provides a collection of helper methods to explore the story.
  * 
  * @package     Zed
  * @subpackage  Story
@@ -25,6 +21,10 @@
 
 /**
  * Story class
+ *
+ * This class is a PHP mapping from the Story XML format.
+ *
+ * This class also provides a collection of helper methods to explore the story.
  */
 class Story {
     /**

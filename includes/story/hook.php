@@ -7,12 +7,6 @@
  * (c) 2010, Dereckson, some rights reserved.
  * Released under BSD license.
  *
- * This class allows to hook PHP code to a textual story.
- *
- * It allows the story to be completed by site elements.
- *
- * @example hook_demo.php for a class implementation example
- * 
  * @package     Zed
  * @subpackage  Story
  * @author      Sébastien Santoro aka Dereckson <dereckson@espace-win.org>
@@ -26,6 +20,13 @@
 
 /**
  * Story hook class
+ *
+ * This class allows to hook PHP code to a textual story.
+ *
+ * It allows the story to be completed by site elements.
+ *
+ * For a class implementation example:
+ * @see DemoStoryHook
  */
 abstract class StoryHook {
     /**

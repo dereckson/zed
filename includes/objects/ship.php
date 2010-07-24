@@ -13,8 +13,8 @@
  * 
  * @package     Zed
  * @subpackage  Model
- * @author      Sébastien Santoro aka Dereckson <dereckson@espace-win.org>
- * @copyright   2010 Sébastien Santoro aka Dereckson
+ * @author      SÃ©bastien Santoro aka Dereckson <dereckson@espace-win.org>
+ * @copyright   2010 SÃ©bastien Santoro aka Dereckson
  * @license     http://www.opensource.org/licenses/bsd-license.php BSD
  * @version     0.1
  * @link        http://scherzo.dereckson.be/doc/zed
@@ -72,7 +72,7 @@ class Ship {
      * Initializes a new Ship instance if needed or gets already available one.
      * 
      * @param mixed $data ship ID
-     * @eturn Ship the ship instance
+     * @return Ship the ship instance
      */
     static function get ($data = null) {
         if ($data !== null) {

@@ -57,7 +57,7 @@ class Cache {
      * $cache = Cache::load(); //Cache:load() will call CacheQuux:load();
      * </code>
      * 
-     * @eturn Cache the cache instance, or null if nothing is cached
+     * @return Cache the cache instance, or null if nothing is cached
      */
     static function load () {
         global $Config;

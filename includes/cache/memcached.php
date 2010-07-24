@@ -29,8 +29,8 @@
  * !!! This class uses the Memcached extension AND NOT the Memcache ext !!!!
  *
  * References:
- * @linkhttp://www.php.net/manual/en/book/memcached.php
- * @lnk http://memcached.org
+ * @link http://www.php.net/manual/en/book/memcached.php
+ * @link http://memcached.org
  *
  * This class implements a singleton pattern.
  */
@@ -53,7 +53,7 @@ class CacheMemcached {
     /**
      * Gets the cache instance, initializing it if needed
      * 
-     * @eturn Cache the cache instance, or null if nothing is cached
+     * @return Cache the cache instance, or null if nothing is cached
      */
     static function load () {       
         //Checks extension is okay

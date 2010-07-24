@@ -8,10 +8,6 @@
  * (c) 2010, Dereckson, some rights reserved.
  * Released under BSD license.
  *
- * This class is a PHP mapping from the Story XML format's <section> tag.
- *
- * This class also a method to get the section where a specific choice links to.
- *
  * @package     Zed
  * @subpackage  Story
  * @author      Sébastien Santoro aka Dereckson <dereckson@espace-win.org>
@@ -28,6 +24,10 @@ require_once('hook.php');
 
 /**
  * Story section class
+ *
+ * This class is a PHP mapping from the Story XML format's <section> tag.
+ *
+ * This class also a method to get the section where a specific choice links to.
  */
 class StorySection {
     /**

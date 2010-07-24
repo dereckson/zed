@@ -7,6 +7,20 @@
  * 
  * (c) 2010, Dereckson, some rights reserved.
  * Released under BSD license.
+ * 
+ * @package     Zed
+ * @subpackage  Story
+ * @author      Sébastien Santoro aka Dereckson <dereckson@espace-win.org>
+ * @copyright   2010 Sébastien Santoro aka Dereckson
+ * @license     http://www.opensource.org/licenses/bsd-license.php BSD
+ * @version     0.1
+ * @link        http://scherzo.dereckson.be/doc/zed
+ * @link        http://zed.dereckson.be/
+ * @filesource
+ */
+
+/**
+ * Story choice class
  *
  * This class is a PHP mapping from the Story XML format's <choice> tag.
  *
@@ -22,18 +36,7 @@
  * $thesamechoice = StoryChoice::from_xml($parser);
  * echo $thesamechoice->guid; //That will ouput another guid
  * </code>
- * 
- * @package     Zed
- * @subpackage  Story
- * @author      Sébastien Santoro aka Dereckson <dereckson@espace-win.org>
- * @copyright   2010 Sébastien Santoro aka Dereckson
- * @license     http://www.opensource.org/licenses/bsd-license.php BSD
- * @version     0.1
- * @link        http://scherzo.dereckson.be/doc/zed
- * @link        http://zed.dereckson.be/
- * @filesource
  */
-
 class StoryChoice {
     /**
      * The section key this choices links to

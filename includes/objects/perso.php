@@ -77,7 +77,7 @@ class Perso {
      * Initializes a new Perso instance if needed or get already available one.
      * 
      * @param mixed $data perso ID or nickname
-     * @eturn Perso the perso instance
+     * @return Perso the perso instance
      */
     static function get ($data = null) {        
         if ($data) {

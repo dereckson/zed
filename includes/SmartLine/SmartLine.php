@@ -3,25 +3,24 @@
 /**
  * SmartLine 0.1
  *
- * http://www.espace-win.org/EWOSP/SmartLine
- * (c) 2007 Espace Win Open Source Project, some rights reserved.
- * Released under BSD License
+ * Zed. The immensity of stars. The HyperShip. The people.
  * 
- * Developer leader: Sébastien Santoro aka Dereckson
- * http://purl.espace-win.org/Who/Dereckson
- * 
- * Support: http://purl.espace-win.org/EWOSP/Support
- * 
+ * (c) 2010, Dereckson, some rights reserved.
+ * Released under BSD license.
+ *
  * 0.1    2007-07-28 01:36 [DcK]    Initial release
  *        2010-07-02 00:39 [Dck]    Documentation
  * 
- * @package     SmartLine
+ * @package     Zed
+ * @subpackage  SmartLine
  * @author      Sébastien Santoro aka Dereckson <dereckson@espace-win.org>
- * @copyright   2007 Espace Win Open Source Project
+ * @copyright   2007 Sébastien Santoro aka Dereckson
  * @license     http://www.opensource.org/licenses/bsd-license.php BSD
  * @version     0.1
+ * @link        http://scherzo.dereckson.be/doc/zed
+ * @link        http://zed.dereckson.be/
+ * @link        http://bitbucket.org/dereckson/smartline
  * @filesource
- */
 
 ///////////////////////////////////////////////////////////////////////////////
 // SECTION I - INITIALIZATION
