@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Persos requests
+ * Persos' requests
 
  * Zed. The immensity of stars. The HyperShip. The people.
  * 

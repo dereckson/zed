@@ -1,16 +1,30 @@
 <?php
 
-/*
- * Zed
- * (c) 2010, Dereckson, some rights reserved
- * Released under BSD license
- *
+/**
  * Settings
  *
- * TODO: replace the on the fly preferences.xml code generation by a
- *       cached code generation
+ * Zed. The immensity of stars. The HyperShip. The people.
  * 
- * TODO: reduce the number of for loops in this controller
+ * (c) 2010, Dereckson, some rights reserved.
+ * Released under BSD license.
+ *
+ * This controller allows user to set its preferences, according the Settings
+ * classes and the preferences.xml document.
+ *
+ * It handles the /settings URL.
+ *
+ * @package     Zed
+ * @subpackage  Controllers
+ * @author      Sébastien Santoro aka Dereckson <dereckson@espace-win.org>
+ * @copyright   2010 Sébastien Santoro aka Dereckson
+ * @license     http://www.opensource.org/licenses/bsd-license.php BSD
+ * @version     0.1
+ * @link        http://scherzo.dereckson.be/doc/zed
+ * @link        http://zed.dereckson.be/
+ * @filesource
+ *
+ * @todo replace the on the fly preferences.xml code generation by a cached code generation
+ * @todo reduce the number of for loops in this controller
  */
 
 //

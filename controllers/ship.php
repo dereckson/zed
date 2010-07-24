@@ -1,11 +1,31 @@
 <?php
 
-/*
- * Zed
- * (c) 2010, Dereckson, some rights reserved
- * Released under BSD license
+/**
+ * Ship
  *
- * Raw text or HTML content
+ * Zed. The immensity of stars. The HyperShip. The people.
+ * 
+ * (c) 2010, Dereckson, some rights reserved.
+ * Released under BSD license.
+ *
+ * This controller handle the /ship URL
+ *
+ * It allows the user to let personal notes about the ship.
+ *
+ * It uses the Ship model and the ship.tpl view
+ *
+ * @package     Zed
+ * @subpackage  Controllers
+ * @author      Sébastien Santoro aka Dereckson <dereckson@espace-win.org>
+ * @copyright   2010 Sébastien Santoro aka Dereckson
+ * @license     http://www.opensource.org/licenses/bsd-license.php BSD
+ * @version     0.1
+ * @link        http://scherzo.dereckson.be/doc/zed
+ * @link        http://zed.dereckson.be/
+ * @filesource
+ *
+ * @todo prints information indicating if we're or not in the ship
+ * @todo implement a console to control the ship
  */
 
 //

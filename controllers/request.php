@@ -1,14 +1,33 @@
 <?php
 
-/*
- * Zed
- * (c) 2010, Dereckson, some rights reserved
- * Released under BSD license
+/**
+ * Requests controller
  *
- * Request
+ * Zed. The immensity of stars. The HyperShip. The people.
+ * 
+ * (c) 2010, Dereckson, some rights reserved.
+ * Released under BSD license.
  *
- * This controllers handle all the forms output, handling and notifications
+ * This controller allows the perso to send requests to the HyperShip, to a 
+ * specified ship, or to a specify port requiring PTA.
+ * It handle all the forms output, handling and notifications
  * for queries from users to users.
+ *
+ * It handles /request URL, is called from tutoriald.
+ *
+ * @package     Zed
+ * @subpackage  Controllers
+ * @author      Sébastien Santoro aka Dereckson <dereckson@espace-win.org>
+ * @copyright   2010 Sébastien Santoro aka Dereckson
+ * @license     http://www.opensource.org/licenses/bsd-license.php BSD
+ * @version     0.1
+ * @link        http://scherzo.dereckson.be/doc/zed
+ * @link        http://zed.dereckson.be/
+ * @filesource
+ *
+ * @todo complete requests implementation
+ * @todo call this controller from Ship fly out if port is a PTA
+ * @todo call this controller from HyperShip entrance pero request
  */
 
 //

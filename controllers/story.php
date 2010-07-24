@@ -1,19 +1,40 @@
 <?php
 
-/*
- * Zed
- * (c) 2010, Dereckson, some rights reserved
- * Released under BSD license
+/**
+ * Story
  *
- * Explore current location
- * For now, it's a storytelling engine like in livres dont vous êtes le héro
+ * Zed. The immensity of stars. The HyperShip. The people.
+ * 
+ * (c) 2010, Dereckson, some rights reserved.
+ * Released under BSD license.
+ *
+ * This controller is a storytelling engine allowing to explore a place like
+ * in fighting fantasy gamebooks / livres dont vous êtes le héros.
+ *
+ * This controller is called by the explore controller and handles /explore URL.
+ *
+ * It uses the Story classes, the story.tpl view and content/stories/*.xml as
+ * stories content datasource.
+ *
+ * @package     Zed
+ * @subpackage  Controllers
+ * @author      Sébastien Santoro aka Dereckson <dereckson@espace-win.org>
+ * @copyright   2010 Sébastien Santoro aka Dereckson
+ * @license     http://www.opensource.org/licenses/bsd-license.php BSD
+ * @version     0.1
+ * @link        http://scherzo.dereckson.be/doc/zed
+ * @link        http://zed.dereckson.be/
+ * @filesource
+ *
+ * @todo Create a separate release from Zed based on this controller and the Story library.
+ * @todo Add code to handle actions defined in choices like inventory management
  */
 
 //
 // Helper method
 //
 
-/*
+/**
  * Gets section to print to the user
  * @param Story the story the section to get (yep, we could've global $story)
  * @return StorySection the section, or null if not found
@@ -46,7 +67,6 @@ function get_section ($story) {
                     message_die(GENERAL_ERROR, "Choice <em>$choice->text</em> redirects to <em>$section_id</em> but this section doesn't exist.", "Story error");
                 }
                 return $story->sections[$section_id];
-                
             }
         }
     }

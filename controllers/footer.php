@@ -2,7 +2,7 @@
 
 /**
  * Footer
-
+ *
  * Zed. The immensity of stars. The HyperShip. The people.
  * 
  * (c) 2010, Dereckson, some rights reserved.

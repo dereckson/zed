@@ -1,8 +1,34 @@
 <?php
+
+/**
+ * Unit testing : class GeoPlace
+ *
+ * Zed. The immensity of stars. The HyperShip. The people.
+ * 
+ * (c) 2010, Dereckson, some rights reserved.
+ * Released under BSD license.
+ *
+ * @package     Zed
+ * @subpackage  Tests
+ * @author      Sébastien Santoro aka Dereckson <dereckson@espace-win.org>
+ * @copyright   2010 Sébastien Santoro aka Dereckson
+ * @license     http://www.opensource.org/licenses/bsd-license.php BSD
+ * @version     0.1
+ * @link        http://scherzo.dereckson.be/doc/zed
+ * @link        http://zed.dereckson.be/
+ * @filesource
+ */
+
 require_once('PHPUnit/Framework.php');
 require_once('../../includes/geo/place.php');
 
+/**
+ * Test cases for the class GeoPlace
+ */
 class GeoPlaceTest extends PHPUnit_Framework_TestCase {
+    /**
+     * Tests the GeoPlace::is_valid_local_location($local_location) method.
+     */
     public function testIsValidLocation () {
         //Testing HyperShip Tower T2C3 format
         $p0 = new GeoPlace();
@@ -33,7 +59,6 @@ class GeoPlaceTest extends PHPUnit_Framework_TestCase {
         $this->assertFalse($p1->is_valid_local_location("(4,62,-35)"));  //15
         $this->assertFalse($p1->is_valid_local_location("(4, 62)"));     //16
 
-        
         //Testing (x, y, -z) format
         $p2 = new GeoPlace();
         $p2->location_local_format = '/^\(\-?[0-9]+( )*,( )*\-?[0-9]+( )*,( )*\-?[0-9]+\)$/';

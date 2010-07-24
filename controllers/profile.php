@@ -1,12 +1,50 @@
 <?php
-/*
- * Zed
- * (c) 2010, Dereckson, some rights reserved
- * Released under BSD license
- *
- * This code is maintained in // with Azhàr
- *
+
+/**
  * User profile
+ *
+ * Zed. The immensity of stars. The HyperShip. The people.
+ * 
+ * (c) 2010, Dereckson, some rights reserved.
+ * Released under BSD license.
+ *
+ * This is a controller allowing user profile view and edit.
+ *
+ * It handles the following URLs:
+ *     /who/<perso nickname>  views the nickname's profile,
+ *     /who/random            views a random profile,
+ *     /who/edit/profile      edits its profileq
+ *     /who/edit/account      edits its account (disabled on Zed, cf. settings),
+ *     /who/edit/photo(s)     manages its profile's photos,
+ *          /who/edit/photo/edit/<photo id>      edits a photo properties,
+ *          /who/edit/photo/delete/<photo id>    deletes a photo,
+ *          /who/edit/photo/avatar/<photo id>    promotes a photo to avatar.
+ *
+ * The following views are used:
+ *     profile.tpl,
+ *     profile_edit.tpl,
+ *     user_account.tpl,
+ *     profile_photo.tpl,
+ *     profile_photo_edit.tpl.
+ *
+ * The following models are used:
+ *     Profile,
+ *     ProfilePhoto,
+ *     ProfileComment.
+ *
+ * The view profile_tags.tpl is indirectly used by the Profile model.
+ *   
+ * This code is maintained in // with Azhàr.
+ *
+ * @package     Zed
+ * @subpackage  Controllers
+ * @author      Sébastien Santoro aka Dereckson <dereckson@espace-win.org>
+ * @copyright   2010 Sébastien Santoro aka Dereckson
+ * @license     http://www.opensource.org/licenses/bsd-license.php BSD
+ * @version     0.1
+ * @link        http://scherzo.dereckson.be/doc/zed
+ * @link        http://zed.dereckson.be/
+ * @filesource
  */
 
 //Loads language file
