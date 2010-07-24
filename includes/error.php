@@ -1,20 +1,100 @@
 <?php
-// Gestionnaire d'erreur
-//
-// SQL_ERROR  : Erreur de requêtes SQL
-// HACK_ERROR : Appel d'une page où l'utilisateur n'a pas accès
 
-//Constantes
+/**
+ * Error handler
+ *
+ * Zed. The immensity of stars. The HyperShip. The people.
+ * 
+ * (c) 2010, Dereckson, some rights reserved.
+ * Released under BSD license.
+ *
+ * This error handler uses the same idea and message_die methode signature
+ * of the phpBB 2 one.
+ * 
+ * @package     Zed
+ * @subpackage  Keruald
+ * @author      Sébastien Santoro aka Dereckson <dereckson@espace-win.org>
+ * @copyright   2010 Sébastien Santoro aka Dereckson
+ * @license     http://www.opensource.org/licenses/bsd-license.php BSD
+ * @version     0.1
+ * @link        http://scherzo.dereckson.be/doc/zed
+ * @link        http://zed.dereckson.be/
+ * @filesource
+ *
+ * @todo delete old_message_die method and write alternative HTML textual output
+ *       in the message_die method
+ */
+
+///
+/// Error constants
+///
+
+/**
+ * SQL_ERROR is the constant meaning the error is a SQL error.
+ *
+ * As a message_die function parameter, it allows to add SQL specific debug information.
+ */
 define ("SQL_ERROR",  65);
+
+/**
+ * HACK_ERROR is the constant meaning access is non authorized to the resource.
+ *
+ * It encompasses two problematics:
+ *     the URL points to a resource belonging to another user or for the current user have no access right (for malformed URL, pick instead GENERAL_ERROR) ;
+ *     the user is anonymous, instead to be logged in.
+ *
+ * A suggested way to handle the second problematic is to store in hidden input
+ * fields or better in the session the previous form data, and to print a login
+ * form.
+ *
+ * If you implement this, you don't even need to distinguishes between the two
+ * cases, as once logged in, the regular HACK_ERROR could also be printed.
+ */
 define ("HACK_ERROR", 99);
+
+/**
+ * GENERAL_ERROR is the constant meaning the error is general, ie not covered by
+ * another more specific error constant.
+ */
 define ("GENERAL_ERROR", 117);
 
-function dieprint_r ($var, $title = '') {
-    if (!$title) $title = 'Debug';
-    
-    message_die(GENERAL_ERROR, '<pre>' . print_r($var, true) .'</pre>', $title);
+///
+/// Error helper functions
+///
+
+/**
+ * Output a general error, with human-readable information about the specified
+ * expression as error message ; terminates the current script.
+ *
+ * @see message_die
+ *
+ * @param mixed $expression the expression to be printed
+ * @param string $title the message title (optionnal, default will be 'Debug')
+ */
+function dieprint_r ($expression, $title = '') {
+    if (!$title) {
+	$title = 'Debug'; //if title is omitted or false/null, default title
+    }
+    message_die(GENERAL_ERROR, '<pre>' . print_r($expression, true) .'</pre>', $title);
 }
 
+/**
+ * Outputs an error message and terminates the current script.
+ *
+ * Error will be output through Smarty one of the following templates :
+ *     error_block.tpl if the header have already been printed ;
+ *     error.tpl if the error ocurred before the header were called and printed.
+ *
+ * If smarty couldn't be loaded, old_message_die method will be called, which
+ * produces a table output.
+ *
+ * @param int $msg_code an integer constant identifying the error (HACK_ERROR, SQL_ERROR, GENERAL_ERROR)
+ * @param string $msg_text the error message text (optionnal, but recommanded)
+ * @param string $msg_title the error message title (optionnal)
+ * @param int $err_line the line number of the file where the error occured (optionnal, suggested value is __LINE__)
+ * @param string $err_line the path of file where the error occured (optionnal, suggested value is __FILE__)
+ * @param string $sql the SQL query (optionnal, used only if msg_code is SQL_ERROR)
+ */
 function message_die ($msg_code, $msg_text = '', $msg_title = '', $err_line = '', $err_file = '', $sql = '') {
     global $smarty, $db;
 
@@ -61,6 +141,20 @@ function message_die ($msg_code, $msg_text = '', $msg_title = '', $err_line = ''
     }
 }
 
+/**
+ * Outputs an error message and terminates the current script.
+ *
+ * This is the message_die method from Espace Win, used on Zed as fallback if Smarty isn't initialized yet.
+ *
+ * @param int $msg_code an integer constant identifying the error (HACK_ERROR, SQL_ERROR, GENERAL_ERROR)
+ * @param string $msg_text the error message text (optionnal, but recommanded)
+ * @param string $msg_title the error message title (optionnal)
+ * @param int $err_line the line number of the file where the error occured (optionnal, suggested value is __LINE__)
+ * @param string $err_line the path of file where the error occured (optionnal, suggested value is __FILE__)
+ * @param string $sql the SQL query (optionnal, used only if msg_code is SQL_ERROR)
+ *
+ * @deprecated since 0.1
+ */
 function old_message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '', $err_file = '', $sql = '')
 {
 	global $db, $Utilisateur;

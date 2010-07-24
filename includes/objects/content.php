@@ -31,10 +31,6 @@
  * This class also provides helper methods, to handle files, generate thumbnails
  * or get local content from a specific location.
  *
- * @todo remove dbc temporary limitations (cf. /do.php upload_content and infra)
- * @todo create a class ContentLocation and move location fields there
- * @todo validate SQL schema and add in config.php TABLE_CONTENT tables
- *
  * [DESIGN BY CONTRACT] This class works only with the following assertions:
  *   i.  Each content have EXACTLY ONE location
  *   ii. Location fields will not be modified
@@ -47,6 +43,9 @@
  * If you edit content location, then call saveToDatabase, you will create
  * a new location but future instances will contain first not deleted location.
  *
+ * @todo remove dbc temporary limitations (cf. /do.php upload_content and infra)
+ * @todo create a class ContentLocation and move location fields there
+ * @todo validate SQL schema and add in config.php TABLE_CONTENT tables
  */
 class Content {
     
