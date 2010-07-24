@@ -10,8 +10,8 @@
  * 
  * @package     Zed
  * @subpackage  Keruald
- * @author      Sébastien Santoro aka Dereckson <dereckson@espace-win.org>
- * @copyright   2010 Sébastien Santoro aka Dereckson
+ * @author      SÃ©bastien Santoro aka Dereckson <dereckson@espace-win.org>
+ * @copyright   2010 SÃ©bastien Santoro aka Dereckson
  * @license     http://www.opensource.org/licenses/bsd-license.php BSD
  * @version     0.1
  * @link        http://scherzo.dereckson.be/doc/zed
@@ -20,20 +20,24 @@
  */
 
 if (!defined('SQL_LAYER')) {
+    /**
+	 * Defines the SQL engine layer implented for our SQL abstraction class:
+	 * MySQL
+	 */
 	define('SQL_LAYER', 'mysql');
     
-	/**
-	 * SQL database class
-	 *
-	 * This is the MySQL implementation of our SQL abstraction layer
-	 */
+    /**
+     * SQL database class
+     *
+     * This is the MySQL implementation of our SQL abstraction layer
+     */
     class sql_db {
         /*
          * @var int the connection identifier
          */
         private $id;
-        		
-		/**
+                
+        /**
          * Initializes a new instance of the database abstraction class, for MySQL engine
          *
          * @param string $host the SQL server to connect [optionnal, by default localhost]
@@ -43,15 +47,15 @@ if (!defined('SQL_LAYER')) {
          */
         function __construct($host = 'localhost', $username = 'root', $password = '' , $database = '') {
             //Connects to the MySQL server
-			$this->id = @mysql_connect($host, $username, $password) or $this->sql_die(); //or die ("Can't connect to SQL server.");
+            $this->id = @mysql_connect($host, $username, $password) or $this->sql_die(); //or die ("Can't connect to SQL server.");
             
-			//Selects database
-			if ($database != '') {
+            //Selects database
+            if ($database != '') {
                 mysql_select_db($database, $this->id);
             }
         }
         
-		
+        
         /**
          * Outputs a can't connect to the SQL server message and exits.
          * It's called on connect failure
@@ -95,7 +99,7 @@ if (!defined('SQL_LAYER')) {
             return $error;
         }
         
-		
+        
         /**
          * Gets the number of rows affected or returned by a query
          * 
@@ -122,17 +126,17 @@ if (!defined('SQL_LAYER')) {
          * @param boolean $return_as_string return result as string, and not as an array
          * @return mixed the row or the scalar result
          */
-        function sql_query_express ($query = '', $error_message = "Impossible d'exécuter cette requête.", $return_as_string = true) {
+        function sql_query_express ($query = '', $error_message = "Impossible d'exÃ©cuter cette requÃªte.", $return_as_string = true) {
             if ($query === '' || $query === false || $query === null) {
                 //No query, no value
                 return '';
             } elseif (!$result = $this->sql_query($query)) {
                 message_die(SQL_ERROR, $error_message, '', __LINE__, __FILE__, $query);
             } else {
-				//Fetches row
+                //Fetches row
                 $row = $this->sql_fetchrow($result);
-				
-				//If $return_as_string is true, returns first query item (scalar mode) ; otherwise, returns row
+                
+                //If $return_as_string is true, returns first query item (scalar mode) ; otherwise, returns row
                 return $return_as_string ? $row[0] : $row;                
             }
         }
@@ -147,33 +151,33 @@ if (!defined('SQL_LAYER')) {
             return mysql_real_escape_string($expression);
         }
         
-		/*
-		 * Sets the client character set (requires MySQL 5.0.7+).
-		 *
-		 * @param string $encoding the charset encoding to set
-		 */
+        /*
+         * Sets the client character set (requires MySQL 5.0.7+).
+         *
+         * @param string $encoding the charset encoding to set
+         */
         function set_charset ($encoding) {
             if (function_exists('mysql_set_charset')) {
                 //>=PHP 5.2.3
-				mysql_set_charset($encoding, $this->id);
-			} else {
-				//Old PHP version
-				$this->sql_query("SET NAMES '$encoding'");
-			}
+                mysql_set_charset($encoding, $this->id);
+            } else {
+                //Old PHP version
+                $this->sql_query("SET NAMES '$encoding'");
+            }
         }
     }
-	
+    
     /**
      * The main sql_db instance
      * 
-     * @global sql_db $_GLOBALS['db']
-	 */
-	$db = new sql_db($Config['sql']['host'], $Config['sql']['username'], $Config['sql']['password'], $Config['sql']['database']);
-	$db->set_charset('utf8');
-	
-	//By security, we unset the SQL parameters, so you can safely output Zed
-	//config parts (there's still the problem of the secret key, but it's less
-	//a security problem than database password)
-	unset($Config['sql']); 
+     * @global sql_db $db
+     */
+    $db = new sql_db($Config['sql']['host'], $Config['sql']['username'], $Config['sql']['password'], $Config['sql']['database']);
+    $db->set_charset('utf8');
+    
+    //By security, we unset the SQL parameters, so you can safely output Zed
+    //config parts (there's still the problem of the secret key, but it's less
+    //a security problem than database password)
+    unset($Config['sql']); 
 }
 ?>
