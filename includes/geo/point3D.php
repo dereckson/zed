@@ -24,7 +24,7 @@
 /**
  * Geo point 3D class.
  *
- * This class reprensents a x, y, z point.
+ * This class represents a x, y, z point.
  *
  * It implements IteratorAggregate to allow the foreach instruction
  * on a GeoPoint3D object:
@@ -81,6 +81,10 @@ class GeoPoint3D implements IteratorAggregate {
     
     /**
      * Initializes a new instance of GeoPoint3D class
+     *
+     * @param int $x the x coordinate
+     * @param int $y the y coordinate
+     * @param int $z the z coordinate
      */
     function __construct ($x, $y, $z) {
         $this->x = $x;
