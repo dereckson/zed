@@ -2,7 +2,6 @@
 
 /**
  * Header
-
  * Zed. The immensity of stars. The HyperShip. The people.
  * 
  * (c) 2010, Dereckson, some rights reserved.
@@ -50,7 +49,7 @@ if (!defined('DOJO')) {
     define('DOJO', defined('DIJIT'));
 }
 
-if (defined('DIJIT')) {$smarty->assign('DIJIT', true);
+if (defined('DIJIT')) $smarty->assign('DIJIT', true);
 $smarty->assign('DOJO', DOJO);
 
 //Prints the template

@@ -21,6 +21,8 @@
  * @filesource
  */
 
+require_once('place.php');
+
 /**
  * Travel helper class
  *
@@ -74,8 +76,6 @@ class Travel {
      * @param string the path to the travel XML file 
      */
     function load_xml ($file) {
-        require_once('place.php');
-        
         $xml = simplexml_load_file($file);
         foreach ($xml->TravelPlace as $travelPlaceXml) {
             $travelPlace = TravelPlace::from_xml($travelPlaceXml);
@@ -91,6 +91,8 @@ class Travel {
      * @param GeoLocation the location where the perso is
      * @param GeoLocation the location where the perso wants to go
      * @return boolean if the travel move is valid ; otherwise, false.
+     *
+     * @todo From B00001002, goto C1 doesn't work. Alias seems ignored.
      */
     function can_travel ($from, &$to) {
         if ($from->global != $to->global) {
@@ -103,7 +105,7 @@ class Travel {
                 return false;
             }
         }
-        
+
         if ($to->containsLocalLocation) {
             //Determines if we've custom rules about local moves in $to
             if (!array_key_exists($to->global, $this->globalTravelTo)) {
@@ -125,9 +127,12 @@ class Travel {
                 //We can move freely, perfect
                 return true;
             }
+
+            //Local move not allowed
+            return false;
         }
         
-        return false;
+        return true;
     }
 }
 
