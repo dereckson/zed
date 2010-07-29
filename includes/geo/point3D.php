@@ -166,12 +166,14 @@ class GeoPoint3D implements IteratorAggregate {
      * <code>
      * $pointKaos = GeoPoint3D(800, 42, 220);
      * $pointKaos->translate(500, 300, 200, 2);
+     * echo $pointKaos;
+     * //This will output xyz: [150, -129, 10]
      * </code>
      *
      * @param int $dx the difference between the old x and new x (ie the value of x = 0 in the new system)
      * @param int $dy the difference between the old y and new y (ie the value of y = 0 in the new system)
      * @param int $dz the difference between the old y and new z (ie the value of z = 0 in the new system)
-     * @scale float $scale if specified, divides each coordinate by this value (optional)
+     * @param float $scale if specified, divides each coordinate by this value (optional)
      */
     function translate ($dx, $dy, $dz, $scale = 1) {
         if ($scale == 1) {
