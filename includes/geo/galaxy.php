@@ -10,8 +10,9 @@
  *
  * A 3D grid of objects
  *
- * 0.1    2010-02-08 14:02    DcK
- *
+ * 0.1    2010-02-08 14:02    Initial version [DcK]
+ * 0.2    2010-07-25  9:20    Spherical conversion, get objects
+ * 
  * @package     Zed
  * @subpackage  Geo
  * @author      Sébastien Santoro aka Dereckson <dereckson@espace-win.org>
@@ -28,14 +29,34 @@
  *
  * This class provides methods to convert coordinate polars.
  *
- * @todo add a cartesian_to_polar method
- * @todo add a static method to get a grid of all the galaxy objects, with their x y z representation ; that will be useful to add in API, for a javascript galaxy viewer.
- *
  * @todo create a unit testing file dev/tests/GeoGalaxyTest.php
  * @todo add unit testing for the normalize_angle method in dev/tests/GeoGalaxyTest.php
- * @todo add unit testing for the polar_to_cartesian method
  */
 class GeoGalaxy {
+    /*
+     * ----------------------------------------------------------------------- *
+     *  Objects fetchers
+     * ----------------------------------------------------------------------- *
+     */
+    
+    /**
+     * Gets all the coordinates of the objects in the galaxy.
+     *
+     * @return array An array of array. Each item is  [string object_name, string object_type, GeoPoint3D coordinates]
+     */
+    static function get_coordinates () {
+        global $db;
+        $sql = "SELECT * FROM geo_coordinates";        
+        if (!$result = $db->sql_query($sql)) message_die(SQL_ERROR, "Can't query geo_coordinates view.", '', __LINE__, __FILE__, $sql);
+        
+        $objects = array();
+        while ($row = $db->sql_fetchrow($result)) {
+            //Demios  ship        xyz: [-50, 30, 40]
+            //Kaos	  asteroid    xyz: [150, -129, 10]
+            $objects[] = array($row[0], $row[1], GeoPoint3D::fromString($row[2]));
+        }
+        return $objects;
+    }
     
     /*
      * ----------------------------------------------------------------------- *
@@ -58,28 +79,41 @@ class GeoGalaxy {
         }
         return $angle;
     }
-    
-    /*
-     * Converts polar coordinates in cartesian x y coordinates
-     * @param float $angle angle in radians (use deg2rad() if you've degrees)
-     * @param float $height height
-     * @return array an array of 2 float items: x, y
+        
+    /**
+     * Converts (x, y, z) cartesian to (ρ, φ, θ) spherical coordinates
+     *
+     * The algo used is from http://fr.wikipedia.org/wiki/Coordonn%C3%A9es_sph%C3%A9riques#Relation_avec_les_autres_syst.C3.A8mes_de_coordonn.C3.A9es_usuels
+     *
+     * @param int $x the x coordinate
+     * @param int $y the y coordinate
+     * @param int $z the z coordinate
+     * @return array an array of 3 floats number, representing the (ρ, φ, θ) spherical coordinates
      */
-    static function polar_to_cartesian ($angle, $height) {
-        //A story of numbers
-        if ($height < 0) {
-            //Adds 180° and gets absolute value
-            $height *= -1;
-            $angle + M_PI;
-        }
-        $x = abs(sin($angle)) . $height;
-        $y = abs(cos($angle)) . $height;
+    static function cartesian_to_spherical ($x, $y, $z) {
+        $rho = sqrt($x * $x + $y * $y + $z * $z);    //ρ = sqrt(x² + y² + z²)
+        $theta= acos($z / $rho);                    //φ = acos z/φ
+        $phi = acos($x / sqrt($x * $x + $y * $y)); //θ = acos x / sqrt(x² + y²)
+        if (y < 0) $phi = 2 * M_PI - $phi;        //∀ y < 0     θ = 2π - θ
         
-        //And now, the sign
-        
-        
-        //Returns our coordinates
-        return array($x, $y);
+        return array(round($rho, 2), round(rad2deg($theta), 2), round(rad2deg($phi), 2));
     }
     
+    /**
+     * Converts (x, y, z) cartesian to (ρ, φ, θ) spherical coordinates
+     *
+     * The algo used is from http://www.phy225.dept.shef.ac.uk/mediawiki/index.php/Cartesian_to_polar_conversion
+     *
+     * @param int $x the x coordinate
+     * @param int $y the y coordinate
+     * @param int $z the z coordinate
+     * @return array an array of 3 floats number, representing the (ρ, φ, θ) spherical coordinates
+     */
+    static function cartesian_to_spherical2 ($x, $y, $z) {
+        $rho = sqrt($x * $x + $y * $y + $z * $z); //ρ = sqrt(x² + y² + z²)
+        $theta= atan2($y, $x);                    //φ = atan2 $y $x
+        $phi = acos($z / $rho);                   //θ = acos z/φ
+        
+        return array(round($rho, 2), round(rad2deg($theta), 2), round(rad2deg($phi), 2));
+    }
 }

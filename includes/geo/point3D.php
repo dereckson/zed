@@ -87,18 +87,106 @@ class GeoPoint3D implements IteratorAggregate {
      * @param int $z the z coordinate
      */
     function __construct ($x, $y, $z) {
-        $this->x = $x;
-        $this->y = $y;
-        $this->z = $z;
+        $this->x = (int)$x;
+        $this->y = (int)$y;
+        $this->z = (int)$z;
     }
     
     /**
-     * Returns a xyz: [x, y, z] string representation of the point coordinates
+     * Parses a xyz: [x, y, z] string expression ang gets a GeoPoint3D object
+     * 
+     * @param string $expression the expression to parse
+     * @return GeoPoint3D If the specified expression could be parsed, a GeoPoint3D instance ; otherwise, null.
+     */
+    static function fromString ($expression) {
+        if (string_starts_with($expression, 'xyz:', false)) {
+            $pos1 = strpos($expression, '[', 4) + 1;
+            $pos2 = strpos($expression, ']', $pos1);
+            if ($pos1 > -1 && $pos2 > -1) {
+                $expression = substr($expression, $pos1, $pos2 - $pos1);
+                $xyz = explode(',', $expression, 3);
+                return new GeoPoint3D($xyz[0], $xyz[1], $xyz[2]);
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * Returns a xyz: [x, y, z] string representation of the point coordinates.
      *
      * @return string a xyz: [x, y, z] string representation of the coordinates
      */
     function __toString () {
         return sprintf("xyz: [%d, %d, %d]", $this->x, $this->y, $this->z);
+    }
+    
+    /**
+     * Determines if this point is equal to the specified point.
+     * 
+     * @param GeoPoint3D $point The point to compare
+     * @return bool true if the two points are equal ; otherwise, false.
+     */
+    function equals ($point) {
+        return ($this->x == $point->x) && ($this->y == $point->y) && ($this->z == $point->z);
+    }
+    
+    //
+    // Math
+    //
+    
+    /**
+     * Gets the (ρ, φ, θ) spherical coordinates from the current x, y, z cartesian point
+     *
+     * The algo used is from http://fr.wikipedia.org/wiki/Coordonn%C3%A9es_sph%C3%A9riques#Relation_avec_les_autres_syst.C3.A8mes_de_coordonn.C3.A9es_usuels
+     *
+     * @return array an array of 3 floats number, representing the (ρ, φ, θ) spherical coordinates
+     */
+    function to_spherical () {
+        return GeoGalaxy::cartesian_to_spherical($this->x, $this->y, $this->z);
+    }
+    
+    /**
+     * Gets the (ρ, φ, θ) spherical coordinates from the current x, y, z cartesian point
+     *
+     * The algo used is from http://www.phy225.dept.shef.ac.uk/mediawiki/index.php/Cartesian_to_polar_conversion
+     *
+     * @return array an array of 3 floats number, representing the (ρ, φ, θ) spherical coordinates
+     */
+    function to_spherical2 () {
+        return GeoGalaxy::cartesian_to_spherical2($this->x, $this->y, $this->z);
+    }
+    
+    /**
+     * Translates the center and rescales.
+     *
+     * This method allow to help to represent coordinate in a new system
+     *
+     * This method is used to represent Zed objects in dojo with the following
+     * parameters:
+     * <code>
+     * $pointKaos = GeoPoint3D(800, 42, 220);
+     * $pointKaos->translate(500, 300, 200, 2);
+     * </code>
+     *
+     * @param int $dx the difference between the old x and new x (ie the value of x = 0 in the new system)
+     * @param int $dy the difference between the old y and new y (ie the value of y = 0 in the new system)
+     * @param int $dz the difference between the old y and new z (ie the value of z = 0 in the new system)
+     * @scale float $scale if specified, divides each coordinate by this value (optional)
+     */
+    function translate ($dx, $dy, $dz, $scale = 1) {
+        if ($scale == 1) {
+            $this->x += $dx;
+            $this->y += $dy;
+            $this->z += $dz;
+        } elseif ($scale == 0) {
+            $this->x = 0;
+            $this->y = 0;
+            $this->z = 0;
+        } else {
+            $this->x = $this->x * $scale + $dx;
+            $this->y = $this->y * $scale + $dy;
+            $this->z = $this->z * $scale + $dz;
+        }
     }
     
     //
@@ -113,6 +201,8 @@ class GeoPoint3D implements IteratorAggregate {
     function getIterator () {
         return new ArrayIterator($this);
     }
+    
+    
 }
 
 ?>

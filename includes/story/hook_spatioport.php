@@ -29,6 +29,8 @@
 require_once('includes/objects/ship.php');
 require_once('includes/geo/location.php');
 
+$class = 'SpatioportStoryHook';
+
 /**
  * Spatioport story hook class
  */

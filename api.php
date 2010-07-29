@@ -42,7 +42,7 @@ switch ($module = $url[0]) {
     
     /time
     /location
-    /perso              (disabled)
+    /coordinates
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -    */
 
     case '':
@@ -63,15 +63,14 @@ switch ($module = $url[0]) {
         $location = new GeoLocation($url[1], $url[2]);
         api_output($location, "location");
         break;
+
+    case 'coordinates':
+        //Checks creditentials
+        cerbere();
+        //Get coordiantes
+        api_output(GeoGalaxy::get_coordinates(), 'galaxy', 'object');
+        break;
     
-    //case 'perso':
-    //    //Checks creditentials
-    //    cerbere();
-    //    //Gets perso info
-    //    require_once("includes/objects/perso.php");
-    //    $perso = new Perso($url[1]);
-    //    api_output($perso, "perso");
-    //    break;
     
 /*  -------------------------------------------------------------
     Ship API

@@ -631,3 +631,11 @@ DROP TABLE IF EXISTS `ships_sessions`;
 
 CREATE VIEW `ships_sessions` AS select substr(`registry`.`registry_key`,19,5) AS `ship_id`,substr(`registry`.`registry_key`,25) AS `session_id`,`registry`.`registry_value` AS `perso_id`,unix_timestamp(`registry`.`registry_updated`) AS `session_updated` from `registry` where (left(`registry`.`registry_key`,17) = _utf8'api.ship.session.');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la vue `geo_coordinates`
+--
+CREATE VIEW geo_coordinates AS (SELECT body_name as object_name, body_status as object_type, body_location as object_location FROM geo_bodies)
+UNION
+(SELECT ship_name as object_name, 'ship' as object_type, location_global as object_location FROM ships WHERE LEFT(location_global, 3) = 'xyz') ORDER BY object_name

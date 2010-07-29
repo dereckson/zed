@@ -19,6 +19,8 @@
  * @filesource
  */
 
+require_once('section.php');
+
 /**
  * Story class
  *

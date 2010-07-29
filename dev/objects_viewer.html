@@ -1,0 +1,219 @@
+<html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" >
+<head>
+	<title>Zed galaxy :: objects representation</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="Stylesheet" href="../css/zed/theme.css" type="text/css" />
+	<style type="text/css">
+		@import "/js/dojo/dojo/resources/dojo.css";
+		@import "/js/dojo/dijit/tests/css/dijitTests.css";
+		@import "/js/dojo/dijit/themes/tundra/tundra.css";
+        
+        body {
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .viewscreen {
+            width: 500px; height: 500px;
+            background-color: black;
+            background-image: url('http://www.formandfunction.com/wraptures/datum-TILE/Astronomy/Cluster_Virgo.jpg');
+        }
+	</style>
+    <script type="text/javascript" src="/js/misc.js" djConfig="isDebug: false"></script>
+	<script type="text/javascript" src="/js/dojo/dojo/dojo.js" djConfig="isDebug: false"></script>
+	<script type="text/javascript" src="/js/dojo/dojox/gfx3d/object.js"></script>
+	<script type="text/javascript" src="/js/dojo/dojox/gfx3d/scheduler.js"></script>
+
+	<script type="text/javascript">
+		dojo.require("dojox.gfx3d");
+        
+        viewer = {
+            angles:     {x: 30, y: 30, z: 0},
+            view:       null,
+            objects:    null,
+            
+            getObjects: function() {
+                var url = 'http://zed51.dereckson.be/api.php/coordinates?key=303392c7-97c6-11df-a1e9-000c2923380c&format=json';
+                
+                dojo.xhrGet({
+                    handleAs:       "json",
+                    url:            url,
+                    preventCache:   true,
+                    handle:         function (response, ioArgs) {
+                        viewer.objects = response;
+                        viewer.drawObjects();
+                    }
+                });
+            },
+            
+            initialize: function() {
+                viewer.getObjects();
+            },
+            
+            drawObjects: function () {
+                viewer.makeObjects();
+                
+                //Some cones to help understand the axis rotation
+                //(thanks Alphos for the tip)
+                var coneZ = [
+                    {x: 0, y: 0, z: 15}, 
+                    {x: 5, y: 0, z: 0},
+                    {x: 0, y: 5, z: 0},
+                    {x: -5, y: 0, z: 0},
+                    {x: 0, y: -5, z: 0}
+                ];
+                
+                var coneX = [
+                    {x: 15, y: 0, z: 0}, 
+                    {x: 0, y: 5, z: 0},
+                    {x: 0, y: 0, z: 5},
+                    {x: 0, y: -5, z: 0},
+                    {x: 0, y: 0, z: -5}
+                ];
+                
+                var coneY = [
+                    {x: 0, y: 15, z: 0}, 
+                    {x: 0, y: 0, z: 5},
+                    {x: 5, y: 0, z: 0},
+                    {x: 0, y: 0, z: -5},
+                    {x: -5, y: 0, z: 0}
+                ];
+
+                view.createTriangles(coneZ, "fan")
+                .setStroke({color: "blue", width: 1})
+        		.setFill("blue")
+                .applyTransform(dojox.gfx3d.matrix.translate({x: 0, y: 0, z: 200}));
+                
+                view.createTriangles(coneX, "fan")
+                .setStroke({color: "red", width: 1})
+        		.setFill("red")
+                .applyTransform(dojox.gfx3d.matrix.translate({x: 200, y: 0, z: 0}));
+                
+                view.createTriangles(coneY, "fan")
+                .setStroke({color: "green", width: 1})
+        		.setFill("green")
+                .applyTransform(dojox.gfx3d.matrix.translate({x: 0, y: 200, z: 0}));
+                
+                //Zed objects
+                for (i = 0 ; i < this.objects.length ; i++) {
+                    var object = this.objects[i];
+                    switch (object[1]) {
+                        case 'ship':
+                            //Spaceship -> blue cube
+                            var c = {bottom: object[2], top: {x: object[2].x + 10, y: object[2].y + 10, z: object[2].z + 10}};
+                            view.createCube(c).setFill({ type: "plastic", finish: "dull", color: "blue" });
+                            break;
+                        
+                        case 'hypership':
+                            //Hypership -> Yellow cylinder
+                            var c = {center: object[2], height: 15, radius: 8}
+                            view.createCylinder(c)
+                                .setStroke("black")
+                                .setFill({type: "plastic", finish: "dull", color: "yellow"});
+                            break;
+                        
+                        case 'asteroid':
+                            //Asteroid -> Red orbit
+                            var o = {center: object[2], radius: 8}
+                            view.createOrbit(o)
+                                .setStroke({color: "red", width: 1});
+                            break;
+                        
+                        default:
+                            alert('Not handled object type: ' + object[1]);
+                        
+                    }
+                }
+            },
+            
+            rotate: function() {
+                var m = dojox.gfx3d.matrix;
+    
+                if(dojo.byId('rx').checked){
+                    viewer.angles.x += 1;
+                }
+                if(dojo.byId('ry').checked){
+                    viewer.angles.y += 1;
+                }
+                if(dojo.byId('rz').checked){
+                    viewer.angles.z += 1;
+                }
+                var t = m.normalize([
+                    m.cameraTranslate(-300, -200, 0),
+                    m.cameraRotateXg(viewer.angles.x), 
+                    m.cameraRotateYg(viewer.angles.y), 
+                    m.cameraRotateZg(viewer.angles.z)
+                    ]);
+                // console.debug(t);
+                view.setCameraTransform(t);
+                view.render();
+            },
+
+            makeObjects: function(){
+                var surface = dojox.gfx.createSurface("test", 500, 500);
+                view = surface.createViewport();
+    
+                view.setLights([
+                        { direction: { x: -10, y: -5, z: 5 }, color: "white"}
+                    ], 
+                    { color:"white", intensity: 2 },
+                    "white"
+                );
+    
+                var xaxis = [{x: 0, y: 0, z: 0}, {x: 200, y: 0, z: 0}];
+                var yaxis = [{x: 0, y: 0, z: 0}, {x: 0, y: 200, z: 0}];
+                var zaxis = [{x: 0, y: 0, z: 0}, {x: 0, y: 0, z: 200}];
+    
+                var m = dojox.gfx3d.matrix;
+    
+                view.createEdges(xaxis).setStroke({color: "red", width: 1});
+                view.createEdges(yaxis).setStroke({color: "green", width: 1});
+                view.createEdges(zaxis).setStroke({color: "blue", width: 1});
+    
+                var camera = dojox.gfx3d.matrix.normalize([
+                    m.cameraTranslate(-300, -200, 0),
+                    m.cameraRotateXg(this.angles.x), 
+                    m.cameraRotateYg(this.angles.y), 
+                    m.cameraRotateZg(this.angles.z)
+                ]);
+    
+                view.applyCameraTransform(camera);
+                view.render();
+                setInterval(viewer.rotate, 50);
+            }
+        };
+        
+		dojo.addOnLoad(viewer.initialize);
+	</script>
+</head>
+<body class="tundra">
+<div style="width: 960px; margin: auto; margin-top: 1em;" class="container_16">
+	<div style="float: right; width: 400px;">
+    <h1>Zed objects viewer</h1>
+    <h2>Objects viewer</h2>
+    <p>This page shows the different objects in the Zed galaxy.</p>
+    <p>This is based on the camera rotate <a href="http://archive.dojotoolkit.org/nightly/dojotoolkit/dojox/gfx3d/tests/test_camerarotate_shaded.html">dojox.gfx3d demo</a>.
+    <br />The background is a <a href="http://www.formandfunction.com/wraptures/LINX/w_astronomy.html">Cluster Virgo</a> from Jonathan Gibson, under CC-BY-SA license.</p>
+    <h2>Controls</h2>
+    <form>
+		<input id="rx" type="checkbox" name="rotateX" checked="true" value="on"/> 
+		<label for="rx"> Rotate around X-axis (red)</label> <br/>
+		<input id="ry" type="checkbox" name="rotateY" checked="false" value="off"/> 
+		<label for="ry"> Rotate around Y-axis (green)</label> <br/>
+		<input id="rz" type="checkbox" name="rotateZ" checked="false" value="off"/> 
+		<label for="rz"> Rotate around Z-axis (blue)</label> <br/>
+	</form>
+    <h2>Legend</h2>
+    <ul>
+        <li>Blue cube: ship</li>
+        <li>Yellow cylinder: hypership</li>
+        <li>Red orbit: asteroid</li>
+    </ul>
+    </div>
+
+
+	<div id="test" class="viewscreen"></div>
+
+</div>
+</body>
+</html>

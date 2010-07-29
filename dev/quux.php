@@ -10,9 +10,27 @@
         
     include('controllers/header.php');
     
-    $case = 'travel';
+    $case = 'spherical';
     
     switch ($case) {
+        case 'spherical':
+            require_once('includes/geo/galaxy.php');
+            echo '<H2>Spherical coordinates test</H2>';
+            echo '<table cellpadding=8>';
+            echo "<tr><th>Name</th><th>Type</th><th>Cartesian coords</th><th>Spherical I</th><th>Spherical II</th><th>Pencil coordinates</th></tr>";
+            $objects = GeoGalaxy::get_coordinates();
+            foreach ($objects as $row) {
+                echo "<tr><th style='text-align: left'>$row[0]</th><td>$row[1]</td><td>$row[2]</td>";
+                $pt = $row[2];
+                echo '<td>(', implode(', ', $pt->to_spherical()), ')</td>';
+                echo '<td>(', implode(', ', $pt->to_spherical2()), ')</td>';
+                $pt->translate(500, 300, 200, 2);
+                echo '<td>', $pt, '</td>';
+                echo '</tr>';
+            }
+            echo '</table>';
+            break;
+        
         case 'travel':
             require_once('includes/travel/travel.php');
             require_once('includes/travel/place.php');
