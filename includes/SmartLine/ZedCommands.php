@@ -404,15 +404,15 @@ class UnixTimeSmartLineCommand extends SmartLineCommand {
  *
  * The version and env information is extracted from
  *      .hg/tags.cache (indicating we're in a Mercurial repo and so in a dev environment), or from
- *      .hg_archival.txt file (indicating we've deployed code in a production environement)
- * 
+ *      version.txt file (indicating we've deployed code in a production environement)
+ *
  * e.g. r130 (development environment)
- *      Hash: 057bf394741706fd2136541e3bb07c9e60b4963d 
+ *      Hash: 057bf394741706fd2136541e3bb07c9e60b4963d
  */
 class VersionSmartLineCommand extends SmartLineCommand {
     /**
      * Runs the command
-     *  
+     *
      * @param array $argv an array of string, each item a command argument
      * @param int $argc the number of arguments
      */
@@ -422,21 +422,20 @@ class VersionSmartLineCommand extends SmartLineCommand {
 			$content = file_get_contents('.hg/tags.cache');
 			$info = explode(' ', $content, 2);
 			$info[] = "development environment";
-		} else if (file_exists('.hg_archival.txt')) {
-			$content = file('.hg_archival.txt');
-			foreach ($content as $line) {
-				$items = explode(' ', $line, 2);
-				if ($items[0] == 'node:') $info[1] = trim($items[1]);
-				if ($items[0] == 'latesttagdistance:') $info[0] = trim($items[1]);
-				$info[2] = 'production environment';
-			}
+
+		    $this->SmartLine->puts("r$info[0] ($info[2])");
+		    $this->SmartLine->puts("Hash: $info[1]");
+		} else if (file_exists('version.txt')) {
+			$content = file('version.txt');
+            foreach ($content as $line) {
+                $this->SmartLine->puts($line);
+            }
 		} else {
 			$this->SmartLine->puts("No version information available.", STDERR);
 			return false;
 		}
-		
-		$this->SmartLine->puts("r$info[0] ($info[2])");
-		$this->SmartLine->puts("Hash: $info[1]");
+
+        return true;
 	}
 }
 
