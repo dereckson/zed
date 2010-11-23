@@ -4,7 +4,7 @@
  * Geo scene class.
  *
  * Zed. The immensity of stars. The HyperShip. The people.
- * 
+ *
  * (c) 2010, Dereckson, some rights reserved.
  * Released under BSD license.
  *
@@ -22,6 +22,7 @@
  */
 
 require_once('location.php');
+require_once('octocube.php');
 
 if (!defined('SCENE_DIR')) {
     /**
@@ -33,64 +34,64 @@ if (!defined('SCENE_DIR')) {
 /**
  * Geo scene class
  *
- * This class provides methods to determine and renders the local scene. 
+ * This class provides methods to determine and renders the local scene.
  */
 class GeoScene {
     /**
      * Last error or warning
-     * 
+     *
      * @var string
      */
     public $lastError;
-    
+
     /**
      * File scene to serve
-     * 
+     *
      * @var string
      */
     public $sceneFile;
-       
+
     /**
-     * The location of the scene to print 
-     * 
+     * The location of the scene to print
+     *
      * @var GeoLocation
      */
     public $location;
-    
+
     /**
      * Initializes a new GeoScene instance
-     * 
+     *
      * @param GeoLocation $location location the scene is to print
      */
     function __construct ($location) {
         $this->location = $location;
- 
+
         //Gets local scene
         if ($location->containsLocalLocation) {
             if ($this->get_local_scene()) return;
         }
-        
+
         //Gets global scene
         if ($location->containsGlobalLocation) {
             if ($this->get_global_scene()) return;
         }
-        
+
         //If not scene found, let's set a warning
         $this->lastError = "No scene found.";
     }
-    
+
     /**
      * Gets local scene
-     * 
+     *
      * @return boolean true if a scene have been found ; otherwise, false.
      */
     private function get_local_scene () {
         return false;
     }
-    
+
     /**
      * Gets global scene
-     * 
+     *
      * @return boolean true if a scene have been found ; otherwise, false.
      */
     private function get_global_scene () {
@@ -107,7 +108,7 @@ class GeoScene {
         }
         return false;
     }
-    
+
     /**
      * Gets file extension
      *
@@ -118,7 +119,7 @@ class GeoScene {
         $pathinfo = pathinfo($file);
         return $pathinfo['extension'];
     }
-    
+
     /**
      * Renders the file
      *
@@ -133,12 +134,12 @@ class GeoScene {
                 case 'bmp':
                     echo "<img src=\"$file\" />";
                     break;
-                    
+
                 case 'tpl':
                     global $smarty;
                     $template_dir = $smarty->template_dir;
                     $smarty->template_dir = getcwd();
-                    
+
                     //$this->location is the object reference
                     //Some objects like the hypership move, so we also need to know where there are.
                     //From the template, this object location is assigned to $location
@@ -148,23 +149,23 @@ class GeoScene {
                     } elseif ($this->location->ship) {
                         $smarty->assign("location", new GeoLocation($this->location->ship->location));
                     }
-                    
+
                     $smarty->assign("SCENE_URL", defined('SCENE_URL') ? SCENE_URL : '/' . SCENE_DIR);
                     lang_load('scenes.conf', $this->location->global);
                     $smarty->display($file);
                     $smarty->template_dir = $template_dir;
                     break;
-                
+
                 case 'php':
                     message_die(HACK_ERROR, ".php scene files not allowed without review", '', __LINE__, __FILE__);
-                    
+
                 default:
                     message_die(GENERAL_ERROR, "Can't handle $ext extension for $file scene", 'GeoScene render error', __LINE__, __FILE__);
             }
             echo "\n\n";
         }
     }
-    
+
     /**
      * Tries to get the scene file.
      *

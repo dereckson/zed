@@ -31,8 +31,7 @@ include('includes/core.php');
 
 //Session
 $IP = encode_ip($_SERVER["REMOTE_ADDR"]);
-require_once('includes/story/story.php'); //those classes can be stored in session
-require_once('includes/geo/octocube.php');
+require_once('includes/story/story.php'); //this class can be stored in session
 session_start();
 $_SESSION[ID] = session_id();
 session_update(); //updates or creates the session

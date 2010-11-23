@@ -83,12 +83,12 @@ if (!defined('DIJIT')) {
 }
 
 $smarty->assign('PAGE_TITLE', lang_get('Welcome'));
-include('header.php'); 
+include('header.php');
 
 //Serves content
 if (!$scene->lastError)
     $scene->render();
-    
+
 $smarty->display('home.tpl');
 
 if ($messages) {
@@ -99,5 +99,5 @@ if ($messages) {
 //Serves footer
 $smarty->assign("screen", "Home console");
 include('footer.php');
- 
+
 ?>
