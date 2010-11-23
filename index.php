@@ -4,10 +4,10 @@
  * Application entry point
  *
  * Zed. The immensity of stars. The HyperShip. The people.
- * 
+ *
  * (c) 2010, Dereckson, some rights reserved.
  * Released under BSD license.
- * 
+ *
  * @package     Zed
  * @subpackage  EntryPoints
  * @author      Sébastien Santoro aka Dereckson <dereckson@espace-win.org>
@@ -31,7 +31,8 @@ include('includes/core.php');
 
 //Session
 $IP = encode_ip($_SERVER["REMOTE_ADDR"]);
-require_once('includes/story/story.php'); //this class can be stored in session
+require_once('includes/story/story.php'); //those classes can be stored in session
+require_once('includes/geo/octocube.php');
 session_start();
 $_SESSION[ID] = session_id();
 session_update(); //updates or creates the session
@@ -84,7 +85,7 @@ if ($_POST['form'] == 'perso.create') {
     $perso = new Perso();
     $perso->load_from_form();
     $perso->user_id = $CurrentUser->id;
-    
+
     //Validates forms
     if (!$perso->name) $errors[] = lang_get("NoFullnameSpecified");
     if (!$perso->race) {
@@ -97,7 +98,7 @@ if ($_POST['form'] == 'perso.create') {
     } else if (!Perso::is_available_nickname($perso->nickname)) {
         $errors[] = lang_get("UnavailableNickname");
     }
-    
+
     //Save or prints again forms
     if (!$errors) {
         //Saves perso, logs in
@@ -106,7 +107,7 @@ if ($_POST['form'] == 'perso.create') {
         $CurrentPerso = $perso;
         set_info('perso_id', $perso->id);
         $CurrentPerso->set_flag("site.lastlogin", $_SERVER['REQUEST_TIME']);
-        
+
         //Notifies inviter
         require_once('includes/objects/message.php');
         require_once('includes/objects/invite.php');
@@ -122,7 +123,7 @@ if ($_POST['form'] == 'perso.create') {
     } else {
         $smarty->assign('WAP', join("<br />", $errors));
         $smarty->assign('perso', $perso);
-    }    
+    }
 }
 
 if ($_GET['action'] == 'perso.logout' && $CurrentPerso != null) {
@@ -145,13 +146,13 @@ if (!$CurrentPerso) {
             //User have to create a perso
             $smarty->display("perso_create.tpl");
             exit;
-        
+
         case 1:
             //Autoselects only perso
             $CurrentPerso = Perso::get_first_perso($CurrentUser->id);
             $CurrentPerso->on_select();
             break;
-            
+
         default:
             //User have to pick a perso
             $persos = Perso::get_persos($CurrentUser->id);
@@ -191,7 +192,7 @@ if (defined('PersoSelected') && array_key_exists('site.requests', $CurrentPerso-
 ///
 /// Calls the specific controller to serve the requested page
 ///
-  
+
 switch ($controller = $url[0]) {
     case '':
         include('controllers/home.php');
@@ -204,15 +205,15 @@ switch ($controller = $url[0]) {
     case 'settings':
         include("controllers/$controller.php");
         break;
-    
+
     case 'who':
         include('controllers/profile.php'); //Azhàr controller
         break;
-    
+
     case 'push':
         include('controllers/motd.php'); //Azhàr controller
         break;
-    
+
     case 'quux':
         //It's like a test/debug console/sandbox, you put what you want into
         if (file_exists('dev/quux.php')) {
