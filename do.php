@@ -195,13 +195,10 @@ class Actions {
     static function upload_content () {
         global $CurrentPerso, $CurrentUser;
         require_once('includes/objects/content.php');
+
         //Initializes a new content instance
         $content = new Content();
-        
-        //Reads form
         $content->load_from_form();
-        
-        //Sets current user/perso parameters
         $content->user_id = $CurrentUser->id;
         $content->perso_id = $CurrentPerso->id;
         $content->location_global = $CurrentPerso->location_global;
