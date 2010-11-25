@@ -100,11 +100,7 @@
  * Javascript get_hypership_time will returns 5.94 instead 5.094
    
    Some %03d to add in /js/misc.js
-
- * All URLs outside homepage will return Unknown URL
-   
-   Well... only the home controller is coded.
-   
+  
  * The floater rendering adds a black line under Opera
    
    dojox.layout.floatingPane bug, need to check with last dojo version
@@ -114,6 +110,8 @@
    beautify XML code to improve
    
  * do.php allows any local location move, discarding FrL status
+ 
+ * The upload artwork dojo form can't be closed under Opera
    
 =======================
  API - General methods
