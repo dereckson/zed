@@ -201,30 +201,23 @@ $Config['ImageMagick']['mogrify'] = 'mogrify';
 $Config['ImageMagick']['composite'] = 'composite';
 $Config['ImageMagick']['identify'] = 'identify';
 
-
 ////////////////////////////////////////////////////////////////////////////////
 ///                                                                          ///
-/// V. Sessions                                                              ///
-///                                                                          ///
-////////////////////////////////////////////////////////////////////////////////
-
-//If you want to use a common table of sessions / user handling
-//with several websites, specify a different resource id for each site.
-$Config['ResourceID'] = 21;
-
-//PHP variables
-ini_set('session.serialize_handler', 'wddx');
-ini_set('session.save_path', 'cache/sessions');
-ini_set('session.gc_maxlifetime', 345600);  //4 days, for week-end story pause and continue url
-
-
-////////////////////////////////////////////////////////////////////////////////
-///                                                                          ///
-/// VI. Caching                                                              ///
+/// V. Caching                                                               ///
 ///                                                                          ///
 ////////////////////////////////////////////////////////////////////////////////
 
 /*
+ * Some data (Smarty, OpenID and sessions) are cached in the cache directory.
+ *
+ * Security tip: you can move this cache directory outside the webserver tree.
+ */
+define('CACHE_DIR', 'cache');
+
+/*
+ * Furthermore, you can also enable a cache engine, like memcached, to store
+ * data from heavy database queries, or frequently accessed stuff.
+ *
  * To use memcached:
  *    - $Config['cache']['engine'] = 'memcached';
  *    - $Config['cache']['server'] = 'localhost';
@@ -236,4 +229,18 @@ ini_set('session.gc_maxlifetime', 345600);  //4 days, for week-end story pause a
  */
 $Config['cache']['engine'] = 'void';
 
+////////////////////////////////////////////////////////////////////////////////
+///                                                                          ///
+/// VI. Sessions                                                             ///
+///                                                                          ///
+////////////////////////////////////////////////////////////////////////////////
+
+//If you want to use a common table of sessions / user handling
+//with several websites, specify a different resource id for each site.
+$Config['ResourceID'] = 21;
+
+//PHP variables
+ini_set('session.serialize_handler', 'wddx');
+ini_set('session.save_path', CACHE_DIR . '/sessions');
+ini_set('session.gc_maxlifetime', 345600);  //4 days, for week-end story pause and continue url
 ?>

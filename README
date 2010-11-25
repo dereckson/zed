@@ -8,6 +8,44 @@
      z    Z z     z z    z
     ZzzzzzZ  zzzzz   zzzzzz
 
+=========
+ INSTALL
+=========
+
+ * Zed is a PHP 5.3 application.
+ 
+ * You can import dev/schema-mysql.sql as original SQL schema
+ 
+ * The configuration file is includes/config.php
+ 
+ * Files are cached in 3 directories of the cache folder, sets appropriate
+   write permissions to:
+   compiled        openid          sessions
+ 
+ * Zed needs but doesn't include in its code the Janrain OpenID PHP libraries:
+   http://www.janrain.com/openid-enabled - http://github.com/openid/php-openid
+   
+   Put the Auth folder somewhere in your include_dir path.
+   
+   bcmath and GDM php extensions are recommended (required?) for OpenID.
+   Our dev environment outputs a white page without error if GDM isn't here.
+   
+   If you don't wish to enable OpenID, replace your includes/login.php by
+   http://bitbucket.org/dereckson/zed/src/0ffd1b08f33c/includes/login.php
+   
+ * Another used PHP extension is the WDDX one, to store session information in
+   a human-readable format, easier to debug.
+   
+   If you don't want that, comment the following line from includes/config.php:
+   ini_set('session.serialize_handler', 'wddx');
+  
+=========
+ UPGRADE
+=========
+  
+ * For our main prod install, we use a script exporting last repo revision with
+   hg archive and applying a patch to config.php.
+
 ===========
  LOCATIONS
 ===========
@@ -30,7 +68,7 @@
  HYPERSHIP TIME?
 =================
 
-  * the amount of days since hypership launch, July 3rd 2010 00:00 UTC
+  * The amount of days since hypership launch, July 3rd 2010 00:00 UTC
   * So the decimal part is like internet time, but in GMT and not CET/CEST
 
 ===============

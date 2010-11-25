@@ -55,8 +55,8 @@ $smarty = new Smarty();
 $current_dir = dirname(__FILE__);
 $smarty->template_dir = $current_dir . '/skins/' . THEME;
 
-$smarty->compile_dir = $current_dir . '/cache/compiled';
-$smarty->cache_dir = $current_dir . '/cache';
+$smarty->compile_dir = CACHE_DIR . '/compiled';
+$smarty->cache_dir = CACHE_DIR;
 $smarty->config_dir = $current_dir;
 
 $smarty->config_vars['StaticContentURL'] = $Config['StaticContentURL'];
