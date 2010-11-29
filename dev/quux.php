@@ -7,12 +7,19 @@
     require_once('includes/objects/message.php');
     require_once('includes/objects/invite.php');
     require_once('includes/cache/cache.php');
+    require_once('includes/cache/cache.php');
         
     include('controllers/header.php');
     
-    $case = 'spherical';
+    $case = 'travel';
     
     switch ($case) {
+        case 'travel':
+            require_once('includes/travel/travel.php');
+            $travel = Travel::load();
+            dieprint_r($travel);
+            break;
+        
         case 'spherical':
             require_once('includes/geo/galaxy.php');
             echo '<H2>Spherical coordinates test</H2>';

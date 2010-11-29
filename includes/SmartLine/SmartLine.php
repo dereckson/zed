@@ -106,7 +106,7 @@ function SmartLineHandler($level, $error, $file, $line) {
        default:
         $type = "#$level";
     }
-    $_SESSION['SmartLineOutput'][STDERR][] = "[PHP $type] $error ";
+    $_SESSION['SmartLineOutput'][STDERR][] = "[PHP $type] $error in $file line $line.";
     return true;
 }
 

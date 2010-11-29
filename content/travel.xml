@@ -22,6 +22,12 @@
         -->
         <GlobalTravelTo code="B00001002" />
         <GlobalTravelTo code="B00001003" />
+        
+        <!--
+            To ease the movements in the ship, we can write the sector name
+         -->
+         <RewriteRule expression="/^T([1-9][0-9]*)$/" global_location="B00001001" local_location="T$1C1" />
+         <RewriteRule expression="/^C([1-8])$/" global_location="B00001002" local_location="C$1" />
     </TravelPlace>
     
     <TravelPlace code="B00001002">
@@ -40,11 +46,24 @@
         <LocalMove local_location="(10, 6, 4)" alias="C6" name="Secteur C6" />
         <LocalMove local_location="(-10, -6, 4)" alias="C7" name="Secteur C7" />
         <LocalMove local_location="(10, -6, 4)" alias="C8" name="Secteur C8" />
+        
+        <!--
+            To ease the movements in the ship, we can write the sector name
+         -->
+         <RewriteRule expression="/^T([1-9][0-9]*)$/" global_location="B00001001" local_location="T$1C1" />
+         <RewriteRule expression="/^(T[1-9][0-9]*C[1-6])$/" global_location="B00001001" local_location="$1" />
     </TravelPlace>
     
     <TravelPlace code="B00001003">
         <!-- From the HyperShip core, perso can travel to core and tower -->
         <GlobalTravelTo code="B00001001" />
         <GlobalTravelTo code="B00001002" />
+        
+        <!--
+            To ease the movements in the ship, we can write the sector name
+         -->
+         <RewriteRule expression="/^T([1-9][0-9]*)$/" global_location="B00001001" local_location="T$1C1" />
+         <RewriteRule expression="/^(T[1-9][0-9]*C[1-6])$/" global_location="B00001001" local_location="$1" />
+         <RewriteRule expression="/^C([1-8])$/" global_location="B00001002" local_location="C$1" />
     </TravelPlace>
 </Travel>

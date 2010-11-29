@@ -186,7 +186,7 @@ class GeoLocation {
                 break;
             
             case 'local':
-                return $this->data[1];
+                return (count($this->data) > 1) ? $this->data[1] : null;
                 break;
             
             /* global location */

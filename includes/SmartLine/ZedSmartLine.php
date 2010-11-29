@@ -51,7 +51,7 @@ function log_C ($command, $isError = false) {
     $sql = "INSERT INTO "  . TABLE_LOG_SMARTLINE . " (perso_id, command_time, command_text, isError)
             VALUES ($CurrentPerso->id, UNIX_TIMESTAMP(), '$command', $isError)";
     if (!$db->sql_query($sql)) 
-        message_die(SQL_ERROR, "Historique C", '', __LINE__, __FILE__, $sql);
+        message_die(SQL_ERROR, "Can't log SmartLine command", '', __LINE__, __FILE__, $sql);
 }
 
 ///
@@ -93,7 +93,7 @@ $sql = "SELECT command_time, command_text FROM log_smartline
         WHERE isError = 0 AND perso_id = '$perso_id'
         ORDER BY command_time DESC LIMIT 100";
 if (!$result = $db->sql_query($sql)) {
-	message_die(SQL_ERROR, "Wiki fetching", '', __LINE__, __FILE__, $sql);
+	message_die(SQL_ERROR, "Can't get SmartLine history", '', __LINE__, __FILE__, $sql);
 }
 $i = 0;
 while ($row = $db->sql_fetchrow($result)) {
