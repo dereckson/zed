@@ -76,6 +76,9 @@ class GotoSmartLineCommand extends SmartLineCommand {
      *  
      * @param array $argv an array of string, each item a command argument
      * @param int $argc the number of arguments
+     *
+     * @todo allow .goto global local (e.g. .goto B0001001 T2C3)
+     * @todo determine if we allow rewrite rules to bypass can_travel rules
      */
     public function run ($argv, $argc) {
         global $CurrentPerso;
@@ -85,50 +88,56 @@ class GotoSmartLineCommand extends SmartLineCommand {
             return;
         }
         
+        if ($argc > 2) {
+            $ignored_string = implode(" ", array_slice($argv, 2));
+            $this->SmartLine->puts("Warning: ignoring $ignored_string", STDERR);
+        }
+
         require_once("includes/geo/location.php");
-        
+        require_once("includes/travel/travel.php");
+       
         $here = new GeoLocation($CurrentPerso->location_global, $CurrentPerso->location_local);
+        $travel = Travel::load(); //maps content/travel.xml
         
-        try {
-            $place = new GeoLocation($argv[1]);
-            
-            if ($place->equals($CurrentPerso->location_global)) {
-                $this->SmartLine->puts("You're already there.");
-                return;
-            }
-        } catch (Exception $ex) {
-            //Global location failed, trying local location
+        //Parses the expression, by order of priority, as :
+        //  - a rewrite rule
+        //  - a new global location
+        //  - a new local location (inside the current global location)
+        if (!$travel->try_parse_rewrite_rule($argv[1], $here, $place)) {
             try {
-                $place = new GeoLocation($CurrentPerso->location_global, $argv[1]);
+                $place = new GeoLocation($argv[1]);
+                
+                if ($place->equals($CurrentPerso->location_global)) {
+                    $this->SmartLine->puts("You're already there.");
+                    return;
+                }
             } catch (Exception $ex) {
-                $this->SmartLine->puts($ex->getMessage(), STDERR);
-                return;
-            }
-            
-            if ($place->equals($here)) {
-                $this->SmartLine->puts("You're already there.");
-                return;
-            }
-        }       
-        
-        //Determines if the place exists
-        //if (!$place->exists()) {
-        //    $this->SmartLine->puts("This place doesn't seem to exist.");
-        //    return;
-        //}
+                //Global location failed, trying local location
+                try {
+                    $place = new GeoLocation($CurrentPerso->location_global, $argv[1]);
+                } catch (Exception $ex) {
+                    $this->SmartLine->puts($ex->getMessage(), STDERR);
+                    return;
+                }
+                
+                if ($place->equals($here)) {
+                    $this->SmartLine->puts("You're already there.");
+                    return;
+                }
+            }       
+        }
         
         //Could we really go there?
-        require_once("includes/travel/travel.php");
-        $travel = Travel::load();
         if (!$travel->can_travel($here, $place)) {
             $this->SmartLine->puts("You can't reach that location.");
             return;
         }
         
+        //Moves
         $CurrentPerso->move_to($place->global, $place->local);
         $this->SmartLine->puts("You travel to that location.");
         return;
-    }    
+    }
 }
 
 /**

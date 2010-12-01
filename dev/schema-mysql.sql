@@ -137,21 +137,22 @@ CREATE TABLE IF NOT EXISTS `geo_places` (
   `place_code` smallint(3) unsigned zerofill NOT NULL,
   `place_name` varchar(255) NOT NULL,
   `place_description` longtext NOT NULL,
+  `location_local_format` varchar(63) DEFAULT NULL,
   `place_status` set('start','hidden') DEFAULT NULL,
   PRIMARY KEY (`place_id`),
   UNIQUE KEY `body_id` (`body_code`,`place_code`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 --
 -- Contenu de la table `geo_places`
 --
 
-INSERT INTO `geo_places` (`place_id`, `body_code`, `place_code`, `place_name`, `place_description`, `place_status`) VALUES
-(1, 00001, 001, 'Tour', 'Tour circulaire, surplombant l''hypership, offrant une vue circulaire sur l''espace (ou l''ultraespace, ou l''hyperespace) et une rotonde aux derniers étages.\r\n\r\n== Toponymie numérique ==\r\nChaque niveau (correspondant à un secteur, identifié par la lettre T suivi du niveau, en partant du haut) est divisé en 6 couloirs d''approximativement 60°.', NULL),
-(2, 00001, 002, 'Core', 'Le c.ur de l''hypership, son centre de gravité et les 8 cubes l''entourant.\r\n\r\n== Toponymie numérique ==\r\nLe core est divisé en 9 secteurs : C0 pour le centre de gravité, C1 à C4 pour les cubes de la couche inférieure, C5 à C8 pour les cubes de la couche supérieure.', NULL),
-(3, 00002, 001, 'Algir', '', NULL),
-(4, 00003, 001, 'Zeta', '', 'start'),
-(5, 00001, 003, 'Bays', 'Baies permettant d''accueillir divers vaisseaux au sein de l''hypership.', NULL);
+INSERT INTO `geo_places` (`place_id`, `body_code`, `place_code`, `place_name`, `place_description`, `location_local_format`, `place_status`) VALUES
+(1, 00001, 001, 'Tour', 'Tour circulaire, surplombant l''hypership, offrant une vue circulaire sur l''espace (ou l''ultraespace, ou l''hyperespace) et une rotonde aux derniers étages.\r\n\r\n== Toponymie numérique ==\r\nChaque niveau (correspondant à un secteur, identifié par la lettre T suivi du niveau, en partant du haut) est divisé en 6 couloirs d''approximativement 60°.', '/^(T[1-9][0-9]*C[1-6])$/', NULL),
+(2, 00001, 002, 'Core', 'Le coeur de l''hypership, son centre de gravité et les 8 cubes l''entourant.\r\n\r\n== Toponymie numérique ==\r\nLe core est divisé en 9 secteurs : C0 pour le centre de gravité, C1 à C4 pour les cubes de la couche inférieure, C5 à C8 pour les cubes de la couche supérieure.', NULL, NULL),
+(3, 00002, 001, 'Algir', '', NULL, NULL),
+(4, 00003, 001, 'Zeta', '', NULL, 'start'),
+(5, 00001, 003, 'Bays', 'Baies permettant d''accueillir divers vaisseaux au sein de l''hypership.', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -488,18 +489,6 @@ CREATE TABLE IF NOT EXISTS `sessions` (
   KEY `HeureLimite` (`HeureLimite`)
 ) ENGINE=MEMORY DEFAULT CHARSET=latin1 COMMENT='Sessions @ Pluton';
 
---
--- Contenu de la table `sessions`
---
-
-INSERT INTO `sessions` (`session_id`, `Where`, `IP`, `user_id`, `perso_id`, `Skin`, `Skin_accent`, `online`, `HeureLimite`, `SessionLimite`) VALUES
-('11o5p5fpacnoutbc2pgvh03ih1', 21, '0a000004', -1, NULL, 'zed', '', 1, '1279392190', '1279399090'),
-('74ue7g6k02e6k7bfirqudmhgi7', 21, '0a000004', -1, NULL, 'zed', '', 1, '1279392191', '1279399091'),
-('tu8otohbqlhknmt0atiuk850r6', 21, '0a000004', 2600, 4960, 'zed', '', 1, '1279392446', '1279399346'),
-('395f7o7pme0dkt32df8h8reo66', 21, '0a000004', -1, NULL, 'zed', '', 1, '1279392191', '1279399091'),
-('klss5iti1bf6vja6a6ibd48j02', 21, '0a000004', -1, NULL, 'zed', '', 1, '1279392193', '1279399093'),
-('ai71qqkde5hbbjc14sh4dj87o1', 21, '0a000004', -1, NULL, 'zed', '', 1, '1279392194', '1279399094');
-
 -- --------------------------------------------------------
 
 --
@@ -518,12 +507,7 @@ CREATE TABLE IF NOT EXISTS `ships` (
   KEY `location` (`location_global`),
   KEY `api_key` (`api_key`),
   FULLTEXT KEY `ship_name_2` (`ship_name`,`ship_description`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
-
---
--- Contenu de la table `ships`
---
-
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 

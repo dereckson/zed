@@ -84,17 +84,50 @@ class Travel {
     }
     
     /**
+     * Tries to parse the specified expression, according the rewrite rules
+     * (for example defined by the <RewriteRule> xml tags)
+     *
+     * @param string $expression the expression to parse
+     * @param GeoLocation the location where the perso is
+     * @param GeoLocation the location where the perso wants to go
+     *
+     * @return boolean true if the expression have been parsed ; otherwise, false.
+     */
+    function try_parse_rewrite_rule ($expression, $from, &$to) {
+        //Relevant write rules depends from the location the perso is ($from)
+        $travelPlace = $this->globalTravelTo[$from->global];
+        foreach ($travelPlace->rewriteRules as $rule) {
+            //$rule is an array [expression, global_location, local_location]
+            $subpatterns = array();
+            $result = preg_match($rule[0], $expression, $subpatterns);
+            if ($result > 0) {
+                //$subpatterns is an array with:
+                //  - at indice 0, the full matched regexp
+                //  - from 1 to n, the (groups) inside the regexp
+                //We need so to replace $1 by $subpatterns[1] and so on.
+                for ($i = count($subpatterns) - 1 ; $i > 0 ; $i--) {
+                    $rule[1] = str_replace('$' . $i, $subpatterns[$i], $rule[1]);
+                    $rule[2] = str_replace('$' . $i, $subpatterns[$i], $rule[2]);
+                }
+                $to = new GeoLocation($rule[1], $rule[2]);
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    /**
      * Determines if a perso can travel from $from to $to
      * 
      * If an alias have been used for $to local location, set correct location.
      * 
      * @param GeoLocation the location where the perso is
      * @param GeoLocation the location where the perso wants to go
-     * @return boolean if the travel move is valid ; otherwise, false.
+     * @return boolean true if the travel move is valid ; otherwise, false.
      *
      * @todo From B00001002, goto C1 doesn't work. Alias seems ignored.
      */
-    function can_travel ($from, &$to) {
+    function can_travel ($from, &$to) {        
         if ($from->global != $to->global) {
             //Checks if we can locally from $from to $to place
             if (!array_key_exists($from->global, $this->globalTravelTo)) {

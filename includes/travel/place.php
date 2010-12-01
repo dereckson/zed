@@ -64,6 +64,15 @@ class TravelPlace {
     public $localMoves = array();
     
     /**
+     * Aray of array, containing [expression, global_location, local_location] entries
+     *
+     * This matches RewriteRule XML tags.
+     *
+     * @var Array
+     */
+    public $rewriteRules = array();
+    
+        /**
      * Initializes a new TravelPlace instance, from the specified XML fragment
      *
      * @param string $xml the XML fragment to parse
@@ -113,6 +122,27 @@ class TravelPlace {
                 }
             }
             $travelPlace->localMoves[] = $localMove;
+        }
+        
+        //<RewriteRule expression="/^T([1-9][0-9]*)$/" global_location="B00001001" local_location="T$1C1" />
+        foreach ($xml->RewriteRule as $rewriteRuleXml) {
+            $rewriteRule = array(null, null, null);
+            foreach ($rewriteRuleXml->attributes() as $key => $value) {
+                switch ($key) {
+                    case 'expression':
+                        $rewriteRule[0] = (string)$value;
+                        break;
+                    
+                    case 'global_location':
+                        $rewriteRule[1] = (string)$value;
+                        break;
+                    
+                    case 'local_location':
+                        $rewriteRule[2] = (string)$value;
+                        break;
+                }
+            }
+            $travelPlace->rewriteRules[] = $rewriteRule;
         }
         
         return $travelPlace;

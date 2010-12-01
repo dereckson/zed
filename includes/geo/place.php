@@ -150,7 +150,7 @@ class GeoPlace {
      * Determines if the specified local location looks valid
      *
      * @param string $local_location the local location
-     * @return boolean true if the specified local location looks valid ; otherwise, false.r
+     * @return boolean true if the specified local location looks valid ; otherwise, false.
      */
     function is_valid_local_location ($local_location) {
         $format = $this->location_local_format ? $this->location_local_format : LOCATION_LOCAL_DEFAULT_FORMAT;
