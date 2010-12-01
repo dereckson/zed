@@ -37,7 +37,12 @@ Au nord, The Hole, une ancienne mine dont les mineurs évitent de parler.
     
     Sa bibliothèque. Son bar. 
   -->
-  
+  <section id="city.entry">
+    <title>Le centre ville</title>
+    <description>
+      Le centre ville de Zeta alterne des zones plongées dans l'obscurité et des zones suréclairées au néon.      
+    </description>
+  </section>  
   
   <!--
     Le spatioport
