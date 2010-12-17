@@ -98,6 +98,13 @@ class ContentZone {
         }
     }
 
+    /**
+     * Assigns the zone at the specified location.
+     *
+     * @param string $location_global the global location
+     * @param string $location_global the local location
+     * @param bool $delete_old_locations if true, delete old locations
+     */
     function assign_to ($location_global, $location_local, $delete_old_locations = true) {
         if (!$this->id) {
             $this->save_to_database();
@@ -115,7 +122,33 @@ class ContentZone {
         if (!$db->sql_query($sql)) {
             message_die(SQL_ERROR, "Unable to set zone location", '', __LINE__, __FILE__, $sql);
         }
-
+    }
+    
+    /**
+     * Gets the zone at specified location
+     *
+     * @param string $location_global the global location
+     * @param string $location_global the local location
+     * @param bool $create if the zone doesn't exist, create it [optional] [default value: false]
+     * @return ContentZone the zone, or null if the zone doesn't exist and $create is false
+     */
+    static function at ($location_global, $location_local, $create = false) {
+        global $db;
+        $g = $db->sql_escape($location_global);
+        $l = $db->sql_escape($location_local);
+        $sql = "SELECT zone_id FROM " . TABLE_CONTENT_ZONES_LOCATIONS . " WHERE location_global = '$g' AND location_local = '$l'";
+        if (!$result = $db->sql_query($sql)) {
+            message_die(SQL_ERROR, "Unable to set zone location", '', __LINE__, __FILE__, $sql);
+        }
+        if ($row = $db->sql_fetchrow($result)) {
+            return new ContentZone($row['zone_id']);
+        } elseif ($create) {
+            $zone = new ContentZone();
+            $zone->assign_to($location_global, $location_local);
+            return $zone;
+        } else {
+            return null;
+        }
     }
 }
 

@@ -42,14 +42,12 @@ if ($build_location->place->code == "003") {
 //TODO: get local zone
 include('includes/content/zone.php');
 if (true) {
-    //Create a new zone
-    $zone = new ContentZone(1);
-    $zone->title = 'Test zone for sector C1, zone 10-6, level 4';
+    //Gets or creates a new zone at build location
+    $zone = ContentZone::at($build_location->global, $build_location->local, true);
+    $zone->title = "Sandbox hotglue zone for $build_location->global $build_location->local";
     $zone->type = 'hotglue';
     $zone->save_to_database();
-    $zone->assign_to($build_location->global, $build_location->local);
 }
-
 
 //
 // HTML output
@@ -60,8 +58,8 @@ $smarty->assign('PAGE_TITLE', 'Builder');
 include('header.php');
 
 //Hotglue iframe
-$smarty->assign('LOCATION', $build_location);
-$smarty->assign('ZONE', $zone);
+$smarty->assign('location', $build_location);
+$smarty->assign('zone', $zone);
 switch ($build_mode) {
     case 'hotglue':
         $smarty->assign('IFRAME_SRC', '/apps/hotglue/?zone_' . $zone->id . '/edit');

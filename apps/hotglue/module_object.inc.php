@@ -66,8 +66,8 @@ function object_alter_render_late($args)
 			$link = $obj['object-link'];
 			// resolve any aliases
 			$link = resolve_aliases($link, $obj['name']);
-			if (!is_url($link) && substr($link, 0, 1) != '#') {
-				// add base url for relative links that are not directed towards anchors
+			if (!is_url($link) && substr($link, 0, 1) != '#' && substr($link, 0, 1) != '/') {
+				// add base url for relative links that are not directed towards anchors, nor /links
 				if (SHORT_URLS) {
 					$link = base_url().urlencode($link);
 				} else {

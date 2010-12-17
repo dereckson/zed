@@ -15,7 +15,22 @@
     </div>
     
     <div class="clear"></div>
-
+{if $zone}
+{if $zone->type == "hotglue"}
+    <!-- Content iframe -->
+    <script type="text/javascript">
+    function hijacklinks(iframe){
+      var as = iframe.contentDocument.getElementsByTagName('a');
+      for(i=0;i<as.length;i++){
+        as[i].setAttribute('target','_parent');
+      }
+    }
+    </script>
+    <iframe src="/apps/hotglue/?zone_{$zone->id}" width="960" height="600" id="content_iframe" frameborder="0" scrolling="no" style="margin-bottom: 1em" onload="hijacklinks(this)"></iframe>
+{else}
+{print_r($zone)}
+{/if}
+{else}
     <div class="content_wrapper">
         <h1>HyperShip builder</h1>
         <div class="grid_9 suffix_1 content alpha">
@@ -46,4 +61,4 @@
         </div>
         <div class="clear fixclear"></div>
     </div>
-
+{/if}
