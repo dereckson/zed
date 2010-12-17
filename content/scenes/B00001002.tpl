@@ -1,3 +1,7 @@
+    <!--
+    Global location: B00001002
+    -->
+
     <div class="grid_7 alpha">
 {$xyz = explode(',', substr($CurrentPerso->location_local, 1, -1))}
 {$x = $xyz[0]}{$y = $xyz[1]}{$z = $xyz[2]}
@@ -13,8 +17,8 @@
     <div class="clear"></div>
 
     <div class="content_wrapper">
-        <h1>HyperShip core builder</h1>
-        <div class="content">
+        <h1>HyperShip builder</h1>
+        <div class="grid_9 suffix_1 content alpha">
             <h2>This area is buildable.</h2>
             <p>You can take over this part of the ship, transform it and design it as you want.</p>
             <p>To start, you can:</p>
@@ -29,5 +33,17 @@
                 <li>Enhance the area with javascript or HTML5 (like in 2010)</li>
             </ul>
         </div>
+        <div class="grid_6 omega">
+            <p><a href="{get_url('builder')}">Start to build</a></p>
+            
+            <p><a href="{get_url('do.php')}/local_move/0,1,0?redirectTo=/">Go north</a><br />
+            <a href="{get_url('do.php')}/local_move/1,0,0?redirectTo=/">Go east</a><br />
+            <a href="{get_url('do.php')}/local_move/0,-1,0?redirectTo=/">Go south</a><br />
+            <a href="{get_url('do.php')}/local_move/-1,0,0?redirectTo=/">Go west</a></p>
+            
+            <p><a href="{get_url('do.php')}/local_move/0,0,1?redirectTo=/">Climb up</a><br />
+            <a href="{get_url('do.php')}/local_move/0,0,-1?redirectTo=/">Climb down</a></p>
+        </div>
+        <div class="clear fixclear"></div>
     </div>
 

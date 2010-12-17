@@ -7,13 +7,31 @@
     require_once('includes/objects/message.php');
     require_once('includes/objects/invite.php');
     require_once('includes/cache/cache.php');
-    require_once('includes/cache/cache.php');
         
     include('controllers/header.php');
     
-    $case = 'travel';
+    $case = 'index_scenes';
     
     switch ($case) {
+        case 'index_scenes':
+            $time[] = microtime();
+            require_once('includes/geo/scene.php');
+            require_once('includes/geo/sceneindex.php');
+            $cache = Cache::load();
+            if ($index = $cache->get('GeoSceneIndex')) {
+                $index = unserialize($index);
+            } else {
+                $index = GeoSceneIndex::Load(SCENE_DIR);
+                $cache->set('GeoSceneIndex', serialize($index));
+            }
+            $time[] = microtime();
+            echo '<H2>GeoSceneIndex</H2>';
+            dprint_r($index);
+            echo '<H2>Time (ms)</H2>';
+            dprint_r(1000 * ($time[1] - $time[0]));
+            dieprint_r($time);
+            break;
+        
         case 'travel':
             require_once('includes/travel/travel.php');
             $travel = Travel::load();

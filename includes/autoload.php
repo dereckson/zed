@@ -33,6 +33,11 @@ function __autoload ($className) {
     $classes['Cache'] = 'includes/cache/cache.php';
     $classes['CacheMemcached'] = 'includes/cache/memcached.php';
     $classes['CacheVoid'] = 'includes/cache/void.php';
+
+    $classes['Content'] = 'includes/objects/content.php';
+    $classes['ContentFile'] = 'includes/content/file.php';
+    $classes['ContentLocation'] = 'includes/content/location.php';
+    $classes['ContentZone'] = 'includes/content/zone.php';
  
     $classes['GeoBody'] = 'includes/geo/body.php';
     $classes['GeoGalaxy'] = 'includes/geo/galaxy.php';
@@ -42,7 +47,6 @@ function __autoload ($className) {
     $classes['GeoScene'] = 'includes/geo/scene.php';
  
     $classes['Application'] = 'includes/objects/application.php';
-    $classes['Content'] = 'includes/objects/content.php';
     $classes['Invite'] = 'includes/objects/invite.php';
     $classes['Message'] = 'includes/objects/message.php';
     $classes['MOTD'] = 'includes/objects/motd.php';

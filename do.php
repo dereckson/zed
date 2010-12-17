@@ -168,7 +168,7 @@ class Actions {
      * Sets current perso's local location.
      * 
      * We don't require a security hash. If the users want to play with it, no problem.
-     * You generally moves inside a global location as you wish.
+     * You generally move inside a global location as you wish.
      * So, if you write a story capturing a perso, use flags to handle this escape!
      *
      * @param string $location_local the local location
@@ -185,6 +185,79 @@ class Actions {
         
         //Returns GeoLocation relevant instance
         return $CurrentPerso->location;
+    }
+    
+    /**
+     * Moves the current perso's, setting a new local location.
+     * 
+     * We don't require a security hash. If the users want to play with it, no problem.
+     * You generally move inside a global location as you wish.
+     * So, if you write a story capturing a perso, use flags to handle this escape!
+     *
+     * @param string $move the move (coordinates or direction)
+     * @param int $factor a number multipling the specified move [optional]
+     * @return GeoLocation the current perso's GeoLocation object
+     *
+     * e.g. to move from 2 units to east, you can use one of those instructions:
+     *  local_move('east', 2);
+     *  local_move('2,0,0');
+     *  local_move('1,0,0', 2);
+     *
+     * Valid moves string are north, east, south, west, up and down.
+     * Valid moves coordinates are x,y,z (3 integers, comma as separator)
+     */
+    static function local_move ($move, $factor = 1) {
+        global $CurrentPerso;
+        
+        //Ensures we've the correct amount of arguments
+        if (func_num_args() < 1) return null;
+        
+        //Parses $move
+        switch ($move) {
+            case 'north':
+                $move = array(0, 1, 0);
+                break;
+
+            case 'east':
+                $move = array(1, 0, 0);
+                break;
+                
+            case 'south':
+                $move = array(0, -1, 0);
+                break;
+                
+            case 'west':
+                $move = array(-1, 0, 0);
+                break;
+                
+            case 'up':
+                $move = array(0, 0, 1);
+                break;
+            
+            case 'down':
+                $move = array(0, 0, -1);
+                break;
+                
+            default:
+                $move = split(',', $move, 3);
+                foreach ($move as $coordinate) {
+                    if  (!is_numeric($coordinate)) {
+                        return null;
+                    }
+                }
+        }
+        
+        //Moves current perso to specified location
+        if ($location_local = GeoPoint3D::fromString($CurrentPerso->location->local)) {
+            $location_local->translate($move[0] * $factor, $move[1] * $factor, $move[2] * $factor);
+            $CurrentPerso->move_to(null, $location_local->sprintf("(%d, %d, %d)"));
+            
+            //Returns GeoLocation relevant instance
+            return $CurrentPerso->location;
+        }
+        
+        //Old local location weren't a GeoPoint3D
+        return null;
     }
     
     /**

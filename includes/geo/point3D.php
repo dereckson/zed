@@ -21,6 +21,8 @@
  * @filesource
  */
 
+require_once("galaxy.php");
+
 /**
  * Geo point 3D class.
  *
@@ -91,9 +93,13 @@ class GeoPoint3D implements IteratorAggregate {
         $this->y = (int)$y;
         $this->z = (int)$z;
     }
-    
+
     /**
-     * Parses a xyz: [x, y, z] string expression ang gets a GeoPoint3D object
+     * Parses a string expression ang gets a GeoPoint3D object
+     *
+     * Formats recognized are:
+     *      - xyz: [x, y, z]
+     *      - (x, y, z)
      * 
      * @param string $expression the expression to parse
      * @return GeoPoint3D If the specified expression could be parsed, a GeoPoint3D instance ; otherwise, null.
@@ -107,22 +113,47 @@ class GeoPoint3D implements IteratorAggregate {
                 $xyz = explode(',', $expression, 3);
                 return new GeoPoint3D($xyz[0], $xyz[1], $xyz[2]);
             }
+        } elseif ($expression[0] = '(') {
+            $expression = substr($expression, 1, -1);
+            $xyz = explode(',', $expression, 3);
+            return new GeoPoint3D($xyz[0], $xyz[1], $xyz[2]);
         }
         return null;
     }
-    
+
+    /**
+     * Returns a string representation of the point coordinates.
+     *
+     * @param $format the format to use
+     * @return string a string representation of the coordinates
+     *
+     * To print a "xyz: [10, 20, 40]" string:
+     *  $point = new GeoPoint3D(10, 20, 40);
+     *  echo $point->sprintf("xyz: [%d, %d, %d]");
+     *
+     *  //Of course, you could have (implicitely) use the __toString method:
+     *  echo $point;
+     *
+     * To print a (10, 20, 40) string:
+     *  $point = new GeoPoint3D(10, 20, 40);
+     *  echo $point->sprintf("(%d, %d, %d)");
+     */
+    function sprintf ($format) {
+        return sprintf($format, $this->x, $this->y, $this->z);
+    }
+
     /**
      * Returns a xyz: [x, y, z] string representation of the point coordinates.
      *
      * @return string a xyz: [x, y, z] string representation of the coordinates
      */
     function __toString () {
-        return sprintf("xyz: [%d, %d, %d]", $this->x, $this->y, $this->z);
+        return $this->sprintf("xyz: [%d, %d, %d]");
     }
-    
+
     /**
      * Determines if this point is equal to the specified point.
-     * 
+     *
      * @param GeoPoint3D $point The point to compare
      * @return bool true if the two points are equal ; otherwise, false.
      */

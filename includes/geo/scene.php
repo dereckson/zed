@@ -8,8 +8,6 @@
  * (c) 2010, Dereckson, some rights reserved.
  * Released under BSD license.
  *
- * 0.1    2010-01-30 17:42    DcK
- *
  * @package     Zed
  * @subpackage  Geo
  * @author      Sébastien Santoro aka Dereckson <dereckson@espace-win.org>
@@ -23,6 +21,7 @@
 
 require_once('location.php');
 require_once('octocube.php');
+require_once('sceneindex.php');
 
 if (!defined('SCENE_DIR')) {
     /**
@@ -86,6 +85,18 @@ class GeoScene {
      * @return boolean true if a scene have been found ; otherwise, false.
      */
     private function get_local_scene () {
+        //From the index
+        $index = GeoSceneIndex::Load(SCENE_DIR);
+        if ($tpl = $index->get_local_template($this->location->global, $this->location->local)) {
+            $this->sceneFile = SCENE_DIR . '/' . $tpl;
+            return true;
+        }
+        
+        //From filename
+        $expression = $this->location->global . ' ' . $this->location->local;
+        if ($this->try_get_scene($expression)) {
+            return true;
+        }
         return false;
     }
 
@@ -185,6 +196,48 @@ class GeoScene {
             }
         }
         return false;
+    }
+    
+    /**
+     * Reads scene templates and indexes information
+     */
+    public static function index_scene_templates (&$global_templates, &$local_templates, &$updated) {
+        $global_templates = array();
+        $local_templates = array();
+        $updated = filemtime(SCENE_DIR);
+        if ($handle = opendir(SCENE_DIR)) {
+            while (false !== ($file = readdir($handle))) {
+                 if (GeoScene::get_file_extension($file) == 'tpl') {
+                    $template = file_get_contents(SCENE_DIR . '/' . $file, false, NULL, 0, 1024);
+                    $location = self::get_template_location($template);
+                    if ($location[1] == NULL) {
+                        $global_templates[$location[0]] = $file;
+                    } else {
+                        $local_templates[$location[0]][$location[1]] = $file;
+                    }
+                 }
+            }
+            closedir($handle);
+        }
+    }
+    
+    private static function get_template_location ($template) {
+        $location = array(NULL, NULL);
+        
+        //Gets global location
+        $pos1 = strpos($template, "Global location: ") + 17;
+        $pos2 = strpos($template, "\n", $pos1);
+        $location[0] = trim(substr($template, $pos1, $pos2 - $pos1));
+        
+        //Gets local location
+        $pos1 = strpos($template, "Local location: ");
+        if ($pos1 !== false) {
+            $pos1 += 16;
+            $pos2 = strpos($template, "\n", $pos1);
+            $location[1] = trim(substr($template, $pos1, $pos2 - $pos1));
+        }
+       
+        return $location;
     }
 }
 

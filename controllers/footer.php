@@ -28,7 +28,7 @@ if (!defined('NO_FOOTER_EXTRA')) {
     ///
     /// Tutorials div
     ///
-    if ($CurrentPerso->flags['hypership.reached'] < 1 && $controller != 'explore') {
+    if ($controller != 'explore' && (!array_key_exists('hypership.reached', $CurrentPerso->flags) || $CurrentPerso->flags['hypership.reached'] < 1)) {
         if (!DOJO) $smarty->display('tutorial/dojo.tpl');
         lang_load("tutorials.conf", "ReachHypership");
         $smarty->assign('controller', $controller);

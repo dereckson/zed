@@ -346,6 +346,10 @@ class GeoLocation {
                     $location[] = $place->name ? $place->name : lang_get('UnknownPlace');
                 }
                 break;
+            
+            case 'x':
+                $pt = $this->point3D->to_spherical();
+                return sprintf("(%d, %d°, %d°)", $pt[0], $pt[1], $pt[2]);
                 
             default:
                 message_die(GENERAL_ERROR, "Unknown location identifier: $type.<br />Expected: B or S.");

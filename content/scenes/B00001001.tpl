@@ -1,3 +1,7 @@
+    <!--
+    Global location: B00001001
+    -->
+
     <!-- Tower navigation and passage CSS -->
     <style>
     body {
