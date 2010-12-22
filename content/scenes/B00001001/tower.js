@@ -3,8 +3,8 @@
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     Authors:        Dereckson (tower, passage and gallery classes)
                     G. Fernandez (tv, Library classes)
-    Tags:           animation
-    Filename:       login.js
+    Tags:           animation upload presentation diaporama
+    Filename:       tower.js
     Version:        1.0
     Created:        2010-01-31
     Updated:        2010-02-23
