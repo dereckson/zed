@@ -13,12 +13,32 @@ error_reporting(E_ALL);						// see php documentation
 // try to include user configuration
 @include('user-config.inc.php');
 
+/**
+ * Gets the server URL
+ * @todo find a way to detect https:// on non standard port
+ *
+ * @return string the server URL
+ */
+function get_server_url () {
+    switch ($port = $_SERVER['SERVER_PORT']) {
+        case '80':
+            return "http://$_SERVER[SERVER_NAME]";
+
+        case '443':
+            return "https://$_SERVER[SERVER_NAME]";
+
+        default:
+            return "http://$_SERVER[SERVER_NAME]:$_SERVER[SERVER_PORT]";
+    }
+}
+
+
 // otherwise fall back to these defaults
 @define('ALWAYS_PROMPT_CREATE_PAGE', false);	// invoke the "create page" controller when trying to access a non-existing page even if the user is not logged in yet (otherwise they receive a 404)
 @define('AUTH_METHOD', 'none');			// can be digest, basic or none
 @define('AUTH_USER', 'admin');
 @define('AUTH_PASSWORD', 'changeme');
-@define('BASE_URL', 'http://zed51.dereckson.be/apps/hotglue/');
+@define('BASE_URL', get_server_url() . '/apps/hotglue/');
 @define('CACHE_TIME', 60*60);				// cache time in seconds (zero to disable)
 @define('CONTENT_DIR', 'content');			// content directory, must be writable
 @define('DEFAULT_PAGE', 'start');
