@@ -17,61 +17,121 @@
  * @link        http://scherzo.dereckson.be/doc/zed
  * @link        http://zed.dereckson.be/
  * @filesource
+ */
+
+require_once('includes/content/zone.php');
+
+//
+// Helper methods
+//
+
+/**
+ * Determines if a specified location is buildable
+ *
+ * @param GeoLocation $location the location to check
+ * @param string if the location isn't buidable, a textual description of why.
+ * @return bool true if the location is buildable ; otherwise, false
  *
  * @todo create a build.xml document to set what's buildable, and by who
  */
+function is_buildable ($location, &$error = '') {
+    //We currently allow build only in the hypership tower and core.
+    if (!$location->body->hypership) {
+        $error = "You can only invoke the HyperShip builder facilities inside the HyperShip.";
+        return false;
+    }
 
-//
-// Temporary initialization code, to allow some build during the Zed alphatest
-//
+    //if ($build_location->place->code == "001") {
+    //  //Don't allow custom builds in the corridor (T?C?)
+    //}
 
-$build_location = $CurrentPerso->location;
-$build_mode     = 'hotglue';
-if (!$build_location->body->hypership) {
-    message_die("You can only invoke the HyperShip builder facilities inside the HyperShip.");
+    if ($build_location->place->code == "003") {
+        message_die("Bays aren't buildable.");
+        return false;
+    }
+
+    return true;
 }
 
-if ($build_location->place->code == "003") {
-    message_die("Bays aren't buildable.");
-}
-
 //
-// Prepare zone
+// Determines mode and initializes resources
 //
 
-//TODO: get local zone
-include('includes/content/zone.php');
-if (true) {
-    //Gets or creates a new zone at build location
-    $zone = ContentZone::at($build_location->global, $build_location->local, true);
-    $zone->title = "Sandbox hotglue zone for $build_location->global $build_location->local";
-    $zone->type = 'hotglue';
-    $zone->save_to_database();
+switch ($build_mode = $url[1]) {
+    case 'map':
+        require_once('includes/geo/octocube.php');
+
+        $build_mode     = 'map';
+
+        //Get zones at this floor
+        if ($CurrentPerso->location->global == 'B00001002') {
+            $point = GeoPoint3D::fromString($CurrentPerso->location->local);
+            $sector = GeoOctocube::get_sector_from_point3D($point);
+            $pattern = GeoOctocube::get_rlike_pattern_from_sector($sector, $point->z);
+            $zones = ContentZone::search($CurrentPerso->location->global, $pattern, true);
+        } else {
+            message_die(GENERAL_ERROR, "Can't map this area.", "Builder :: Map");
+        }
+
+        //Template
+        define('DOJO', true);
+        $smarty->assign('zones', $zones);
+        $template = "builder_map.tpl";
+
+        break;
+
+    case '':
+    case 'hotglue':
+        //Temporary initialization code, to allow some build during the Zed alphatest
+        $build_location = $CurrentPerso->location;
+        $build_mode     = 'hotglue';
+
+        $error = '';
+        if (!is_buildable($build_location, $error)) {
+            message_die(GENERAL_ERROR, $error, "Can't build");
+        }
+
+        //Gets or creates a new zone at build location
+        $zone = ContentZone::at($build_location->global, $build_location->local, true);
+        switch ($zone->type) {
+            case 'hotglue':
+                //All rulez
+                break;
+
+            case '':
+                //New zone
+                $zone->title = "Sandbox hotglue zone for $build_location->global $build_location->local";
+                $zone->type = 'hotglue';
+                $zone->save_to_database();
+                break;
+
+            default:
+                message_die("This isn't a zone managed by hotglue.");
+        }
+        unset($error);
+
+        //Template
+        $smarty->assign('location', $build_location);
+        $smarty->assign('zone', $zone);
+        $smarty->assign('IFRAME_SRC', '/apps/hotglue/?zone_' . $zone->id . '/edit');
+        $template = 'builder_hotglue.tpl';
+        break;
+
+    default:
+        message_die(GENERAL_ERROR, "Unknown build mode: $build_mode");
 }
 
 //
 // HTML output
 //
-
 //Serves header
 $smarty->assign('PAGE_TITLE', 'Builder');
 include('header.php');
 
-//Hotglue iframe
-$smarty->assign('location', $build_location);
-$smarty->assign('zone', $zone);
-switch ($build_mode) {
-    case 'hotglue':
-        $smarty->assign('IFRAME_SRC', '/apps/hotglue/?zone_' . $zone->id . '/edit');
-        $smarty->display('builder_hotglue.tpl');
-        break;
+//Serves content
+$smarty->display($template);
 
-    default:
-        message_die(GENERAL_ERROR, "Unknown build mode: $build_mode");
-        break;
-}
-
-//Servers footer
+//Serves footer
 include('footer.php');
 
 ?>

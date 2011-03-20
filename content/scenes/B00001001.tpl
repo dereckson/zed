@@ -104,6 +104,26 @@
     #uploadDialog label {
         color: black;
     }
+
+    /* Couloir info */
+    #couloir_info {
+        background-image: url({$SCENE_URL}/{$CurrentPerso->location_global}/couloir/info.png);
+        height: 42px;
+        padding-top: 20px;
+        color: black;
+    }
+
+    #couloir_info a {
+        color: white;
+    }
+
+    #couloir_info a:hover {
+        font-weight: 900;
+    }
+
+    #domain_name {
+        margin-left: 1em;
+    }
     </style>
     
     <!-- Javascript bits: dojo -->
@@ -136,6 +156,21 @@
             <!-- Navigation -->
         </div>
     </div>
+    <div class="clear"></div>
+
+
+    <!-- Info -->
+    <div id="couloir_info">
+        <div class="grid_6 prefix_2 alpha">
+            <span id="domain_name">{#FreeDomain#}</span>
+        </div>
+        <div class="grid_6 suffix_2 omega" style="text-align: right">
+            <span id="domain_owner">{sprintf(#ClaimDomain#, '#')}</span>
+        </div>
+        <div class="clear"></div>
+    </div>
+
+    <div class="clear"></div>
     
     <!-- Upload dialog -->
     <div dojoType="dijit.Dialog" id="uploadDialog" style="display: none;" title="{#UploadNewArtwork#}">
