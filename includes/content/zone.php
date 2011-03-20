@@ -58,22 +58,30 @@ class ContentZone {
     }
 
     /**
+     * Loads the object zone (ie fill the properties) from the $row array
+     */
+    function load_from_row ($row) {
+        $this->id = $row['zone_id'];
+        $this->title = $row['zone_title'];
+        $this->type = $row['zone_type'];
+        $this->params = $row['zone_params'];
+        $this->deleted = $row['zone_deleted'] ? true : false;
+    }
+
+    /**
      * Loads the object zone (ie fill the properties) from the database
      */
     function load_from_database () {
         global $db;
         $id = $db->sql_escape($this->id);
+
         $sql = "SELECT * FROM " . TABLE_CONTENT_ZONES . " WHERE zone_id = '" . $id . "'";
         if (!$result = $db->sql_query($sql)) message_die(SQL_ERROR, 'Unable to query content_zones', '', __LINE__, __FILE__, $sql);
         if (!$row = $db->sql_fetchrow($result)) {
             $this->lastError = 'Zone unkwown: ' . $this->id;
             return false;
         }
-        $this->title = $row['zone_title'];
-        $this->type = $row['zone_type'];
-        $this->params = $row['zone_params'];
-        $this->deleted = $row['zone_deleted'] ? true : false;
-
+        $this->load_from_row($row);
         return true;
     }
 
@@ -123,7 +131,7 @@ class ContentZone {
             message_die(SQL_ERROR, "Unable to set zone location", '', __LINE__, __FILE__, $sql);
         }
     }
-    
+
     /**
      * Gets the zone at specified location
      *
@@ -136,7 +144,8 @@ class ContentZone {
         global $db;
         $g = $db->sql_escape($location_global);
         $l = $db->sql_escape($location_local);
-        $sql = "SELECT zone_id FROM " . TABLE_CONTENT_ZONES_LOCATIONS . " WHERE location_global = '$g' AND location_local = '$l'";
+        $sql = "SELECT * FROM " . TABLE_CONTENT_ZONES_LOCATIONS . " WHERE location_global = '$g' AND location_local = '$l'";
+        die($sql);
         if (!$result = $db->sql_query($sql)) {
             message_die(SQL_ERROR, "Unable to set zone location", '', __LINE__, __FILE__, $sql);
         }
@@ -149,6 +158,38 @@ class ContentZone {
         } else {
             return null;
         }
+    }
+
+    /**
+     * Gets all the zones matching the specified location queries
+     *
+     * @param string $location_global_query the global location query
+     * @param string $location_local_query the local location query
+     * @return Array a ContentZone array, with each item a zone found
+     *
+     * [SECURITY] They are passed as is in SQL [R]LIKE queries, you can't inject users expression.
+     *
+     * The following properties are added to the ContentZone items of the returned array:
+     *    - location_global
+     *    - location_local
+     */
+    static function search ($location_global_query, $location_local_query, $use_regexp_for_local = false) {
+        global $db;
+        $zones = array();
+
+        $op = $use_regexp_for_local ? 'RLIKE' : 'LIKE';
+        $sql = "SELECT * FROM " . TABLE_CONTENT_ZONES_LOCATIONS . " WHERE location_global LIKE '$location_global_query' AND location_local $op '$location_local_query'";
+
+        if (!$result = $db->sql_query($sql)) {
+            message_die(SQL_ERROR, "Unable to set zone location", '', __LINE__, __FILE__, $sql);
+        }
+        while ($row = $db->sql_fetchrow($result)) {
+            $zone = new ContentZone($row['zone_id']);
+            $zone->location_global = $row['location_global'];
+            $zone->location_local = $row['location_local'];
+            $zones[] = $zone;
+        }
+        return $zones;
     }
 }
 
