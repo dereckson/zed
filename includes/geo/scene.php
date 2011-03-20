@@ -160,7 +160,7 @@ class GeoScene {
                     } elseif ($this->location->ship) {
                         $smarty->assign("location", new GeoLocation($this->location->ship->location));
                     }
-                    
+
                     //Gets zone information
                     require_once('includes/content/zone.php');
                     if ($zone = ContentZone::at($this->location->global, $this->location->local)) {

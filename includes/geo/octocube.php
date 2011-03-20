@@ -2,13 +2,11 @@
 
 /**
  * Geo octocube class.
- * 
+ *
  * Zed. The immensity of stars. The HyperShip. The people.
- * 
+ *
  * (c) 2010, Dereckson, some rights reserved.
  * Released under BSD license.
- *
- * 0.1    2010-02-25  3:33    DcK
  *
  * @package     Zed
  * @subpackage  Geo
@@ -34,16 +32,16 @@ class GeoOctocube {
      *
      * Sector will be:
      * <code>
-     * //             _____ _____ 
+     * //             _____ _____
      * //           /  5  /  6  /|
      * //          /- - -/- - -/ |
-     * //         /_____/____ /| |    
+     * //         /_____/____ /| |
      * //        |     |     | |/|
-     * //        |  7  |  8  | / | 2  
+     * //        |  7  |  8  | / | 2
      * //        |_____|_____|/| |
      * //        |     |     | |/
      * //        |  3  |  4  | /
-     * //        |_____|_____|/ 
+     * //        |_____|_____|/
      * </code>
      *
      * @param int $x the x coordinate
@@ -54,16 +52,16 @@ class GeoOctocube {
     static function get_sector ($x, $y, $z) {
         //Cube centrum
         if ($x == 0 && $y == 0 && $z == 0) return 0;
-        
+
         //One of the 8 cubes
         $sector = 1;
         if ($x >= 0) $sector++;      //we're at right
         if ($y < 0)  $sector += 2;  //we're at bottom
         if ($z >= 0) $sector += 4; //we're on the top layer
-        
+
         return $sector;
     }
-    
+
     /**
      * Gets the sector from the (x, y, z) specified coordinates
      * @see get_sector
@@ -77,5 +75,3 @@ class GeoOctocube {
 }
 
 ?>
-
-
