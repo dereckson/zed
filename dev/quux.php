@@ -7,12 +7,20 @@
     require_once('includes/objects/message.php');
     require_once('includes/objects/invite.php');
     require_once('includes/cache/cache.php');
-        
+
     include('controllers/header.php');
-    
-    $case = 'index_scenes';
-    
+
+    $case = 'GeoPointPolarZ';
+
     switch ($case) {
+        case 'GeoPointPolarZ':
+            require_once('includes/geo/pointPolarZ.php');
+            echo "<H2>GeoPointPolarZ</H2>";
+            $point = GeoPointPolarZ::fromString("(48, 30°, 3)");
+            printf("Secteur T%dC%d, zone %d-%d");
+            dprint_r($point);
+            break;
+
         case 'index_scenes':
             $time[] = microtime();
             require_once('includes/geo/scene.php');
@@ -29,15 +37,15 @@
             dprint_r($index);
             echo '<H2>Time (ms)</H2>';
             dprint_r(1000 * ($time[1] - $time[0]));
-            dieprint_r($time);
+            dprint_r($time);
             break;
-        
+
         case 'travel':
             require_once('includes/travel/travel.php');
             $travel = Travel::load();
             dieprint_r($travel);
             break;
-        
+
         case 'spherical':
             require_once('includes/geo/galaxy.php');
             echo '<H2>Spherical coordinates test</H2>';

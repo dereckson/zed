@@ -161,6 +161,12 @@ class GeoScene {
                         $smarty->assign("location", new GeoLocation($this->location->ship->location));
                     }
 
+                    //Gets zone information
+                    require_once('includes/content/zone.php');
+                    if ($zone = ContentZone::at($this->location->global, $this->location->local)) {
+                        $smarty->assign('zone', $zone);
+                    }
+
                     $smarty->assign("SCENE_URL", defined('SCENE_URL') ? SCENE_URL : '/' . SCENE_DIR);
                     lang_load('scenes.conf', $this->location->global);
                     $smarty->display($file);
@@ -196,48 +202,6 @@ class GeoScene {
             }
         }
         return false;
-    }
-    
-    /**
-     * Reads scene templates and indexes information
-     */
-    public static function index_scene_templates (&$global_templates, &$local_templates, &$updated) {
-        $global_templates = array();
-        $local_templates = array();
-        $updated = filemtime(SCENE_DIR);
-        if ($handle = opendir(SCENE_DIR)) {
-            while (false !== ($file = readdir($handle))) {
-                 if (GeoScene::get_file_extension($file) == 'tpl') {
-                    $template = file_get_contents(SCENE_DIR . '/' . $file, false, NULL, 0, 1024);
-                    $location = self::get_template_location($template);
-                    if ($location[1] == NULL) {
-                        $global_templates[$location[0]] = $file;
-                    } else {
-                        $local_templates[$location[0]][$location[1]] = $file;
-                    }
-                 }
-            }
-            closedir($handle);
-        }
-    }
-    
-    private static function get_template_location ($template) {
-        $location = array(NULL, NULL);
-        
-        //Gets global location
-        $pos1 = strpos($template, "Global location: ") + 17;
-        $pos2 = strpos($template, "\n", $pos1);
-        $location[0] = trim(substr($template, $pos1, $pos2 - $pos1));
-        
-        //Gets local location
-        $pos1 = strpos($template, "Local location: ");
-        if ($pos1 !== false) {
-            $pos1 += 16;
-            $pos2 = strpos($template, "\n", $pos1);
-            $location[1] = trim(substr($template, $pos1, $pos2 - $pos1));
-        }
-       
-        return $location;
     }
 }
 

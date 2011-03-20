@@ -4,7 +4,7 @@
  * AJAX callbacks
  *
  * Zed. The immensity of stars. The HyperShip. The people.
- * 
+ *
  * (c) 2010, Dereckson, some rights reserved.
  * Released under BSD license.
  *
@@ -15,7 +15,7 @@
  * Standard return values:
  *  -7  user is logged but perso isn't selected,
  *  -9  user is not logged.
- * 
+ *
  * @package     Zed
  * @subpackage  EntryPoints
  * @author      Sébastien Santoro aka Dereckson <dereckson@espace-win.org>
@@ -74,7 +74,7 @@ if ($CurrentUser->id < 1000) {
     exit;
 }
 if (!$CurrentPerso) {
-    echo PERSO_NOT_SELECTED; 
+    echo PERSO_NOT_SELECTED;
     exit;
 }
 
@@ -98,7 +98,7 @@ lang_load('core.conf');
 
 /**
  * Actions class
- * 
+ *
  * Each method is called by first part of your URL, other parts are arguments
  * e.g. /do.php/validate_quux_request/52 = Actions::validate_quux_request(52);
  *
@@ -110,7 +110,7 @@ lang_load('core.conf');
 class Actions {
     /**
      * Checks the arguments hash and determines wheter it is valid.
-     * 
+     *
      * @param Array $args the arguments, the last being the hash
      * @return boolean true if the hash is valid ; otherwise, false.
      */
@@ -118,10 +118,10 @@ class Actions {
         global $Config;
         return array_pop($args) == md5($_SESSION['ID'] . $Config['SecretKey'] . implode('', $args));
     }
-    
+
     /**
      * Handles a allow/deny perso request.
-     * 
+     *
      * @param string $request_flag the request flag to clear
      * @param string $store 'perso' or 'registry'
      * @param string $key the perso flag or registry key
@@ -131,42 +131,42 @@ class Actions {
      */
     static function perso_request ($request_flag, $store, $key, $value, $hash) {
         global $CurrentPerso;
-        
+
         //Ensures we've the correct amount of arguments
         if (func_num_args() < 4) return false;
-        
+
         //Checks hash
         $args = func_get_args();
         if (!self::is_hash_valid($args)) {
             return false;
         }
-                
+
         //Sets flag
         switch ($store) {
             case 'perso':
                 $CurrentPerso->set_flag($key, $value);
                 break;
-            
+
             case 'registry':
                 registry_set($key, $value);
                 break;
-            
+
             default:
                 //Unknown storage location
                 return false;
         }
-               
+
         //Clears request flag
         if ((string)$request_flag !== "0") {
             $CurrentPerso->delete_flag($request_flag);
         }
-        
+
         return true;
     }
 
     /**
      * Sets current perso's local location.
-     * 
+     *
      * We don't require a security hash. If the users want to play with it, no problem.
      * You generally move inside a global location as you wish.
      * So, if you write a story capturing a perso, use flags to handle this escape!
@@ -176,20 +176,21 @@ class Actions {
      */
     static function set_local_location ($location_local) {
         global $CurrentPerso;
-        
+
         //Ensures we've the correct amount of arguments
         if (func_num_args() < 1) return null;
 
-        //Moves current perso to specified location        
+        //Moves current perso to specified location
+        $location_local = urldecode($location_local);
         $CurrentPerso->move_to(null, $location_local);
-        
+
         //Returns GeoLocation relevant instance
         return $CurrentPerso->location;
     }
-    
+
     /**
      * Moves the current perso's, setting a new local location.
-     * 
+     *
      * We don't require a security hash. If the users want to play with it, no problem.
      * You generally move inside a global location as you wish.
      * So, if you write a story capturing a perso, use flags to handle this escape!
@@ -208,10 +209,10 @@ class Actions {
      */
     static function local_move ($move, $factor = 1) {
         global $CurrentPerso;
-        
+
         //Ensures we've the correct amount of arguments
         if (func_num_args() < 1) return null;
-        
+
         //Parses $move
         switch ($move) {
             case 'north':
@@ -221,23 +222,23 @@ class Actions {
             case 'east':
                 $move = array(1, 0, 0);
                 break;
-                
+
             case 'south':
                 $move = array(0, -1, 0);
                 break;
-                
+
             case 'west':
                 $move = array(-1, 0, 0);
                 break;
-                
+
             case 'up':
                 $move = array(0, 0, 1);
                 break;
-            
+
             case 'down':
                 $move = array(0, 0, -1);
                 break;
-                
+
             default:
                 $move = split(',', $move, 3);
                 foreach ($move as $coordinate) {
@@ -246,24 +247,129 @@ class Actions {
                     }
                 }
         }
-        
+
         //Moves current perso to specified location
         if ($location_local = GeoPoint3D::fromString($CurrentPerso->location->local)) {
             $location_local->translate($move[0] * $factor, $move[1] * $factor, $move[2] * $factor);
             $CurrentPerso->move_to(null, $location_local->sprintf("(%d, %d, %d)"));
-            
+
             //Returns GeoLocation relevant instance
             return $CurrentPerso->location;
         }
-        
+
         //Old local location weren't a GeoPoint3D
         return null;
     }
-    
+
+    /**
+     * Moves the current perso's, setting a new local location, using polar+z coordinates.
+     * Polar+z coordinates are polar coordinates, plus a cartesian z dimension.
+     *
+     * We don't require a security hash. If the users want to play with it, no problem.
+     * You generally move inside a global location as you wish.
+     * So, if you write a story capturing a perso, use flags to handle this escape!
+     *
+     * @param string $move the move (coordinates or direction)
+     * @param int $factor a number multipling the specified move [optional]
+     * @return GeoLocation the current perso's GeoLocation object
+     *
+     * Valid moves string are cw, ccw, out, in, up and down.
+     *  r: out = +12   in  = -12
+     *  °: cw  = +20°  ccw = -20
+     * Valid moves coordinates are r,°,z (3 integers, comma as separator)
+     *                                   (the medium value can also be integer + °)
+     *
+     * e.g. to move of two units (the unit is 20°) clockwise:
+     *  polarz_local_move('cw', 2);
+     *  polarz_local_move('(0, 20°, 0)', 2);
+     *  polarz_local_move('(0, 40°, 0)');
+     * Or if you really want to use radiants (PI/9 won't be parsed):
+     *  polarz_local_move('(0, 0.6981317007977318, 0)';
+     *
+     */
+    static function polarz_local_move ($move, $factor = 1) {
+        global $CurrentPerso;
+
+        //Ensures we've the correct amount of arguments
+        if (func_num_args() < 1) return null;
+
+        //Parses $move
+        $move = urldecode($move);
+        switch ($move) {
+            case 'cw':
+                $move = array(0, '20°', 0);
+                break;
+
+            case 'ccw':
+                $move = array(0, '-20°', 0);
+                break;
+
+            case 'in':
+                $move = array(+12, 0, 0);
+                break;
+
+            case 'out':
+                $move = array(-12, 0, 0);
+                break;
+
+            case 'up':
+                $move = array(0, 0, 1);
+                break;
+
+            case 'down':
+                $move = array(0, 0, -1);
+                break;
+
+            default:
+                $move = split(',', $move, 3);
+                foreach ($move as $coordinate) {
+                    if  (!is_numeric($coordinate) && !preg_match("/^[0-9]+ *°$/", $coordinate)) {
+                        return null;
+                    }
+                }
+        }
+        dieprint_r($move);
+
+        //Moves current perso to specified location
+        if ($location_local = GeoPoint3D::fromString($CurrentPerso->location->local)) {
+            $location_local->translate($move[0] * $factor, $move[1] * $factor, $move[2] * $factor);
+            $CurrentPerso->move_to(null, $location_local->sprintf("(%d, %d, %d)"));
+
+            //Returns GeoLocation relevant instance
+            return $CurrentPerso->location;
+        }
+
+        //Old local location weren't a GeoPoint3D
+        return null;
+    }
+
+    /**
+     * Moves the current perso's, setting a new global and local location.
+     *
+     * @param string $location_global The global location
+     * @param string $location_local The local location
+     * @return GeoLocation the current perso's GeoLocation object
+     */
+    static function global_move ($location_global, $location_local = null) {
+        //Ensures we've the correct amount of arguments
+        if (func_num_args() < 1) return null;
+
+        //Checks hash
+        $args = func_get_args();
+        if (!self::is_hash_valid($args)) {
+            return false;
+        }
+
+        //Moves
+        global $CurrentPerso;
+        $CurrentPerso->move_to($location_global, $location_local);
+        return $CurrentPerso->location;
+    }
+
     /**
      * Handles upload content form.
-     * 
-     * @return string new content path  
+     *
+     * @return string new content path
      */
     static function upload_content () {
         global $CurrentPerso, $CurrentUser;
@@ -275,17 +381,17 @@ class Actions {
         $content->user_id = $CurrentUser->id;
         $content->perso_id = $CurrentPerso->id;
         $content->location_global = $CurrentPerso->location_global;
-                
+
         //Saves file
         if ($content->handle_uploaded_file($_FILES['artwork'])) {
             $content->save_to_database();
             $content->generate_thumbnail();
             return true;
         }
-        
+
         return false;
     }
-    
+
     /**
      * Gets multimedia content for the specified location
      *
@@ -301,12 +407,12 @@ class Actions {
         if (!self::is_hash_valid($args)) {
             return false;
         }
-        
+
         //Checks local location is specified somewhere (usually in $_GET)
         if (!array_key_exists('location_local', $_REQUEST)) {
             return false;
         }
-        
+
         //Gets content
         require_once('includes/objects/content.php');
         return Content::get_local_content($location_global, $_REQUEST['location_local']);
@@ -340,20 +446,20 @@ if ($_REQUEST['debug']) {
     } else {
         echo "<p>Method doesn't exist: $method</p>";
     }
-    
+
     if (array_key_exists('redirectTo', $_REQUEST)) {
         //If user JS disabled, you can add ?redirectTo= followed by an URL
         echo "<p>Instead to print a callback value, redirects to <a href=\"$_REQUEST[redirectTo]\">$_REQUEST[redirectTo]</a></p>";
-    }    
+    }
 } else {
     //Prod version doesn't prints warning <== silence operator
     if (method_exists('Actions', $method)) {
         $result = @call_user_func_array(array('Actions', $method), $args);
-        
+
         if (array_key_exists('redirectTo', $_REQUEST)) {
             //If user JS disabled, you can add ?redirectTo= followed by an URL
             header("location: " . $_REQUEST['redirectTo']);
-        } else {        
+        } else {
             echo json_encode($result);
         }
     }

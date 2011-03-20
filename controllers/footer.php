@@ -4,7 +4,7 @@
  * Footer
  *
  * Zed. The immensity of stars. The HyperShip. The people.
- * 
+ *
  * (c) 2010, Dereckson, some rights reserved.
  * Released under BSD license.
  *
@@ -23,7 +23,7 @@
  * @link        http://zed.dereckson.be/
  * @filesource
  */
-   
+
 if (!defined('NO_FOOTER_EXTRA')) {
     ///
     /// Tutorials div
@@ -34,11 +34,11 @@ if (!defined('NO_FOOTER_EXTRA')) {
         $smarty->assign('controller', $controller);
         $smarty->display('tutorial/hypership_reach.tpl');
     }
-    
+
     ///
     /// Footer options
     ///
-    
+
     $smarty->assign('MultiPerso', isset($_SESSION['UserWithSeveralPersos']) && $_SESSION['UserWithSeveralPersos']);
     $smarty->assign('SmartLinePrint', (string)$CurrentPerso->get_flag('site.smartline.show') != "0");
     $smarty->assign('SmartLineFormMethod', $CurrentPerso->get_flag('site.smartline.method'));
@@ -47,8 +47,8 @@ if (!defined('NO_FOOTER_EXTRA')) {
 ///
 /// HTML output
 ///
-    
+
 lang_load('footer.conf');
 $smarty->display('footer.tpl');
- 
+
 ?>
