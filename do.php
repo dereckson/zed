@@ -260,7 +260,112 @@ class Actions {
         //Old local location weren't a GeoPoint3D
         return null;
     }
-    
+
+    /**
+     * Moves the current perso's, setting a new local location, using polar+z coordinates.
+     * Polar+z coordinates are polar coordinates, plus a cartesian z dimension.
+     *
+     * We don't require a security hash. If the users want to play with it, no problem.
+     * You generally move inside a global location as you wish.
+     * So, if you write a story capturing a perso, use flags to handle this escape!
+     *
+     * @param string $move the move (coordinates or direction)
+     * @param int $factor a number multipling the specified move [optional]
+     * @return GeoLocation the current perso's GeoLocation object
+     *
+     * Valid moves string are cw, ccw, out, in, up and down.
+     *  r: out = +12   in  = -12
+     *  °: cw  = +20°  ccw = -20
+     * Valid moves coordinates are r,°,z (3 integers, comma as separator)
+     *                                   (the medium value can also be integer + °)
+     *
+     * e.g. to move of two units (the unit is 20°) clockwise:
+     *  polarz_local_move('cw', 2);
+     *  polarz_local_move('(0, 20°, 0)', 2);
+     *  polarz_local_move('(0, 40°, 0)');
+     * Or if you really want to use radiants (PI/9 won't be parsed):
+     *  polarz_local_move('(0, 0.6981317007977318, 0)';
+     *
+     */
+    static function polarz_local_move ($move, $factor = 1) {
+        global $CurrentPerso;
+
+        //Ensures we've the correct amount of arguments
+        if (func_num_args() < 1) return null;
+
+        //Parses $move
+        $move = urldecode($move);
+        switch ($move) {
+            case 'cw':
+                $move = array(0, '20°', 0);
+                break;
+
+            case 'ccw':
+                $move = array(0, '-20°', 0);
+                break;
+
+            case 'in':
+                $move = array(+12, 0, 0);
+                break;
+
+            case 'out':
+                $move = array(-12, 0, 0);
+                break;
+
+            case 'up':
+                $move = array(0, 0, 1);
+                break;
+
+            case 'down':
+                $move = array(0, 0, -1);
+                break;
+
+            default:
+                $move = split(',', $move, 3);
+                foreach ($move as $coordinate) {
+                    if  (!is_numeric($coordinate) && !preg_match("/^[0-9]+ *°$/", $coordinate)) {
+                        return null;
+                    }
+                }
+        }
+        dieprint_r($move);
+
+        //Moves current perso to specified location
+        if ($location_local = GeoPoint3D::fromString($CurrentPerso->location->local)) {
+            $location_local->translate($move[0] * $factor, $move[1] * $factor, $move[2] * $factor);
+            $CurrentPerso->move_to(null, $location_local->sprintf("(%d, %d, %d)"));
+
+            //Returns GeoLocation relevant instance
+            return $CurrentPerso->location;
+        }
+
+        //Old local location weren't a GeoPoint3D
+        return null;
+    }
+
+    /**
+     * Moves the current perso's, setting a new global and local location.
+     *
+     * @param string $location_global The global location
+     * @param string $location_local The local location
+     * @return GeoLocation the current perso's GeoLocation object
+     */
+    static function global_move ($location_global, $location_local = null) {
+        //Ensures we've the correct amount of arguments
+        if (func_num_args() < 1) return null;
+
+        //Checks hash
+        $args = func_get_args();
+        if (!self::is_hash_valid($args)) {
+            return false;
+        }
+
+        //Moves
+        global $CurrentPerso;
+        $CurrentPerso->move_to($location_global, $location_local);
+        return $CurrentPerso->location;
+    }
+
     /**
      * Handles upload content form.
      *
