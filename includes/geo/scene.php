@@ -149,7 +149,7 @@ class GeoScene {
                 case 'tpl':
                     global $smarty;
                     $template_dir = $smarty->template_dir;
-                    $smarty->template_dir = getcwd();
+                    $smarty->template_dir = array(getcwd(), $template_dir);
 
                     //$this->location is the object reference
                     //Some objects like the hypership move, so we also need to know where there are.
