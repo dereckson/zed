@@ -145,7 +145,6 @@ class ContentZone {
         $g = $db->sql_escape($location_global);
         $l = $db->sql_escape($location_local);
         $sql = "SELECT * FROM " . TABLE_CONTENT_ZONES_LOCATIONS . " WHERE location_global = '$g' AND location_local = '$l'";
-        die($sql);
         if (!$result = $db->sql_query($sql)) {
             message_die(SQL_ERROR, "Unable to set zone location", '', __LINE__, __FILE__, $sql);
         }
