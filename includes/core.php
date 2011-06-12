@@ -512,7 +512,7 @@ function get_url () {
     if (func_num_args() > 0) {
         $pieces = func_get_args();
         return $Config['BaseURL'] . '/' . implode('/', $pieces);
-    } elseif ($Config['BaseURL'] == "" || $Config['BaseURL'] == "/index.php") {
+    } elseif ($Config['BaseURL'] == "" || $Config['BaseURL'] == $_SERVER["PHP_SELF"]) {
         return "/";
     } else {
         return $Config['BaseURL'];
@@ -526,7 +526,7 @@ function get_url () {
  */
 function get_page_url () {
     $url = $_SERVER['SCRIPT_NAME'] . $_SERVER['PATH_INFO'];
-    if (substr($url, -10) == "/index.php") {
+    if (substr($url, -10) == $_SERVER["PHP_SELF"]) {
         return substr($url, 0, -9);
     }
     return $url;
@@ -615,7 +615,7 @@ function get_current_url () {
  */
 function get_current_url_fragments () {
     $url_source = get_current_url();
-    if ($url_source == '/index.php') return array();
+    if ($url_source == $_SERVER["PHP_SELF"]) return array();
     return explode('/', substr($url_source, 1));
 }
 

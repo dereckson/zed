@@ -34,7 +34,8 @@ require_once('includes/api/api_helpers.php');
 require_once('includes/api/cerbere.php');
 
 //Use our URL controller method if you want to mod_rewrite the API
-$url = explode('/', substr($_SERVER['PATH_INFO'], 1));
+$Config['SiteURL'] = get_server_url() . $_SERVER["PHP_SELF"];
+$url = get_current_url_fragments();
 
 switch ($module = $url[0]) {
 /*  -------------------------------------------------------------

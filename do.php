@@ -424,12 +424,8 @@ class Actions {
 /// Handles request
 ///
 
-//You really should use $_SERVER['PATH_INFO']
-//i.e. calling /do.php/your request without any mod rewrite intervention
-//
-//If you choose otherwise, uncomment and tweak one of the following lines:
-//$Config['SiteURL'] = 'http://yourserver/zed/do.php';
-//$Config['SiteURL'] = get_server_url() . '/do.php';
+//Parses URL
+$Config['SiteURL'] = get_server_url() . $_SERVER["PHP_SELF"];
 $args = get_current_url_fragments();
 
 $method = array_shift($args);
