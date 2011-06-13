@@ -55,6 +55,8 @@ define('TABLE_PROFILES_COMMENTS', $prefix . 'profiles_comments');
 define('TABLE_PROFILES_PHOTOS', $prefix . 'profiles_photos');
 define('TABLE_PROFILES_TAGS', $prefix . 'profiles_tags');
 define('TABLE_REGISTRY', $prefix . 'registry');
+define('TABLE_REQUESTS', $prefix . 'requests');
+define('TABLE_REQUESTS_REPLIES', $prefix . 'requests_replies');
 define('TABLE_SESSIONS', $prefix . 'sessions');
 define('TABLE_SHIPS', $prefix . 'ships');
 define('TABLE_USERS', $prefix . 'users');

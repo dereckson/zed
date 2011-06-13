@@ -4,16 +4,17 @@
  * Requests controller
  *
  * Zed. The immensity of stars. The HyperShip. The people.
- * 
+ *
  * (c) 2010, Dereckson, some rights reserved.
  * Released under BSD license.
  *
- * This controller allows the perso to send requests to the HyperShip, to a 
- * specified ship, or to a specify port requiring PTA.
- * It handle all the forms output, handling and notifications
+ * This controller allows the perso to send requests to the HyperShip,
+ * to a specified ship, or to a specify port requiring PTA.
+ *
+ * It handles all the forms output, handling and notifications
  * for queries from users to users.
  *
- * It handles /request URL, is called from tutoriald.
+ * It handles /request URL, is called from tutorial.
  *
  * @package     Zed
  * @subpackage  Controllers
@@ -27,7 +28,8 @@
  *
  * @todo complete requests implementation
  * @todo call this controller from Ship fly out if port is a PTA
- * @todo call this controller from HyperShip entrance pero request
+ * @todo call this controller from HyperShip entrance perso request
+ * @todo add hook to launch some events on a new request, reply or status change.
  */
 
 //
@@ -35,19 +37,42 @@
 //
 
 if (count($url) < 3) message_die(HACK_ERROR, "Expected URL: /request/code_to/code_object");
-$request->to  = $url[1];
-$request->obj = $url[2];
 
-//Checks if the request template exists
-if (!file_exists(sprintf("skins/%s/requests/%s.tpl", THEME, $request->obj))) {
-    message_die(HACK_ERROR, "$url[2] isn't a valid request object code");
-}
+//
+// Handles or print form
+//
+if (false) {
+    //Saves the request reply
+} elseif ($_POST['title'] || $_POST['message']) {
+    //Saves the request
+    require_once('includes/objects/request.php');
+    $request = new Request();
+    $request->load_from_form();
+    $request->author = $CurrentPerso->id;
+    $request->to = $url[1];
+    $request->code = $url[2];
+    $request->location_global = $CurrentPerso->location_global;
+    $request->location_local = $CurrentPerso->location_local;
+    $request->save_to_database();
 
-switch ($request->obj) {
-    case "aid.reach":
-        if ($request->to == "B00001")
-            $request->title = "Shuttle pick up request";
-        break;
+    //Confirmation
+    $template = "requests/confirm.tpl";
+} else {
+    $request->to  = $url[1];
+    $request->obj = $url[2];
+
+    //Checks if the request template exists
+    if (!file_exists(sprintf("skins/%s/requests/%s.tpl", THEME, $request->obj))) {
+        message_die(HACK_ERROR, "$url[2] isn't a valid request object code");
+    }
+
+    $template = "requests/$request->obj.tpl";
+    switch ($request->obj) {
+        case "aid.reach":
+            if ($request->to == "B00001")
+                $request->title = "Shuttle pick up request";
+            break;
+    }
 }
 
 //
@@ -61,7 +86,7 @@ include('header.php');
 
 //Serves content
 $smarty->assign('request', $request);
-$smarty->display("requests/$request->obj.tpl");
+$smarty->display($template);
 
 //Serves footer
 $smarty->assign("screen", "$url[2] request");
