@@ -25,7 +25,7 @@
       }
     }
     </script>
-    <iframe src="/apps/hotglue/?zone_{$zone->id}" width="960" height="600" id="content_iframe" frameborder="0" scrolling="no" style="margin-bottom: 1em" onload="hijacklinks(this)"></iframe>
+    <iframe src="{$HOTGLUE}?zone_{$zone->id}" width="960" height="600" id="content_iframe" frameborder="0" scrolling="no" style="margin-bottom: 1em" onload="hijacklinks(this)"></iframe>
 {else}
 <p>{#CantRender#}</p>
 {dprint_r($zone)}
