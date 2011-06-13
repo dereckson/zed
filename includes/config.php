@@ -247,4 +247,15 @@ $Config['ResourceID'] = 21;
 ini_set('session.serialize_handler', 'wddx');
 ini_set('session.save_path', CACHE_DIR . '/sessions');
 ini_set('session.gc_maxlifetime', 345600);  //4 days, for week-end story pause and continue url
+
+////////////////////////////////////////////////////////////////////////////////
+///                                                                          ///
+/// VII. Builder                                                             ///
+///                                                                          ///
+////////////////////////////////////////////////////////////////////////////////
+
+//Zed can invoke a slighty modified version of HOTGLUE to build zones.
+$Config['builder']['hotglue']['enable'] = true;
+$Config['builder']['hotglue']['URL'] = '/apps/hotglue/index.php';
+
 ?>

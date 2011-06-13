@@ -350,13 +350,13 @@ function resolve_aliases($s, $name = '')
 	$s = str_replace('$glue$', HOTGLUE_VERSION, $s);
 
     //Zed local moves
-    $s = str_replace('%NORTH', '/do.php/local_move/north?redirectTo=/', $s);
-    $s = str_replace('%EAST', '/do.php/local_move/east?redirectTo=/', $s);
-    $s = str_replace('%SOUTH', '/do.php/local_move/south?redirectTo=/', $s);
-    $s = str_replace('%WEST', '/do.php/local_move/west?redirectTo=/', $s);
-    $s = str_replace('%UP', '/do.php/local_move/up?redirectTo=/', $s);
-    $s = str_replace('%DOWN', '/do.php/local_move/down?redirectTo=/', $s);
-    $s = preg_replace('/%MOVE (.*)/', '/do.php/local_move/?redirectTo=$1?redirectTo=/', $s);
+    $s = str_replace('%NORTH', ZED_URL . '/do.php/local_move/north?redirectTo=/', $s);
+    $s = str_replace('%EAST', ZED_URL . '/do.php/local_move/east?redirectTo=/', $s);
+    $s = str_replace('%SOUTH', ZED_URL . '/do.php/local_move/south?redirectTo=/', $s);
+    $s = str_replace('%WEST', ZED_URL . '/do.php/local_move/west?redirectTo=/', $s);
+    $s = str_replace('%UP', ZED_URL . '/do.php/local_move/up?redirectTo=/', $s);
+    $s = str_replace('%DOWN', ZED_URL . '/do.php/local_move/down?redirectTo=/', $s);
+    $s = preg_replace('/%MOVE (.*)/', ZED_URL . '/do.php/local_move/?redirectTo=$1?redirectTo=/', $s);
 
 	if (!empty($name)) {
 		// current object

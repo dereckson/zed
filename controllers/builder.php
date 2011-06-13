@@ -113,7 +113,7 @@ switch ($build_mode = $url[1]) {
         //Template
         $smarty->assign('location', $build_location);
         $smarty->assign('zone', $zone);
-        $smarty->assign('IFRAME_SRC', '/apps/hotglue/?zone_' . $zone->id . '/edit');
+        $smarty->assign('IFRAME_SRC', '/apps/hotglue/index.php?zone_' . $zone->id . '/edit');
         $template = 'builder_hotglue.tpl';
         break;
 

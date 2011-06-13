@@ -22,13 +22,13 @@ error_reporting(E_ALL);						// see php documentation
 function get_server_url () {
     switch ($port = $_SERVER['SERVER_PORT']) {
         case '80':
-            return "http://$_SERVER[SERVER_NAME]";
+            return "http://$_SERVER[SERVER_NAME]/";
 
         case '443':
-            return "https://$_SERVER[SERVER_NAME]";
+            return "https://$_SERVER[SERVER_NAME]/";
 
         default:
-            return "http://$_SERVER[SERVER_NAME]:$_SERVER[SERVER_PORT]";
+            return "http://$_SERVER[SERVER_NAME]:$_SERVER[SERVER_PORT]/";
     }
 }
 
@@ -38,7 +38,8 @@ function get_server_url () {
 @define('AUTH_METHOD', 'none');			// can be digest, basic or none
 @define('AUTH_USER', 'admin');
 @define('AUTH_PASSWORD', 'changeme');
-@define('BASE_URL', get_server_url() . '/apps/hotglue/');
+@define('BASE_URL', get_server_url() . 'apps/hotglue/');
+@define('ZED_URL', '');
 @define('CACHE_TIME', 60*60);				// cache time in seconds (zero to disable)
 @define('CONTENT_DIR', 'content');			// content directory, must be writable
 @define('DEFAULT_PAGE', 'start');

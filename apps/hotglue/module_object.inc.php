@@ -78,7 +78,7 @@ function object_alter_render_late($args)
 			if (substr($html, -1) == "\n") {
 				$html = substr($html, 0, -1);
 			}
-			$html = '<a href="'.htmlspecialchars($link, ENT_COMPAT, 'UTF-8').'">'."\n\t".str_replace("\n", "\n\t", $html)."\n".'</a>'."\n";
+			$html = '<a href="'.htmlspecialchars($link, ENT_COMPAT, 'UTF-8').'" target="_parent">'."\n\t".str_replace("\n", "\n\t", $html)."\n".'</a>'."\n";
 			return true;
 		}
 	}
