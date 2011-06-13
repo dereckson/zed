@@ -147,7 +147,7 @@ class GeoScene {
                     break;
 
                 case 'tpl':
-                    global $smarty;
+                    global $smarty, $Config;
                     $template_dir = $smarty->template_dir;
                     $smarty->template_dir = array(getcwd(), $template_dir);
 
@@ -167,8 +167,14 @@ class GeoScene {
                         $smarty->assign('zone', $zone);
                     }
 
+                    //Scene-specific variables
                     $smarty->assign("SCENE_URL", defined('SCENE_URL') ? SCENE_URL : '/' . SCENE_DIR);
+                    if ($Config['builder']['hotglue']['enable']) {
+                         $smarty->assign("HOTGLUE", $Config['builder']['hotglue']['URL']);
+		    }
                     lang_load('scenes.conf', $this->location->global);
+
+                    //Displays scene, then restores regular settings
                     $smarty->display($file);
                     $smarty->template_dir = $template_dir;
                     break;
