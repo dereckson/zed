@@ -1,4 +1,4 @@
-<?php
+-<?php
 
 /**
  * Geo octocube class.
@@ -24,7 +24,7 @@
  *
  * An octocube is a cube divided in 8 parts (sliced in two in x, y and z)
  *
- * Its coordinate (0, 0, 0) is the octocube centrum.
+ * The coordinates (0, 0, 0) represents the octocube center.
  */
 class GeoOctocube {
     /**
@@ -47,10 +47,10 @@ class GeoOctocube {
      * @param int $x the x coordinate
      * @param int $y the y coordinate
      * @param int $z the z coordinate
-     * @return int the number of the sector (0 if x = y = z 0 ; otherwise, 1 to 8)
+     * @return int the number of the sector (0 if x = y = z = 0 ; otherwise, 1 to 8)
      */
     static function get_sector ($x, $y, $z) {
-        //Cube centrum
+        //Cube center
         if ($x == 0 && $y == 0 && $z == 0) return 0;
 
         //One of the 8 cubes
@@ -79,13 +79,13 @@ class GeoOctocube {
     /**
      * Gets the base vector for the specified sector
      *
-     * @param int $sector the sector number (0-8)
-     * @return array if the sector is 0, (0, 0, 0) ; otherwise, an array with three signed 1 values.
-     *
      * Example code:
      *
      * $vector = GeoOctocube::get_base_vector(4);
      * //$vector is a (1, -1, -1) array
+     *
+     * @param int $sector the sector number (0-8)
+     * @return array if the sector is 0, (0, 0, 0) ; otherwise, an array with three signed 1 values.
      */
     static function get_base_vector ($sector) {
         switch ($sector) {
@@ -108,7 +108,7 @@ class GeoOctocube {
      *
      * @param int $sector the sector number (0-8)
      * @param int $z if not null, limits the query to the specified z coordinate [optional]
-     * @return string the LIKE q[0-9]+uery
+     * @return string a SQL clause like "([0-9]+, -[0,9]+, [0,9]+)"
      */
     static function get_rlike_pattern_from_sector ($sector, $z = null) {
         if ($sector == 0) return "(0, 0, 0)";
