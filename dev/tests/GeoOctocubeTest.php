@@ -4,7 +4,7 @@
  * Unit testing : class GeoOctocube
  *
  * Zed. The immensity of stars. The HyperShip. The people.
- * 
+ *
  * (c) 2010, Dereckson, some rights reserved.
  * Released under BSD license.
  *
@@ -19,7 +19,6 @@
  * @filesource
  */
 
-require_once('PHPUnit/Framework.php');
 require_once('../../includes/geo/octocube.php');
 
 /**
