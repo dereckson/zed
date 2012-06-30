@@ -97,8 +97,8 @@ if (!$result = $db->sql_query($sql)) {
 }
 $i = 0;
 while ($row = $db->sql_fetchrow($result)) {
-    $commands[$i]->time = get_hypership_time($row['command_time']);
-    $commands[$i]->text = $row['command_text'];
+    $commands[$i]['time'] = get_hypership_time($row['command_time']);
+    $commands[$i]['text'] = $row['command_text'];
     $i++;
 }
 

@@ -8,7 +8,7 @@
                 <select id="SmartLineHistory" class="black" onChange=UpdateSmartLine()>
                     <option value="">[ {#SmartLineHistory#} ]</option>
 {foreach from=$SmartLineHistory item=command}
-                    <option value="{$command->text|escape}">{$command->time} | {$command->text|escape}</option>
+                    <option value="{$command.text|escape}">{$command.time} | {$command.text|escape}</option>
 {/foreach}
                 </select>
             </div>
