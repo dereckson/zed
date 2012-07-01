@@ -21,19 +21,21 @@
  * This class implements a singleton pattern.
  */
 
+require_once('includes/cache/cache.php');
+
 /**
  * Geo scene class
  *
  * This class provides an index of available scene template files.
  */
-class GeoSceneIndex {   
+class GeoSceneIndex {
     /**
      * Global location templates array
      *
      * Keys are global location codes.
      * Values the relevant template file.
      *
-     * @var Array 
+     * @var Array
      */
     public $global_templates;
 
@@ -46,25 +48,25 @@ class GeoSceneIndex {
      * e.g. $local_templates['B00017001']['(10, 50, 8)'] => 'B00017_port.tpl'
      *
      * @var Array
-     */    
+     */
     public $local_templates;
-    
+
     /**
      * Time of the last updated file in the scenes directory
      *
      * @var int
      */
     public $updated;
-    
+
     /**
      * The directory where templates are stored
-     * 
+     *
      * @var string
      */
     public $directory;
-    
+
     /**
-     * The current cache instance array
+     * The current index instance array
      *
      * Keys are scene directories (string)
      * Items are GeoSceneIndex instances
@@ -72,21 +74,21 @@ class GeoSceneIndex {
      * @var Array
      */
     static $instance = array();
-    
+
     /**
-     * Gets the cache instance, initializing it if needed
-     * 
-     * @return Cache the cache instance, or null if nothing is cached
+     * Gets the index instance, initializing it if needed
+     *
+     * @return index the index instance
      */
     static function load ($directory) {
         //Creates the index object if needed
         if (!array_key_exists($directory, self::$instance)) {
             self::$instance[$directory] = new GeoSceneIndex($directory);
         }
-        
+
         return self::$instance[$directory];
     }
-    
+
     /**
      * Initializes a new GeoSceneIndex istance
      *
@@ -94,9 +96,37 @@ class GeoSceneIndex {
      */
     public function __construct ($directory) {
         $this->directory = $directory;
-        $this->refresh_information();
+	if (!$this->get_cached_information() || !$this->is_up_to_date()) {
+	        $this->refresh_information();
+		$this->set_cached_information();
+	}
     }
-    
+
+    /**
+     * Caches index data
+     */
+    public function set_cached_information () {
+        $cache = Cache::load();
+        $cache->set('zed_sceneindex', serialize($this));
+    }
+
+    /**
+     * Gets index from cache
+     */
+    public function get_cached_information () {
+        $cache = Cache::load();
+	$cached_index =$cache->get('zed_sceneindex');
+	if ($index = unserialize($cache->get('zed_sceneindex'))) {
+		$index = unserialize($cache->get('zed_sceneindex'));
+		$this->global_templates = $index->global_templates;
+		$this->local_templates = $index->local_templates;
+		$this->updated = $index->updated;
+		$this->directory = $index->directory;
+		return true;
+	}
+	return false;
+    }
+
     /**
      * Reads scene templates and indexes information
      */
@@ -119,7 +149,7 @@ class GeoSceneIndex {
             closedir($handle);
         }
     }
-    
+
     /**
      * Determines if the information is still up to date
      *
@@ -128,7 +158,7 @@ class GeoSceneIndex {
     public function is_up_to_date () {
         return ($this->updated == filemtime($this->directory));
     }
-    
+
     /**
      * Gets template location
      *
@@ -138,12 +168,12 @@ class GeoSceneIndex {
      */
     private static function get_template_location ($template) {
         $location = array(NULL, NULL);
-        
+
         //Gets global location
         $pos1 = strpos($template, "Global location: ") + 17;
         $pos2 = strpos($template, "\n", $pos1);
         $location[0] = trim(substr($template, $pos1, $pos2 - $pos1));
-        
+
         //Gets local location
         $pos1 = strpos($template, "Local location: ");
         if ($pos1 !== false) {
@@ -151,7 +181,7 @@ class GeoSceneIndex {
             $pos2 = strpos($template, "\n", $pos1);
             $location[1] = trim(substr($template, $pos1, $pos2 - $pos1));
         }
-       
+
         return $location;
     }
 
@@ -161,14 +191,14 @@ class GeoSceneIndex {
      * @param string $location_global the global location
      * @param string $location_global the local location
      * @return string the relevant template scene file, or NULL if not existant
-     */    
+     */
     public function get_local_template ($location_global, $location_local) {
         if (isset($this->local_templates[$location_global][$location_local])) {
             return $this->local_templates[$location_global][$location_local];
         }
         return NULL;
     }
-    
+
     /**
      * Gets global template file from index
      *
