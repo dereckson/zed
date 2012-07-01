@@ -304,10 +304,10 @@ if ($mode == 'view') {
                     $smarty->assign('WAP', "Unknown URL. To delete a picture it's /delete/<picture id>. To edit it /edit/<picture id>");
                     break;
             }
-            
+
             if (!$template) {
                 $photos = ProfilePhoto::get_photos($profile->perso_id);
-                if (!$smarty->_tpl_vars['NOTIFY'])
+                if (!$smarty->tpl_vars['NOTIFY'])
                     $smarty->assign('NOTIFY', "Your feedback is valued. Report any bug or suggestion on the graffiti wall.");
                 $template = 'profile_photo.tpl';
             }

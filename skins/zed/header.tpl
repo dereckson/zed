@@ -17,7 +17,7 @@
     <!-- DOJO -->
     <script type="text/javascript" src="{#StaticContentURL#}/js/dojo/dojo/dojo.js" djConfig="isDebug:false, parseOnLoad: true" ></script>
 {if $DIJIT}
-    <link rel="stylesheet" type="text/css" href="{#StaticContentURL#}/css/zed/forms.css">
+    <link rel="stylesheet" type="text/css" href="{#StaticContentURL#}/css/zed/forms.css" />
 {/if}
 {/if}
 </head>
@@ -36,7 +36,7 @@
                 <div id="HypershipTime">{get_hypership_time()}</div>
             </div>
             <div class="grid_7">
-                <a href="{get_url()}"><img src="{#StaticContentURL#}/img/zed/logo.png" src="Zed logo" border=0 /></a>
+                <a href="{get_url()}"><img src="{#StaticContentURL#}/img/zed/logo.png" alt="Zed logo" border="0" /></a>
             </div>
             <div class="clear"></div>
         </div>

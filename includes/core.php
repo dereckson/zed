@@ -388,14 +388,14 @@ function get_http_accept_languages () {
  */
 function lang_load ($file, $sections = null) {
     global $smarty;
-    
+
     //Loads English file as fallback if some parameters are missing
     if (file_exists("lang/en/$file"))
-        $smarty->config_load("lang/en/$file", $sections);
-    
+        $smarty->configLoad("lang/en/$file", $sections);
+
     //Loads wanted file (if it exists and a language have been defined)
     if (defined('LANG') && LANG != 'en' && file_exists('lang/' . LANG . '/' . $file))
-        $smarty->config_load('lang/' . LANG . '/' . $file, $sections);
+        $smarty->configLoad('lang/' . LANG . '/' . $file, $sections);
 }
 
 /**

@@ -4,10 +4,10 @@
     <title>{#SiteTitle#}</title>
     <link rel="Stylesheet" href="{#StaticContentURL#}/css/zed/login.css" type="text/css" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <script src="js/login.js"></script>
-    <script src="js/misc.js"></script>
-    <script src="js/prototype.js"></script>
-    <script src="js/effects.js"></script> 
+    <script type="text/javascript" src="js/login.js"></script>
+    <script type="text/javascript" src="js/misc.js"></script>
+    <script type="text/javascript" src="js/prototype.js"></script>
+    <script type="text/javascript" src="js/effects.js"></script> 
 </head>
 <body>
     
@@ -27,7 +27,7 @@
             <input type="text" id="openid" name="openid" value="{$OpenID}" />
         </div>
         <div class="row">
-            <input type="submit" id="submit" name="LogIn" value="{#OK#}" onClick="return OnLoginSubmit(this);" />
+            <input type="submit" id="submit" name="LogIn" value="{#OK#}" onclick="return OnLoginSubmit(this);" />
         </div>
     </form>
 {if $LoginError}
@@ -71,7 +71,7 @@ Un petit aperçu de ce que l'on crée est sur http://zed.dereckson.be/tour.html
 Pour obtenir un accès, envoyez un mail à zedinvite (alt+64) dereckson.be
 en spécifiant le code suivant : {$code}
 -->
-<script>
+<script type="text/javascript">
     slide.initialize('LoginBox');
 </script>
 </body>

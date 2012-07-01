@@ -8,9 +8,9 @@
             <h2>{#AddPhotoToProfile#}</h2>
             <form name="PhotoUpload" method="post" enctype="multipart/form-data">
                 <p>{#AddPhotoExplanations#}</p>
-                <p><label>Photo{#_t#}</label> <INPUT type="file" name="photo" /></p>
-                <p><label>{#ShortDescription#}{#_t#}</label> <input type="text" maxlength="63" size="32" name="description"></p>
-                <p><INPUT type="checkbox" name="SafeForWork" id="SafeForWork" value="0" /> <label for="SafeForWork">{#SafeForWorkLabel#}</label></p>
+                <p><label>Photo{#_t#}</label> <input type="file" name="photo" /></p>
+                <p><label>{#ShortDescription#}{#_t#}</label> <input type="text" maxlength="63" size="32" name="description" /></p>
+                <p><input type="checkbox" name="SafeForWork" id="SafeForWork" value="0" /> <label for="SafeForWork">{#SafeForWorkLabel#}</label></p>
                 <p><input type="submit" value="{#Upload#}" /></p>
             </form>
         </div>
@@ -25,7 +25,7 @@
 		<ul>
                     <li><a href="{get_url('who')}/edit/profile">{#EditProfile#}</a></li>
                     <li><a href="{get_url('settings','perso')}">{#EditAccount#}</a></li>
-                    <li>{if $PICS}{#ManagePhotos#}{else}{#AddPhoto#}{/if}</a></li>
+                    <li>{if $PICS}{#ManagePhotos#}{else}{#AddPhoto#}{/if}</li>
                 </ul>
             </div>
             <div class="border_bottom"></div>

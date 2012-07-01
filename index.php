@@ -53,7 +53,7 @@ define('ACCENT', $CurrentUser->session['Skin_accent']);
 require('includes/Smarty/Smarty.class.php');
 $smarty = new Smarty();
 $current_dir = dirname(__FILE__);
-$smarty->template_dir = $current_dir . '/skins/' . THEME;
+$smarty->setTemplateDir($current_dir . '/skins/' . THEME);
 
 $smarty->compile_dir = CACHE_DIR . '/compiled';
 $smarty->cache_dir = CACHE_DIR;

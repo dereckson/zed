@@ -37,7 +37,7 @@
                             value="{$user->longname}"
                             dojoType="dijit.form.ValidationTextBox"
                             required="false"
-                            onChange="document.getElementById('UserLongname').innerHTML = document.getElementById('longname').value;";
+                            onchange="document.getElementById('UserLongname').innerHTML = document.getElementById('longname').value;";
                     />
                 </div> 
                 <div class="row">
@@ -55,7 +55,7 @@
                             value="{$user->email}"
                             dojoType="dijit.form.ValidationTextBox"
                             required="false" 
-                            onChange="javascript:updateMail(arguments[0]);"
+                            onchange="javascript:updateMail(arguments[0]);"
                     />
                 </div>
                 <div class="row">

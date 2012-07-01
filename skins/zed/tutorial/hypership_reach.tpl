@@ -24,6 +24,6 @@
 {else}
         <p>{sprintf(#WhereYouAre#, $CurrentPerso->where(), lang_get($CurrentPerso->location->body_kind))}</p>
         <p>{#WhereTheHypershipIs#}</p>
-        <p>{#HowToJoinIt#}</p>
+        {#HowToJoinIt#}
 {/if}
     </div>

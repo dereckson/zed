@@ -5,7 +5,7 @@
 {if $SmartLineHistory}
             <!-- SmartLine history -->
             <div class="grid_4 left alpha">
-                <select id="SmartLineHistory" class="black" onChange=UpdateSmartLine()>
+                <select id="SmartLineHistory" class="black" onchange="UpdateSmartLine()">
                     <option value="">[ {#SmartLineHistory#} ]</option>
 {foreach from=$SmartLineHistory item=command}
                     <option value="{$command.text|escape}">{$command.time} | {$command.text|escape}</option>
@@ -18,7 +18,7 @@
             <!-- SmartLine line -->
             <div class="grid_16 alpha omega left" style="width: 100.2%">
 {/if}
-                <input name="C" type="text" id="SmartLineBar" maxlength=255 class="black" style="text-align: left;">
+                <input name="C" type="text" id="SmartLineBar" maxlength="255" class="black" style="text-align: left;" />
             </div>
         </form>
     </div>
