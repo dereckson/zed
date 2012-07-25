@@ -12,19 +12,19 @@
                     dimensions.js
     -------------------------------------------------------------    */
 
-var tour = {           
+var tour = {
     //Default language
     lang: "en",
-    
+
     //Translated in
     langs: "en,fr",
-    
+
     //Current highlight showed
     current: -1,
-    
+
     //File extension
     extension: "png",
-    
+
     //Highlights files and position
     //File: /img/tour/{filename}.{extension}
     highlights: [
@@ -33,13 +33,17 @@ var tour = {
                  ["play", 22, 345],
                  ["explore", 325, 373]
                 ],
-    
+
+    //Highlight order
+    //[0, 1, 3, 2] is a counterwise move
+    order: [0, 1, 3, 2],
+
     //The center x, y coordinate
     //It's used to determinate what highlight to print
     center: [368, 390],
-    
+
     //Gets the highlight index, from position
-    where: function(x, y) {
+    where: function (x, y) {
         if (x < this.center[0]) {
             //We're at left from center point
             return (y < this.center[1]) ? 0 : 2;
@@ -48,26 +52,26 @@ var tour = {
             return (y < this.center[1]) ? 1 : 3;
         }
     },
-    
+
     //Determines if we're inside the #Tour id
     isInside: function (pageX, pageY) {
         var tourOffset = $("#Tour").offset();
         return pageX >= tourOffset.left && pageY >= tourOffset.top
-        && pageX <= tourOffset.left + $("#Tour").width()
-        && pageY <= tourOffset.top + $("#Tour").height();
+            && pageX <= tourOffset.left + $("#Tour").width()
+            && pageY <= tourOffset.top + $("#Tour").height();
     },
-    
+
     //Shows the highlight at specified the page position
     showAt: function (pageX, pageY) {
         var tourOffset = $("#Tour").offset();
         this.show(
-            this.where(pageX - tourOffset.left , pageY - tourOffset.top)
+            this.where(pageX - tourOffset.left, pageY - tourOffset.top)
         );
     },
-    
+
     //Shows the specified highlight
     show: function (i) {
-        if (this.current != i) {
+        if (this.current !== i) {
             var filename = this.highlights[i][0] + "_" + this.lang + "." + this.extension;
             var code = '<img src="img/tour/' +  filename + '" alt="' + this.highlights[i][0] + '" />';
             $('#TourHighlight').empty().html(code);
@@ -77,7 +81,7 @@ var tour = {
             this.current = i;
         }
     },
-    
+
     //Hides highlight
     hideall: function () {
         if (this.current > -1) {
@@ -85,27 +89,29 @@ var tour = {
             $('#TourHighlight').empty();
         }
     },
-    
+
     //Runs the animation
     run: function (delay) {
-        //Highlight order
-        //[0, 1, 3, 2] is a counterwise move
-        var order = [0, 1, 3, 2];
-                        
         //Prints first hightlight
-        this.show(order[0]);
-        
+        this.show(this.order[0]);
+
         //Prints next highlights
-        n = this.highlights.length;
-        for (i = 1 ; i < n ; i++) {
-            setTimeout('tour.show(' + order[i] + ')', delay * i);
+        var n = this.highlights.length;
+        for (var i = 1 ; i < n ; i++) {
+            //TODO: avoid eval call here
+            setTimeout('tour.show(' + tour.order[i] + ')', delay * i);
         }
-        
+
         //Prints back the first, and enables rollover
-        setTimeout('tour.show(' + order[0] + ')', delay * n);
-        setTimeout('tour.enableRollover()', delay * n);
+        setTimeout(tour.switchToInteractiveMode, delay * n);
     },
-               
+
+    //Prints back the first, and enables rollover
+    switchToInteractiveMode: function () {
+       tour.show(tour.order[0]);
+       tour.enableRollover();
+    },
+
     //Enables rollovers
     enableRollover: function () {
         //Enables panel on click
@@ -114,41 +120,40 @@ var tour = {
                 tour.showAt(e.pageX, e.pageY);
             } else {
                 tour.hideall();
-            }             
+            }
         });
-    },            
-    
+    },
+
     //Gets client language (Firefox) or preferences content language (IE)
     getLanguage: function () {
         var lang = navigator.language;
-        if (lang == undefined) lang = navigator.userLanguage;
-        if (lang == undefined) return "";
-        
+        if (lang === undefined) { lang = navigator.userLanguage; }
+        if (lang === undefined) { return ""; }
+
         //fr-be -> fr
         var pos = lang.indexOf('-');
-        if (pos > -1) lang = lang.substring(0, pos);
-        
+        if (pos > -1) { lang = lang.substring(0, pos); }
+
         return lang.toLowerCase();
     },
-    
+
     //Initializes tour
     init: function () {
         //Tries to localize
         var lang = this.getLanguage();
-        if (this.langs.indexOf(lang) > -1) this.lang = lang;
-        
+        if (this.langs.indexOf(lang) > -1) { this.lang = lang; }
+
         //Runs tour animation
         //The rollover will be enabled at anim end
         this.run(900);
-        
+
         //Makes the tour clickable
         $('#Tour').bind("click", function(e) {
             document.location.href = "/";
         });
     }
-}
-        
-$(document).ready(function() {
-  tour.init();    
-});
+};
 
+$(document).ready(function() {
+  tour.init();
+});
