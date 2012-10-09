@@ -96,10 +96,10 @@ class GeoSceneIndex {
      */
     public function __construct ($directory) {
         $this->directory = $directory;
-	if (!$this->get_cached_information() || !$this->is_up_to_date()) {
-	        $this->refresh_information();
-		$this->set_cached_information();
-	}
+        if (!$this->get_cached_information() || !$this->is_up_to_date()) {
+                $this->refresh_information();
+                $this->set_cached_information();
+        }
     }
 
     /**
