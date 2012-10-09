@@ -76,50 +76,20 @@ if ($CurrentUser->id < 1000) {
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
-/// Perso selector
+/// Perso (=character) selector
 ///
 
 //Handles form
 if ($_POST['form'] == 'perso.create') {
-    $perso = new Perso();
-    $perso->load_from_form();
-    $perso->user_id = $CurrentUser->id;
-
-    //Validates forms
-    if (!$perso->name) $errors[] = lang_get("NoFullnameSpecified");
-    if (!$perso->race) {
-        $errors[] = lang_get("NoRaceSpecified");
-        $perso->race = "being";
-    }
-    if (!$perso->sex) $errors[] = lang_get("NoSexSpecified");
-    if (!$perso->nickname) {
-        $errors[] = lang_get("NoNicknameSpecified");
-    } else if (!Perso::is_available_nickname($perso->nickname)) {
-        $errors[] = lang_get("UnavailableNickname");
-    }
-
-    //Save or prints again forms
-    if (!$errors) {
-        //Saves perso, logs in
-        $perso->save_to_database();
+    $perso = null; $errors = array();
+    if (Perso::create_perso_from_form($CurrentUser, $perso, $errors)) {
+        //Notifies and logs in
         $smarty->assign('NOTIFY', lang_get('NewCharacterCreated'));
         $CurrentPerso = $perso;
         set_info('perso_id', $perso->id);
         $CurrentPerso->set_flag("site.lastlogin", $_SERVER['REQUEST_TIME']);
-
-        //Notifies inviter
-        require_once('includes/objects/message.php');
-        require_once('includes/objects/invite.php');
-        $message = new Message();
-        $message->from = 0;
-        $message->to = invite::who_invited($perso->id);
-        $message->text =  sprintf(
-            lang_get('InvitePersoCreated'),
-            $perso->name,
-            get_server_url() . get_url('who', $perso->nickname)
-        );
-        $message->send();
     } else {
+        //Prints again perso create form, so the user can fix it
         $smarty->assign('WAP', join("<br />", $errors));
         $smarty->assign('perso', $perso);
     }
@@ -130,10 +100,10 @@ if ($_GET['action'] == 'perso.logout' && $CurrentPerso != null) {
     $CurrentPerso->on_logout();
     $CurrentPerso = null;
 } elseif ($_GET['action'] == 'perso.select') {
-    //User have selected a perso
+    //User has selected a perso
     $CurrentPerso = new Perso($_GET['perso_id']);
     if ($CurrentPerso->user_id != $CurrentUser->id) {
-        //Hack
+        //User have made an error in the URL
         message_die(HACK_ERROR, "This isn't your perso.");
     }
     $CurrentPerso->on_select();
