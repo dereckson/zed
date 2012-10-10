@@ -194,7 +194,8 @@ switch ($controller = $url[0]) {
         break;
 
     default:
-        //TODO: returns a 404 error
+        //TODO: returns a prettier 404 page
+        header("Status: 404 Not Found");
         dieprint_r($url, 'Unknown URL');
 }
 
