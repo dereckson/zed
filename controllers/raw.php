@@ -51,13 +51,13 @@
 //
 
 //Serves header
-$smarty->assign('PAGE_TITLE', $title);à 
-include('header.php'); 
+$smarty->assign('PAGE_TITLE', $title);
+include('header.php');
 
 //Serves content
 $smarty->display('raw.tpl');
 
 //Serves footer
 include('footer.php');
- 
+
 ?>
