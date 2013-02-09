@@ -62,30 +62,36 @@ class Ship {
             if (preg_match("/^S[0-9]{5}$/", $id)) {
                 $id = substr($id, 1);
             }
-            
+
             $this->id = $id;
             $this->load_from_database();
         }
     }
-    
+
     /**
      * Initializes a new Ship instance if needed or gets already available one.
-     * 
+     *
      * @param mixed $data ship ID
      * @return Ship the ship instance
      */
     static function get ($data = null) {
         if ($data !== null) {
+            if (preg_match("/^S[0-9]{5}$/", $id)) {
+                $id = substr($data, 1);
+            } else {
+                $id = $data;
+            }
+
             //Checks in the hashtable if we already have loaded this instance
-            if (array_key_exists($data, self::$hashtable)) {
+            if (array_key_exists($id, self::$hashtable)) {
                 return self::$hashtable[$data];
             }
         }
-        
+
         $ship = new Ship($data);
         return $ship;
     }
-    
+
     /**
      * Loads the object Ship (ie fill the properties) from the $_POST array
      */
@@ -116,7 +122,7 @@ class Ship {
         $this->description = $row['ship_description'];
         
         
-        //Puts object in hashtables
+        //Puts object in hashtable
         self::$hashtable[$this->id] = $this;
         
         return true;
@@ -181,7 +187,7 @@ class Ship {
         }
         return $ships;
     }
-    
+
     /*
      * ----------------------------------------------------------------------- *
      *  Helper methods                                                  

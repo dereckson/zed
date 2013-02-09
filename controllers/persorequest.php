@@ -28,7 +28,6 @@
  * @link        http://zed.dereckson.be/
  * @filesource
  *
- * @todo move the get_ship function to a Ship::from_code method
  * @todo Document the request system in the API documentation
  */
 
@@ -59,20 +58,6 @@ class PersoRequest {
         $this->message = $message;
         $this->flag = $flag;
     }
-}
-
-/**
- * Gets ship from specified S00001 code
- * 
- * @param string $ship_code the ship code (e.g. S00001)
- * @return Ship the Ship class instance
- */
-function get_ship ($ship_code) {
-    require_once('includes/objects/ship.php');
-    static $ships;
-    $ship_id = substr($ship_code, 1);
-    if (!$ships[$ship_id]) $ships[$ship_id] = new Ship($ship_id);
-    return $ships[$ship_id];
 }
 
 /**
@@ -123,17 +108,18 @@ foreach ($CurrentPerso->flags as $flag => $value) {
     if ($value && substr($flag, 0, 8) == "request.") {
         if (string_starts_with($flag, 'request.api.ship.auth.')) {
             //Gets ship
-            
+            require_once('include/objects/ship.php');
             $ship_code = substr($flag, 22);
-            $ship = get_ship($ship_code);
+            $ship = Ship::get($ship_code);
 
             //Adds request
             $message = sprintf(lang_get('RequestShipAPIAuthenticate'), $ship->name);
             $requests[] = new PersoRequest($flag, $message, substr($flag, 8));
         } elseif (string_starts_with($flag, 'request.api.ship.session.')) {
             //Gets ship
+            require_once('include/objects/ship.php');
             $ship_code = substr($flag, 25, 6);
-            $ship = get_ship($ship_code);
+            $ship = Ship::get($ship_code);
 
             //Adds request
             $message = sprintf(lang_get('RequestShipAPISessionConfirm'), $ship->name);
