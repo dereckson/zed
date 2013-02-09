@@ -52,6 +52,8 @@ class Perso {
 
     public $flags;
 
+    public $lastError;
+
     public static $hashtable_id = array();
     public static $hashtable_name = array();
 
@@ -68,7 +70,9 @@ class Perso {
                 $this->nickname = $data;
             }
 
-            $this->load_from_database();
+            if (!$this->load_from_database()) {
+                message_die(GENERAL_ERROR, $this->lastError, "Can't authenticate perso");
+            }
         } else {
             $this->generate_id();
         }
