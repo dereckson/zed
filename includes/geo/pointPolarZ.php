@@ -337,7 +337,7 @@ class GeoPointPolarZ implements IteratorAggregate {
      * Calculates the section number the specified angle belongs
      *
      * @param $angle float The natural angle in degree (North 0°, East 90°, etc. clockwise)
-     * @param int $count the number of sections
+     * @param int $count the number of sections (default value: 6)
      * @return $int the section number
      */
     static function calculate_section ($angle, $count = 6) {

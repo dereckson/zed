@@ -82,7 +82,7 @@ class GeoPlace {
      */
     function load_from_database () {
         global $db;
-        $sql = "SELECT * FROM geo_places WHERE place_id = '" . $this->id . "'";
+        $sql = "SELECT * FROM " . TABLE_PLACES . " WHERE place_id = '" . $this->id . "'";
         if ( !($result = $db->sql_query($sql)) ) message_die(SQL_ERROR, "Unable to query geo_places", '', __LINE__, __FILE__, $sql);
         if (!$row = $db->sql_fetchrow($result)) {
             $this->lastError = "place unkwown: " . $this->id;
@@ -135,7 +135,7 @@ class GeoPlace {
         $location_local_format = $db->sql_escape($this->location_local_format);
 
         //Updates or inserts
-        $sql = "REPLACE INTO geo_places (`place_id`, `body_code`, `place_code`, `place_name`, `place_description`, `place_status`, `location_local_format`) VALUES ($id, '$body_code', '$code', '$name', '$description', '$status', '$location_local_format')";
+        $sql = "REPLACE INTO " . TABLE_PLACES . " (`place_id`, `body_code`, `place_code`, `place_name`, `place_description`, `place_status`, `location_local_format`) VALUES ($id, '$body_code', '$code', '$name', '$description', '$status', '$location_local_format')";
         if (!$db->sql_query($sql)) {
             message_die(SQL_ERROR, "Unable to save", '', __LINE__, __FILE__, $sql);
         }
@@ -174,7 +174,7 @@ class GeoPlace {
      */
     static function from_code ($code) {
         global $db;        
-        $sql = "SELECT * FROM geo_places WHERE CONCAT('B', body_code, place_code) LIKE '$code'";
+        $sql = "SELECT * FROM " . TABLE_PLACES . " WHERE CONCAT('B', body_code, place_code) LIKE '$code'";
         if (!$result = $db->sql_query($sql)) message_die(SQL_ERROR, "Unable to query geo_places", '', __LINE__, __FILE__, $sql);
         if (!$row = $db->sql_fetchrow($result)) {
             return null;
@@ -208,7 +208,7 @@ class GeoPlace {
      */
     static function get_start_location () {
         global $db;
-        $sql = "SELECT CONCAT('B', body_code, place_code) FROM geo_places WHERE FIND_IN_SET('start', place_status) > 0 ORDER BY rand() LIMIT 1";
+        $sql = "SELECT CONCAT('B', body_code, place_code) FROM " . TABLE_PLACES . " WHERE FIND_IN_SET('start', place_status) > 0 ORDER BY rand() LIMIT 1";
         return $db->sql_query_express($sql);
     }
 }
