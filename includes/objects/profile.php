@@ -24,7 +24,7 @@
  */
 
 /**
- * Port class
+ * Profile class
  *
  * This class maps the profiles table.
  *
