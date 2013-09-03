@@ -61,7 +61,7 @@ define('TABLE_SESSIONS', $prefix . 'sessions');
 define('TABLE_SHIPS', $prefix . 'ships');
 define('TABLE_USERS', $prefix . 'users');
 define('TABLE_USERS_INVITES', $prefix . 'users_invites');
-define('TABLE_USERS_OPENID', $prefix . 'users_openid');
+define('TABLE_USERS_AUTH', $prefix . 'users_auth');
 
 //Geo tables
 define('TABLE_BODIES', $prefix . 'geo_bodies');

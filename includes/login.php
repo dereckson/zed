@@ -1,13 +1,13 @@
-﻿<?php
+<?php
 
 /**
  * Login/logout
  *
  * Zed. The immensity of stars. The HyperShip. The people.
- * 
+ *
  * (c) 2010, Dereckson, some rights reserved.
  * Released under BSD license.
- * 
+ *
  * @package     Zed
  * @subpackage  Keruald
  * @author      Sébastien Santoro aka Dereckson <dereckson@espace-win.org>
@@ -25,7 +25,6 @@
 require_once('Auth/OpenID/Consumer.php');
 require_once('Auth/OpenID/FileStore.php');
 
-
 /**
  * Gets an Auth_OpenID_Consumer instance
  *
@@ -36,7 +35,7 @@ function get_openid_consumer () {
         //We don't have a reliable source of random numbers
         define('Auth_OpenID_RAND_SOURCE', null);
     }
-   
+
     $fs = new Auth_OpenID_FileStore(CACHE_DIR . '/openid');
     return new Auth_OpenID_Consumer($fs);
 }
@@ -50,8 +49,8 @@ function get_openid_consumer () {
 function openid_login ($url) {
     global $db, $_SESSION, $LoginError, $LoginSuccessful;
     $url = $db->sql_escape($url);
-    $sql = 'SELECT user_id FROM ' . TABLE_USERS_OPENID
-          . " WHERE openid_url LIKE '$url'";
+    $sql = 'SELECT user_id FROM ' . TABLE_USERS_AUTH
+          . " WHERE auth_type = 'OpenID' AND auth_identity LIKE '$url'";
     if ($user_id = $db->sql_query_express($sql)) {
         $sql = "UPDATE " . TABLE_SESSIONS . " SET user_id = '$user_id' WHERE session_id LIKE '$_SESSION[ID]'";
         if (!$db->sql_query($sql)) message_die(SQL_ERROR, "Can't update session table", '', __LINE__, __FILE__, $sql);
@@ -68,7 +67,7 @@ $action = isset($_GET['action']) ? $_GET['action'] : '';
 if ($action == 'openid.login') {
     //Gets Auth_OpenID_Consumer instance
     $consumer = get_openid_consumer();
-    
+
     //Completes the OpenID transaction
     $reply = $consumer->complete(get_server_url() . $_SERVER['REQUEST_URI']);
     if ($reply->status == Auth_OpenID_SUCCESS) {
@@ -80,13 +79,13 @@ if ($action == 'openid.login') {
 	$LoginError = "[OpenID] $reply->message";
     } else {
         $LoginError = "[OpenID] $reply->status";
-    }    
+    }
 } elseif (isset($_POST['LogIn'])) {
     //User have filled login form
-    if ($_POST['openid']) {        
+    if ($_POST['openid']) {
         //Gets Auth_OpenID_Consumer instance
         $consumer = get_openid_consumer();
-            
+
         //Starts the OpenID transaction and redirects user to provider url
         if ($request = $consumer->begin($_POST['openid'])) {
             $url = $request->redirectURL(get_server_url(), "$Config[SiteURL]/?action=openid.login", false);
@@ -109,7 +108,7 @@ if ($action == 'openid.login') {
             } else {
                 login($row[user_id], $Login);
                 $LoginSuccessful = true;
-            }				
+            }
         } else {
             //Idiot proof facility
             //Redirects people using login page as invitation claim page

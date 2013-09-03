@@ -39,7 +39,7 @@ if ($value) {
                 <get>
 <![CDATA[
 global $db, $CurrentUser;
-$sql = "SELECT openid_url FROM users_openid WHERE user_id = $CurrentUser->id LIMIT 1";
+$sql = "SELECT auth_identity FROM " . TABLE_USERS_AUTH . " WHERE auth_type = 'OpenID' AND user_id = $CurrentUser->id LIMIT 1";
 return $db->sql_query_express($sql);
 ]]>
                 </get>
@@ -47,7 +47,7 @@ return $db->sql_query_express($sql);
 <![CDATA[
 global $db, $CurrentUser, $smarty;
 $openid = $db->sql_escape($value);
-$sql = "SELECT user_id FROM users_openid WHERE openid_url LIKE '$openid'";
+$sql = "SELECT user_id FROM users_auth WHERE auth_type = 'OpenID' AND auth_identity LIKE '$openid'";
 if ($user_id = $db->sql_query_express($sql)) {
     if ($user_id == $CurrentUser->id) {
         $smarty->assign('WAP', "This OpenID is already linked to your account.");
