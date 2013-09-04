@@ -1,7 +1,7 @@
 #!/usr/local/bin/tclsh8.5
 #
 # php-autoload-generator
-# (c) Sébastien Santoro aka Dereckson, 2010, some rights reserved.
+# (c) SÃ©bastien Santoro aka Dereckson, 2010-2013, some rights resrved.
 # Released under BSD license
 #
 # Last version of the code can be fetch at:
@@ -36,9 +36,7 @@ set config(templateAfter) "
     if (array_key_exists(\$className, \$classes)) {
         require_once(\$classes\[\$className]);
     }
-}
-
-?>"
+}"
 
 #The line format, for %%lines%%
 set config(templateClassLine) {    $classes['%%class%%'] = '%%file%%';}
@@ -56,12 +54,12 @@ proc find_scripts {directory} {
       if {[file type $i] == "directory" && ![is_ignored_directory $i]} {
          lappend dirs $i
       } elseif {[file extension $i] == ".php"} {
-         find_classes $i
+         find_objects $i
       }
    }
    foreach subdir $dirs {
       #Adds a white line as a separator, then the classes in this dir
-      puts " "
+      puts ""
       find_scripts $subdir
    }
    
@@ -76,12 +74,18 @@ proc add_class {script class} {
    puts $line
 }
 
-#Find classes in the file
+#Find objects like classes or interfaces in the file
 #Thanks to Richard Suchenwirth for its glob-r code snippet this proc is forked
-proc find_classes {file} {
+proc find_objects {file} {
    set fp [open $file]
    while {[gets $fp line] >= 0} {
       set pos1 [string first "class " $line]
+      if {$pos1 == -1} {
+         set pos1 [string first "interface " $line]
+         set len 10
+      } {
+         set len 6
+      }
       set pos2 [string first " \{" $line $pos1]
       set pos3 [string first " implements" $line $pos1]
       set pos4 [string first " extends" $line $pos1]
@@ -95,7 +99,7 @@ proc find_classes {file} {
          } else {
             set pos $pos2
          }
-         set class [string range $line [expr $pos1 + 6] [expr $pos - 1]]
+         set class [string range $line [expr $pos1 + $len] [expr $pos - 1]]
          
          add_class $file $class
       }
@@ -125,5 +129,5 @@ if {$argc > 0} {
 }
 
 puts $config(templateBefore)
-find_scripts $directory
+find_scripts $directory/includes
 puts $config(templateAfter)
