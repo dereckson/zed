@@ -5,6 +5,10 @@
  */
 function __autoload ($className) {
     //Classes
+    $classes['IAuthentication'] = './includes/auth/IAuthentication.php';
+    $classes['UserPasswordAuthentication'] = './includes/auth/UserPasswordAuthentication.php';
+    $classes['YubiCloudAuthentication'] = './includes/auth/YubiCloudAuthentication.php';
+
     $classes['Cache'] = './includes/cache/cache.php';
     $classes['CacheMemcached'] = './includes/cache/memcached.php';
     $classes['CacheVoid'] = './includes/cache/void.php';

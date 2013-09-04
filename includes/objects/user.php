@@ -39,6 +39,9 @@ class User {
     public $email;
     public $regdate;
 
+    public static $hashtable_id = array();
+    public static $hashtable_name = array();
+
     /**
      * Initializes a new instance
      *
@@ -49,6 +52,30 @@ class User {
             $this->id = $id;
             $this->load_from_database();
         }
+    }
+
+    /**
+     * Initializes a new User instance if needed or get already available one.
+     *
+     * @param mixed $data user ID or name
+     * @return User the user instance
+     */
+    static function get ($data = null) {
+        if ($data) {
+            //Checks in the hashtables if we already have loaded this instance
+            if (is_numeric($data)) {
+                if (array_key_exists($data, User::$hashtable_id)) {
+                    return User::$hashtable_id[$data];
+                }
+            } else {
+                if (array_key_exists($data, User::$hashtable_name)) {
+                    return User::$hashtable_name[$data];
+                }
+            }
+        }
+
+        $user = new User($data);
+        return $user;
     }
 
     /**
@@ -80,6 +107,11 @@ class User {
         $this->actkey = $row['user_actkey'];
         $this->email = $row['user_email'];
         $this->regdate = $row['user_regdate'];
+
+        //Puts object in hashtables
+        Perso::$hashtable_id[$this->id] = $this;
+        Perso::$hashtable_name[$this->name] = $this;
+
         return true;
     }
 

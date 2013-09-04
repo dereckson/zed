@@ -237,13 +237,19 @@ $Config['cache']['engine'] = 'void';
 
 ////////////////////////////////////////////////////////////////////////////////
 ///                                                                          ///
-/// VI. Sessions                                                             ///
+/// VI. Sessions and authentication code                                     ///
 ///                                                                          ///
 ////////////////////////////////////////////////////////////////////////////////
 
 //If you want to use a common table of sessions / user handling
 //with several websites, specify a different resource id for each site.
 $Config['ResourceID'] = 21;
+
+//Enable YubiKey authentication
+//API 12940
+//For YubiCloud API key - create yours at https://upgrade.yubico.com/getapikey/
+//$Config['YubiCloud']['ClientID']  = 12345;
+//$Config['YubiCloud']['SecretKey'] = 'Base64SecretKeyHere';
 
 //PHP variables
 ini_set('session.serialize_handler', 'wddx');

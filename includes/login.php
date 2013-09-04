@@ -18,9 +18,12 @@
  * @link        http://zed.dereckson.be/
  * @filesource
  *
- * @todo reenable OpenID
  * @todo Pick between DumbStore and FileStore and cleans the file accordingly.
  */
+
+///
+/// OpenID helper code
+///
 
 require_once('Auth/OpenID/Consumer.php');
 require_once('Auth/OpenID/FileStore.php');
@@ -62,6 +65,10 @@ function openid_login ($url) {
     }
 }
 
+///
+/// Login procedural code
+///
+
 $action = isset($_GET['action']) ? $_GET['action'] : '';
 
 if ($action == 'openid.login') {
@@ -95,38 +102,47 @@ if ($action == 'openid.login') {
             $LoginError = 'Invalid OpenID URL.';
         }
     } else {
-        //GESTION LOGIN
-        $Login = $_POST['username'];
-        $sql = "SELECT user_password, user_id FROM " . TABLE_USERS . " WHERE username = '$Login'";
-        if ( !($result = $db->sql_query($sql)) ) message_die(SQL_ERROR, "Impossible d'interroger le listing des utilisateurs", '', __LINE__, __FILE__, $sql);
-        if ($row = $db->sql_fetchrow($result)) {
-            if (!$row['user_password']) {
-                $LoginError = "This account exists but haven't a password defined. Use OpenID or contact dereckson (at) espace-win.org to fix that.";
-            } elseif ($row['user_password'] != md5($_POST['password'])) {
-                //PASS NOT OK
-                $LoginError = "Incorrect password.";
-            } else {
-                login($row[user_id], $Login);
-                $LoginSuccessful = true;
-            }
-        } else {
-            //Idiot proof facility
-            //Redirects people using login page as invitation claim page
-            $code = $db->sql_escape($_POST['password']);
-            $sql = "SELECT * FROM " . TABLE_USERS_INVITES . " WHERE invite_code = '$code'";
-            if (!$result = $db->sql_query($sql)) {
-                message_die(SQL_ERROR, "Can't get invites", '', __LINE__, __FILE__, $sql);
-            }
-            if ($row = $db->sql_fetchrow($result)) {
-                $url = get_url('invite', $_POST['password']);
-                header('location: ' . $url);
-            }
-            
-            //Login not found
-            $LoginError = "Login not found.";
+        //Login
+
+	//Authentications way, the user/password in last.
+	//OpenID is handled by a separate logic.
+	$Login = $_POST['username'];
+        $authentications = array();
+	if ($useYubiCloud = array_key_exists('YubiCloud', $Config) ) {
+	    $authentications[] = new YubiCloudAuthentication($_POST['password'], $Login);
+	}
+        if ($Login) {
+	    $authentications[] = new UserPasswordAuthentication($Login, $_POST['password']);
+	}
+
+	$loginSuccessful = false;
+	foreach ($authentications as $authentication) {
+	    if ($authentication->isValid()) {
+		$loginSuccessful = true;
+		//Logs in user
+		login($authentication->getUserID(), $Login);
+	    } else {
+		$loginError = $authentication->getError();
+	    }
+	    if (!$authentication->canTryNextAuthenticationMethod()) {
+		break;
+	    }
+	}
+
+	//Tests if the password wouldn't match an invite code
+        //If so, redirects people using login page as invitation claim page
+        if (!$LoginSuccessful) {
+	    $code = $db->sql_escape($_POST['password']);
+	    $sql = "SELECT * FROM " . TABLE_USERS_INVITES . " WHERE invite_code = '$code'";
+	    if (!$result = $db->sql_query($sql)) {
+		message_die(SQL_ERROR, "Can't get invites", '', __LINE__, __FILE__, $sql);
+	    }
+	    if ($row = $db->sql_fetchrow($result)) {
+		$url = get_url('invite', $_POST['password']);
+		header('location: ' . $url);
+	    }
         }
     }
 } elseif (isset($_POST['LogOut']) || $action == "user.logout") {
     Logout();
 }
-?>
