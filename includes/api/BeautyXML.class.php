@@ -81,6 +81,7 @@ class BeautyXML {
      * @param int $level the ident level, ie the number of identation to prepend the string with
      */
     function ident (&$str, $level) {
+        $spaces = '';
         $level--;
         for ($a = 0; $a < $level; $a++) 
             $spaces .= $this->how_to_ident;
