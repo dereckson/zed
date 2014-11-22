@@ -177,7 +177,7 @@ function x ($amount) {
  * It behaves like the print_r command, but the output is enclosed in pre tags,
  * to have a preformatted HTML output.
  *
- * @param mixed The expression to be printed
+ * @param mixed $expression The expression to be printed
  */
 function dprint_r ($expression) {
 	echo '<pre>';
