@@ -1,4 +1,4 @@
-﻿    <!-- Calls dojo -->
+    <!-- Calls dojo -->
     <script src="/js/dojo/dojo/dojo.js" type="text/javascript"
             djConfig="isDebug: false, parseOnLoad: true"></script>
     <script type="text/javascript">

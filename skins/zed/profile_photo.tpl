@@ -1,4 +1,4 @@
-﻿    <!-- Add a photo -->
+    <!-- Add a photo -->
     <div class="grid_11 alpha profile">
         <div class="profile_id clearfix">
             <h1 class="profile_nick" id="UserLongname">{$USERNAME}</h1>
