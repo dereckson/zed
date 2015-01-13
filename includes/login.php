@@ -24,9 +24,11 @@
 ///
 /// OpenID helper code
 ///
-
-require_once('Auth/OpenID/Consumer.php');
-require_once('Auth/OpenID/FileStore.php');
+$useOpenID = isset($Config['OpenID']) && $Config['OpenID'];
+if ($useOpenID) {
+    require_once('Auth/OpenID/Consumer.php');
+    require_once('Auth/OpenID/FileStore.php');
+}
 
 /**
  * Gets an Auth_OpenID_Consumer instance
@@ -72,11 +74,17 @@ function openid_login ($url) {
 $action = isset($_GET['action']) ? $_GET['action'] : '';
 
 if ($action == 'openid.login') {
-    //Gets Auth_OpenID_Consumer instance
-    $consumer = get_openid_consumer();
+    //Gets Auth_OpenID_Consumer instance, completes the OpenID transaction
+    //and processes the result.
 
-    //Completes the OpenID transaction
+    if (!$useOpenID()) {
+        header("Status: 403 Forbidden");
+        die("OpenID disabled.");
+    }
+
+    $consumer = get_openid_consumer();
     $reply = $consumer->complete(get_server_url() . $_SERVER['REQUEST_URI']);
+
     if ($reply->status == Auth_OpenID_SUCCESS) {
         openid_login($reply->endpoint->claimed_id);
     } elseif ($reply->message) {
@@ -89,7 +97,7 @@ if ($action == 'openid.login') {
     }
 } elseif (isset($_POST['LogIn'])) {
     //User have filled login form
-    if ($_POST['openid']) {
+    if ($_POST['openid'] && $useOpenID) {
         //Gets Auth_OpenID_Consumer instance
         $consumer = get_openid_consumer();
 

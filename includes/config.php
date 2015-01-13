@@ -245,6 +245,9 @@ $Config['cache']['engine'] = 'void';
 //with several websites, specify a different resource id for each site.
 $Config['ResourceID'] = 21;
 
+//Enable OpenID authentication
+//$Config['OpenID'] = true;
+
 //Enable YubiKey authentication
 //API 12940
 //For YubiCloud API key - create yours at https://upgrade.yubico.com/getapikey/
