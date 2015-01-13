@@ -225,15 +225,25 @@ define('CACHE_DIR', 'cache');
  * data from heavy database queries, or frequently accessed stuff.
  *
  * To use memcached:
- *    - $Config['cache']['engine'] = 'memcached';
- *    - $Config['cache']['server'] = 'localhost';
- *    - $Config['cache']['port']   = 11211;
+ *    - $Config['cache']['engine']   = 'memcached';
+ *    - $Config['cache']['server']   = 'localhost';
+ *    - $Config['cache']['port']     = 11211;
+ *
+ * For SASL authentication, add also:
+ *    - $Config['cache']['SASL']     = true;
+ *    - $Config['cache']['username'] = 'username';
+ *    - $Config['cache']['password'] = 'password';
  *
  * To disable cache:
  *    - $Config['cache']['engine'] = 'void';
  *    (or don't write nothing at all)
  */
-$Config['cache']['engine'] = 'void';
+$Config['cache']['engine']   = 'memcached';
+$Config['cache']['server']   = 'localhost';
+$Config['cache']['port']     = 11211;
+$Config['cache']['SASL']     = true;
+$Config['cache']['username'] = 'zed';
+$Config['cache']['password'] = 'zed';
 
 ////////////////////////////////////////////////////////////////////////////////
 ///                                                                          ///

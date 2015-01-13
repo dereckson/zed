@@ -10,9 +10,15 @@
 
     include('controllers/header.php');
 
-    $case = 'YubiCloud';
+    $case = 'memcached';
 
     switch ($case) {
+        case 'memcached':
+            $cache = Cache::Load();
+            $cache->set('quux', 'Lorem ipsum dolor');
+            dprint_r($cache->get('quux'));
+            break;
+
         case 'YubiCloud':
             require_once('Auth/Yubico.php');
             echo '<h2>YubiKey</h2>';
