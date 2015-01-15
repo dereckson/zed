@@ -4,14 +4,14 @@
  * Cron
  *
  * Zed. The immensity of stars. The HyperShip. The people.
- * 
+ *
  * (c) 2010, Dereckson, some rights reserved.
  * Released under BSD license.
  *
  * This file contains tasks to execute periodically.
  * When editing this file, ensure it works from the command line, so it's
  * possible to run it from a crontab calling PHP CLI.
- * 
+ *
  * @package     Zed
  * @subpackage  Utilities
  * @author      Sébastien Santoro aka Dereckson <dereckson@espace-win.org>

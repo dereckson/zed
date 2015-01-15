@@ -18,22 +18,22 @@
 var slide = {
     //The element to slide
     element:        null,
-    
+
     //The slider height
     height:         120,
-    
+
     //Let's track where we are
     currentHeight:  null,
-    
+
     //Down step pixels each iteration
     step:           5,
 
-    //Time in ms between 2 iteration        
+    //Time in ms between 2 iteration
     interval:       1,
-    
+
     //Time before to start
     startDelay:     250,
-    
+
     //Moves the element at current iteration
     move:           function () {
         //Get current slider height
@@ -47,7 +47,7 @@ var slide = {
 
         //Sets the margin
         $(this.element).setStyle("margin-top: -" + this.currentHeight + "px;");
-        
+
         //Next move
         if (this.currentHeight > 0) {
             setTimeout('slide.move()', this.interval);
@@ -56,7 +56,7 @@ var slide = {
         }
 
     },
-    
+
     //When we've finished the move, what to do?
     end:            function () {
         //Er... nothing for now.
@@ -64,7 +64,7 @@ var slide = {
         if (errorElement != null)
             Effect.Pulsate(errorElement);
     },
-    
+
     //Start position, timer setup
     initialize:     function (elementId) {
         this.element = document.getElementById(elementId);
@@ -109,7 +109,7 @@ function OnLoginSubmit (submitButton) {
         Effect.Puff(errorElement);
     }
     Effect.Puff(submitButton);
-    
+
     //We can submit
     return true;
 }

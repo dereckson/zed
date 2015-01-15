@@ -4,7 +4,7 @@
  * MOTD
 
  * Zed. The immensity of stars. The HyperShip. The people.
- * 
+ *
  * (c) 2010, Dereckson, some rights reserved.
  * Released under BSD license.
  *
@@ -45,12 +45,12 @@ if ($_REQUEST['text']) {
 
 //Serves header
 $smarty->assign('PAGE_TITLE', lang_get('PushMessage'));
-include('header.php'); 
+include('header.php');
 
 //Serves content
 $smarty->display('motd_add.tpl');
 
 //Servers footer
 include('footer.php');
- 
+
 ?>

@@ -4,12 +4,12 @@
  * Content location class
  *
  * Zed. The immensity of stars. The HyperShip. The people.
- * 
+ *
  * (c) 2010, Dereckson, some rights reserved.
  * Released under BSD license.
  *
  * 0.1    2010-12-03  2:58    Forked from Content class
-  * 
+  *
  * @package     Zed
  * @subpackage  Content
  * @author      Sébastien Santoro aka Dereckson <dereckson@espace-win.org>
@@ -34,19 +34,19 @@
  * This class allows to get or set the content_id at this
  * (global, local, k) location.
  *
- * This class also provides a static helper method to 
+ * This class also provides a static helper method to
  * get local content from a specific location.
  */
 class ContentLocation {
-    
+
 /*  -------------------------------------------------------------
     Properties
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -    */
-   
+
     public $location_global = null;
     public $location_local  = null;
     public $location_k      = null;
-    
+
     public $content_id;
 
 /*  -------------------------------------------------------------
@@ -55,7 +55,7 @@ class ContentLocation {
 
     /**
      * Initializes a new ContentLocation instance
-     * 
+     *
      * @param string $location_global the global location
      * @param string $location_local the local location
      * @param int $location_k the item indice for the specified location
@@ -71,10 +71,10 @@ class ContentLocation {
             $this->location_k = self::get_free_location_k($location_global, $location_local);
         }
     }
-    
+
     /**
      * Returns a string representation of current Content instance
-     * 
+     *
      * @return string the content title or path if title is blank.
      */
     function __toString () {
@@ -83,7 +83,7 @@ class ContentLocation {
         $location_k = $this->location_k ? $this->location_k : '?';
         return "($location_global, $location_local, $location_k)";
     }
-    
+
 /*  -------------------------------------------------------------
     Load/save class
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -    */
@@ -105,7 +105,7 @@ class ContentLocation {
         $this->load_from_row($row);
         return true;
     }
-    
+
     /**
      * Loads the object from row
      */
@@ -115,13 +115,13 @@ class ContentLocation {
         $this->location_local = $row['location_local'];
         $this->location_k = $row['location_k'];
     }
-    
+
     /**
      * Saves to database
      */
     function save_to_database () {
         global $db;
-                
+
         $location_global = "'" . $db->sql_escape($this->location_global) . "'";
         $location_local = "'" . $db->sql_escape($this->location_local) . "'";
         $location_k = "'" . $db->sql_escape($this->location_k) . "'";
@@ -131,14 +131,14 @@ class ContentLocation {
         if (!$db->sql_query($sql))
             message_die(SQL_ERROR, "Can't save content location", '', __LINE__, __FILE__, $sql);
     }
-    
+
 /*  -------------------------------------------------------------
     Helper methods
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -    */
-    
+
     /**
      * Gets the next k free value for the specified location
-     * 
+     *
      * @param string $location_global the global location
      * @param string $location_local the local location
      *
@@ -153,7 +153,7 @@ class ContentLocation {
         $row = $db->sql_fetchrow($result);
         return $row[0];
     }
-    
+
     /**
      * Deletes this content location from the database
      */
@@ -165,10 +165,10 @@ class ContentLocation {
         if (!$db->sql_query($sql))
             message_die(SQL_ERROR, "Can't delete current content location", '', __LINE__, __FILE__, $sql);
     }
-    
+
     /**
      * Moves the content into new location
-     * 
+     *
      * @param string $location_global the target global location
      * @param string $location_local the target local location
      * @param int $location_k the target local content indice [facultative]
@@ -177,13 +177,13 @@ class ContentLocation {
         if ($this->content_id) {
             $this->delete();
         }
-        
+
         if ($location_k) {
             $this->location_k =  $location_k;
         } else {
             $this->location_k = self::get_free_location_k($location_global, $location_local);
         }
-        
+
         if ($this->content_id) {
             $this->save_to_database();
         }
@@ -192,10 +192,10 @@ class ContentLocation {
 /*  -------------------------------------------------------------
     Gets content
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -    */
-    
+
     /**
      * Gets content at specified location
-     * 
+     *
      * @param string $location_global global content location
      * @param string $location_local   local content location
      * @return Array array of ContentFile instances
@@ -207,13 +207,13 @@ class ContentLocation {
 
         //Get contents at this location
         $location_global = $db->sql_escape($location_global);
-        $location_local  = $db->sql_escape($location_local);        
+        $location_local  = $db->sql_escape($location_local);
 
         $sql = "SELECT c.* FROM content c WHERE c.location_global = '$location_global' AND c.location_local = '$location_local' ORDER BY location_k ASC";
         if (!$result = $db->sql_query($sql)) {
             message_die(SQL_ERROR, "Can't get content", '', __LINE__, __FILE__, $sql);
         }
-        
+
         //Fills content array
         $contents = array();
         while ($row = $db->sql_fetchrow($result)) {
@@ -221,10 +221,10 @@ class ContentLocation {
             $contents[$k] = new ContentFile();
             $contents[$k]->load_from_row($row);
         }
-        
+
         return $contents;
     }
 
 }
-    
+
 ?>

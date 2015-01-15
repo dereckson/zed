@@ -30,7 +30,7 @@ var map = {
      * @returns An array [x, y, z]
      */
     get_coordinates: function (expr) {
-        var coordinates = expr.substring(1, expr.length - 1).split(', '); 
+        var coordinates = expr.substring(1, expr.length - 1).split(', ');
         return [parseInt(coordinates[0]), parseInt(coordinates[1]), parseInt(coordinates[2])];
     },
 
@@ -61,7 +61,7 @@ var map = {
             if (location == map.zones[i][0]) {
                 return '<span class="zone zone-edit" id="zone-' + map.zones[i][1] + '" onMouseOut="map.reset_info()" onMouseOver="map.set_info(\'' + location + '\')" onClick="map.menu_edit(\'' + location + '\', ' + map.zones[i][1] + ');"><img src="/img/map/map-kub-top.png" alt="Built" /></span>';
             }
-        } 
+        }
         return '<span class="zone zone-build" onMouseOut="map.reset_info()" onMouseOver="map.set_info(\'' + location + '\')" onClick="map.menu_build(\'' + location + '\');"><img src="/img/map/map-kub-top-build.png" alt="Build" /></span>';
     },
 

@@ -1,9 +1,9 @@
-<?php 
+<?php
 /**
  * Story hook class :: spatioport
  *
  * Zed. The immensity of stars. The HyperShip. The people.
- * 
+ *
  * (c) 2010, Dereckson, some rights reserved.
  * Released under BSD license.
  *
@@ -37,35 +37,35 @@ $class = 'SpatioportStoryHook';
 class SpatioportStoryHook extends StoryHook {
     /**
      * The spatioport location
-     * 
+     *
      * @var GeoLocation
      */
     public $location;
 
     /**
      * The spatioport global location
-     * 
+     *
      * @var string
-     */    
+     */
     public $location_global;
-    
+
     /**
      * The spatioport local location
-     * 
+     *
      * @var string
-     */    
+     */
     public $location_local;
-    
-    
+
+
     /**
      * Updates and gets the current section choices
-     * 
+     *
      * @param Array $links The story links
-     */    
+     */
     function get_choices_links (&$links) {
         //$links[] = array('Examiner les vaisseaux', get_url('port','ships'));
     }
-    
+
     /**
      * Initializes instance location properties
      */
@@ -74,7 +74,7 @@ class SpatioportStoryHook extends StoryHook {
         $this->location_local  = $this->section->location_local;
         $this->location = new GeoLocation($this->location_global, $this->location_local);
     }
-    
+
     /**
      * Appends ship list to the story description
      */
@@ -90,7 +90,7 @@ class SpatioportStoryHook extends StoryHook {
             }
             echo "\n</ul>";
         }
-        
+
         $ships = $this->get_ships_in_space();
         if (count($ships)) {
             echo "\n<h2>In orbit</h2>";
@@ -104,10 +104,10 @@ class SpatioportStoryHook extends StoryHook {
             echo "\n</ul>";
         }
     }
-  
+
     /**
      * Get ships in the spatioports
-     * 
+     *
      * @param string $location_global global location
      * @param string $location_local local location
      * @return array The ships in the spatioport
@@ -115,17 +115,17 @@ class SpatioportStoryHook extends StoryHook {
     private function get_ships () {
         return Ship::get_ships_at($this->location_global, $this->location_local);
     }
-  
-  
+
+
     /**
      * Get ships in the space surrounding the spatioport
-     * 
+     *
      * @param string $location_global global location
      * @param string $location_local local location
      * @return array The ships in the space around the spatioport
-     */  
+     */
     private function get_ships_in_space () {
-        return Ship::get_ships_at($this->location_global, null); 
+        return Ship::get_ships_at($this->location_global, null);
     }
 }
 

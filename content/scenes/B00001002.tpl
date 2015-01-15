@@ -12,7 +12,7 @@
     <div class="grid_7 omega" style="text-align: right; margin-bottom: 1em;">
         {#Level#} <span id="level">{abs($z)}</span>
     </div>
-    
+
     <div class="clear"></div>
 {if $zone}
 {if $zone->type == "hotglue"}
@@ -38,12 +38,12 @@
         </div>
         <div class="grid_6 omega">
             <p><a href="{get_url('builder')}">{#StartBuild#}</a></p>
-            
+
             <p><a href="{get_url('do.php')}/local_move/0,1,0?redirectTo=/">{#GoNorth#}</a><br />
             <a href="{get_url('do.php')}/local_move/1,0,0?redirectTo=/">{#GoEast#}</a><br />
             <a href="{get_url('do.php')}/local_move/0,-1,0?redirectTo=/">{#GoSouth#}</a><br />
             <a href="{get_url('do.php')}/local_move/-1,0,0?redirectTo=/">{#GoWest#}</a></p>
-            
+
             <p><a href="{get_url('do.php')}/local_move/0,0,1?redirectTo=/">{#GoUp#}</a><br />
             <a href="{get_url('do.php')}/local_move/0,0,-1?redirectTo=/">{#GoDown#}</a></p>
 

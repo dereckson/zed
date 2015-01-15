@@ -15,11 +15,11 @@
             </form>
         </div>
     </div>
-    
+
     <div class="grid_5 omega">
         <div class="sidebar_border"></div>
         <div id="sidebar" style="min-height: inherit;">
-            <div class="border_top"></div>		
+            <div class="border_top"></div>
             <div class="sidebar_content">
 		<h2>{#EditMyPage#}</h2>
 		<ul>
@@ -31,7 +31,7 @@
             <div class="border_bottom"></div>
         </div>
     </div>
-    
+
 {if $PICS}
 <!-- Manage current photos -->
 <div class="grid_16 alpha omega profile_comments">

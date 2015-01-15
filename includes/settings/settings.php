@@ -4,7 +4,7 @@
  * Settings
  *
  * Zed. The immensity of stars. The HyperShip. The people.
- * 
+ *
  * (c) 2010, Dereckson, some rights reserved.
  * Released under BSD license.
  *
@@ -35,21 +35,21 @@ require_once("page.php");
  * XML document.
  */
 class Settings {
-    
+
     /**
      * The file path
-     * 
+     *
      * @var string
      */
     public $file;
-    
+
     /**
      * A collection of SettingsPage items
-     * 
+     *
      * @var Array
      */
     public $pages;
-    
+
     /**
      * Initializes a new instance of Settings class
      *
@@ -61,7 +61,7 @@ class Settings {
             message_die(GENERAL_ERROR, "$xmlFile not found.", "Settings load error");
         }
         $this->file = $xmlFile;
-        
+
         //Parses it
         $this->parse();
     }
@@ -75,7 +75,7 @@ class Settings {
         foreach ($xml->page as $page) {
             //Gets page
             $page = SettingsPage::from_xml($page);
-                        
+
             //Adds to sections array
             $this->pages[$page->id] = $page;
         }

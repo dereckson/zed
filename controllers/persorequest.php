@@ -45,7 +45,7 @@ class PersoRequest {
     public $store = 'perso';
     public $value_allow = 1;
     public $value_deny  = 0;
-    
+
     /**
      * Initialies a perso request
      *
@@ -62,7 +62,7 @@ class PersoRequest {
 
 /**
  * Gets request allow URL
- * 
+ *
  * @param PersoRequest $request the perso request to confirm
  * @return string the URL to allow the request
  */
@@ -72,7 +72,7 @@ function get_request_allow_url ($request) {
 
 /**
  * Gets request deny URL
- * 
+ *
  * @param PersoRequest $request the perso request to confirm
  * @return string the URL to deny the request
  */
@@ -82,7 +82,7 @@ function get_request_deny_url ($request) {
 
 /**
  * Gets request URL
- * 
+ *
  * @param string $store 'perso' or 'registry'
  * @param string $key the perso flag or registry key
  * @param string $value the value to store
@@ -141,26 +141,26 @@ foreach ($CurrentPerso->flags as $flag => $value) {
 if (count($requests) == 0) {
     //If site.requests flag is at 1 but we don't have request, ignore processing
     $CurrentPerso->set_flag('site.requests', 0);
-    
+
     //We don't die, so next controller takes relay
-} else {   
+} else {
     ///
     /// HTML output
     ///
-    
+
     //Serves header
     define('DOJO', true);
     $smarty->assign('PAGE_TITLE', lang_get('PersoRequests'));
-    include('header.php'); 
-    
+    include('header.php');
+
     //Serves content
     $smarty->assign('requests', $requests);
     $smarty->display('persorequests.tpl');
-    
+
     //Serves footer
     $smarty->assign("screen", "Perso requests");
     include('footer.php');
-    
+
     //Dies
     exit;
 }

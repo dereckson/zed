@@ -6,10 +6,10 @@
  * This file allows to see if the SOAP server is operationnal.
  *
  * Zed. The immensity of stars. The HyperShip. The people.
- * 
+ *
  * (c) 2010, Dereckson, some rights reserved.
  * Released under BSD license.
- * 
+ *
  * @package     Zed
  * @subpackage  Pazaak
  * @author      Sébastien Santoro aka Dereckson <dereckson@espace-win.org>

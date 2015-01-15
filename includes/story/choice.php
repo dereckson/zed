@@ -4,10 +4,10 @@
  * Story choice.
  *
  * Zed. The immensity of stars. The HyperShip. The people.
- * 
+ *
  * (c) 2010, Dereckson, some rights reserved.
  * Released under BSD license.
- * 
+ *
  * @package     Zed
  * @subpackage  Story
  * @author      Sébastien Santoro aka Dereckson <dereckson@espace-win.org>
@@ -40,18 +40,18 @@
 class StoryChoice {
     /**
      * The section key this choices links to
-     * 
+     *
      * @var string
      */
     public $goto;
-    
+
     /**
      * The choice text
      *
      * @var string
      */
     public $text;
-    
+
     /**
      * The choice GUID
      *
@@ -63,7 +63,7 @@ class StoryChoice {
      * @var string
      */
     public $guid;
-    
+
     /**
      * Constructor
      */
@@ -74,34 +74,34 @@ class StoryChoice {
 
     /**
      * Gets the story text as a string representation of the class
-     * 
+     *
      * @return string The story text
-     */    
+     */
     function __toString () {
         return $this->text;
     }
-    
+
     /**
      * Initializes a new instance of StoryChoice class from a XML element
-     * 
+     *
      * @param SimpleXMLElement the xml element to parse
      * @return StoryChoice the story choice class
      */
     static function from_xml ($xml) {
         $choice = new StoryChoice();
-        
+
         //Parses attribute
         foreach ($xml->attributes() as $key => $value) {
             switch ($key) {
                 case 'goto':
                     $choice->$key = (string)$value;
                     break;
-    
+
                 default:
                     message_die(GENERAL_ERROR, "Unknown attribute: $key = \"$value\"", "Story error");
             }
         }
-        
+
         //Parses content
         $choice->text = (string)$xml;
 

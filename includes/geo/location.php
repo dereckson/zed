@@ -4,7 +4,7 @@
  * Geo location class.
  *
  * Zed. The immensity of stars. The HyperShip. The people.
- * 
+ *
  * (c) 2010, Dereckson, some rights reserved.
  * Released under BSD license.
  *
@@ -43,9 +43,9 @@ class GeoLocation {
      * An array of strings containing location data.
      *
      * In the current class implementation,
-     * the first element is the global location 
+     * the first element is the global location
      * and the second element is the local location.
-     * 
+     *
      * @var Aray
      */
     private $data;
@@ -58,10 +58,10 @@ class GeoLocation {
      *
      * Otherwise, its value is null.
      *
-     * @var GeoBody 
+     * @var GeoBody
      */
     public $body = null;
-    
+
     /**
      * A place object
      *
@@ -69,18 +69,18 @@ class GeoLocation {
      * ie if $this->data[0][0] == 'B' && strlen($this->data[0]) == 9
      *
      * Otherwise, its value is null.
-     * 
-     * @var GeoPlace 
+     *
+     * @var GeoPlace
      */
     public $place = null;
 
     /**
      * A point identified by x, y, z coordinates
-     * 
+     *
      * @var GeoPoint3D
-     */    
+     */
     public $point3D = null;
-    
+
     /**
      * A ship object
      *
@@ -88,11 +88,11 @@ class GeoLocation {
      * ie if $this->data[0][0] == 'S'
      *
      * Otherwise, its value is null.
-     * 
+     *
      * @var Ship
      */
     public $ship = null;
-    
+
     /**
      * Initializes a new location instance
      *
@@ -113,7 +113,7 @@ class GeoLocation {
             if (count($coords) == 3) {
                 $this->data[0] = $global;
             } else {
-                throw new Exception("Invalid expression: $global");    
+                throw new Exception("Invalid expression: $global");
             }
         } else {
             global $db;
@@ -126,15 +126,15 @@ class GeoLocation {
             }
             throw new Exception("Invalid expression: $global");
         }
-        
+
         //TODO: handle $local in a better way: from the global location, gets
         //a local location handler. Or a some inheriance, like a class
         //HypershipGeoLocation extending GeoLocation.
         if ($local !== null) $this->data[1] = $local;
-        
+
         $this->load_classes();
     }
-    
+
     /**
      * Gets $place, $body and $ship instances if they're needed
      */
@@ -142,7 +142,7 @@ class GeoLocation {
         //No data, no class to load
         if (!count($this->data))
             return;
-        
+
         //Loads global classes
         $global = $this->data[0];
         $code = substr($global, 1, 5);
@@ -151,17 +151,17 @@ class GeoLocation {
                 switch (strlen($global)) {
                     case 9:
                         $this->place = GeoPlace::from_code($global);
-                        
+
                     case 6:
                         $this->body = new GeoBody($code);
                         break;
                 }
                 break;
-            
+
             case 'S':
                 $this->ship = new Ship($code);
                 break;
-            
+
             case 'x':
                 $coords = sscanf($global, "xyz: [%d, %d, %d]");
                 if (count($coords) == 3) {
@@ -170,42 +170,42 @@ class GeoLocation {
                 break;
         }
     }
-    
+
     /**
      * Magic method called when a unknown property is get.
-     * 
+     *
      * Handles $global, $local, $type, $body_code, $ship_code, $place_code,
      *         $body_kind, $containsGlobalLocation, $containsLocalLocation.
      */
     function __get ($variable) {
         switch ($variable) {
             /* main variables */
-            
+
             case 'global':
                 return $this->data[0];
                 break;
-            
+
             case 'local':
                 return (count($this->data) > 1) ? $this->data[1] : null;
                 break;
-            
+
             /* global location */
-            
+
             case 'type':
                 return $this->data[0][0];
-            
+
             case 'body_code':
                 if ($this->data[0][0] == 'B') {
                     return substr($this->data[0], 1, 5);
                 }
                 return null;
-            
+
             case 'place_code':
                 if ($this->data[0][0] == 'B') {
                     return substr($this->data[0], 6, 3);
                 }
                 return null;
-            
+
             case 'ship_code':
                 if ($this->data[0][0] == 'S') {
                     return substr($this->data[0], 1, 5);
@@ -224,29 +224,29 @@ class GeoLocation {
 
             case 'containsGlobalLocation':
                 return count($this->data) > 0;
-            
+
             case 'containsLocalLocation':
                 return count($this->data) > 1;
-            
+
             default:
                 throw new Exception("Unknown variable: $variable");
-                break;                
+                break;
         }
     }
-    
+
     /**
      * Checks if the place exists
      *
      * @return bool true if the place exists ; otherwise, false.
-     * 
+     *
      * @todo handles alias
      */
     function exists () {
         $n = count($this->data);
-        
+
         //If not defined, it doesn't exist
         if ($n == 0) return false;
-        
+
         //Checks global location
         switch ($this->data[0][0]) {
             case 'B':
@@ -255,29 +255,29 @@ class GeoLocation {
                         if (!$place = GeoPlace::from_code($this->data[0]))
                             return false;
                         break;
-                        
+
                     case 6:
                         $body = new GeoBody(substr($this->data[0], 1));
                         if ($body->lastError) return false;
                         break;
-                        
+
                     default:
                         message_die(GENERAL_ERROR, "Invalid global location expression size: " . $this->data[0], "GeoLocation exists method", __LINE__, __FILE__);
-                        
+
                 }
                 break;
-            
+
             case 'S':
                 $ship = new Ship(substr($this->data[0], 1));
                 if ($body->lastError) return false;
                 break;
-            
+
             default:
                 message_die(GENERAL_ERROR, "Invalid global location expression size: " . $this->data[0], "GeoLocation exists method", __LINE__, __FILE__);
                 return false;
         }
 
-        
+
         if ($n > 1) {
             if (!isset($place)) {
                 message_die(GENERAL_ERROR, "Can't check if a local place exists for the following location: " . $this->data[0], "GeoLocation exists method", __LINE__, __FILE__);
@@ -286,10 +286,10 @@ class GeoLocation {
                 return false;
             }
         }
-        
+
         return true;
     }
-    
+
     /**
      * Checks if the place is equals at the specified expression or place
      *
@@ -299,7 +299,7 @@ class GeoLocation {
      */
     function equals ($expression) {
         //Are global location equals?
-        
+
         //TODO: create a better set of rules to define when 2 locations are equa l.
         if (is_a($expression, 'GeoLocation')) {
             if (!$this->equals($expression->data[0])) {
@@ -311,17 +311,17 @@ class GeoLocation {
         }
 
         if ($expression == $this->data[0]) return true;
-        
+
         $n1 = strlen($expression);
         $n2 = strlen($this->data[0]);
-       
+
         if ($n1 > $n2) {
             return substr($expression, 0, $n2) == $this->data[0];
         }
-        
+
         return false;
     }
-    
+
     /**
      * Represents the current location instance as a string
      *
@@ -330,54 +330,54 @@ class GeoLocation {
     function __toString () {
         if (!$this->data[0])
             return "";
-        
+
         switch ($this->data[0][0]) {
             case 'S':
                 $ship = new Ship($this->ship_code);
                 $location[] = $ship->name;
                 break;
-                
+
             case 'B':
                 $body = new GeoBody($this->body_code);
                 $location[] = $body->name ? $body->name : lang_get('UnknownBody');
-                
+
                 if (strlen($this->data[0]) == 9) {
                     $place = GeoPlace::from_code($this->data[0]);
                     $location[] = $place->name ? $place->name : lang_get('UnknownPlace');
                 }
                 break;
-            
+
             case 'x':
                 $pt = $this->point3D->to_spherical();
                 return sprintf("(%d, %d°, %d°)", $pt[0], $pt[1], $pt[2]);
-                
+
             default:
                 message_die(GENERAL_ERROR, "Unknown location identifier: $type.<br />Expected: B or S.");
         }
-        
-        return implode(", ", array_reverse($location));        
+
+        return implode(", ", array_reverse($location));
     }
-    
-    
+
+
     /**
      * Magic method called when a unknown property is set.
-     * 
+     *
      * Handles $global, $local, $type, $body_code, $ship_code, $place_code
      */
     function __set ($variable, $value) {
         switch ($variable) {
             /* main variables */
-            
+
             case 'global':
                 $this->data[0] = $value;
                 break;
-            
+
             case 'local':
                 $this->data[1] = $value;
                 break;
-            
+
             /* global location */
-            
+
             case 'type':
                 if ($value == 'B' || $value == 'S') {
                     if (!$this->data[0]) {
@@ -387,7 +387,7 @@ class GeoLocation {
                     }
                 }
                 break;
-            
+
             case 'body_code':
                 if (preg_match("/[0-9]{1,5}/", $value)) {
                     $value = sprintf("%05d", $value);
@@ -401,7 +401,7 @@ class GeoLocation {
                     throw new Exception("Global location isn't a body.");
                 }
                 throw new Exception("$value isn't a valid body code");
-                
+
             case 'ship_code':
                 if (preg_match("/[0-9]{1,5}/", $value)) {
                     $value = sprintf("%05d", $value);
@@ -415,7 +415,7 @@ class GeoLocation {
                     throw new Exception("Global location isn't a ship.");
                 }
                 throw new Exception("$value isn't a valid ship code");
-            
+
             case 'place_code':
                 if (!preg_match("/[0-9]{1,3}/", $value)) {
                     throw new Exception("$value isn't a valid place code");
@@ -425,10 +425,10 @@ class GeoLocation {
                     $this->data[0] = substr($this->data[0], 0, 6) . $value;
                 }
                 throw new Exception("Global location isn't a body.");
-            
+
             default:
                 throw new Exception("Unknown variable: $variable");
-                break;                
+                break;
         }
     }
 }

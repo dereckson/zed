@@ -13,6 +13,6 @@
             </a>
             <span class="avatar_name"><a href="{get_url()}?action=perso.select&perso_id={$perso->id}">{$perso->name}</a></span>
         </div>
-        
+
 {/foreach}
 {include file="perso_footer.tpl"}

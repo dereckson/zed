@@ -14,13 +14,13 @@ TODO: Écrire les chapitres The hole
     <title>Panorama</title>
     <description>
         Zeta est une ville venteuse, plongée dans la nuit et le bruit.
-        
+
 Ce qui ressemble à de petites créatures illuminent la route s'étendant devant vous et serpentant vers le centre ville.
-            
+
 À la surface travaillent d'honnêtes mineur de cobalt et de davyrium, les mines ceinturant le sud de la ville.
-        
+
 Au nord, The Hole, une ancienne mine dont les mineurs évitent de parler.
-        
+
 À l'est, un petit spatioport.
     </description>
     <choices>
@@ -34,16 +34,16 @@ Au nord, The Hole, une ancienne mine dont les mineurs évitent de parler.
 
   <!--
     Le centre ville
-    
-    Sa bibliothèque. Son bar. 
+
+    Sa bibliothèque. Son bar.
   -->
   <section id="city.entry">
     <title>Le centre ville</title>
     <description>
-      Le centre ville de Zeta alterne des zones plongées dans l'obscurité et des zones suréclairées au néon.      
+      Le centre ville de Zeta alterne des zones plongées dans l'obscurité et des zones suréclairées au néon.
     </description>
-  </section>  
-  
+  </section>
+
   <!--
     Le spatioport
   -->
@@ -51,7 +51,7 @@ Au nord, The Hole, une ancienne mine dont les mineurs évitent de parler.
     <title>Spatioport</title>
     <description>
       Le spatioport se présente sous la forme d'un large dôme cobalt où se reflète la lueur de Thétys, un astéroïde gravitant autour de Kaos tel une lune.
-    
+
       À l'arrière, un cratère évasé peut accueillir une trentaine de vaisseaux de taille modeste et de conception variée.
     </description>
     <hooks>
@@ -60,23 +60,23 @@ Au nord, The Hole, une ancienne mine dont les mineurs évitent de parler.
     <choices>
       <choice goto="panorama">Retourner en ville</choice>
     </choices>
-    
+
     <local>3</local>
   </section>
 
-  
+
   <!--
     The Hole
-    
+
     Lieu d'exil de ce secteur de la galaxie. Lieu de tous les traffics. The Hole.
   -->
   <section id="hole.entry">
     <title>The Hole</title>
     <description>
         The Hole. Une ancienne mine désaffectée depuis trois siècles. Aujourd'hui, un squat. L'endroit où tout se passe sur Zeta. Refuge des rebelles. Lieu d'exil de ce secteur de la galaxie. Lieu de tous les traffics. The Hole.
-            
+
         Une bande d'une douzaine de jeunes armés de lasers et de fouets neuroniques en garde l'entrée, deux vous regardant d'un œil plutôt menaçant.
-        
+
         Ils vous refusent le passage.
     </description>
     <choices>
@@ -104,9 +104,9 @@ Au nord, The Hole, une ancienne mine dont les mineurs évitent de parler.
     <title>The Hole</title>
     <description>
         Vous rassurez les gardes en leur disant que vous ne faites que passer, et s'il est possible de faire demi tour.
-        
+
         Un garde aux rangers noires, pantalon argenté troué, non rasé depuis trois jours, une cicatrice près de l'arcade sourcillière : « wesh et très vite ».
-        
+
         L'on entend à l'arrière « Court Forest, court » pendant que le second garde émet deux érecutements successifs de la gorge, tout en pointant son arme vers vous.
     </description>
     <choices>
@@ -120,11 +120,11 @@ Au nord, The Hole, une ancienne mine dont les mineurs évitent de parler.
     <title>The Hole</title>
     <description>
         Un jeune de grande taille s'avance, ses deux étranges cornes sortent des avants-bras, un de ses lobes d'oreilles descendant vers le bas, d'étranges inscriptions ressemblant à des tatouages sur le haut de son crâne dégarni.
-        
+
         Il vous indique le bas de la colline, et vous invite à retourner en ville.
-        
+
         Vous insistez quelque peu, il se contente de vous dire qu'il n'est pas guide touristique.
-        
+
         Ils refusent de répondre à toute autre question et vous ignorent.
     </description>
     <choices>
@@ -135,7 +135,7 @@ Au nord, The Hole, une ancienne mine dont les mineurs évitent de parler.
     <title>The Hole</title>
     <description>
       – « Qu'est-ce que vous gardez d'aussi important ? Pourquoi les mineurs évitent d'en parler ? »
-      
+
       – « Revenez quand vous saurez. »
     </description>
     <choices>
@@ -149,11 +149,11 @@ Au nord, The Hole, une ancienne mine dont les mineurs évitent de parler.
     <title>The Hole</title>
     <description>
       Vous leur demandez pourquoi sont-ils aussi bien vêtus, en espérant qu'ils comprennent l'allusion aux armes.
-      
+
       Ne semblant pas obtenir de réponse, vous leur demandez ce que sont leurs jouets.
-      
+
       Un garde sourit, s'avance, et appuie sur son fouet neuronique.
-      
+
       Les autres éclatent de rire pendant que vous vous tordez au sol, pris de convulsions.
     </description>
     <choices>
@@ -165,11 +165,11 @@ Au nord, The Hole, une ancienne mine dont les mineurs évitent de parler.
     <title>The Hole</title>
     <description>
         Vous reculez prudemment, tout doucement, avec un grand sourire.
-        
+
         Un des gardes vous regarde vexé, scrutant le moindre signe supplémentaire de provocation.
-    </description>  
-  
-    <choices>  
+    </description>
+
+    <choices>
       <choice goto="panorama">Retourner en ville</choice>
     </choices>
   </section>

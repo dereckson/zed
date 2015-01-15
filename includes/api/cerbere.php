@@ -4,13 +4,13 @@
  * API security
  *
  * Zed. The immensity of stars. The HyperShip. The people.
- * 
+ *
  * (c) 2010, Dereckson, some rights reserved.
  * Released under BSD license.
  *
  * This file provides a cerbere function, to assert the user is correctly
  * authenticated in the API call.
- * 
+ *
  * @package     Zed
  * @subpackage  API
  * @author      Sébastien Santoro aka Dereckson <dereckson@espace-win.org>
@@ -73,12 +73,12 @@ function cerbere () {
     if (ALLOW_LOCALHOST && $_SERVER['REMOTE_ADDR'] == '127.0.0.1') {
         return;
     }
-    
+
     //No key, no authentication
     if (!$guid = $_REQUEST['key']) {
         cerbere_die('You must add creditentials to your request.');
     }
-    
+
     //Authenticates user
     global $db;
     $guid = $db->sql_escape($guid);
@@ -95,10 +95,10 @@ function cerbere () {
             if (!$db->sql_query($sql))
                 message_die(SQL_ERROR, "Can't record api call", '', __LINE__, __FILE__, $sql);
         } else {
-            cerbere_die("Key disabled."); 
+            cerbere_die("Key disabled.");
         }
     } else {
-       cerbere_die("Key doesn't exist."); 
+       cerbere_die("Key doesn't exist.");
     }
 }
 

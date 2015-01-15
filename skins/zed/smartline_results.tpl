@@ -6,9 +6,8 @@
 {if $SmartLine_STDERR}
             <p class="error">{$SmartLine_STDERR}</p>
 {/if}
-        
+
         </div>
-        
+
         <p class="clear"></p>
-    
-        
+

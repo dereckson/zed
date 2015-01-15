@@ -4,7 +4,7 @@
  * The Zed SmartLine subcontroller.
  *
  * Zed. The immensity of stars. The HyperShip. The people.
- * 
+ *
  * (c) 2010, Dereckson, some rights reserved.
  * Released under BSD license.
  *
@@ -20,7 +20,7 @@
  * This code is inspired from Viper, a corporate PHP intranet I wrote in 2004.
  * There, the SmartLine allowed to change color theme or to find quickly user,
  * account, order or server information in a CRM context.
- * 
+ *
  * @package     Zed
  * @subpackage  SmartLine
  * @author      Sébastien Santoro aka Dereckson <dereckson@espace-win.org>
@@ -40,7 +40,7 @@
 
 /**
  * Logs a Smartline command
- * 
+ *
  * @param string $command the command to log
  * @param bool $isError indicates if the command is an error
  */
@@ -50,37 +50,37 @@ function log_C ($command, $isError = false) {
     $command = $db->sql_escape($command);
     $sql = "INSERT INTO "  . TABLE_LOG_SMARTLINE . " (perso_id, command_time, command_text, isError)
             VALUES ($CurrentPerso->id, UNIX_TIMESTAMP(), '$command', $isError)";
-    if (!$db->sql_query($sql)) 
+    if (!$db->sql_query($sql))
         message_die(SQL_ERROR, "Can't log SmartLine command", '', __LINE__, __FILE__, $sql);
 }
 
 ///
 /// Executes command
 ///
-	
+
 if ($C = $_REQUEST['C']) {
     //Initializes SmartLine object
     require_once("SmartLine.php");
     $smartLine = new SmartLine();
-    
+
     require_once("ZedCommands.php");
-    
+
     //Executes SmartLine
     $controller = '';
     $smartLine->execute($C);
-     
+
     $error = $smartLine->count(STDERR) > 0;
-     
+
     if ($smartLine->count(STDOUT) > 0)
         $smarty->assign("SmartLine_STDOUT", $smartLine->gets_all(STDOUT, '', '<br />'));
-        
+
     if ($error)
         $smarty->assign("SmartLine_STDERR", $smartLine->gets_all(STDERR, '', '<br />'));
-	
+
     if ($controller != '') {
         include($controller);
     }
-    
+
     log_C($C, $error);
 }
 

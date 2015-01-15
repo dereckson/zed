@@ -4,7 +4,7 @@
  * Geo point 3D class.
  *
  * Zed. The immensity of stars. The HyperShip. The people.
- * 
+ *
  * (c) 2010, Dereckson, some rights reserved.
  * Released under BSD license.
  *
@@ -49,13 +49,13 @@ require_once("galaxy.php");
  * $point = new GeoPoint3D(17, 24, -6);
  * echo (string)$point;   //will output xyz: [17, 24, -6]
  * </code>
- * 
+ *
  */
 class GeoPoint3D implements IteratorAggregate {
     //
     // x, y, z public properties
     //
-    
+
     /**
      * the x coordinate
      *
@@ -69,18 +69,18 @@ class GeoPoint3D implements IteratorAggregate {
      * @var integer
      */
     public $y;
-    
+
     /**
      * the z coordinate
      *
      * @var integer
      */
     public $z;
-    
+
     //
     // constructor / toString
     //
-    
+
     /**
      * Initializes a new instance of GeoPoint3D class
      *
@@ -100,7 +100,7 @@ class GeoPoint3D implements IteratorAggregate {
      * Formats recognized are:
      *      - xyz: [x, y, z]
      *      - (x, y, z)
-     * 
+     *
      * @param string $expression the expression to parse
      * @return GeoPoint3D If the specified expression could be parsed, a GeoPoint3D instance ; otherwise, null.
      */
@@ -160,11 +160,11 @@ class GeoPoint3D implements IteratorAggregate {
     function equals ($point) {
         return ($this->x == $point->x) && ($this->y == $point->y) && ($this->z == $point->z);
     }
-    
+
     //
     // Math
     //
-    
+
     /**
      * Gets the (ρ, φ, θ) spherical coordinates from the current x, y, z cartesian point
      *
@@ -175,7 +175,7 @@ class GeoPoint3D implements IteratorAggregate {
     function to_spherical () {
         return GeoGalaxy::cartesian_to_spherical($this->x, $this->y, $this->z);
     }
-    
+
     /**
      * Gets the (ρ, φ, θ) spherical coordinates from the current x, y, z cartesian point
      *
@@ -186,7 +186,7 @@ class GeoPoint3D implements IteratorAggregate {
     function to_spherical2 () {
         return GeoGalaxy::cartesian_to_spherical2($this->x, $this->y, $this->z);
     }
-    
+
     /**
      * Translates the center and rescales.
      *
@@ -221,21 +221,21 @@ class GeoPoint3D implements IteratorAggregate {
             $this->z = $this->z * $scale + $dz;
         }
     }
-    
+
     //
     // Implementing IteratorAggregate
     //
-    
+
     /**
      * Retrieves class iterator. It traverses x, y and z.
-     * 
+     *
      * @return Traversable the iterator
      */
     function getIterator () {
         return new ArrayIterator($this);
     }
-    
-    
+
+
 }
 
 ?>

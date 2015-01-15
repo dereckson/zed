@@ -4,12 +4,12 @@
  * Content file class
  *
  * Zed. The immensity of stars. The HyperShip. The people.
- * 
+ *
  * (c) 2010, Dereckson, some rights reserved.
  * Released under BSD license.
  *
  * 0.1    2012-12-03 02:57    Forked from Content
-  * 
+  *
  * @package     Zed
  * @subpackage  Content
  * @author      Sébastien Santoro aka Dereckson <dereckson@espace-win.org>
@@ -28,12 +28,12 @@
  *
  */
 class ContentFile {
-    
+
 /*  -------------------------------------------------------------
     Properties
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -    */
 
-    public $id; 
+    public $id;
     public $path;
     public $user_id;
     public $perso_id;
@@ -42,10 +42,10 @@ class ContentFile {
 /*  -------------------------------------------------------------
     Constructor, __toString
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -    */
-    
+
     /**
      * Initializes a new ContentFile instance
-     * 
+     *
      * @param int $id the primary key
      */
     function __construct ($id = null) {
@@ -54,35 +54,35 @@ class ContentFile {
             $this->load_from_database();
         }
     }
-    
+
     /**
      * Returns a string representation of current Content instance
-     * 
+     *
      * @return string the content title or path if title is blank.
      */
     function __toString () {
         return $this->title ? $this->title : $this->path;
     }
-    
+
 /*  -------------------------------------------------------------
     Load/save class
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -    */
-    
+
     /**
      * Loads the object ContentFile (ie fill the properties) from the $_POST array
-     * 
+     *
      * @param boolean $allowSensibleFields if false, allow only title to be defined ; otherwise, allow all fields.
      */
-    function load_from_form ($allowSensibleFields = false) {        
-        if (array_key_exists('title', $_POST)) $this->title = $_POST['title'];       
-        
+    function load_from_form ($allowSensibleFields = false) {
+        if (array_key_exists('title', $_POST)) $this->title = $_POST['title'];
+
         if ($allowSensibleFields) {
             if (array_key_exists('path', $_POST)) $this->path = $_POST['path'];
             if (array_key_exists('user_id', $_POST)) $this->user_id = $_POST['user_id'];
             if (array_key_exists('perso_id', $_POST)) $this->perso_id = $_POST['perso_id'];
         }
     }
-    
+
     /**
      * Loads the object ContentFile (ie fill the properties) from the database
      */
@@ -98,7 +98,7 @@ class ContentFile {
         $this->load_from_row($row);
         return true;
     }
-    
+
     /**
      * Loads the object from row
      */
@@ -109,13 +109,13 @@ class ContentFile {
         $this->perso_id = $row['perso_id'];
         $this->title = $row['content_title'];
     }
-    
+
     /**
      * Saves to database
      */
     function save_to_database () {
         global $db;
-        
+
         $id = $this->id ? "'" . $db->sql_escape($this->id) . "'" : 'NULL';
         $path = $db->sql_escape($this->path);
         $user_id = $db->sql_escape($this->user_id);
@@ -127,7 +127,7 @@ class ContentFile {
         if (!$db->sql_query($sql)) {
             message_die(SQL_ERROR, "Can't save content", '', __LINE__, __FILE__, $sql);
         }
-        
+
         if (!$this->id) {
             //Gets new record id value
             $this->id = $db->sql_nextid();
@@ -137,10 +137,10 @@ class ContentFile {
 /*  -------------------------------------------------------------
     File handling helper methods
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -    */
-    
+
     /**
      * Determines if the extension is valid
-     * 
+     *
      * @param string $ext The extension (without dot)
      * @return boolean true if this extension is valid ; otherwise, false.
      */
@@ -149,10 +149,10 @@ class ContentFile {
         return (is_valid_image_extension($ext) || is_valid_audio_extension($ext)
                 || is_valid_video_extension($ext));
     }
-    
+
     /**
      * Determines if the extension is valid
-     * 
+     *
      * @param string $ext The extension (without dot)
      * @return boolean true if this extension is valid ; otherwise, false.
      */
@@ -165,21 +165,21 @@ class ContentFile {
             case 'bmp':
             case 'xbm':
                 return true;
-            
+
             //Denied extension
             default:
                 return false;
         }
     }
-    
+
     /**
      * Determines if the extension is a valid audio file one
-     * 
+     *
      * @param string $ext The extension (without dot)
      * @return boolean true if this extension is valid ; otherwise, false.
      */
     function is_valid_audio_extension ($ext) {
-        switch ($ext = strtolower($ext)) {               
+        switch ($ext = strtolower($ext)) {
             //Sounds (HTML5 <audio> formats)
             case 'mp3':
             case 'ogg':
@@ -187,34 +187,34 @@ class ContentFile {
             case 'wav':
             case 'wave':
                 return true;
-            
+
             //Denied extension
             default:
                 return false;
         }
     }
-    
+
     /**
      * Determines if the extension is a valid video file one
-     * 
+     *
      * @param string $ext The extension (without dot)
      * @return boolean true if this extension is valid ; otherwise, false.
      *
      * @todo add H.264 extension
      */
     function is_valid_video_extension ($ext) {
-        switch ($ext = strtolower($ext)) {           
+        switch ($ext = strtolower($ext)) {
             //Video (HTML5 <video> formats)
             case 'ogg':
             case 'webm':
                 return true;
-            
+
             //Denied extension
             default:
                 return false;
         }
     }
-    
+
     /**
      * Creates a directory
      *
@@ -227,7 +227,7 @@ class ContentFile {
             @mkdir($directory); //Creates new directory, chmod 777
         }
     }
-    
+
     /**
      * Handles uploaded file
      *
@@ -250,16 +250,16 @@ class ContentFile {
             return false;
         }
     }
-    
+
     /**
      * Generates a thumbnail using ImageMagick binary
-     * 
+     *
      * @return boolean true if the thumbnail command returns 0 as program exit code ; otherwise, false
      */
     function generate_thumbnail () {
         global $Config;
 
-        //Builds thumbnail filename        
+        //Builds thumbnail filename
         $sourceFile = $this->path;
         $pos = strrpos($this->path, '.');
         $thumbnailFile = substr($sourceFile, 0, $pos) . 'Square' . substr($sourceFile, $pos);
@@ -272,5 +272,5 @@ class ContentFile {
         return ($code == 0);
     }
 }
-    
+
 ?>

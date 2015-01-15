@@ -4,7 +4,7 @@
  * "Blackhole" void cache.
  *
  * Zed. The immensity of stars. The HyperShip. The people.
- * 
+ *
  * (c) 2010, Dereckson, some rights reserved.
  * Released under BSD license.
  *
@@ -39,20 +39,20 @@ class CacheVoid {
      * @var CacheVoid the current cache instance
      */
     static $instance = null;
-    
+
     /**
      * Gets the cache instance, initializing it if needed
-     * 
+     *
      * @return Cache the cache instance, or null if nothing is cached
      */
-    static function load () {       
+    static function load () {
         if (self::$instance === null) {
             self::$instance = new CacheVoid();
         }
-        
+
         return self::$instance;
     }
-    
+
     /**
      * Gets the specified key's data
      *
@@ -68,7 +68,7 @@ class CacheVoid {
      *
      * @param string $key the key where to store the specified data
      * @param mixed $value the data to store
-     */    
+     */
     function set ($key, $value) { }
 
     /**

@@ -6,7 +6,7 @@
         dojo.require("dijit.form.Button");
         dojo.require("dijit.form.FilteringSelect");
         dojo.require("dijit.form.CheckBox");
-        
+
         dojo.require("dojox.form.PasswordValidator");
     </script>
 
@@ -49,7 +49,7 @@
     </div>
     </form>
     </div>
-    
+
     <div class="grid_4 omega">
         <h2>Settings</h2>
         <ul style="list-style-type: cjk-ideographic; line-height: 2em;">
@@ -63,5 +63,5 @@
             <li><a href="{get_url('who', 'edit', 'profile')}">{#EditProfile#}</a></li>
         </ul>
     </div>
-    
+
     <div class="clear"></div>

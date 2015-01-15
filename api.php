@@ -4,10 +4,10 @@
  * API entry point
  *
  * Zed. The immensity of stars. The HyperShip. The people.
- * 
+ *
  * (c) 2010, Dereckson, some rights reserved.
  * Released under BSD license.
- * 
+ *
  * @package     Zed
  * @subpackage  EntryPoints
  * @author      Sébastien Santoro aka Dereckson <dereckson@espace-win.org>
@@ -40,7 +40,7 @@ $url = get_current_url_fragments();
 switch ($module = $url[0]) {
 /*  -------------------------------------------------------------
     Site API
-    
+
     /time
     /location
     /coordinates
@@ -50,12 +50,12 @@ switch ($module = $url[0]) {
         //Nothing to do
         //TODO: offer documentation instead
         die();
-    
+
     case 'time':
         //Hypership time
         api_output(get_hypership_time(), "time");
         break;
-    
+
     case 'location':
         //Checks creditentials
         cerbere();
@@ -71,11 +71,11 @@ switch ($module = $url[0]) {
         //Get coordiantes
         api_output(GeoGalaxy::get_coordinates(), 'galaxy', 'object');
         break;
-    
-    
+
+
 /*  -------------------------------------------------------------
     Ship API
-    
+
     /authenticate
     /appauthenticate
     /appauthenticated
@@ -83,24 +83,24 @@ switch ($module = $url[0]) {
     /land
     /flyout
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -    */
-    
+
     case 'ship':
         //Ship API
-        
+
         //Gets ship from Ship API key (distinct of regular API keys)
         require_once('includes/objects/ship.php');
         $ship = Ship::from_api_key($_REQUEST['key']) or cerbere_die("Invalid ship API key");
-        
+
         switch ($command = $url[1]) {
             case '':
                 //Nothing to do
                 //TODO: offer documentation instead
                 die();
-                
+
             case 'authenticate':
                 //TODO: web authenticate
                 break;
-            
+
             case 'appauthenticate':
                 //Allows desktop application to authenticate an user
                 $tmp_session_id = $url[2] or cerbere_die("/appauthenticate/ must be followed by any session identifier");
@@ -124,7 +124,7 @@ switch ($module = $url[0]) {
                     api_output($url, "URL");
                 }
                 break;
-            
+
             case 'appauthenticated':
                 //Checks the user authentication
                 $tmp_session_id = $url[2] or cerbere_die("/appauthenticated/ must be followed by any session identifier you used in /appauthenticate");
@@ -151,12 +151,12 @@ switch ($module = $url[0]) {
                 }
                 api_output($auth, "auth");
                 break;
-            
+
             case 'move':
                 //Moves the ship to a new location, given absolute coordinates
                 //TODO: handle relative moves
                 if (count($url) < 2) cerbere_die("/move/ must be followed by a location expression");
-                
+
                 //Gets location class
                 //It's allow: (1) to normalize locations between formats
                 //            (2) to ensure the syntax
@@ -169,77 +169,77 @@ switch ($module = $url[0]) {
                     api_output($reply, "move");
                     break;
                 }
-                
+
                 $ship->location_global = $location->global;
                 $ship->save_to_database();
-                
+
                 $reply->success = 1;
                 $reply->location = $ship->location;
                 api_output($reply, "move");
                 break;
-                
+
             case 'land':
             case 'flyin':
                 //Flies in
                 try {
                     $location = new GeoLocation($location);
                 } catch (Exception $ex) {
-                    $reply->success = 0; 
+                    $reply->success = 0;
                     $reply->error = $ex->getMessage();
                     api_output($reply, "land");
                     break;
                 }
-                
+
                 break;
-            
+
             case 'flyout':
                 //Flies out
-                
+
                 break;
-                
+
         }
         break;
-    
+
 /*  -------------------------------------------------------------
     Application API
-    
+
     /checkuserkey
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -    */
-    
+
     case 'app':
         //Application API
         require_once("includes/objects/application.php");
         $app = Application::from_api_key($_REQUEST['key']) or cerbere_die("Invalid application API key");
-        
+
         switch ($command = $url[1]) {
             case '':
                 //Nothing to do
                 //TODO: offer documentation instead
                 die();
-                
+
             case 'checkuserkey':
                 if (count($url) < 2) cerbere_die("/checkuserkey/ must be followed by an user key");
                 $reply = (boolean)$app->get_perso_id($url[2]);
                 api_output($reply, "check");
                 break;
-            
+
             case 'pushuserdata':
                 if (count($url) < 3) cerbere_die("/pushuserdata/ must be followed by an user key");
                 $perso_id = $app->get_perso_id($url[2]) or cerbere_die("Invalid application user key");
                 //then, falls to 'pushdata'
-            
+
             case 'pushdata':
                 $data_id = $_REQUEST['data'] ? $_REQUEST['data'] : new_guid();
                 //Gets data
                 switch ($mode = $_REQUEST['mode']) {
                     case '':
                         cerbere_die("Add in your data posted or in the URL mode=file to read data from the file posted (one file per api call) or mode=request to read data from \$_REQUEST['data'].");
-                        
+
                     case 'request':
                         $data = $_REQUEST['data'];
                         $format = "raw";
                         break;
-                    
+
                     case 'file':
                         $file = $_FILES['datafile']['tmp_name'] or cerbere_die("File is missing");
                         if (!is_uploaded_file($file)) cerbere_die("Invalid form request");
@@ -265,11 +265,11 @@ switch ($module = $url[0]) {
                         }
                         unlink($file);
                         break;
-                    
+
                     default:
                         cerbere_die("Invalid mode. Expected: file, request");
                 }
-                
+
                 //Saves data
                 global $db;
                 $data_id = $db->sql_escape($data_id);
@@ -279,18 +279,18 @@ switch ($module = $url[0]) {
                 if (!$db->sql_query($sql))
                     message_die(SQL_ERROR, "Can't save data", '', __LINE__, __FILE__, $sql);
                     //cerbere_die("Can't save data");
-                    
+
                 //Returns
                 api_output($data_id);
                 break;
-            
+
             case 'getuserdata':
                 //  /api.php/getuserdata/data_id/perso_key
                 //  /api.php/getdata/data_id
                 if (count($url) < 3) cerbere_die("/getuserdata/ must be followed by an user key");
                 $perso_id = $app->get_perso_id($url[2]) or cerbere_die("Invalid application user key");
                 //then, falls to 'getdata'
-            
+
             case 'getdata':
                 if (count($url) < 2) cerbere_die('/' + $url[0] + '/ must be followed by the data ID');
                 if (!$perso_id) $perso_id = 'NULL';
@@ -300,17 +300,17 @@ switch ($module = $url[0]) {
                     message_die(SQL_ERROR, "Unable to query the table", '', __LINE__, __FILE__, $sql);
                 }
                 while ($row = $db->sql_fetchrow($result)) {
-                    
+
                 }
                 break;
-                
+
             default:
                 echo "Unknown module:";
                 dprint_r($url);
                 break;
         }
         break;
-    
+
     default:
         echo "Unknown module:";
         dprint_r($url);

@@ -4,7 +4,7 @@
         dojo.require("dijit.form.ValidationTextBox");
         dojo.require("dijit.form.Button");
     </script>
-    
+
     <!-- Request form: aid.reach -->
     <h1>{#Communicator#}</h1>
     <h2>{#SendRequestToHyperShip#}</h2>

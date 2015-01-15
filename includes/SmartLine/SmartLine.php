@@ -4,13 +4,13 @@
  * SmartLine 0.1
  *
  * Zed. The immensity of stars. The HyperShip. The people.
- * 
+ *
  * (c) 2010, Dereckson, some rights reserved.
  * Released under BSD license.
  *
  * 0.1    2007-07-28 01:36 [DcK]    Initial release
  *        2010-07-02 00:39 [Dck]    Documentation
- * 
+ *
  * @package     Zed
  * @subpackage  SmartLine
  * @author      Sébastien Santoro aka Dereckson <dereckson@espace-win.org>
@@ -52,7 +52,7 @@ $lang = array_merge($lang, array(
     'InvalidCommand' => "Invalid command %s. Use <strong>showcommands</strong> to show all commands.",
     'RegisteredButNotExistingCommand' => "[CRITICAL ERROR] The command %s has correctly been registered but its method or class doesn't exist.",
     'NotYetHelpForThiscommand' => "This command hasn't been documented yet.",
-    
+
     //Help
     'DefaultHelp' => "This SmartLine is a command line interface.
                       <br /><br /><strong>showcommands</strong> prints the list.
@@ -71,7 +71,7 @@ $lang = array_merge($lang, array(
  * Error handler called during SmartLine command execution.
  *
  * Any error occuring during command execution will be set in STDERR.
- * 
+ *
  * To get an array with all the errors:
  * <code>$errors = $yourSmartLine->gets_all(STDERR)</code>
  *
@@ -98,11 +98,11 @@ function SmartLineHandler($level, $error, $file, $line) {
        CASE E_WARNING:
         $type = 'Warning';
         break;
-       
+
        CASE E_ERROR:
         $type = 'Error';
         break;
-       
+
        default:
         $type = "#$level";
     }
@@ -119,7 +119,7 @@ function SmartLineHandler($level, $error, $file, $line) {
 
 /**
  * The SmartLine command base class.
- * 
+ *
  * To add a command, create an instance of the class, like:
  * <code>
  * class HelloWorldSmartLineCommand extends SmartLineCommand {
@@ -145,7 +145,7 @@ class SmartLineCommand {
 	public function __construct ($SmartLine) {
 		$this->SmartLine = $SmartLine;
 	}
-    
+
     /**
      * Gets the command help text or indicates help should be fetched from $lang array
      *
@@ -154,20 +154,20 @@ class SmartLineCommand {
 	public function help () {
         return false;
 	}
-	
+
     /**
      * Runs the command
-     *  
+     *
      * @param array $argv an array of string, each item a command argument
      * @param int $argc the number of arguments
      */
 	public function run ($argv, $argc) {
-	
+
 	}
 
 	/**
      * The SmartLine where this instance of the command is registered
-     * 
+     *
      * @var SmartLine
      */
 	public $SmartLine;
@@ -175,7 +175,7 @@ class SmartLineCommand {
 
 /**
  * This class represents a SmartLine instance
- * 
+ *
  * If you use only register_object, you can use it directly.
  * If you use register_method, extends this class in your SmartLine.
  */
@@ -186,12 +186,12 @@ class SmartLine {
 	public function __construct () {
 		//Assumes we've an empty array where store registered commands.
 		$this->commands = array();
-        
+
 		//Let's register standard commands
 		$this->register_object('showcommands', 'ShowCommandsSmartLineCommand');
 		$this->register_object('help', 'HelpSmartLineCommand');
 	}
-	
+
 	/**
      * Registers a private method as command.
      *
@@ -203,7 +203,7 @@ class SmartLine {
      */
 	public function register_method ($command, $method = null, $useArgvArgc = false) {
 		if (is_null($function)) $method = $command;
-		
+
 		if (!method_exists($this, $method)) {
 			$this->lastError = "Registration failed. Unknown method $method";
 			return false;
@@ -218,7 +218,7 @@ class SmartLine {
 		if ($useArgvArgc) {
 		    $call = "$this->SmartLine->$method(\$argv, \$argc);";
 		} else {
-		    //We don't know how many args we've, so we use call_user_func_array 
+		    //We don't know how many args we've, so we use call_user_func_array
 		    $call = "array_shift(\$argv);
 		             call_user_func_array(
 		                array(&\$this->SmartLine, '$method'),
@@ -234,7 +234,7 @@ class SmartLine {
 		$this->register_object($command, $className);
 		return true;
 	}
-    
+
 	/**
      * Registers an object extending SmartLineCommand as command.
      *
@@ -257,7 +257,7 @@ class SmartLine {
 		$this->commands[$command] = $object;
 		return true;
 	}
-	
+
     /**
      * Determines wheter the specified command have been registered.
      *
@@ -268,7 +268,7 @@ class SmartLine {
 	    if (!$this->caseSensitive) $command = strtolower($command);
 	    return array_key_exists($command, $this->commands);
 	}
-		
+
 	/**
      * Executes the specified expression.
      *
@@ -295,21 +295,21 @@ class SmartLine {
 	public function execute ($expression) {
 		//Does nothing if blank line
 		if (!$expression) return;
-		
+
 		//Prepares $argv and $argc
 		$argv = $this->expression2argv($expression);
 		$argc = count($argv);
-		
+
 		//Gets command
-		$command = $this->caseSensitive ? $argv[0] : strtolower($argv[0]); 
-		
+		$command = $this->caseSensitive ? $argv[0] : strtolower($argv[0]);
+
 		//If command doesn't exist, throws an error
 		if (!array_key_exists($command, $this->commands)) {
 			global $lang;
 			$this->puts(sprintf($lang['InvalidCommand'], $command), STDERR);
 			return false;
 		}
-		
+
 		//Executes command, intercepting error and returns result
 		set_error_handler("SmartLineHandler");
         try {
@@ -320,7 +320,7 @@ class SmartLine {
 		restore_error_handler();
 		return $result;
 	}
-	
+
     /**
      * Adds a message to the specified output queue.
      *
@@ -331,7 +331,7 @@ class SmartLine {
 	    //
 	    $_SESSION['SmartLineOutput'][$output][] = $message;
 	}
-	
+
     /**
      * Truncates the specified output queue.
      *
@@ -340,7 +340,7 @@ class SmartLine {
 	public function truncate ($output = STDOUT) {
 		unset($_SESSION['SmartLineOutput'][$output]);
 	}
-	
+
     /**
      * Pops (gets and clears) the first message from the specified output queue.
      *
@@ -351,7 +351,7 @@ class SmartLine {
 		if (count($_SESSION['SmartLineOutput'][$output] > 0))
 			return array_pop($_SESSION['SmartLineOutput'][$output]);
 	}
-	
+
     /**
      * Gets the number of messages in the specified output queue.
      *
@@ -360,7 +360,7 @@ class SmartLine {
 	public function count ($output = STDOUT) {
 		return count($_SESSION['SmartLineOutput'][$output]);
 	}
-	
+
     /**
      * Gets all the message from the specified output queue.
      *
@@ -377,7 +377,7 @@ class SmartLine {
 		unset ($_SESSION['SmartLineOutput'][$output]);
         return $buffer;
 	}
-    
+
     /**
      * Prints all the message from the specified output queue.
      *
@@ -392,7 +392,7 @@ class SmartLine {
 			echo $prefix, $_SESSION['SmartLineOutput'][$output][$i], $suffix;
 		unset ($_SESSION['SmartLineOutput'][$output]);
 	}
-	
+
     /**
      * Gets the command help
      *
@@ -402,9 +402,9 @@ class SmartLine {
 	public function gethelp ($command) {
 		return $this->commands[$command]->help();
 	}
-	
+
     /**
-     * Gets an an argv array from the specified expression 
+     * Gets an an argv array from the specified expression
      *
      * @param string $expression The expression to transform into a argv array
      * @return Array An array of string, the first item the command, the others those arguments.
@@ -412,14 +412,14 @@ class SmartLine {
 	private function expression2argv ($expression) {
         //Checks if expression contains "
         $pos1 = strpos($expression, '"');
-        
+
         //We isolate "subexpression"
         if ($pos1 !== false) {
             $pos2 = $pos1;
             do {
                 $pos2 = strpos($expression, '"', $pos2 + 1);
             } while ($pos2 !== false && ($expression[$pos2 - 1] == "\\" && $expression[$pos2 - 2] != "\\"));
-            
+
             if ($pos2 === false) {
                 //If final quote is missing, throws a warning and autoadds it.
                 $this->puts("[Warning] Final \" missing in $expression.", STDERR);
@@ -433,8 +433,8 @@ class SmartLine {
                 $this->expression2argv(substr($expression, $pos2 + 1))
             );
         }
-        
-        //Standard expression (ie without ")    
+
+        //Standard expression (ie without ")
         $argv = array();
         $items = explode(' ', $expression);
 	    foreach ($items as $item) {
@@ -447,10 +447,10 @@ class SmartLine {
 	    }
 	    return $argv;
 	}
-	
+
 	//Contains last error
 	public $lastError = '';
-	
+
 	//If true, command isn't equal to Command
 	public $caseSensitive = true;
 }
@@ -471,7 +471,7 @@ class SmartLine {
 class ShowCommandsSmartLineCommand extends SmartLineCommand {
     /**
      * Runs the command
-     *  
+     *
      * @param array $argv an array of string, each item a command argument
      * @param int $argc the number of arguments
      */
@@ -494,7 +494,7 @@ class ShowCommandsSmartLineCommand extends SmartLineCommand {
 class HelpSmartLineCommand extends SmartLineCommand {
     /**
      * Runs the command
-     *  
+     *
      * @param array $argv an array of string, each item a command argument
      * @param int $argc the number of arguments
      */

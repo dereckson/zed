@@ -4,7 +4,7 @@
  * Geo place class.
  *
  * Zed. The immensity of stars. The HyperShip. The people.
- * 
+ *
  * (c) 2010, Dereckson, some rights reserved.
  * Released under BSD license.
  *
@@ -43,19 +43,19 @@ define('LOCATION_LOCAL_DEFAULT_FORMAT', '/^\([0-9]+( )*,( )*[0-9]+( )*,( )*[0-9]
  */
 class GeoPlace {
 
-    public $id;  
+    public $id;
     public $body_code;
     public $code;
     public $name;
     public $description;
     public $location_local_format;
-    
+
     public $start;
     public $hidden;
-    
+
     /**
      * Initializes a new instance
-     * 
+     *
      * @param int $id the primary key
      */
     function __construct ($id = null) {
@@ -64,7 +64,7 @@ class GeoPlace {
             $this->load_from_database();
         }
     }
-    
+
     /**
      * Loads the object place (ie fill the properties) from the $_POST array
      */
@@ -76,7 +76,7 @@ class GeoPlace {
         if (array_key_exists('status', $_POST)) $this->status = $_POST['status'];
         if (array_key_exists('location_local_format', $_POST)) $this->location_local_format = $_POST['location_local_format'];
     }
-    
+
     /**
      * Loads the object place (ie fill the properties) from the database
      */
@@ -104,7 +104,7 @@ class GeoPlace {
 
         return true;
     }
-    
+
     /**
      * Gets status field value
      *
@@ -119,13 +119,13 @@ class GeoPlace {
         }
         return implode(',', $status);
     }
-    
+
     /**
      * Saves to database
      */
     function save_to_database () {
         global $db;
-        
+
         $id = $this->id ? "'" . $db->sql_escape($this->id) . "'" : 'NULL';
         $body_code = $db->sql_escape($this->body_code);
         $code = $db->sql_escape($this->code);
@@ -139,13 +139,13 @@ class GeoPlace {
         if (!$db->sql_query($sql)) {
             message_die(SQL_ERROR, "Unable to save", '', __LINE__, __FILE__, $sql);
         }
-        
+
         if (!$id) {
             //Gets new record id value
             $this->id = $db->sql_nextid();
         }
     }
-    
+
     /**
      * Determines if the specified local location looks valid
      *
@@ -159,27 +159,27 @@ class GeoPlace {
 
     /**
      * Gets a string representation of the current place
-     * 
+     *
      * @return string A Bxxxxxyyy string like B00001001, which represents the current place.
-     */    
+     */
     function __tostring () {
         return 'B' . $this->body_code . $this->code;
     }
-    
+
     /**
      * Creates a Place instance, from the specified body/place code
-     * 
+     *
      * @param $code the place's code
      * @return GeoPlace the place instance
      */
     static function from_code ($code) {
-        global $db;        
+        global $db;
         $sql = "SELECT * FROM " . TABLE_PLACES . " WHERE CONCAT('B', body_code, place_code) LIKE '$code'";
         if (!$result = $db->sql_query($sql)) message_die(SQL_ERROR, "Unable to query geo_places", '', __LINE__, __FILE__, $sql);
         if (!$row = $db->sql_fetchrow($result)) {
             return null;
         }
-        
+
         $place = new GeoPlace();
         $place->id = $row['place_id'];
         $place->body_code = $row['body_code'];
@@ -198,12 +198,12 @@ class GeoPlace {
 
         return $place;
     }
-    
+
     /**
      * Gets a start location
      *
      * @return string The global location code of a start location
-     * 
+     *
      * @TODO sql optimisation (query contains ORDER BY RAND())
      */
     static function get_start_location () {

@@ -4,7 +4,7 @@
  * Cache calling class.
  *
  * Zed. The immensity of stars. The HyperShip. The people.
- * 
+ *
  * (c) 2010, Dereckson, some rights reserved.
  * Released under BSD license.
  *
@@ -24,7 +24,7 @@
  * </code>
  *
  * 0.1    2010-07-06 22:45    Initial version [DcK]
- * 
+ *
  * @package     Zed
  * @subpackage  Cache
  * @author      Sébastien Santoro aka Dereckson <dereckson@espace-win.org>
@@ -56,7 +56,7 @@ class Cache {
      * $Config['cache']['engine'] = 'quux';
      * $cache = Cache::load(); //Cache:load() will call CacheQuux:load();
      * </code>
-     * 
+     *
      * @return Cache the cache instance, or null if nothing is cached
      */
     static function load () {
@@ -69,21 +69,21 @@ class Cache {
             $engine = 'void';
         } else {
             //engine is specified in the configuration
-            $engine = $Config['cache']['engine'];    
+            $engine = $Config['cache']['engine'];
         }
-                
+
         $engine_file = 'includes/cache/' . $engine . '.php';
         $engine_class = 'Cache' . ucfirst($engine);
-        
+
         if (!file_exists($engine_file)) {
             message_die(GENERAL_ERROR, "Can't initialize $engine cache engine.<br />$engine_file not found.", 'Cache');
         }
-        
+
         require_once($engine_file);
         if (!class_exists($engine_class)) {
             message_die(GENERAL_ERROR, "Can't initialize $engine cache engine.<br />$engine_class class not found.", 'Cache');
         }
-        
+
         return call_user_func(array($engine_class, 'load'));
     }
 }

@@ -47,7 +47,7 @@
 <!-- Content -->
 <div class="container_16">
 {if $WAP}
-    
+
     <!-- WAP -->
     <div class="grid_16 alpha omega">
         <div class="wap">{$WAP}</div>
@@ -55,7 +55,7 @@
     <div class="clear"></div>
 {/if}
 {if $NOTIFY}
-    
+
     <!-- Notify -->
     <div class="grid_16 alpha omega">
         <div class="notify">{$NOTIFY}</div>

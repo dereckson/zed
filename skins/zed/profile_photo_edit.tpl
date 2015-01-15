@@ -18,11 +18,11 @@
             <li><a href="{get_url('who')}/edit/photos">{#BackToPhotoManager#}</a></li>
         </ul>
     </div>
-    
+
     <div class="grid_5 omega">
         <div class="sidebar_border"></div>
         <div id="sidebar" style="min-height: inherit;">
-            <div class="border_top"></div>		
+            <div class="border_top"></div>
             <div class="sidebar_content">
                 <h2>{#EditMyPage#}</h2>
                 <ul>

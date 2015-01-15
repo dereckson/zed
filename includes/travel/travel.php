@@ -4,12 +4,12 @@
  * Travel helper class
  *
  * Zed. The immensity of stars. The HyperShip. The people.
- * 
+ *
  * (c) 2010, Dereckson, some rights reserved.
  * Released under BSD license.
  *
  * 0.1    2010-07-18 22:05    DcK
- * 
+ *
  * @package     Zed
  * @subpackage  Travel
  * @author      Sébastien Santoro aka Dereckson <dereckson@espace-win.org>
@@ -35,13 +35,13 @@ require_once('place.php');
 class Travel {
     /**
      * Array of TravelPlace, each one a custom travel rule
-     * 
+     *
      * This array is indexed by TravelPlace code.
-     * 
+     *
      * @var Array
-     */    
+     */
     public $globalTravelTo;
-    
+
     /**
      * Constructor
      */
@@ -49,7 +49,7 @@ class Travel {
         //Initializes array
         $this->globalTravelTo = array();
     }
-    
+
     /**
      * Gets and initializes if needed the Travel instance
      *
@@ -58,7 +58,7 @@ class Travel {
     static function load () {
         require_once('includes/cache/cache.php');
         $cache = Cache::load();
-        
+
         if (!$travel = $cache->get('zed_travel')) {
             //Initializes resource and caches it
             $travel = new Travel();
@@ -66,14 +66,14 @@ class Travel {
             $cache->set('zed_travel', serialize($travel));
             return $travel;
         }
-        
+
         return unserialize($travel);
     }
-    
+
     /**
      * Loads a travel configuration XML file
-     * 
-     * @param string the path to the travel XML file 
+     *
+     * @param string the path to the travel XML file
      */
     function load_xml ($file) {
         $xml = simplexml_load_file($file);
@@ -82,7 +82,7 @@ class Travel {
             $this->globalTravelTo[$travelPlace->code] = $travelPlace;
         }
     }
-    
+
     /**
      * Tries to parse the specified expression, according the rewrite rules
      * (for example defined by the <RewriteRule> xml tags)
@@ -115,19 +115,19 @@ class Travel {
         }
         return false;
     }
-    
+
     /**
      * Determines if a perso can travel from $from to $to
-     * 
+     *
      * If an alias have been used for $to local location, set correct location.
-     * 
+     *
      * @param GeoLocation the location where the perso is
      * @param GeoLocation the location where the perso wants to go
      * @return boolean true if the travel move is valid ; otherwise, false.
      *
      * @todo From B00001002, goto C1 doesn't work. Alias seems ignored.
      */
-    function can_travel ($from, &$to) {        
+    function can_travel ($from, &$to) {
         if ($from->global != $to->global) {
             //Checks if we can locally from $from to $to place
             if (!array_key_exists($from->global, $this->globalTravelTo)) {
@@ -145,7 +145,7 @@ class Travel {
                 return false;
             }
             $travelPlace = $this->globalTravelTo[$to->global];
-            
+
             //Is it's an especially allowed movement?
             foreach ($travelPlace->localMoves as $move) {
                 //move is a [location, alias, name]  array
@@ -155,7 +155,7 @@ class Travel {
                     return true;
                 }
             }
-            
+
             if ($travelPlace->freeLocalMove) {
                 //We can move freely, perfect
                 return true;
@@ -164,7 +164,7 @@ class Travel {
             //Local move not allowed
             return false;
         }
-        
+
         return true;
     }
 }

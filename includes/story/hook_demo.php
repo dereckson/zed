@@ -4,12 +4,12 @@
  * Story hook class: example code
  *
  * Zed. The immensity of stars. The HyperShip. The people.
- * 
+ *
  * (c) 2010, Dereckson, some rights reserved.
  * Released under BSD license.
  *
  * This class illustrates how to use the StoryHook class.
- * 
+ *
  * @package     Zed
  * @subpackage  Story
  * @author      Sébastien Santoro aka Dereckson <dereckson@espace-win.org>
@@ -39,7 +39,7 @@ class DemoStoryHook extends StoryHook {
 
     /**
      * Updates the current section description.
-     * 
+     *
      * @see StoryHook::update_description
      *
      * @param string $description the description to update
@@ -47,11 +47,11 @@ class DemoStoryHook extends StoryHook {
     function update_description (&$description) {
         //Performs the rot13 transform of the current description
         $description = str_rot13($description);
-        
+
         //Appends a string to the current description
         $description .= "\n\nWazzzzzzzzzzzzzzzzaaaaaaaaaaaaaaaaaaaaaa";
     }
-    
+
     /**
      * Updates the current section choices
      *
@@ -63,7 +63,7 @@ class DemoStoryHook extends StoryHook {
         //Adds a link to /push
         $links[] = array(lang_get("PushMessage"), get_url('push'));
     }
-  
+
     /**
      * Adds content after our story content block
      *

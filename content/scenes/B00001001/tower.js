@@ -16,28 +16,28 @@
 
 /*  -------------------------------------------------------------
     Tower class
-    Prints a tower map, with hl on current corridor  
+    Prints a tower map, with hl on current corridor
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -    */
-    
+
 var tower = {
     //The source to highlight picture
     hl: 'hl.png',
-    
+
     //The highlighted corridor (1-6). 0 = no hl
     i: 0,
-    
+
     //The corridor 4 (top) hl starts at:
     hlStartPosition: [163, 93],
-    
+
     //Gets CurrentPerso html code
     getHighlightCode: function () {
         return '<img id="tower_hl" src="' + this.hl + '" alt="Corridor ' + this.i + '" />';
     },
-    
+
     highlight: function (i) {
         //If already there, nothing to do
         if (this.i == i) return;
-        
+
         //Puts hl
         this.i = i;
         var tower = document.getElementById("tower");
@@ -47,10 +47,10 @@ var tower = {
             if (towerHl != null) {
                 towerHl.style.left = this.hlStartPosition[0] + "px";
                 towerHl.style.top = this.hlStartPosition[1] + "px";
-                
+
                 //The 4 is okay
                 if (i == 4) return;
-                
+
                 //Gets rotation angle
                 if (i > 4) {
                     angle = 60 * (i - 4);
@@ -74,14 +74,14 @@ var passage = {
     persoLocalLocation: null,
     bayPath: '',
     id: 'passage',
-    
+
     //gets hyperspace bay
     //randomly selected from 23 choices
     getHyperspaceBay: function () {
         var n = Math.floor(Math.random() * 23 + 1);
         return 'hyper/' + ((n.toString().length == 1) ? "0" + n : n) + '.png';
     },
-    
+
     getBay: function () {
         //The bay depends of ship location
         if (this.shipGlobalLocation[0] == 'B') {
@@ -93,30 +93,30 @@ var passage = {
             //If not, we should fallback on default.png
             return this.getHyperspaceBay();
         }
-        
+
         return 'default.png'; //will be reachable, cf. upper
     },
-    
+
     updateBay: function () {
         var bgImage = 'url("' + this.bayPath + this.getBay() + '")';
         document.getElementById(this.id).style.backgroundImage = bgImage;
     },
-    
+
     getLocalLocation: function () {
         //Splits TtCc expression at C
         //    '0' => "T2"
         //    '1' => "1"
         var location = this.persoLocalLocation.split('C');
-        
+
         if (location.length == 2 && location[0][0] == 'T') {
             //Current t, c coordinates
             var t = location[0].substring(1);
             var c = location[1];
         }
-        
+
         return [t, c];
     },
-    
+
     goLeft: function () {
         //TxC1 -> TxC6 -> TxC5 -> TxC4 -> TxC3 -> TxC2 -> TxC1
         tc = this.getLocalLocation();
@@ -125,10 +125,10 @@ var passage = {
 
         //New c coordinates
         var nc = (c == 1) ? 6 : c - 1;
-        
+
         this.moveTo(t, nc);
     },
-    
+
     goUp: function () {
         //TxCy -> T[x+1]Cy
         tc = this.getLocalLocation();
@@ -139,16 +139,16 @@ var passage = {
             this.moveTo(--t, c);
         }
     },
-    
+
     goDown: function () {
         //TxCy -> T[x+1]Cy
         tc = this.getLocalLocation();
         t = tc[0];
         c = tc[1];
-        
+
         this.moveTo(++t, c);
     },
-    
+
     goRight: function () {
         //TxC1 -> TxC2 -> TxC3 -> TxC4 -> TxC5 -> TxC6 -> TxC1
         tc = this.getLocalLocation();
@@ -157,15 +157,15 @@ var passage = {
 
         //New c coordinates
         var nc = (c == 6) ? 1 : eval(c) + 1;
-        
+
         this.moveTo(t, nc);
     },
-    
+
     moveTo: function (t, c) {
         //New local location
         local_location = 'T' + t + 'C' + c;
         passage.persoLocalLocation = local_location;
-        
+
         //Updates coordinates
         dojo.byId('TowerCouloir').innerHTML = c;
         dojo.byId('TowerFloor').innerHTML = t;
@@ -173,7 +173,7 @@ var passage = {
 
         //Updates bays
         //passage.updateBay();
-        
+
         //TODO: make url parameter compatible to any URL scheme
         //TODO: check in dojo doc if the local_location have to be encoded
         dojo.xhrGet({
@@ -188,61 +188,61 @@ var passage = {
             }
         });
     },
-    
+
     onGalleryInitialized: function () {
         //Adds left and right arrows
         this.addLeftArrow();
         this.addRightArrow();
     },
-       
+
     addLeftArrow: function () {
         //Adds left arrow
         var element = document.getElementById(this.id);
         var left = element.offsetLeft +  28;
         var top  = element.offsetTop  + 173;
-        
+
         element.innerHTML += '<div id="passage_left" onClick="passage.goLeft()" style="display: none; position: absolute; top: ' + top + 'px; left: ' + left + 'px"></div>';
     },
-    
+
     addRightArrow: function () {
         //Adds right arrow
         var element = document.getElementById(this.id);
         var left = element.offsetLeft + 898;
         var top  = element.offsetTop  + 173;
-        
+
         element.innerHTML += '<div id="passage_right" onClick="passage.goRight()" style="display: none; position: absolute; top: ' + top + 'px; left: ' + left + 'px"></div>';
     },
-    
+
     displayArrows: function (state) {
         //Displays left and right arrows?
         var display = [false, false];
-        
+
         switch (state) {
             case "left":
                 display[0] = true;
             break;
-                
+
             case "right":
                 display[1] = true;
             break;
         }
-        
+
         document.getElementById("passage_left").style.display =  display[0] ? 'block' : 'none';
         document.getElementById("passage_right").style.display = display[1] ? 'block' : 'none';
     },
-    
+
     onmousemove: function () {
         var element = document.getElementById(this.id);
         var left = element.offsetLeft;
         var top  = element.offsetTop;
-        
+
         //alert(element.offsetWidth);
         var inPassage = (
             mouse.x >= left && mouse.y >= top &&
             mouse.x <= left + element.offsetWidth &&
             mouse.y <= top  + element.offsetHeight
         )
-        
+
         if (inPassage) {
             var x = mouse.x - left;
             var y = mouse.y - top;
@@ -255,17 +255,17 @@ var passage = {
             }
         }
     },
-    
+
     isValidLocalLocation: function (localLocation) {
         return /^T[1-9][0-9]*C[1-6]$/.test(localLocation);
     },
-    
+
     initialize: function (shipGlobalLocation, persoLocalLocation) {
         this.shipGlobalLocation = shipGlobalLocation;
         this.persoLocalLocation = persoLocalLocation;
         if (!this.isValidLocalLocation(persoLocalLocation)) {
             this.moveTo(2, 1);
-            
+
             //Notify (this code requires prototype.js (or jquery, but in this case, simplify it with a insertAfter call))
             //TODO: ensure this code have dojo as only dependency
             $("header").replace('<div id="header">' + $("header").innerHTML + '</div><div class="container_16"><div class="grid_16 alpha omega"><div class="notify">As you were losing yourself in the hypership tower, your paths guide you to the second floor.</div></div></div>');
@@ -281,24 +281,24 @@ var passage = {
 
 var gallery = {
     pics: [],
-    
+
     initialized: false,
-    
+
     artworkDisplayMode: false,
-    
+
     currentPic: -1,
-    
+
     path: '',
-    
+
     loadXhrUrl: null,
-    
+
     getSquare: function (url) {
         //Gets extension position (last . position)
         var pos = url.lastIndexOf('.');
-        
+
         return url.substring(0, pos) + 'Square' + url.substring(pos);
     },
-    
+
     showGallery: function () {
         var html = '<ul>';
         for (var i = 0 ; i < this.pics.length ; i++) {
@@ -314,12 +314,12 @@ var gallery = {
         document.getElementById('passage_gallery').innerHTML = html;
         passage.onGalleryInitialized();
     },
-    
+
     hideGallery: function () {
         var elem = document.getElementById('passage_gallery');
         Effect.Puff(elem);
     },
-    
+
     loadPics: function () {
         dojo.xhrGet({
             handleAs:       'json',
@@ -329,82 +329,82 @@ var gallery = {
                 //TODO: in the future, we should print some metadata,
                 //      and the objects will be useful.
                 //      Meanwhile, we transform it to an array line.
-                
+
                 var pics = [null, null, null];
-                
+
                 //Builds pics array
                 for (var i = 0 ; i < response.length ; i++) {
                     if (response[i]['location_k'] > -1 && response[i]['location_k'] < 3) {
                         pics[response[i]['location_k']] = gallery.path + '/' + response[i]['path'];
                     }
                 }
-                
+
                 //alert(dump(response));
                 gallery.loadPicsCallback(pics);
 
             }
         });
     },
-    
+
     loadPicsCallback: function (pics) {
         //Sets pics array
         this.pics = pics;
-        
+
         //Show gallery
         this.showGallery();
-        
+
         //Init done
         if (!this.initialized) {
             this.initialized = true;
         }
     },
-    
+
     show: function (i) {
         //Hides gallery
         this.hideGallery();
-        
+
         //Shows image
         setTimeout('gallery.showImage(' + i + ')', 800);
     },
-    
+
     showImage: function (i) {
         //Sets image information
         this.currentPic = i; //currently not used
         this.artworkDisplayMode = true; //to handle properly ESC key down.
-        
+
         //New HTML passage code
         document.getElementById('passage').innerHTML = '<div id="screen"></div><div id="bankImages"><img src="' + this.pics[i] + '" /></div>';
-        
+
         //Calls Photo3D script
         onresize = tv.resize;
         tv.init();
     },
-    
+
     backToGallery: function () {
         //Fades current picture
         Effect.Fade(document.getElementById('screen'));
-        
+
         //Rebuilds gallery (in 800 ms, to let time to fading effect)
         setTimeout("document.getElementById('passage').innerHTML = '<div id=\"passage_gallery\"></div>'; gallery.showGallery()", 800);
-        
+
         //Sets image information
         this.currentPic = -1; //currently not used
         this.artworkDisplayMode = false; //to handle properly ESC key down.
     },
-    
+
     uploadDialog: function (i) {
         document.getElementById('i').value = i;
         dijit.byId('uploadDialog').show();
     },
-    
+
     initialize: function (path, loadXhrUrl) {
         //Sets load xhr url
         this.path = path;
         this.loadXhrUrl = loadXhrUrl;
-        
+
         //Loads pics
         this.loadPics();
-        
+
         //Listens ESC key
         document.onkeydown = function (e) {
             if (e.keyCode == 27) {
@@ -421,7 +421,7 @@ var gallery = {
 /*  -------------------------------------------------------------
     Photo3D G. Fernandez script
     http://www.dhteumeuleu.com/runscript.php?scr=photo3D.html
-        
+
     TODO: simplify code to handle one picture, and not an array
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -    */
 
@@ -430,41 +430,41 @@ var gridsize = 1;
 var Library = {};
 Library.ease = function() {
     this.target = 0;
-    
+
     this.position = 0;
-    
+
     this.move = function(_1, _2) {
         this.position += (_1 - this.position) * _2;
     };
 };
 
 var tv = {
-    O:  [], 
-    
+    O:  [],
+
     screen: {},
-    
+
     grid: {
         size: gridsize,
         borderSize: 6,
         zoomed: false
     },
-    
+
     angle: {
         x: new Library.ease(),
         y: new Library.ease()
     },
-    
+
     camera: {
         x: new Library.ease(),
         y: new Library.ease(),
         zoom: new Library.ease(),
         focalLength: 750
     },
-    
+
     init: function() {
         this.screen.obj = document.getElementById("screen");
         var images = document.getElementById("bankImages").getElementsByTagName("img");
-        
+
         this.screen.obj.onselectstart = function () {
             return false;
         };
@@ -488,7 +488,7 @@ var tv = {
                 o.point2D = {};
                 o.ratioImage = 1;
                 tv.O.push(o);
-                
+
                 o.onmouseover = function () {
                     if (!tv.grid.zoomed) {
                         if (tv.o) {
@@ -500,7 +500,7 @@ var tv = {
                         tv.o = this;
                     }
                 };
-                
+
                 o.onclick = function () {
                     if (!tv.grid.zoomed) {
                         tv.camera.x.target = this.point3D.x;
@@ -516,7 +516,7 @@ var tv = {
                         }
                     }
                 };
-            
+
                 o.calc = function () {
                     this.point3D.z.move(this.point3D.z.target, 0.5);
                     var x = (this.point3D.x - tv.camera.x.position) * tv.camera.zoom.position;
@@ -536,7 +536,7 @@ var tv = {
                         this.point2D.h = this.point2D.w;this.point2D.w = Math.round(this.point2D.h * this.ratioImage);
                     }
                 };
-                
+
                 o.draw = function () {
                     if (this.complete) {
                         if (!this.loaded) {
@@ -565,7 +565,7 @@ var tv = {
         mouse.x = tv.screen.x+tv.screen.w;
         tv.run();
     },
-    
+
     resize: function() {
         var o = tv.screen.obj;
         tv.screen.w = o.offsetWidth / 2;
@@ -576,7 +576,7 @@ var tv = {
             tv.screen.y  = o.offsetTop;
         }
     },
-    
+
     run: function () {
         tv.angle.x.move(-(mouse.y - tv.screen.h - tv.screen.y) * 0.0025, 0.1);
         tv.angle.y.move((mouse.x - tv.screen.w - tv.screen.x) * 0.0025, 0.1);

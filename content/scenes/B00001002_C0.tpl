@@ -8,9 +8,9 @@
     <div class="grid_9 omega" style="text-align: right; margin-bottom: 1em;">
         {#Core#}
     </div>
-    
+
     <div class="clear"></div>
-    
+
     <div class="content_wrapper">
     <h1>{#Core#}</h1>
 
@@ -28,7 +28,7 @@
         <p><a href="{get_url('do.php')}/local_move/-1,1,1?redirectTo=/">C5</a><br>
         <a href="{get_url('do.php')}/local_move/1,1,1?redirectTo=/">C6</a><br>
         <a href="{get_url('do.php')}/local_move/-1,-1,1?redirectTo=/">C7</a><br>
-        <a href="{get_url('do.php')}/local_move/1,-1,1?redirectTo=/">C8</a><br></p>        
+        <a href="{get_url('do.php')}/local_move/1,-1,1?redirectTo=/">C8</a><br></p>
     </div>
     <div class="clear fixclear"></div>
 </div>

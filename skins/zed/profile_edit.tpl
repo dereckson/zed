@@ -5,7 +5,7 @@
         dojo.require("dijit.form.Form");
         dojo.require("dijit.form.CheckBox");
         dojo.require("dijit.form.Button");
-        
+
         function SetWidgetFont(id, font) {
             //TODO: document.getElementById(id).style.font = font;
         }
@@ -40,12 +40,12 @@
             </form>
         </div>
     </div>
-    
+
     <!--  Faerie content -->
     <div class="grid_5 omega">
         <div class="sidebar_border"></div>
         <div id="sidebar">
-            <div class="border_top"></div>		
+            <div class="border_top"></div>
 				<div class="sidebar_content">
                     <h2>{#EditMyPage#}</h2>
                     <ul>

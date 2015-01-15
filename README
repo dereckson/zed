@@ -1,7 +1,7 @@
-    ZzzzzzZ             zz      
+    ZzzzzzZ             zz
     Z    z               z    The spatial gallery / social network / lounge
         z                z    (c) 2010, Dereckson, some rights reserved.
-        z    zzzzz   zzzzz    
+        z    zzzzz   zzzzz
        z    z     z z    z    0.1   alpha technical preview
       z     zzzzzzz z    z
       z     z       z    z    Last update hypership time: 5.096
@@ -13,36 +13,36 @@
 =========
 
  * Zed is a PHP 5.3 application.
- 
+
  * You can import dev/schema-mysql.sql as original SQL schema
- 
+
  * The configuration file is includes/config.php
- 
+
  * Files are cached in 3 directories of the cache folder, sets appropriate
    write permissions to:
    compiled        openid          sessions
- 
+
  * Zed needs but doesn't include in its code the Janrain OpenID PHP libraries:
    http://www.janrain.com/openid-enabled - http://github.com/openid/php-openid
-   
+
    Put the Auth folder somewhere in your include_dir path.
-   
+
    bcmath and GMP php extensions are recommended (required?) for OpenID.
    Our dev environment outputs a white page without error if GMP isn't here.
-   
+
    If you don't wish to enable OpenID, replace your includes/login.php by
    http://hg.dereckson.be/zed/src/0ffd1b08f33c/includes/login.php
-   
+
  * Another used PHP extension is the WDDX one, to store session information in
    a human-readable format, easier to debug.
-   
+
    If you don't want that, comment the following line from includes/config.php:
    ini_set('session.serialize_handler', 'wddx');
-  
+
 =========
  UPGRADE
 =========
-  
+
  * For our main prod install, we use a script exporting last repo revision with
    hg archive and applying a patch to config.php.
 
@@ -53,9 +53,9 @@
  * Global location is a 9 letters code
    <B,S> <body or spaceship id> <place where you are in this body/spaceship>
          zerofilled 5 digits    zerofilled 3 digits
-         
+
    You can also find 6 digits expressions e.g. B00001 is the hypership
-    
+
   * Local location varies of the place.
     - On hypership core (B00001002): Sector C<0-8> Level <z> Zone <x-y>
         - 0 is the gravity center
@@ -77,16 +77,16 @@
 
   * A pazaak game, to have something to play
   * Will be an Arzakon client
-  
+
 =================
  I WANT TO HELP!
 =================
 
   * You can create new SmartLine commands
-  
+
   * You can translate it in a new language
     Start point: http://zed.dereckson.be/lang/en/core.conf
-  
+
   * You can code a bit of adventure, places description, stuff to do
     as long you don't transform it in ogame clone (we're building a community
     who want or don't want to play, but not a mechanic game)
@@ -98,50 +98,50 @@
 ============
 
  * Javascript get_hypership_time will returns 5.94 instead 5.094
-   
+
    Some %03d to add in /js/misc.js
-  
+
  * The floater rendering adds a black line under Opera
-   
+
    dojox.layout.floatingPane bug, need to check with last dojo version
-   
+
  * API /location query will break indent on location->body->location
- 
+
    beautify XML code to improve
-   
+
  * do.php allows any local location move, discarding FrL status
- 
+
  * The upload artwork dojo form can't be closed under Opera
-   
+
 =======================
  API - General methods
 =======================
 
  * /api.php/time
- 
+
    Returns hypership time
    Public access
- 
+
  * /api.php/perso/<perso_id>
- 
+
    Returns perso object
    Created only to test extensively recursivity of api xml output
    It's disabled since 10.811 on zed.dereckson.be, if you need an alternative,
    open a bug report with the fields you need. Ship API should be able to manage
    inventory if user is on. Ship API must also be able to get/set custom flags.
    Requires a key
- 
+
  * /api.php/location/<location code or name>
-   
+
    Returns location object
    Tip: to get the full name, use string eg /api.php/location/Zeta?format=string
    Requires a key
-   
+
  * GET/POST API parameters
-   
+
    - key
       API key, ask it at zed at dereckson be, object [DEV] api key request
-     
+
    - format
      - preview  print_r representation, so you've an idea of the object
      - json     json_encode() output
@@ -149,13 +149,13 @@
      - wddx     WDDX were an early universal serialization attempt
      - xml      XML document
      - string   output "as is" (or if it's an object, calls __toString())
-     
+
 ============
  API - Ship
 =============
 
  * /api.php/ship/authenticate/<perso nickname>
-    
+
 =================
  ACKNOWLEDGEMENT
 =================

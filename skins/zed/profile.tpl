@@ -21,9 +21,9 @@
 {/if}
 			<!-- Text -->
 			<div class="profile_text{if $PROFILE_FIXEDWIDTH} fixedwidth{/if}">{if $PROFILE_TEXT != ""}{if $PROFILE_FIXEDWIDTH}{$PROFILE_TEXT}{else}{$PROFILE_TEXT|nl2br}{/if}{else}{if $PROFILE_SELF}<a href="{get_url('who')}/edit/profile">{/if}<img src="{#StaticContentURL#}/img/zed/empty_profile.png" width="642" height="392" alt="Be creative ! Fill this space with your best words." />{if $PROFILE_SELF}</a>{/if}{/if}</div>
-			
+
 {$PROFILE_TAGS}
-			
+
 			<!-- Leave a message -->
 			<div class="profile_separator_light"></div>
 			<div class="profile_message">
@@ -39,16 +39,16 @@
 						<p><input id="MessageSubmit" type="submit" name="MessageSubmit" value="{#Send#}" /></p>
 				</form>
 			</div>
-		</div>			
+		</div>
 	</div>
-    
+
     <!-- User content -->
     <div class="grid_5 omega">
         <div class="sidebar_border"></div>
         <div id="sidebar">
-            <div class="border_top"></div>		
+            <div class="border_top"></div>
 	    <div class="sidebar_content">
-		
+
 {if $PROFILE_SELF}
 		<!-- {{counter name=section}|romanize}. edit profile, account, photos  -->
 		<h2>{#EditMyPage#}</h2>
@@ -66,8 +66,8 @@
             <div class="border_bottom"></div>
         </div>
     </div>
-    
-{if $PROFILE_COMMENTS}     
+
+{if $PROFILE_COMMENTS}
     <!-- Profile comments -->
     <div class="grid_16 alpha omega profile_comments" id="comments" style="margin-bottom: 1em;">
 {foreach from=$PROFILE_COMMENTS item=comment}

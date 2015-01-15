@@ -4,7 +4,7 @@
  * Settings: a settings page class
  *
  * Zed. The immensity of stars. The HyperShip. The people.
- * 
+ *
  * (c) 2010, Dereckson, some rights reserved.
  * Released under BSD license.
  *
@@ -49,19 +49,19 @@ class SettingsPage {
      * The page's title
      *
      * This property maps the title attribute from the page XML tag
-     * 
+     *
      * @var string the page title
      */
     public $title;
-    
+
     /**
      * The settings
      *
      * This property is an array of Setting items and maps the <setting> tags
-     * @var Array 
+     * @var Array
      */
     public $settings = array();
-    
+
     /**
      * Initializes a new instance of SettingsPage class
      *
@@ -70,10 +70,10 @@ class SettingsPage {
     function __construct ($id) {
         $this->id = $id;
     }
-       
+
     /**
      * Initializes a settings page from an SimpleXMLElement XML fragment
-     * 
+     *
      * @param SimpleXMLElement $xml the XML fragment
      * @return SettingsPage the section instance
      */
@@ -86,21 +86,21 @@ class SettingsPage {
                 case 'id':
                     $$key = (string)$value;
                     break;
-                
+
                 default:
                     message_die(GENERAL_ERROR, "Unknown attribute: $key = \"$value\"", "Settings error");
             }
         }
-        
+
         //id attribute is mandatory
         if (!$id) {
             message_die(GENERAL_ERROR, "Section without id. Please add id='' in <section> tag", "Story error");
         }
-        
+
         //Initializes new SettingsPage instance
         $page = new SettingsPage($id);
         $page->title = $title;
-        
+
         //Gets settings
         if ($xml->setting) {
             foreach ($xml->setting as $settingXml) {
@@ -108,28 +108,28 @@ class SettingsPage {
                 $page->settings[$setting->key] = $setting;
             }
         }
-        
+
         return $page;
     }
-    
+
     /**
      * Handles form reading $_POST array, set new settings values and saves.
-     * 
+     *
      * @param Array $errors an array where the errors will be filled
      * @return boolean true if there isn't error ; otherwise, false.
      */
     function handle_form (&$errors = array()) {
         $objects = array();
-        
+
         //Sets new settings values
         foreach ($this->settings as $setting) {
             $value = $_POST[$setting->key];
-            
+
             if ($setting->field == "password" && !$value) {
                 //We don't erase passwords if not set
                 continue;
             }
-            
+
             //If the setting value is different of current one, we update it
             $currentValue = $setting->get();
             if ($setting->field == "checkbox" || $currentValue != $value) {
@@ -139,7 +139,7 @@ class SettingsPage {
                 if ($setting->object) $objects[] = $setting->object;
             }
         }
-        
+
         //Saves object (when the SETTINGS_SAVE_METHOD save method exists)
         if (count($objects)) {
             $objects = array_unique($objects);
@@ -150,7 +150,7 @@ class SettingsPage {
                 }
             }
         }
-        
+
     }
 
 }

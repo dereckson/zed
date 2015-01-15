@@ -2,9 +2,9 @@
 
 /**
  * Geo body class.
- * 
+ *
  * Zed. The immensity of stars. The HyperShip. The people.
- * 
+ *
  * (c) 2010, Dereckson, some rights reserved.
  * Released under BSD license.
  *
@@ -28,9 +28,9 @@
  */
 class GeoBody {
 
-    public $code;  
+    public $code;
     public $name;
-    
+
     public $hypership;
     public $asteroid;
     public $moon;
@@ -38,15 +38,15 @@ class GeoBody {
     public $star;
     public $orbital;
     public $hidden;
-    
+
     public $location;
     public $description;
-    
+
     public $lastError;
-    
+
     /**
      * Initializes a new instance
-     * 
+     *
      * @param int $code the primary key
      */
     function __construct ($code = null) {
@@ -55,7 +55,7 @@ class GeoBody {
             $this->load_from_database();
         }
     }
-    
+
     /**
      * Loads the object body (ie fill the properties) from the $_POST array
      *
@@ -63,7 +63,7 @@ class GeoBody {
      */
     function load_from_form ($readBoolean = true) {
         if (array_key_exists('name', $_POST)) $this->name = $_POST['name'];
-        
+
         if ($readBoolean) {
             if (array_key_exists('hypership', $_POST)) $this->hypership = $_POST['hypership'];
             if (array_key_exists('star', $_POST)) $this->start = $_POST['star'];
@@ -77,7 +77,7 @@ class GeoBody {
         if (array_key_exists('location', $_POST)) $this->location = $_POST['location'];
         if (array_key_exists('description', $_POST)) $this->description = $_POST['description'];
     }
-    
+
     /**
      * Loads the object body (ie fill the properties) from the database
      */
@@ -89,21 +89,21 @@ class GeoBody {
             $this->lastError = "body unkwown: " . $this->code;
             return false;
         }
-        
+
         $this->name = $row['body_name'];
         $this->location = $row['body_location'];
         $this->description = $row['body_description'];
-        
+
         if ($row['body_status']) {
             $flags = explode(',', $row['body_status']);
             foreach ($flags as $flag) {
                 $this->$flag = true;
             }
         }
-        
+
         return true;
     }
-    
+
     /**
      * Gets the status field
      *
@@ -118,7 +118,7 @@ class GeoBody {
         }
         return implode(',', $status);
     }
-    
+
     /**
      * Gets the kind of place the body is (e.g. asteroid)
      *
@@ -136,7 +136,7 @@ class GeoBody {
         }
         return "";
     }
-    
+
     /**
      * Gets the name of the body, as a string representation of the object
      *
@@ -145,13 +145,13 @@ class GeoBody {
     function __toString () {
         return $this->name;
     }
-    
+
     /**
      * Saves to database
      */
     function save_to_database () {
         global $db;
-        
+
         $code = $this->code ? "'" . $db->sql_escape($this->code) . "'" : 'NULL';
         $name = $db->sql_escape($this->name);
         $status = get_status();
@@ -163,12 +163,12 @@ class GeoBody {
         if (!$db->sql_query($sql)) {
             message_die(SQL_ERROR, "Unable to save", '', __LINE__, __FILE__, $sql);
         }
-        
+
         if (!$code) {
             //Gets new record code value
             $this->code = $db->sql_nextid();
         }
     }
 }
-    
+
 ?>

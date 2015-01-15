@@ -5,22 +5,22 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link rel="stylesheet" type="text/css" href="{#StaticContentURL#}/css/960.css" media="screen" />
     <link rel="stylesheet" href="{#StaticContentURL#}/css/zed/theme.css" />
-    
+
     <!-- Calls dojo -->
     <script src="/{#StaticContentURL#}js/dojo/dojo/dojo.js" type="text/javascript"
             djConfig="isDebug: false, parseOnLoad: true"></script>
     <link rel="stylesheet" href="{#StaticContentURL#}/css/zed/forms.css" />
     <script type="text/javascript">
         dojo.require("dijit.form.Form");
-        
+
         dojo.require("dijit.form.ValidationTextBox");
         dojo.require("dijit.form.TextBox");
         dojo.require("dijit.form.FilteringSelect");
         dojo.require("dijit.form.Button");
-    
+
         dojo.require("dojox.validate.regexp");
         dojo.require("dojox.form.PasswordValidator");
-    
+
         dojo.require("dojo.parser");
     </script>
 </head>
@@ -41,14 +41,14 @@
 <!-- Content -->
 <div class="container_16">
 {if $WAP}
-    
+
     <!-- WAP -->
     <div class="grid_16 alpha omega">
         <div class="wap">{$WAP}</div>
     </div>
 {/if}
 {if $NOTIFY}
-    
+
     <!-- Notify -->
     <div class="grid_16 alpha omega">
         <div class="notify">{$NOTIFY}</div>

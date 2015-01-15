@@ -4,7 +4,7 @@
  * Zed SmartLine commands.
  *
  * Zed. The immensity of stars. The HyperShip. The people.
- * 
+ *
  * (c) 2010, Dereckson, some rights reserved.
  * Released under BSD license.
  *
@@ -20,7 +20,7 @@
  * This code is inspired from Viper, a corporate PHP intranet I wrote in 2004.
  * There, the SmartLine allowed to change color theme or to find quickly user,
  * account, order or server information in a CRM context.
- * 
+ *
  * @package     Zed
  * @subpackage  SmartLine
  * @author      Sébastien Santoro aka Dereckson <dereckson@espace-win.org>
@@ -73,7 +73,7 @@ $lang['Help']['whereami'] = "Where am I?";
 class GotoSmartLineCommand extends SmartLineCommand {
     /**
      * Runs the command
-     *  
+     *
      * @param array $argv an array of string, each item a command argument
      * @param int $argc the number of arguments
      *
@@ -82,12 +82,12 @@ class GotoSmartLineCommand extends SmartLineCommand {
      */
     public function run ($argv, $argc) {
         global $CurrentPerso;
-        
+
         if ($argc == 1) {
             $this->SmartLine->puts("Where do you want to go?", STDERR);
             return;
         }
-        
+
         if ($argc > 2) {
             $ignored_string = implode(" ", array_slice($argv, 2));
             $this->SmartLine->puts("Warning: ignoring $ignored_string", STDERR);
@@ -95,10 +95,10 @@ class GotoSmartLineCommand extends SmartLineCommand {
 
         require_once("includes/geo/location.php");
         require_once("includes/travel/travel.php");
-       
+
         $here = new GeoLocation($CurrentPerso->location_global, $CurrentPerso->location_local);
         $travel = Travel::load(); //maps content/travel.xml
-        
+
         //Parses the expression, by order of priority, as :
         //  - a rewrite rule
         //  - a new global location
@@ -106,7 +106,7 @@ class GotoSmartLineCommand extends SmartLineCommand {
         if (!$travel->try_parse_rewrite_rule($argv[1], $here, $place)) {
             try {
                 $place = new GeoLocation($argv[1]);
-                
+
                 if ($place->equals($CurrentPerso->location_global)) {
                     $this->SmartLine->puts("You're already there.");
                     return;
@@ -119,20 +119,20 @@ class GotoSmartLineCommand extends SmartLineCommand {
                     $this->SmartLine->puts($ex->getMessage(), STDERR);
                     return;
                 }
-                
+
                 if ($place->equals($here)) {
                     $this->SmartLine->puts("You're already there.");
                     return;
                 }
-            }       
+            }
         }
-        
+
         //Could we really go there?
         if (!$travel->can_travel($here, $place)) {
             $this->SmartLine->puts("You can't reach that location.");
             return;
         }
-        
+
         //Moves
         $CurrentPerso->move_to($place->global, $place->local);
         $this->SmartLine->puts("You travel to that location.");
@@ -150,7 +150,7 @@ class GotoSmartLineCommand extends SmartLineCommand {
 class GUIDSmartLineCommand extends SmartLineCommand {
     /**
      * Runs the command
-     *  
+     *
      * @param array $argv an array of string, each item a command argument
      * @param int $argc the number of arguments
      */
@@ -161,7 +161,7 @@ class GUIDSmartLineCommand extends SmartLineCommand {
 			}
 			return;
 		}
-	
+
 	    $this->SmartLine->puts(new_guid());
     }
 }
@@ -173,24 +173,24 @@ class GUIDSmartLineCommand extends SmartLineCommand {
  *
  * invite [add]
  *     creates a new invite code
- * 
+ *
  * invite del <invite code>
  *     deletes the specified invite
- * 
+ *
  * invite list
  *     prints current invite codes
  */
 class InviteSmartLineCommand extends SmartLineCommand {
     /**
      * Runs the command
-     *  
+     *
      * @param array $argv an array of string, each item a command argument
      * @param int $argc the number of arguments
      */
     public function run ($argv, $argc) {
 		require_once('includes/objects/invite.php');
 		global $CurrentUser, $CurrentPerso;
-		
+
 		$command = ($argc > 1) ? strtolower($argv[1]) : '';
 		switch ($command) {
 			case 'list':
@@ -203,14 +203,14 @@ class InviteSmartLineCommand extends SmartLineCommand {
 					}
 				}
 				break;
-			
+
 			case 'add':
 			case '':
 				$code = Invite::create($CurrentUser->id, $CurrentPerso->id);
 				$url = get_server_url() . get_url('invite', $code);
 				$this->SmartLine->puts("New invite code created: $code<br />Invite URL: $url");
 				break;
-			
+
 			case 'del':
 				$code = $argv[2];
 				if (!preg_match("/^([A-Z]){3}([0-9]){3}$/i", $code)) {
@@ -225,12 +225,12 @@ class InviteSmartLineCommand extends SmartLineCommand {
 					}
 				}
 				break;
-			
+
 			default:
 				$this->SmartLine->puts("Usage: invite [add|list|del <code>]", STDERR);
 				break;
 		}
-	
+
     }
 }
 
@@ -244,7 +244,7 @@ class InviteSmartLineCommand extends SmartLineCommand {
 class ListSmartLineCommand extends SmartLineCommand {
     /**
      * Runs the command
-     *  
+     *
      * @param array $argv an array of string, each item a command argument
      * @param int $argc the number of arguments
      */
@@ -253,18 +253,18 @@ class ListSmartLineCommand extends SmartLineCommand {
             $this->SmartLine->puts("Available lists: bodies, locations, places");
             return;
         }
-        
+
         switch ($objects = $argv[1]) {
             case 'bodies':
                 $list = $this->get_list(TABLE_BODIES, "CONCAT('B', body_code)", "body_name");
                 $this->SmartLine->puts($list);
                 break;
-	    
+
             case 'locations':
                 $list = $this->get_list(TABLE_LOCATIONS, "location_code", "location_name");
                 $this->SmartLine->puts($list);
-                break;		
-            
+                break;
+
             case 'places':
                 if ($argv[2] == "-a" || $argv[2] == "--all") {
                     //Global bodies places list
@@ -277,11 +277,11 @@ class ListSmartLineCommand extends SmartLineCommand {
                             $body_code = substr($CurrentPerso->location_global, 1, 5);
                             $list = $this->get_list(TABLE_PLACES, "CONCAT('B', body_code, place_code)", "place_name", "body_code = $body_code");
                             break;
-                                                                        
+
                         case 'S':
                             $this->SmartLine->puts("I don't have a map of the spaceship.", STDERR);
                             return;
-                    
+
                         default:
                             $this->SmartLine->puts("Unknown location type. Can only handle B or S.", STDERR);
                             return;
@@ -289,13 +289,13 @@ class ListSmartLineCommand extends SmartLineCommand {
                 }
                 $this->SmartLine->puts($list);
                 break;
-            
+
             default:
                 $this->SmartLine->puts("Unknown objects to list: $objects", STDERR);
         }
-    
+
     }
-    
+
     /**
      * Gets a custom list from the specified table and fields.
      *
@@ -335,7 +335,7 @@ class ListSmartLineCommand extends SmartLineCommand {
 class RequestsSmartLineCommand extends SmartLineCommand {
     /**
      * Runs the command
-     *  
+     *
      * @param array $argv an array of string, each item a command argument
      * @param int $argc the number of arguments
      */
@@ -347,7 +347,7 @@ class RequestsSmartLineCommand extends SmartLineCommand {
 			$controller = 'controllers/persorequest.php';
 		} else {
 			$this->SmartLine->puts("No request waiting.");
-		}	
+		}
     }
 }
 
@@ -359,7 +359,7 @@ class RequestsSmartLineCommand extends SmartLineCommand {
 class SettingsSmartLineCommand extends SmartLineCommand {
     /**
      * Runs the command
-     *  
+     *
      * @param array $argv an array of string, each item a command argument
      * @param int $argc the number of arguments
      */
@@ -382,7 +382,7 @@ class SettingsSmartLineCommand extends SmartLineCommand {
 class UnixTimeSmartLineCommand extends SmartLineCommand {
     /**
      * Runs the command
-     *  
+     *
      * @param array $argv an array of string, each item a command argument
      * @param int $argc the number of arguments
      */
@@ -456,13 +456,13 @@ class VersionSmartLineCommand extends SmartLineCommand {
 class WhereAmISmartLineCommand extends SmartLineCommand {
     /**
      * Runs the command
-     *  
+     *
      * @param array $argv an array of string, each item a command argument
      * @param int $argc the number of arguments
      */
     public function run ($argv, $argc) {
 	    global $CurrentPerso;
-		
+
 	    require_once("includes/geo/location.php");
 	    $place = new GeoLocation($CurrentPerso->location_global);
 	    $this->SmartLine->puts($CurrentPerso->location_global . ' - ' . $place);

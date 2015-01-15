@@ -91,7 +91,7 @@ class GeoScene {
             $this->sceneFile = SCENE_DIR . '/' . $tpl;
             return true;
         }
-        
+
         //From filename
         $expression = $this->location->global . ' ' . $this->location->local;
         if ($this->try_get_scene($expression)) {

@@ -4,7 +4,7 @@
  * User profile
  *
  * Zed. The immensity of stars. The HyperShip. The people.
- * 
+ *
  * (c) 2010, Dereckson, some rights reserved.
  * Released under BSD license.
  *
@@ -33,7 +33,7 @@
  *     ProfileComment.
  *
  * The view profile_tags.tpl is indirectly used by the Profile model.
- *   
+ *
  * This code is maintained in // with Azhàr.
  *
  * @package     Zed
@@ -49,7 +49,7 @@
 
 //Loads language file
 lang_load('profile.conf');
- 
+
 //Gets perso nickname from URL
 $who = $url[1];
 
@@ -58,16 +58,16 @@ switch ($who) {
         $mode = 'edit';
         $who = $CurrentPerso->nickname;
         break;
-    
+
     case 'random':
         $mode = 'view';
         $who = $db->sql_query_express("SELECT perso_id FROM " . TABLE_PROFILES . " ORDER  BY rand() LIMIT 1");
         break;
-       
+
     default:
         $mode = 'view';
 }
- 
+
 if (!$who) {
     message_die(GENERAL_ERROR, "Who?", "URL error");
 }
@@ -116,10 +116,10 @@ if ($_POST['EditProfile']) {
     $comment->perso_id = $perso->id;
     $comment->text = $_POST['message'];
     $comment->publish();
-    $smarty->assign('NOTIFY', lang_get('CommentPublished'));    
+    $smarty->assign('NOTIFY', lang_get('CommentPublished'));
 } elseif ($_FILES['photo']) {
     #We've a file !
-    
+
     $hash = md5(microtime() . serialize($_FILES));
     $extension = get_extension($_FILES['photo']['name']);
     $filename = $CurrentPerso->id . '_' . $hash . '.' . $extension;
@@ -142,17 +142,17 @@ if ($_POST['EditProfile']) {
 			$photo->description = $_POST['description'];
 			if ($photo->avatar) $photo->promote_to_avatar();
 			$photo->save_to_database();
-			
+
 			//Generates thumbnail
 			if (!$photo->generate_thumbnail()) {
                 $smarty->assign('WAP', "Error generating thumbnail.");
             }
-			
+
 			$smarty->assign('NOTIFY', lang_get('PhotoUploaded'));
 			$mode = 'view';
 		}
 		break;
-		
+
 		case 1:
 		$errors[] = "The file is too large.";
 		break;
@@ -163,7 +163,7 @@ if ($_POST['EditProfile']) {
 		$errors[] = "Unknown error (#" . $_FILES['photo']['error'] . ")";
 		break;
 	}
-	
+
 	if (count($errors)) {
 	    $smarty->assign('WAP', join($errors, '<br />'));
 	}
@@ -197,18 +197,18 @@ if ($profile->text) {
 
 if ($mode == 'view') {
     require_once('includes/objects/profilephoto.php');
-    
+
     //Self profile?
     $self = $CurrentPerso->id == $profile->perso_id;
-    
+
     //Gets profiles comments, photos, tags
     $comments = ProfileComment::get_comments($profile->perso_id);
     $photos   = ProfilePhoto::get_photos($profile->perso_id);
 	$tags     = $profile->get_cached_tags();
-    
+
     //Records timestamp, to be able to track new comments
     if ($self) $CurrentPerso->set_flag('profile.lastvisit', time());
-         
+
     //Template
     $smarty->assign('PROFILE_COMMENTS', $comments);
     $smarty->assign('PROFILE_SELF', $self);
@@ -222,16 +222,16 @@ if ($mode == 'view') {
             $smarty->assign('USERNAME', $perso->name);
             $smarty->assign('DIJIT', true);
             $css[] = THEME . '/forms.css';
-            $template = 'profile_edit.tpl';	    
+            $template = 'profile_edit.tpl';
             break;
-        
+
         case 'account':
             $smarty->assign('user', $CurrentUser);
             $smarty->assign('DIJIT', true);
             $css[] = THEME . '/forms.css';
             $template = 'user_account.tpl';
             break;
-	
+
         case '':
             $smarty->assign('NOTIFY', "What do you want to edit ? Append /profile, /account or /photos to the URL");
             break;
@@ -243,7 +243,7 @@ if ($mode == 'view') {
                 case '':
                     //Nothing to do
                     break;
-                
+
                 case 'delete':
                     //Deletes a picture
                     if (!$id = $url[4]) {
@@ -262,7 +262,7 @@ if ($mode == 'view') {
                         }
                     }
                     break;
-                
+
                 case 'edit':
                     if (!$id = $url[4]) {
                         $smarty->assign('WAP', "URL error. Parameter missing: picture id.");
@@ -280,7 +280,7 @@ if ($mode == 'view') {
                         }
                     }
                     break;
-	    
+
                 case 'avatar':
                     //Promotes a picture to avatar
                     if (!$id = $url[4]) {
@@ -299,7 +299,7 @@ if ($mode == 'view') {
                         }
                     }
                     break;
-                
+
                 default:
                     $smarty->assign('WAP', "Unknown URL. To delete a picture it's /delete/<picture id>. To edit it /edit/<picture id>");
                     break;
@@ -342,5 +342,5 @@ if ($template) $smarty->display($template);
 
 //Serves footer
 include('footer.php');
- 
+
 ?>

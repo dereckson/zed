@@ -4,12 +4,12 @@
  * MOTD class
  *
  * Zed. The immensity of stars. The HyperShip. The people.
- * 
+ *
  * (c) 2010, Dereckson, some rights reserved.
  * Released under BSD license.
  *
  * 0.1    2010-02-03 21:11    Import from Azhàr code
- * 
+ *
  * @package     Zed
  * @subpackage  Model
  * @author      Sébastien Santoro aka Dereckson <dereckson@espace-win.org>
@@ -32,7 +32,7 @@ class MOTD {
     public $perso_id;
     public $text;
     public $date;
-    
+
     /**
      * Initializes a new instance of a MOTD object
      *
@@ -47,7 +47,7 @@ class MOTD {
             return true;
         }
     }
-    
+
     /**
      * Loads the object MOTD (ie fill the properties) from the $_POST array
      */
@@ -56,7 +56,7 @@ class MOTD {
         if (array_key_exists('text', $_POST)) $this->text = $_POST['text'];
         if (array_key_exists('date', $_POST)) $this->date = $_POST['date'];
     }
-    
+
     /**
      * Loads the object MOTD (ie fill the properties) from the database
      */
@@ -74,7 +74,7 @@ class MOTD {
         $this->date = $row['motd_date'];
         return true;
     }
-    
+
     /**
      * Saves the object to the database
      */
@@ -91,6 +91,6 @@ class MOTD {
         }
     }
 }
-    
+
 ?>
 

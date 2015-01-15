@@ -12,7 +12,7 @@ function get_hypership_time () {
     seconds = unixtime - 1278115200;
     days = Math.floor(seconds / 86400);
     fraction = Math.floor((seconds % 86400) / 86.4);
-    
+
     //Zerofills fraction
     switch (new String(fraction).length) {
         case 1: return days + "." + "00" + fraction;
@@ -49,15 +49,15 @@ setTimeout('update_hypership_time()', next_hypership_increase_in());
 function dump(arr,level) {
         var dumped_text = "";
         if(!level) level = 0;
-        
+
         //The padding given at the beginning of the line.
         var level_padding = "";
         for(var j=0;j<level+1;j++) level_padding += "    ";
-        
-        if(typeof(arr) == 'object') { //Array/Hashes/Objects 
+
+        if(typeof(arr) == 'object') { //Array/Hashes/Objects
                 for(var item in arr) {
                         var value = arr[item];
-                        
+
                         if(typeof(value) == 'object') { //If it is an array,
                                 dumped_text += level_padding + "'" + item + "' ...\n";
                                 //dumped_text += dump(value,level+1);

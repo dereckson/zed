@@ -4,10 +4,10 @@
  * MySQL layer and helper class
  *
  * Zed. The immensity of stars. The HyperShip. The people.
- * 
+ *
  * (c) 2010, Dereckson, some rights reserved.
  * Released under BSD license.
- * 
+ *
  * @package     Zed
  * @subpackage  Keruald
  * @author      Sébastien Santoro aka Dereckson <dereckson@espace-win.org>
@@ -25,7 +25,7 @@ if (!defined('SQL_LAYER')) {
 	 * MySQL
 	 */
 	define('SQL_LAYER', 'mysql');
-    
+
     /**
      * SQL database class
      *
@@ -36,7 +36,7 @@ if (!defined('SQL_LAYER')) {
          * @var int the connection identifier
          */
         private $id;
-                
+
         /**
          * Initializes a new instance of the database abstraction class, for MySQL engine
          *
@@ -48,14 +48,14 @@ if (!defined('SQL_LAYER')) {
         function __construct($host = 'localhost', $username = 'root', $password = '' , $database = '') {
             //Connects to the MySQL server
             $this->id = @mysql_connect($host, $username, $password) or $this->sql_die(); //or die ("Can't connect to SQL server.");
-            
+
             //Selects database
             if ($database != '') {
                 mysql_select_db($database, $this->id);
             }
         }
-        
-        
+
+
         /**
          * Outputs a can't connect to the SQL server message and exits.
          * It's called on connect failure
@@ -67,7 +67,7 @@ if (!defined('SQL_LAYER')) {
             include('start.html');
             exit;
         }
-        
+
         /**
          * Sends a unique query to the database
          *
@@ -77,7 +77,7 @@ if (!defined('SQL_LAYER')) {
         function sql_query ($query) {
             return mysql_query($query, $this->id);
         }
-        
+
         /**
          * Fetches a row of result into an associative array
          *
@@ -87,10 +87,10 @@ if (!defined('SQL_LAYER')) {
         function sql_fetchrow ($result) {
             return mysql_fetch_array($result);
         }
-        
+
         /**
          * Gets last SQL error information
-         * 
+         *
          * @return array an array with two keys, code and message, containing error information
          */
         function sql_error () {
@@ -98,26 +98,26 @@ if (!defined('SQL_LAYER')) {
             $error['message'] = mysql_error($this->id);
             return $error;
         }
-        
-        
+
+
         /**
          * Gets the number of rows affected or returned by a query
-         * 
+         *
          * @return int the number of rows affected (delete/insert/update) or the number of rows in query result
          */
         function sql_numrows ($result) {
             return mysql_num_rows($result);
         }
-        
+
         /**
          * Gets the primary key value of the last query (works only in INSERT context)
-         * 
+         *
          * @return int  the primary key value
          */
         function sql_nextid () {
             return mysql_insert_id($this->id);
         }
-        
+
         /**
          * Express query method, returns an immediate and unique result
          *
@@ -135,12 +135,12 @@ if (!defined('SQL_LAYER')) {
             } else {
                 //Fetches row
                 $row = $this->sql_fetchrow($result);
-                
+
                 //If $return_as_string is true, returns first query item (scalar mode) ; otherwise, returns row
-                return $return_as_string ? $row[0] : $row;                
+                return $return_as_string ? $row[0] : $row;
             }
         }
-        
+
         /**
          * Escapes a SQL expression
          *
@@ -150,7 +150,7 @@ if (!defined('SQL_LAYER')) {
         function sql_escape ($expression) {
             return mysql_real_escape_string($expression);
         }
-        
+
         /*
          * Sets the client character set (requires MySQL 5.0.7+).
          *
@@ -166,18 +166,18 @@ if (!defined('SQL_LAYER')) {
             }
         }
     }
-    
+
     /**
      * The main sql_db instance
-     * 
+     *
      * @global sql_db $db
      */
     $db = new sql_db($Config['sql']['host'], $Config['sql']['username'], $Config['sql']['password'], $Config['sql']['database']);
     $db->set_charset('utf8');
-    
+
     //By security, we unset the SQL parameters, so you can safely output Zed
     //config parts (there's still the problem of the secret key, but it's less
     //a security problem than database password)
-    unset($Config['sql']); 
+    unset($Config['sql']);
 }
 ?>

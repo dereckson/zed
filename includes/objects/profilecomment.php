@@ -4,7 +4,7 @@
  * Profile comments class
  *
  * Zed. The immensity of stars. The HyperShip. The people.
- * 
+ *
  * (c) 2010, Dereckson, some rights reserved.
  * Released under BSD license.
  *
@@ -34,7 +34,7 @@ class ProfileComment {
     public $authorname; //should be read-only
     public $date;
     public $text;
-    
+
     /**
      * Initializes a new instance of the ProfileComment class
      *
@@ -48,7 +48,7 @@ class ProfileComment {
             $this->date = time();
         }
     }
-    
+
     /**
      * Loads the object comment (ie fill the properties) from the $_POST array
      */
@@ -58,7 +58,7 @@ class ProfileComment {
           if (array_key_exists('date', $_POST)) $this->date = $_POST['date'];
           if (array_key_exists('text', $_POST)) $this->text = $_POST['text'];
     }
-    
+
     /**
      * Loads the object comment (ie fill the properties) from the database
      */
@@ -78,13 +78,13 @@ class ProfileComment {
         $this->text = $row['comment_text'];
         return true;
     }
-    
+
     /**
      * Saves the object to the database
      */
     function save_to_database () {
         global $db;
-        
+
         $id = $this->id ? "'" . $db->sql_escape($this->id) . "'" : 'NULL';
         $perso_id = $db->sql_escape($this->perso_id);
         $author = $db->sql_escape($this->author);
@@ -100,7 +100,7 @@ class ProfileComment {
             $this->id = $db->sql_nextid();
         }
     }
-    
+
     /**
      * Publishes the comment
      * @todo Add events on publish
@@ -108,7 +108,7 @@ class ProfileComment {
     function publish () {
         $this->save_to_database();
     }
-    
+
     /**
      * Gets comments
      *
@@ -126,6 +126,6 @@ class ProfileComment {
         return $comments;
     }
 }
-    
+
 ?>
 

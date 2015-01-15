@@ -91,5 +91,5 @@ $smarty->display($template);
 //Serves footer
 $smarty->assign("screen", "$url[2] request");
 include('footer.php');
- 
+
 ?>

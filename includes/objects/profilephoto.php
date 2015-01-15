@@ -4,7 +4,7 @@
  * Profile photo class
  *
  * Zed. The immensity of stars. The HyperShip. The people.
- * 
+ *
  * (c) 2010, Dereckson, some rights reserved.
  * Released under BSD license.
  *
@@ -37,7 +37,7 @@ class ProfilePhoto {
     public $name;
     public $description;
     public $avatar;
-    
+
     /**
      * Initializes a new instance of the ProfilePhoto class
      */
@@ -47,7 +47,7 @@ class ProfilePhoto {
             $this->load_from_database();
         }
     }
-    
+
     /**
      * Loads the object photo (ie fill the properties) from the $_POST array
      *
@@ -61,7 +61,7 @@ class ProfilePhoto {
             $this->avatar = $_POST['avatar'] ? true : false;
         }
     }
-    
+
     /**
      * Loads the object photo (ie fill the properties) from the database
      */
@@ -80,37 +80,37 @@ class ProfilePhoto {
         $this->avatar = $row['photo_avatar'];
         return true;
     }
-    
+
     /**
      * Promotes the photo to avatar
      */
     function promote_to_avatar () {
         global $db;
-        
+
         //1 - locally
         $sql = "UPDATE " . TABLE_PROFILES_PHOTOS . " SET photo_avatar = 0 WHERE perso_id = " . $this->perso_id;
         $db->sql_query_express($sql);
         $this->avatar = true;
-        
+
         //2 - in perso table
         $perso = Perso::get($this->perso_id);
         $perso->avatar = $this->name;
         $perso->saveToDatabase();
     }
-    
+
     /**
      * Saves the object to the database
      */
     function save_to_database () {
         global $db;
-    
+
         //Escapes fields
         $id = $this->id ? "'" . $db->sql_escape($this->id) . "'" : 'NULL';
         $perso_id = $db->sql_escape($this->perso_id);
         $name = $db->sql_escape($this->name);
         $description = $db->sql_escape($this->description);
         $avatar = $this->avatar ? 1 : 0;
-    
+
         //Saves
         $sql = "REPLACE INTO " . TABLE_PROFILES_PHOTOS . " (`photo_id`, `perso_id`, `photo_name`, `photo_description`, `photo_avatar`) VALUES ($id, '$perso_id', '$name', '$description', $avatar)";
         if (!$db->sql_query($sql)) {
@@ -121,19 +121,19 @@ class ProfilePhoto {
             $this->id = $db->sql_nextid();
        }
     }
-    
+
     /**
      * Deletes the photo
      */
     function delete () {
         global $db;
-        
+
         //Deletes from disk
         $pic_tn = PHOTOS_DIR . '/' . $this->name;
         $pic_genuine = PHOTOS_DIR . '/tn/' . $this->name;
         unlink($pic_tn);
         unlink($pic_genuine);
-        
+
         //Deletes from database
         $id = $db->sql_escape($this->id);
         $sql = "DELETE FROM " . TABLE_PROFILES_PHOTOS . " WHERE photo_id = '$id' LIMIT 1";
@@ -141,10 +141,10 @@ class ProfilePhoto {
             message_die(SQL_ERROR, "Can't delete photo", '', __LINE__, __FILE__, $sql);
         }
     }
-    
+
     /**
      * Generates a thumbnail using ImageMagick binary
-     * 
+     *
      * @return boolean true if the thumbnail command returns 0 as program exit code ; otherwise, false
      */
     function generate_thumbnail () {
@@ -155,7 +155,7 @@ class ProfilePhoto {
         @system($command, $code);
         return ($code == 0);
     }
-    
+
     /**
      * Gets photos from the specified perso
      *
@@ -174,18 +174,18 @@ class ProfilePhoto {
         }
         return $photos;
     }
-    
+
     /**
      * Gets perso avatar
-     * 
+     *
      * @param integer $perso_id the perso to get the avatar ID
      * @param string $username the username to put in title tag
      */
     static function get_avatar ($perso_id, $username = '') {
         global $db;
-        
+
         $perso_id = $db->sql_escape($perso_id);
-        
+
         $sql = "SELECT photo_description, photo_name FROM " . TABLE_PROFILES_PHOTOS . " WHERE perso_id = '$perso_id' and photo_avatar = 1";
         if (!$result = $db->sql_query($sql)) {
             message_die(SQL_ERROR, "Unable to get avatar", '', __LINE__, __FILE__, $sql);
@@ -199,5 +199,5 @@ class ProfilePhoto {
             return null;
         }
     }
-}    
+}
 ?>

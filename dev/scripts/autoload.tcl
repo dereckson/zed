@@ -30,7 +30,7 @@ set config(templateBefore) "<?php
 function __autoload (\$className) {
     //Classes"
 
-#The output to produce after the 
+#The output to produce after the
 set config(templateAfter) "
     //Loader
     if (array_key_exists(\$className, \$classes)) {
@@ -62,7 +62,7 @@ proc find_scripts {directory} {
       puts ""
       find_scripts $subdir
    }
-   
+
 }
 
 #Called when we've got a winner
@@ -100,7 +100,7 @@ proc find_objects {file} {
             set pos $pos2
          }
          set class [string range $line [expr $pos1 + $len] [expr $pos - 1]]
-         
+
          add_class $file $class
       }
    }

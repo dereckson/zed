@@ -36,7 +36,7 @@ REPLACE INTO content_files
 VALUES
     ('users/1148/plate.jpg', 'DcK plate', 1148, 1148),
     ('users/1148/warning.mp3', 'Warning sound', 1148, 1148);
-    
+
 -- [6200] core Ghost Metro content
 REPLACE INTO content_files
     (content_path, content_title, user_id, perso_id)

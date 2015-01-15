@@ -8,7 +8,7 @@
         background-image: url("/img/zed/opaque_20.png");
     }
     </style>
-       
+
     <!-- Ship content -->
     <div class="content_wrapper">
         <h1>{$ship->name}</h1>
@@ -23,7 +23,7 @@
             </form>
         </div>
     </div>
-    
+
     <script>
         //Sets the focus on note textarea
         document.getElementById('ShipNote').focus();

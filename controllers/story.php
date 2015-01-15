@@ -4,7 +4,7 @@
  * Story
  *
  * Zed. The immensity of stars. The HyperShip. The people.
- * 
+ *
  * (c) 2010, Dereckson, some rights reserved.
  * Released under BSD license.
  *
@@ -41,12 +41,12 @@
  */
 function get_section ($story) {
     global $url, $smarty, $CurrentPerso;
-    
+
     //If the URL contains a choice guid, use it as story progress source
     //e.g. /explore/143f7200-766b-7b8b-e3f4-9fbfeeaeb5dd
     if (count($url) > 1) {
         $guid = $url[1];
-        
+
         //Ensures we've a StorySection object in the Story variable
         if (!array_key_exists('StoryChoices', $_SESSION)) {
             $smarty->assign('WAP', lang_get('ExpiredStorySession'));
@@ -57,10 +57,10 @@ function get_section ($story) {
             if (!$choice = $section->get_choice($guid)) {
                 $smarty->assign('WAP', lang_get('InvalidStoryGUID'));
             }
-            
+
             //TODO: add code here to handle actions defined in choices
             //e.g. item added to inventory
-            
+
             //Gets section
             if ($section_id = $choice->goto) {
                 if (!array_key_exists($section_id, $story->sections)) {
@@ -70,12 +70,12 @@ function get_section ($story) {
             }
         }
     }
-    
+
     if (!$CurrentPerso->location_local) {
         //Gets start section
         return $story->get_start_section();
     }
-    
+
     //Gets section matching perso location
     return $story->get_section_from_location($CurrentPerso->location_local);
 }
@@ -127,5 +127,5 @@ $smarty->display('story.tpl');
 //Serves footer
 $smarty->assign('screen', "Story, section $section->id");
 include('footer.php');
- 
+
 ?>

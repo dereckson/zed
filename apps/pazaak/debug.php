@@ -6,7 +6,7 @@
  * This is a sandbox to test the Pazaak web service.
  *
  * 2010-07-20: Pazaak will be noted as a deprecated project at 2010-09-15.
- * 
+ *
  * @package     Zed
  * @subpackage  Pazaak
  * @author      Sébastien Santoro aka Dereckson <dereckson@espace-win.org>

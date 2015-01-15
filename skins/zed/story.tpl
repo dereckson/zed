@@ -24,7 +24,7 @@
 {/foreach}
         </div>
     </div>
-    
+
 {foreach from=$section->hooks item=hook}
 {$hook->add_html()}
 {/foreach}

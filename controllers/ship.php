@@ -4,7 +4,7 @@
  * Ship
  *
  * Zed. The immensity of stars. The HyperShip. The people.
- * 
+ *
  * (c) 2010, Dereckson, some rights reserved.
  * Released under BSD license.
  *
@@ -78,7 +78,7 @@ if ($_REQUEST['action'] == 'ship.setnote' && $_REQUEST['note'] != $note) {
 
 //Serves header
 $smarty->assign('PAGE_TITLE', $ship->name);
-include('header.php'); 
+include('header.php');
 
 //Serves content
 $smarty->assign('note', $note);
@@ -87,5 +87,5 @@ $smarty->display('ship.tpl');
 
 //Serves footer
 include('footer.php');
- 
+
 ?>

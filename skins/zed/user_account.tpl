@@ -12,7 +12,7 @@
                 '<a href="mailto:' + mail + '">' + mail + '</a>';
         }
     </script>
-    
+
     <!-- Edit user account form -->
     <div class="grid_11 alpha profile">
         <div class="profile_id clearfix">
@@ -25,7 +25,7 @@
         <div class="profile_separator"></div>
         <div class="profile_text">
             <br />
-            <form dojoType="dijit.form.Form" name="UserAccount" method="POST">    
+            <form dojoType="dijit.form.Form" name="UserAccount" method="POST">
                 <input type="hidden" name="UserAccount" value="1" />
                 <div class="row">
                     <span class="firstLabel">{#Login#}</span>
@@ -39,13 +39,13 @@
                             required="false"
                             onchange="document.getElementById('UserLongname').innerHTML = document.getElementById('longname').value;";
                     />
-                </div> 
+                </div>
                 <div class="row">
                     <label class="firstLabel" for="realname">{#RealName#}</label>
                     <input type="text" id="realname" name="realname" class="long"
                             value="{$user->realname}"
                             dojoType="dijit.form.ValidationTextBox"
-                            required="false" 
+                            required="false"
                     />
 		    <span class="dojotooltip" dojoType="dijit.Tooltip" connectId="realname">{#RealNameToolTip#}</span>
                 </div>
@@ -54,7 +54,7 @@
                     <input type="text" id="email" name="email" class="long"
                             value="{$user->email}"
                             dojoType="dijit.form.ValidationTextBox"
-                            required="false" 
+                            required="false"
                             onchange="javascript:updateMail(arguments[0]);"
                     />
                 </div>
@@ -74,7 +74,7 @@
     <div class="grid_5 omega">
         <div class="sidebar_border"></div>
         <div id="sidebar">
-            <div class="border_top"></div>		
+            <div class="border_top"></div>
 	    <div class="sidebar_content">
 		<h2>{#EditMyPage#}</h2>
 		<ul>

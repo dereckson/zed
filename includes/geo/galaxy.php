@@ -2,9 +2,9 @@
 
 /**
  * Geo galaxy  class.
- * 
+ *
  * Zed. The immensity of stars. The HyperShip. The people.
- * 
+ *
  * (c) 2010, Dereckson, some rights reserved.
  * Released under BSD license.
  *
@@ -12,7 +12,7 @@
  *
  * 0.1    2010-02-08 14:02    Initial version [DcK]
  * 0.2    2010-07-25  9:20    Spherical conversion, get objects
- * 
+ *
  * @package     Zed
  * @subpackage  Geo
  * @author      Sébastien Santoro aka Dereckson <dereckson@espace-win.org>
@@ -38,7 +38,7 @@ class GeoGalaxy {
      *  Objects fetchers
      * ----------------------------------------------------------------------- *
      */
-    
+
     /**
      * Gets all the coordinates of the objects in the galaxy.
      *
@@ -46,9 +46,9 @@ class GeoGalaxy {
      */
     static function get_coordinates () {
         global $db;
-        $sql = "SELECT * FROM geo_coordinates";        
+        $sql = "SELECT * FROM geo_coordinates";
         if (!$result = $db->sql_query($sql)) message_die(SQL_ERROR, "Can't query geo_coordinates view.", '', __LINE__, __FILE__, $sql);
-        
+
         $objects = array();
         while ($row = $db->sql_fetchrow($result)) {
             //Demios  ship        xyz: [-50, 30, 40]
@@ -57,16 +57,16 @@ class GeoGalaxy {
         }
         return $objects;
     }
-    
+
     /*
      * ----------------------------------------------------------------------- *
      *  Helper methods - math
      * ----------------------------------------------------------------------- *
      */
-    
+
     /**
      * Normalizes an angle, so 0 =< angle < 2 PI
-     * 
+     *
      * @param float $angle angle in radians (use deg2rad() if you've degrees)
      * @return an angle in the 0 =< angle < 2 PI interval
      */
@@ -79,7 +79,7 @@ class GeoGalaxy {
         }
         return $angle;
     }
-        
+
     /**
      * Converts (x, y, z) cartesian to (ρ, φ, θ) spherical coordinates
      *
@@ -95,10 +95,10 @@ class GeoGalaxy {
         $theta= acos($z / $rho);                    //φ = acos z/φ
         $phi = acos($x / sqrt($x * $x + $y * $y)); //θ = acos x / sqrt(x² + y²)
         if (y < 0) $phi = 2 * M_PI - $phi;        //∀ y < 0     θ = 2π - θ
-        
+
         return array(round($rho, 2), round(rad2deg($theta), 2), round(rad2deg($phi), 2));
     }
-    
+
     /**
      * Converts (x, y, z) cartesian to (ρ, φ, θ) spherical coordinates
      *
@@ -113,7 +113,7 @@ class GeoGalaxy {
         $rho = sqrt($x * $x + $y * $y + $z * $z); //ρ = sqrt(x² + y² + z²)
         $theta= atan2($y, $x);                    //φ = atan2 $y $x
         $phi = acos($z / $rho);                   //θ = acos z/φ
-        
+
         return array(round($rho, 2), round(rad2deg($theta), 2), round(rad2deg($phi), 2));
     }
 }

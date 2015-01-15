@@ -4,7 +4,7 @@
  * Story section class
  *
  * Zed. The immensity of stars. The HyperShip. The people.
- * 
+ *
  * (c) 2010, Dereckson, some rights reserved.
  * Released under BSD license.
  *
@@ -50,12 +50,12 @@ class StorySection {
      * @var string
      */
     public $description;
-    
+
     /**
      * @var string the local location
      */
     public $location_local;
-    
+
     /**
      * @var Array the section choices (array of StoryChoice items)
      */
@@ -63,9 +63,9 @@ class StorySection {
 
     /*
      * @var Array the section hooks (array of StoryHook items)
-     */    
+     */
     public $hooks = array();
-    
+
     /**
      * @var boolean if true, it's the story start ; otherwise, false;
      */
@@ -75,7 +75,7 @@ class StorySection {
      * @var Story the story calling the section
      */
     public $story;
-    
+
     /**
      * Initializes a new instance of StorySection class
      */
@@ -88,7 +88,7 @@ class StorySection {
 
     /**
      * Gets choice from specified guid
-     * 
+     *
      * @return StoryChoice the wanted choice, or null if it doesn't exist
      */
     function get_choice ($guid) {
@@ -99,10 +99,10 @@ class StorySection {
 
         return null;
     }
-    
+
     /**
      * Initializes a story section from an SimpleXMLElement XML fragment
-     * 
+     *
      * @param SimpleXMLElement $xml the XML fragment
      * @param Story $story the calling story
      * @return StorySection the section instance
@@ -116,33 +116,33 @@ class StorySection {
                 case 'start':
                     if ($value) $start = true;
                     break;
-                
+
                 case 'id':
                     $id = (string)$value;
                     break;
-                
+
                 default:
                     message_die(GENERAL_ERROR, "Unknown attribute: $key = \"$value\"", "Story error");
             }
         }
-        
+
         if (!$id) {
             message_die(GENERAL_ERROR, "Section without id. Please add id='' in <section> tag", "Story error");
         }
-        
+
         $section = new StorySection($id, $story);
         $section->title = (string)$xml->title;
         $section->description = (string)$xml->description;
         $section->location_local = (string)$xml->local;
         $section->start = $start;
-        
+
         //Adds choices
         if ($xml->choices) {
             foreach ($xml->choices->choice as $choice) {
                 $section->choices[] = StoryChoice::from_xml($choice);
             }
         }
-        
+
         //Adds hooks
         if ($xml->hooks) {
             foreach ($xml->hooks->hook as $hook) {
@@ -152,7 +152,7 @@ class StorySection {
                 $section->hooks[] = new $class($section->story, $section);
             }
         }
-        
+
         return $section;
     }
 }

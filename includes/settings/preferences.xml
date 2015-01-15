@@ -30,7 +30,7 @@ if ($value) {
             <key>Email</key>
             <field>text</field>
             <object>CurrentUser</object>
-            <property>email</property>            
+            <property>email</property>
         </setting>
         <setting id="OpenID">
             <key>OpenID</key>
@@ -64,32 +64,32 @@ return true;
             </handler>
         </setting>
     </page>
-    
+
     <page id="perso" title="Information">
         <setting id="longname">
             <key>Name</key>
             <field>text</field>
             <object>CurrentPerso</object>
-            <property>name</property>            
+            <property>name</property>
         </setting>
         <setting id="nickname">
             <key>Nickname</key>
             <field>validationtext</field>
             <regExp>[a-z][a-z0-9 ]+</regExp>
             <object>CurrentPerso</object>
-            <property>nickname</property>            
+            <property>nickname</property>
         </setting>
         <setting id="race">
             <key>Race</key>
             <field>text</field>
             <object>CurrentPerso</object>
-            <property>race</property>            
+            <property>race</property>
         </setting>
         <setting id="sex">
             <key>Sex</key>
             <field>filteredlist</field>
             <object>CurrentPerso</object>
-            <property>sex</property>   
+            <property>sex</property>
             <choices>
                 <choice>
                     <key>male</key>
@@ -110,7 +110,7 @@ return true;
             </choices>
         </setting>
     </page>
-    
+
     <page id="smartline" title="SmartLine">
         <setting id="show">
             <key>SmartlineShow</key>
@@ -145,4 +145,4 @@ return $flag != "get";
             </handler>
         </setting>
     </page>
-</settings> 
+</settings>

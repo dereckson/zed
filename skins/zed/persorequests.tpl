@@ -1,11 +1,11 @@
     <!-- Javascript bits for request handling -->
     <script type="text/javascript">
-    
+
     //The amount of requests printed on the page.
     //When it falls to 0, request_reply_callback will print a temporary exit
     //message and then redirects to the homepage.
     var requestsQuantity = {count($requests)};
-    
+
     //Performs an AJAX call
     //  id      the request DOM element id
     //  url     the URL to query
@@ -21,21 +21,21 @@
             }
         });
     }
-    
+
     //Prints a wap message
     //  message the error message to print
     function wap (message) {
         var html = '<div class="wap">' + message + '</div><div class="clear"></div>';
         document.getElementById('RequestsWap').innerHTML = html;
     }
-    
+
     //Prints a notify message
     //  message the warning message to print
     function notify (message) {
         var html = '<div class="notify">' + message + '</div><div class="clear"></div>';
         document.getElementById('RequestsNotify').innerHTML = html;
     }
-    
+
     //This function is called when there isn't requests anymore.
     //It prints a close message, clears the site.requests flag and redirects to
     //Zed homepage.
@@ -48,7 +48,7 @@
             preventCache:   true
         });
     }
-    
+
     //Handles the reply
     //  reply   ajax reply ; a boolean is expected, so true or false.
     //  id      the request DOM element id

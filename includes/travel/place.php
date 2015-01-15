@@ -4,12 +4,12 @@
  * TravelPlace class
  *
  * Zed. The immensity of stars. The HyperShip. The people.
- * 
+ *
  * (c) 2010, Dereckson, some rights reserved.
  * Released under BSD license.
  *
  * 0.1    2010-07-19 22:10    DcK
- * 
+ *
  * @package     Zed
  * @subpackage  Travel
  * @author      Sébastien Santoro aka Dereckson <dereckson@espace-win.org>
@@ -28,32 +28,32 @@
  * in a specific place.
  *
  * @see GeoPlace
- * 
+ *
  */
 class TravelPlace {
     /**
      * The place code
-     * 
+     *
      * @var string
-     */    
+     */
     public $code;
-    
+
     /**
      * Determines if any local location move is valid
-     * 
-     * @var bool 
-     */        
+     *
+     * @var bool
+     */
     public $freeLocalMove = false;
-    
+
     /**
      * Array of strings, each item another place reachable
      *
      * This matches GlobalTravelTo XML tags.
      *
-     * @var Array 
-     */    
+     * @var Array
+     */
     public $globalTravelTo = array();
-    
+
     /**
      * Aray of array, containing [location, alias, name] entries
      *
@@ -62,7 +62,7 @@ class TravelPlace {
      * @var Array
      */
     public $localMoves = array();
-    
+
     /**
      * Aray of array, containing [expression, global_location, local_location] entries
      *
@@ -71,7 +71,7 @@ class TravelPlace {
      * @var Array
      */
     public $rewriteRules = array();
-    
+
         /**
      * Initializes a new TravelPlace instance, from the specified XML fragment
      *
@@ -80,20 +80,20 @@ class TravelPlace {
      */
     static function from_xml ($xml) {
         $travelPlace = new TravelPlace();
-        
+
         //Reads attributes: <TravelPlace code="B00001001" freeLocalMove="true">
         foreach ($xml->attributes() as $key => $value) {
             switch ($key) {
                 case 'code':
                     $travelPlace->code = (string)$value;
                     break;
-                    
+
                 case 'freeLocalMove':
                     $travelPlace->freeLocalMove = (boolean)$value;
                     break;
             }
         }
-        
+
         //<GlobalTravelTo code="B00001002" />
         foreach ($xml->GlobalTravelTo as $globalTravelToXml) {
             foreach ($globalTravelToXml->attributes() as $key => $value) {
@@ -102,7 +102,7 @@ class TravelPlace {
                 }
             }
         }
-        
+
         //<LocalMove local_location="(0, 0, 0)" alias="C0" name="Core" />
         foreach ($xml->LocalMove as $localMoveXml) {
             $localMove = array(null, null, null);
@@ -111,11 +111,11 @@ class TravelPlace {
                     case 'local_location':
                         $localMove[0] = (string)$value;
                         break;
-                    
+
                     case 'alias':
                         $localMove[1] = (string)$value;
                         break;
-                    
+
                     case 'name':
                         $localMove[2] = (string)$value;
                         break;
@@ -123,7 +123,7 @@ class TravelPlace {
             }
             $travelPlace->localMoves[] = $localMove;
         }
-        
+
         //<RewriteRule expression="/^T([1-9][0-9]*)$/" global_location="B00001001" local_location="T$1C1" />
         foreach ($xml->RewriteRule as $rewriteRuleXml) {
             $rewriteRule = array(null, null, null);
@@ -132,11 +132,11 @@ class TravelPlace {
                     case 'expression':
                         $rewriteRule[0] = (string)$value;
                         break;
-                    
+
                     case 'global_location':
                         $rewriteRule[1] = (string)$value;
                         break;
-                    
+
                     case 'local_location':
                         $rewriteRule[2] = (string)$value;
                         break;
@@ -144,7 +144,7 @@ class TravelPlace {
             }
             $travelPlace->rewriteRules[] = $rewriteRule;
         }
-        
+
         return $travelPlace;
     }
 }

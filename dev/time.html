@@ -6,7 +6,7 @@
     <title>HyperShip Time</title>
     <link rel="Stylesheet" href="../css/zed/theme.css" type="text/css" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
+
     <script type="text/javascript" src="/js/dojo/dojo/dojo.js" djConfig="isDebug:false, parseOnLoad: true"></script>
 </head>
 <body>
@@ -18,9 +18,9 @@
           dojo.require("dojox.charting.Chart2D");
           dojo.require("dojox.date.php");
           dojo.require("dijit.form.NumberSpinner");
-        
+
           var chartTime;
-          
+
           //A method to get the decimal part of hypership time
           function get_hypership_hour () {
             //Gets time
@@ -29,11 +29,11 @@
             seconds = unixtime - 1278115200;
             return Math.floor((seconds % 86400) / 86.4);
           }
-          
+
           // The data to use.
           var time = get_hypership_hour();
           var timeData = [time, 1000 - time];
-          
+
           // This function creates the chart, and is really all you
           // need. All other code is to allow you to update it on the
           // fly.
@@ -49,16 +49,16 @@
               dojo.require("dojox.charting.themes.PlotKit.cyan");
               chartTime.setTheme(dojox.charting.themes.PlotKit['cyan']);
               chartTime.render();
-              
+
               update_time(chartTime);
           });
-          
+
           function update_time (chart) {
               //Updates chart
               var time = get_hypership_hour();
               chart.updateSeries("Time", [time, 1000 - time]);
               chart.render();
-              
+
               //Updates legend
               var now = new Date();
               dojo.byId("currentTime").innerHTML = dojox.date.php.format(now, 'H:i');
@@ -66,8 +66,8 @@
               dojo.byId("currentHyperShipTime").innerHTML = time;
           }
 
-        
-        </script>       
+
+        </script>
         <dl>
             <dt>Heure actuelle (fuseau local) :</dt>
             <dd><span id="currentTime"></span></dd>

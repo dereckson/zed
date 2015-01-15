@@ -7,10 +7,10 @@
     <script type="text/javascript" src="js/login.js"></script>
     <script type="text/javascript" src="js/misc.js"></script>
     <script type="text/javascript" src="js/prototype.js"></script>
-    <script type="text/javascript" src="js/effects.js"></script> 
+    <script type="text/javascript" src="js/effects.js"></script>
 </head>
 <body>
-    
+
 <!-- Login form -->
 <div id="LoginBox">
     <form method="post" action="{get_url()}">
@@ -63,7 +63,7 @@ If you wish an access, send a mail to zedinvite (alt+64) dereckson.be
 and specify the following code: {$code}
 
                                     * * * *
-                                    
+
 Bienvenue dans la version bêta de Zed. Heureux que vous consultiez la source.
 
 Un petit aperçu de ce que l'on crée est sur http://zed.dereckson.be/tour.html
