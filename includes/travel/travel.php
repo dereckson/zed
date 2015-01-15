@@ -95,6 +95,9 @@ class Travel {
      */
     function try_parse_rewrite_rule ($expression, $from, &$to) {
         //Relevant write rules depends from the location the perso is ($from)
+        if (!array_key_exists($from->global, $this->globalTravelTo)) {
+            return false;
+        }
         $travelPlace = $this->globalTravelTo[$from->global];
         foreach ($travelPlace->rewriteRules as $rule) {
             //$rule is an array [expression, global_location, local_location]
