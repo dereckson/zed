@@ -37,9 +37,9 @@ interface IAuthentication {
     public function getError();
 
     /**
-     * Gets the user_id matching the key
+     * Gets the user_id matching the authentication method
      *
-     * @return int the user ID
+     * @return int the authenticated user ID
      */
     public function getUserID ();
 
