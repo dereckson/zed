@@ -34,7 +34,7 @@ interface IAuthentication {
      *
      * @return string The last authentication error
      */
-    public function getError();
+    public function getError ();
 
     /**
      * Gets the user_id matching the authentication method
@@ -51,5 +51,5 @@ interface IAuthentication {
      *
      * @return bool true if authentication can go on to the next method; otherwise, false
      */
-    public function canTryNextAuthenticationMethod();
+    public function canTryNextAuthenticationMethod ();
 }
