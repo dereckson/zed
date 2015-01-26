@@ -147,5 +147,3 @@ function logout () {
     if (!$db->sql_query($sql)) message_die(SQL_ERROR, "Impossible de procéder à la déconnexion", '', __LINE__, __FILE__, $sql);
     clean_session();
 }
-
-?>

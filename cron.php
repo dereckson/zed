@@ -53,5 +53,3 @@ foreach ($queries as $query) {
     if (!$db->sql_query($sql) && $debug)
         message_die(SQL_ERROR, "Can't execute query", '', __LINE__, __FILE__, $sql);
 }
-
-?>

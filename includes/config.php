@@ -268,5 +268,3 @@ ini_set('session.gc_maxlifetime', 345600);  //4 days, for week-end story pause a
 //Zed can invoke a slighty modified version of HOTGLUE to build zones.
 $Config['builder']['hotglue']['enable'] = true;
 $Config['builder']['hotglue']['URL'] = '/apps/hotglue/index.php';
-
-?>

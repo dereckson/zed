@@ -199,4 +199,3 @@ switch ($controller = $url[0]) {
         dieprint_r($url, 'Unknown URL');
 }
 
-?>

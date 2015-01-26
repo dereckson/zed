@@ -154,3 +154,4 @@ if ($action == 'openid.login') {
 } elseif (isset($_POST['LogOut']) || $action == "user.logout") {
     Logout();
 }
+

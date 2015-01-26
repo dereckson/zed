@@ -316,5 +316,3 @@ switch ($module = $url[0]) {
         dprint_r($url);
         break;
 }
-
-?>
