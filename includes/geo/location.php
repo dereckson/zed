@@ -35,8 +35,8 @@ require_once('includes/objects/ship.php');
  * It quickly allow to parse through the location classes in templates and
  * controllers.
  *
- * @todo initializes $point3D from $body or $ship own locations;
- * @todo improve GeoLocation documentation (especially magic properties)
+ * @todo Initialize $point3D from $body or $ship own locations
+ * @todo Improve GeoLocation documentation (especially magic properties)
  */
 class GeoLocation {
     /**
@@ -99,7 +99,7 @@ class GeoLocation {
      * @param string $global the global location
      * @param string local the locallocation
      *
-     * @todo improve local location handling
+     * @todo Improve local location handling
      */
     function __construct ($global = null, $local = null) {
         if (!$global) {
@@ -239,7 +239,7 @@ class GeoLocation {
      *
      * @return bool true if the place exists ; otherwise, false.
      *
-     * @todo handles alias
+     * @todo Handle alias
      */
     function exists () {
         $n = count($this->data);
@@ -295,12 +295,12 @@ class GeoLocation {
      *
      * @return bool true if the places are equals ; otherwise, false.
      *
-     * @todo Create a better set of rules to define when 2 locations are equall.
+     * @todo Create a better set of rules to define when 2 locations are equal.
      */
     function equals ($expression) {
         //Are global location equals?
 
-        //TODO: create a better set of rules to define when 2 locations are equa l.
+        //TODO: create a better set of rules to define when 2 locations are equal.
         if (is_a($expression, 'GeoLocation')) {
             if (!$this->equals($expression->data[0])) {
                 return false;
