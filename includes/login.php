@@ -55,7 +55,7 @@ function openid_login ($url) {
     global $db, $_SESSION, $LoginError, $LoginSuccessful;
     $url = $db->sql_escape($url);
     $sql = 'SELECT user_id FROM ' . TABLE_USERS_AUTH
-          . " WHERE auth_type = 'OpenID' AND auth_identity LIKE '$url'";
+         . " WHERE auth_type = 'OpenID' AND auth_identity LIKE '$url'";
     if ($user_id = $db->sql_query_express($sql)) {
         $sql = "UPDATE " . TABLE_SESSIONS . " SET user_id = '$user_id' WHERE session_id LIKE '$_SESSION[ID]'";
         if (!$db->sql_query($sql)) message_die(SQL_ERROR, "Can't update session table", '', __LINE__, __FILE__, $sql);
@@ -89,9 +89,9 @@ if ($action == 'openid.login') {
         openid_login($reply->endpoint->claimed_id);
     } elseif ($reply->message) {
         //TODO: $reply->message could be rather long and won't fit in the UI
-	//space. You can wish to add code to print $LoginError elsewhere if
-	//too long.
-	$LoginError = "[OpenID] $reply->message";
+        //space. You can wish to add code to print $LoginError elsewhere if
+        //too long.
+        $LoginError = "[OpenID] $reply->message";
     } else {
         $LoginError = "[OpenID] $reply->status";
     }
@@ -112,43 +112,43 @@ if ($action == 'openid.login') {
     } else {
         //Login
 
-	//Authentications way, the user/password in last.
-	//OpenID is handled by a separate logic.
-	$Login = $_POST['username'];
+        //Authentications way, the user/password in last.
+        //OpenID is handled by a separate logic.
+        $Login = $_POST['username'];
         $authentications = array();
-	if ($useYubiCloud = array_key_exists('YubiCloud', $Config) ) {
-	    $authentications[] = new YubiCloudAuthentication($_POST['password'], $Login);
-	}
+        if ($useYubiCloud = array_key_exists('YubiCloud', $Config) ) {
+            $authentications[] = new YubiCloudAuthentication($_POST['password'], $Login);
+        }
         if ($Login) {
-	    $authentications[] = new UserPasswordAuthentication($Login, $_POST['password']);
-	}
+            $authentications[] = new UserPasswordAuthentication($Login, $_POST['password']);
+        }
 
-	$loginSuccessful = false;
-	foreach ($authentications as $authentication) {
-	    if ($authentication->isValid()) {
-		$loginSuccessful = true;
-		//Logs in user
-		login($authentication->getUserID(), $Login);
-	    } else {
-		$loginError = $authentication->getError();
-	    }
-	    if (!$authentication->canTryNextAuthenticationMethod()) {
-		break;
-	    }
-	}
+        $loginSuccessful = false;
+        foreach ($authentications as $authentication) {
+            if ($authentication->isValid()) {
+                $loginSuccessful = true;
+                //Logs in user
+                login($authentication->getUserID(), $Login);
+            } else {
+                $loginError = $authentication->getError();
+            }
+            if (!$authentication->canTryNextAuthenticationMethod()) {
+                break;
+            }
+        }
 
-	//Tests if the password wouldn't match an invite code
+        //Tests if the password wouldn't match an invite code
         //If so, redirects people using login page as invitation claim page
         if (!$LoginSuccessful) {
-	    $code = $db->sql_escape($_POST['password']);
-	    $sql = "SELECT * FROM " . TABLE_USERS_INVITES . " WHERE invite_code = '$code'";
-	    if (!$result = $db->sql_query($sql)) {
-		message_die(SQL_ERROR, "Can't get invites", '', __LINE__, __FILE__, $sql);
-	    }
-	    if ($row = $db->sql_fetchrow($result)) {
-		$url = get_url('invite', $_POST['password']);
-		header('location: ' . $url);
-	    }
+            $code = $db->sql_escape($_POST['password']);
+            $sql = "SELECT * FROM " . TABLE_USERS_INVITES . " WHERE invite_code = '$code'";
+            if (!$result = $db->sql_query($sql)) {
+                message_die(SQL_ERROR, "Can't get invites", '', __LINE__, __FILE__, $sql);
+            }
+            if ($row = $db->sql_fetchrow($result)) {
+                $url = get_url('invite', $_POST['password']);
+                header('location: ' . $url);
+            }
         }
     }
 } elseif (isset($_POST['LogOut']) || $action == "user.logout") {

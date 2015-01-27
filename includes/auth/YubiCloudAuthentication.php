@@ -62,8 +62,8 @@ class YubiCloudAuthentication implements IAuthentication {
      * @param string $key The key
      */
     public function __construct ($key, $username = null) {
-	$this->username = $username;
-	$this->key = $key;
+        $this->username = $username;
+        $this->key = $key;
     }
 
     /**
@@ -72,7 +72,7 @@ class YubiCloudAuthentication implements IAuthentication {
      * @return boolean true if the input seems an OTP key; otherwise, false.
      */
     function looksValidOTP () {
-	return preg_match("/^[cbdefghijklnrtuv]{32,48}$/", $this->key);
+        return preg_match("/^[cbdefghijklnrtuv]{32,48}$/", $this->key);
     }
 
     /**
@@ -81,7 +81,7 @@ class YubiCloudAuthentication implements IAuthentication {
      * @return string Public identity
      */
     function getPublicIdentity () {
-	return substr($this->key, 0, 12);
+        return substr($this->key, 0, 12);
     }
 
     /**
@@ -90,45 +90,45 @@ class YubiCloudAuthentication implements IAuthentication {
      * @return boolean true if the input is a valid OTP key; otherwise, false.
      */
     function isValid () {
-	global $Config;
-
-	//No need to lost time to query server if format is incorrect.
-	if (!$this->looksValidOTP()) {
-	    $this->error = "Not the expected YubiKey OTP format.";
-	    return false;
-	}
-
-	//Query YubiCloud. We stop validation tests if that fails.
-	$yubi = new Auth_Yubico(
-	    $Config['YubiCloud']['ClientID'],
-	    $Config['YubiCloud']['SecreyKey']
-	);
-	$auth = $yubi->verify($this->key);
-	if (@PEAR::isError($auth)) {
-	    $this->error = $auth->getMessage();
-	    return false;
-	}
-
-	//Note: We first query the YubiCloud server, then we check if we can use the key
-	//      as the key is an OTP (*one time* password), this allow to invalidate it.
-	//      If we wouldn't do that, an attacker can reuse this password for another site.
-	if (!$this->computeUserID()) {
-	    $this->error = "Valid YubiKey OTP. But the key doesn't match any account.";
-	    $this->mustThrowError = true;
-	    return false;
-	}
-
-	//Finally, if someone puts also a login, we'll check this user ID match this username
-	if ($this->username) {
-	    $user = User::get($this->user_id);
-	    if ($this->username != $user->name) {
-		$this->error = "Valid YubiKey OTP but fix or remove your username.";
-		$this->mustThrowError = true;
-		return false;
-	    }
-	}
-
-	return true;
+        global $Config;
+    
+        //No need to lost time to query server if format is incorrect.
+        if (!$this->looksValidOTP()) {
+            $this->error = "Not the expected YubiKey OTP format.";
+            return false;
+        }
+    
+        //Query YubiCloud. We stop validation tests if that fails.
+        $yubi = new Auth_Yubico(
+            $Config['YubiCloud']['ClientID'],
+            $Config['YubiCloud']['SecreyKey']
+        );
+        $auth = $yubi->verify($this->key);
+        if (@PEAR::isError($auth)) {
+            $this->error = $auth->getMessage();
+            return false;
+        }
+    
+        //Note: We first query the YubiCloud server, then we check if we can use the key
+        //      as the key is an OTP (*one time* password), this allow to invalidate it.
+        //      If we wouldn't do that, an attacker can reuse this password for another site.
+        if (!$this->computeUserID()) {
+            $this->error = "Valid YubiKey OTP. But the key doesn't match any account.";
+            $this->mustThrowError = true;
+            return false;
+        }
+    
+        //Finally, if someone puts also a login, we'll check this user ID match this username
+        if ($this->username) {
+            $user = User::get($this->user_id);
+            if ($this->username != $user->name) {
+            $this->error = "Valid YubiKey OTP but fix or remove your username.";
+            $this->mustThrowError = true;
+            return false;
+            }
+        }
+    
+        return true;
     }
 
     /**
@@ -137,27 +137,27 @@ class YubiCloudAuthentication implements IAuthentication {
      * You first need to validate the username, calling the isValid method.
      */
     function computeUserID () {
-	global $db;
-
-	/**
-	 * Here a MySQL record for a valid OTP
-	 * +---------+-----------+---------------+-----------------+---------+
-	 * | auth_id | auth_type | auth_identity | auth_properties | user_id |
-	 * +---------+-----------+---------------+-----------------+---------+
-	 * |       2 | YubiKey   | cccccccccccc  | NULL            |    1234 |
-	 * +---------+-----------+---------------+-----------------+---------+
-	 */
-	$authentication_identity = $this->getPublicIdentity();
-	$sql = "SELECT user_id FROM " . TABLE_USERS_AUTH
-	     . " WHERE auth_type = 'YubiKey' AND auth_identity = '$authentication_identity'";
-	if (!$result = $db->sql_query($sql)) {
-	    message_die(SQL_ERROR, "Can't query users authentication table.", '', __LINE__, __FILE__, $sql);
-	}
-	if ($row = $db->sql_fetchrow($result)) {
-	    $this->user_id = $row['user_id'];
-	    return true;
-	}
-	return false;
+        global $db;
+    
+        /**
+         * Here a MySQL record for a valid OTP
+         * +---------+-----------+---------------+-----------------+---------+
+         * | auth_id | auth_type | auth_identity | auth_properties | user_id |
+         * +---------+-----------+---------------+-----------------+---------+
+         * |       2 | YubiKey   | cccccccccccc  | NULL            |    1234 |
+         * +---------+-----------+---------------+-----------------+---------+
+         */
+        $authentication_identity = $this->getPublicIdentity();
+        $sql = "SELECT user_id FROM " . TABLE_USERS_AUTH
+             . " WHERE auth_type = 'YubiKey' AND auth_identity = '$authentication_identity'";
+        if (!$result = $db->sql_query($sql)) {
+            message_die(SQL_ERROR, "Can't query users authentication table.", '', __LINE__, __FILE__, $sql);
+        }
+        if ($row = $db->sql_fetchrow($result)) {
+            $this->user_id = $row['user_id'];
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -166,7 +166,7 @@ class YubiCloudAuthentication implements IAuthentication {
      * @return string The last authentication error
      */
     function getError () {
-	return $this->error;
+        return $this->error;
     }
 
     /**
@@ -178,7 +178,7 @@ class YubiCloudAuthentication implements IAuthentication {
      * @return int the user ID
      */
     function getUserID () {
-	return $this->user_id;
+        return $this->user_id;
     }
 
     /**
@@ -187,6 +187,6 @@ class YubiCloudAuthentication implements IAuthentication {
      * @return bool true if authentication can go on to the next method; otherwise, false
      */
     function canTryNextAuthenticationMethod () {
-	return !$this->mustThrowError;
+        return !$this->mustThrowError;
     }
 }

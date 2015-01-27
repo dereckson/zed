@@ -155,14 +155,14 @@ class GUIDSmartLineCommand extends SmartLineCommand {
      * @param int $argc the number of arguments
      */
     public function run ($argv, $argc) {
-		if ($argc > 1 && is_numeric($argv[1])) {
-			for ($i = 0 ; $i < $argv[1] ; $i++) {
-				 $this->SmartLine->puts(new_guid());
-			}
-			return;
-		}
+        if ($argc > 1 && is_numeric($argv[1])) {
+            for ($i = 0 ; $i < $argv[1] ; $i++) {
+                 $this->SmartLine->puts(new_guid());
+            }
+            return;
+        }
 
-	    $this->SmartLine->puts(new_guid());
+        $this->SmartLine->puts(new_guid());
     }
 }
 
@@ -188,48 +188,48 @@ class InviteSmartLineCommand extends SmartLineCommand {
      * @param int $argc the number of arguments
      */
     public function run ($argv, $argc) {
-		require_once('includes/objects/invite.php');
-		global $CurrentUser, $CurrentPerso;
+        require_once('includes/objects/invite.php');
+        global $CurrentUser, $CurrentPerso;
 
-		$command = ($argc > 1) ? strtolower($argv[1]) : '';
-		switch ($command) {
-			case 'list':
-				$codes = Invite::get_invites_from($CurrentPerso->id);
-				if (!count($codes)) {
-					$this->SmartLine->puts("No invite code.");
-				} else {
-					foreach ($codes as $code) {
-						$this->SmartLine->puts($code);
-					}
-				}
-				break;
+        $command = ($argc > 1) ? strtolower($argv[1]) : '';
+        switch ($command) {
+            case 'list':
+                $codes = Invite::get_invites_from($CurrentPerso->id);
+                if (!count($codes)) {
+                    $this->SmartLine->puts("No invite code.");
+                } else {
+                    foreach ($codes as $code) {
+                        $this->SmartLine->puts($code);
+                    }
+                }
+                break;
 
-			case 'add':
-			case '':
-				$code = Invite::create($CurrentUser->id, $CurrentPerso->id);
-				$url = get_server_url() . get_url('invite', $code);
-				$this->SmartLine->puts("New invite code created: $code<br />Invite URL: $url");
-				break;
+            case 'add':
+            case '':
+                $code = Invite::create($CurrentUser->id, $CurrentPerso->id);
+                $url = get_server_url() . get_url('invite', $code);
+                $this->SmartLine->puts("New invite code created: $code<br />Invite URL: $url");
+                break;
 
-			case 'del':
-				$code = $argv[2];
-				if (!preg_match("/^([A-Z]){3}([0-9]){3}$/i", $code)) {
-					$this->SmartLine->puts("Invalid code format. Use invite list to get all your invite codes.", STDERR);
-				} else {
-					$invite = new Invite($code);
-					if ($CurrentPerso->id == $invite->from_perso_id) {
-						$invite->delete();
-						$this->SmartLine->puts("Deleted");
-					} else {
-						$this->SmartLine->puts("Invalid code. Use invite list to get all your invite codes.", STDERR);
-					}
-				}
-				break;
+            case 'del':
+                $code = $argv[2];
+                if (!preg_match("/^([A-Z]){3}([0-9]){3}$/i", $code)) {
+                    $this->SmartLine->puts("Invalid code format. Use invite list to get all your invite codes.", STDERR);
+                } else {
+                    $invite = new Invite($code);
+                    if ($CurrentPerso->id == $invite->from_perso_id) {
+                        $invite->delete();
+                        $this->SmartLine->puts("Deleted");
+                    } else {
+                        $this->SmartLine->puts("Invalid code. Use invite list to get all your invite codes.", STDERR);
+                    }
+                }
+                break;
 
-			default:
-				$this->SmartLine->puts("Usage: invite [add|list|del <code>]", STDERR);
-				break;
-		}
+            default:
+                $this->SmartLine->puts("Usage: invite [add|list|del <code>]", STDERR);
+                break;
+        }
 
     }
 }
@@ -342,14 +342,14 @@ class RequestsSmartLineCommand extends SmartLineCommand {
      * @param int $argc the number of arguments
      */
     public function run ($argv, $argc) {
-		global $CurrentPerso;
-		$force = ($argc > 1) && ($argv[1] == "-f" || $argv[1] == "--force");
-		if ($force || (array_key_exists('site.requests', $CurrentPerso->flags) && $CurrentPerso->flags['site.requests'])) {
-			global $controller;
-			$controller = 'controllers/persorequest.php';
-		} else {
-			$this->SmartLine->puts("No request waiting.");
-		}
+        global $CurrentPerso;
+        $force = ($argc > 1) && ($argv[1] == "-f" || $argv[1] == "--force");
+        if ($force || (array_key_exists('site.requests', $CurrentPerso->flags) && $CurrentPerso->flags['site.requests'])) {
+            global $controller;
+            $controller = 'controllers/persorequest.php';
+        } else {
+            $this->SmartLine->puts("No request waiting.");
+        }
     }
 }
 
@@ -366,12 +366,12 @@ class SettingsSmartLineCommand extends SmartLineCommand {
      * @param int $argc the number of arguments
      */
     public function run ($argv, $argc) {
-		if (headers_sent()) {
-			global $controller;
-			$controller = 'controllers/settings.php';
-		} else {
-			header('location: ' . get_url('settings'));
-		}
+        if (headers_sent()) {
+            global $controller;
+            $controller = 'controllers/settings.php';
+        } else {
+            header('location: ' . get_url('settings'));
+        }
     }
 }
 
@@ -428,26 +428,26 @@ class VersionSmartLineCommand extends SmartLineCommand {
      * @param int $argc the number of arguments
      */
     public function run ($argv, $argc) {
-		//Gets .hg revision
-		if (file_exists('.hg/tags.cache')) {
-			$content = file_get_contents('.hg/tags.cache');
-			$info = explode(' ', $content, 2);
-			$info[] = "development environment";
+        //Gets .hg revision
+        if (file_exists('.hg/tags.cache')) {
+            $content = file_get_contents('.hg/tags.cache');
+            $info = explode(' ', $content, 2);
+            $info[] = "development environment";
 
-		    $this->SmartLine->puts("r$info[0] ($info[2])");
-		    $this->SmartLine->puts("Hash: $info[1]");
-		} else if (file_exists('version.txt')) {
-			$content = file('version.txt');
+            $this->SmartLine->puts("r$info[0] ($info[2])");
+            $this->SmartLine->puts("Hash: $info[1]");
+        } else if (file_exists('version.txt')) {
+            $content = file('version.txt');
             foreach ($content as $line) {
                 $this->SmartLine->puts($line);
             }
-		} else {
-			$this->SmartLine->puts("No version information available.", STDERR);
-			return false;
-		}
+        } else {
+            $this->SmartLine->puts("No version information available.", STDERR);
+            return false;
+        }
 
         return true;
-	}
+    }
 }
 
 /**
@@ -463,10 +463,10 @@ class WhereAmISmartLineCommand extends SmartLineCommand {
      * @param int $argc the number of arguments
      */
     public function run ($argv, $argc) {
-	    global $CurrentPerso;
+        global $CurrentPerso;
 
-	    require_once("includes/geo/location.php");
-	    $place = new GeoLocation($CurrentPerso->location_global);
-	    $this->SmartLine->puts($CurrentPerso->location_global . ' - ' . $place);
+        require_once("includes/geo/location.php");
+        $place = new GeoLocation($CurrentPerso->location_global);
+        $this->SmartLine->puts($CurrentPerso->location_global . ' - ' . $place);
     }
 }

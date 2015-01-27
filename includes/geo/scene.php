@@ -171,7 +171,7 @@ class GeoScene {
                     $smarty->assign("SCENE_URL", defined('SCENE_URL') ? SCENE_URL : '/' . SCENE_DIR);
                     if ($Config['builder']['hotglue']['enable']) {
                          $smarty->assign("HOTGLUE", $Config['builder']['hotglue']['URL']);
-		    }
+            }
                     lang_load('scenes.conf', $this->location->global);
 
                     //Displays scene, then restores regular settings

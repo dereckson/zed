@@ -113,10 +113,10 @@ class BeautyXML {
 
         $newstr = preg_replace("/>([\s]+)<\//", "></", $newstr);
 
-		// adding \n lines where tags ar near
+        // adding \n lines where tags ar near
         $newstr = str_replace("><", ">\n<", $newstr);
 
-		// exploding - each line is one XML tag
+        // exploding - each line is one XML tag
         $tmp = explode("\n", $newstr);
 
         // preparing array for list of tags

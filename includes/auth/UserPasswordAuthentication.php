@@ -65,8 +65,8 @@ class UserPasswordAuthentication implements IAuthentication {
      * @param string $passwordThe password
      */
     public function __construct ($username, $password) {
-	$this->username = $username;
-	$this->password = $password;
+        $this->username = $username;
+        $this->password = $password;
     }
 
     /**
@@ -76,7 +76,7 @@ class UserPasswordAuthentication implements IAuthentication {
      * @return string The hashed password
      */
     function getPasswordHash ($password) {
-	return md5($password); //TODO: replace this by a salted MD5 or better, by another algo.
+        return md5($password); //TODO: replace this by a salted MD5 or better, by another algo.
     }
 
     /**
@@ -85,29 +85,29 @@ class UserPasswordAuthentication implements IAuthentication {
      * @return bool true if the login/pass is valid; otherwise, false.
      */
     function isValid () {
-	global $db;
+        global $db;
+    
+        $sql = "SELECT user_password, user_id FROM " . TABLE_USERS . " WHERE username = '$this->username'";
+        if (!$result = $db->sql_query($sql)) {
+            message_die(SQL_ERROR, "Can't query users table.", '', __LINE__, __FILE__, $sql);
+        }
+        if ($row = $db->sql_fetchrow($result)) {
+            $this->user_id = $row['user_id'];
+            if (!$row['user_password']) {
+                $this->error  = "This account exists but haven't a password defined. Use OpenID or contact dereckson (at) espace-win.org to fix that.";
+                $mustThrowError = true;
+            } elseif ($row['user_password'] != $this->getPasswordHash($this->password)) {
+                //PASS NOT OK
+                $this->error  = "Incorrect password.";
+            } else {
+                return true;
+            }
+        } else {
+            $this->error = "Login not found.";
+            $mustThrowError = true;
+        }
 
-	$sql = "SELECT user_password, user_id FROM " . TABLE_USERS . " WHERE username = '$this->username'";
-	if (!$result = $db->sql_query($sql)) {
-	    message_die(SQL_ERROR, "Can't query users table.", '', __LINE__, __FILE__, $sql);
-	}
-	if ($row = $db->sql_fetchrow($result)) {
-	    $this->user_id = $row['user_id'];
-	    if (!$row['user_password']) {
-		$this->error  = "This account exists but haven't a password defined. Use OpenID or contact dereckson (at) espace-win.org to fix that.";
-		$mustThrowError = true;
-	    } elseif ($row['user_password'] != $this->getPasswordHash($this->password)) {
-		//PASS NOT OK
-		$this->error  = "Incorrect password.";
-	    } else {
-		return true;
-	    }
-	} else {
-	    $this->error = "Login not found.";
-	    $mustThrowError = true;
-	}
-
-	return false;
+        return false;
     }
 
     /**
@@ -116,7 +116,7 @@ class UserPasswordAuthentication implements IAuthentication {
      * @return string The last error
      */
     function getError () {
-	return $this->error;
+        return $this->error;
     }
 
     /**
@@ -126,7 +126,7 @@ class UserPasswordAuthentication implements IAuthentication {
      * @return int The user ID
      */
     function getUserID () {
-	return $this->user_id;
+        return $this->user_id;
     }
 
     /**
@@ -135,7 +135,7 @@ class UserPasswordAuthentication implements IAuthentication {
      * @return bool true if authentication can go on to the next method; otherwise, false
      */
     function canTryNextAuthenticationMethod () {
-	return !$this->mustThrowError;
+        return !$this->mustThrowError;
     }
 
 }

@@ -146,18 +146,18 @@ class SmartLineCommand {
      *
      * @param SmartLine $SmartLine the SmartLine the command belongs
      */
-	public function __construct ($SmartLine) {
-		$this->SmartLine = $SmartLine;
-	}
+    public function __construct ($SmartLine) {
+        $this->SmartLine = $SmartLine;
+    }
 
     /**
      * Gets the command help text or indicates help should be fetched from $lang array
      *
      * @return string|bool a string containing the command help or the bool value false, to enable the default behavior (ie prints $lang['help']['nameOfTheCommand'])
      */
-	public function help () {
+    public function help () {
         return false;
-	}
+    }
 
     /**
      * Runs the command
@@ -165,16 +165,16 @@ class SmartLineCommand {
      * @param array $argv an array of string, each item a command argument
      * @param int $argc the number of arguments
      */
-	public function run ($argv, $argc) {
+    public function run ($argv, $argc) {
 
-	}
+    }
 
-	/**
+    /**
      * The SmartLine where this instance of the command is registered
      *
      * @var SmartLine
      */
-	public $SmartLine;
+    public $SmartLine;
 }
 
 /**
@@ -187,16 +187,16 @@ class SmartLine {
     /**
      * Initializes a new instance of the SmartLine object.
      */
-	public function __construct () {
-		//Assumes we've an empty array where store registered commands.
-		$this->commands = array();
+    public function __construct () {
+        //Assumes we've an empty array where store registered commands.
+        $this->commands = array();
 
-		//Let's register standard commands
-		$this->register_object('showcommands', 'ShowCommandsSmartLineCommand');
-		$this->register_object('help', 'HelpSmartLineCommand');
-	}
+        //Let's register standard commands
+        $this->register_object('showcommands', 'ShowCommandsSmartLineCommand');
+        $this->register_object('help', 'HelpSmartLineCommand');
+    }
 
-	/**
+    /**
      * Registers a private method as command.
      *
      * @param string $command The name of the command to register
@@ -205,62 +205,64 @@ class SmartLine {
      *
      * @return bool true if the command have successfully been registered ; otherwise, false.
      */
-	public function register_method ($command, $method = null, $useArgvArgc = false) {
-		if (is_null($function)) $method = $command;
+    public function register_method ($command, $method = null, $useArgvArgc = false) {
+        if (is_null($function)) $method = $command;
 
-		if (!method_exists($this, $method)) {
-			$this->lastError = "Registration failed. Unknown method $method";
-			return false;
-		}
+        if (!method_exists($this, $method)) {
+            $this->lastError = "Registration failed. Unknown method $method";
+            return false;
+        }
 
-		$className = ucfirst($method) . 'SmartLineCommand';
-		//If class exists, add a uniqid after function
-		while (class_exists($method)) {
-			$className = uniqid(ucfirst($method)) . 'SmartLineCommand';
-		}
-		//Creates the class
-		if ($useArgvArgc) {
-		    $call = "$this->SmartLine->$method(\$argv, \$argc);";
-		} else {
-		    //We don't know how many args we've, so we use call_user_func_array
-		    $call = "array_shift(\$argv);
+        $className = ucfirst($method) . 'SmartLineCommand';
+        //If class exists, add a uniqid after function
+        while (class_exists($method)) {
+            $className = uniqid(ucfirst($method)) . 'SmartLineCommand';
+        }
+        //Creates the class
+        if ($useArgvArgc) {
+            $call = "$this->SmartLine->$method(\$argv, \$argc);";
+        } else {
+            //We don't know how many args we've, so we use call_user_func_array
+            $call = "array_shift(\$argv);
 		             call_user_func_array(
 		                array(&\$this->SmartLine, '$method'),
 		                \$argv
 		             );";
         }
-		$code = "class $className extends SmartLineCommand {
+        $code = "class $className extends SmartLineCommand {
     public function run (\$argv, \$argc) {
         $call
     }
 }";
-		eval($code);
-		$this->register_object($command, $className);
-		return true;
-	}
+        eval($code);
+        $this->register_object($command, $className);
+        return true;
+    }
 
-	/**
+    /**
      * Registers an object extending SmartLineCommand as command.
      *
      * @param string $command The name of the command to register
      * @param SmartLineCommand|string $object The object extending SmartLineCommand. This can be the name of the class (string) or an instance already initialized of the object (SmartLineCommand).
      * @return bool true if the command have successfully been registered ; otherwise, false.
      */
-	public function register_object ($command, $object) {
-		if (is_object($object)) {
-			//Sets SmartLine property
-			$object->SmartLine = $this;
-		} elseif (is_string($object)) {
-			//Creates a new instance of $object
-			$object = new $object($this);
-		} else {
-			$this->lastError = "Registration failed. register_object second parameter must be a class name (string) or an already initialized instance of such class (object) and not a " . gettype($object);
-			return false;
-		}
-		if (!$this->caseSensitive) $command = strtolower($command);
-		$this->commands[$command] = $object;
-		return true;
-	}
+    public function register_object ($command, $object) {
+        if (is_object($object)) {
+            //Sets SmartLine property
+            $object->SmartLine = $this;
+        } elseif (is_string($object)) {
+            //Creates a new instance of $object
+            $object = new $object($this);
+        } else {
+            $this->lastError = "Registration failed. register_object second parameter must be a class name (string) or an already initialized instance of such class (object) and not a " . gettype($object);
+            return false;
+        }
+        if (!$this->caseSensitive) {
+            $command = strtolower($command);
+        }
+        $this->commands[$command] = $object;
+        return true;
+    }
 
     /**
      * Determines wheter the specified command have been registered.
@@ -268,12 +270,14 @@ class SmartLine {
      * @param string $command The name of the command to check
      * @return true if the specified command have been registered ; otherwise, false.
      */
-	public function isRegistered ($command) {
-	    if (!$this->caseSensitive) $command = strtolower($command);
-	    return array_key_exists($command, $this->commands);
-	}
+    public function isRegistered ($command) {
+        if (!$this->caseSensitive) {
+            $command = strtolower($command);
+        }
+        return array_key_exists($command, $this->commands);
+    }
 
-	/**
+    /**
      * Executes the specified expression.
      *
      * If an error occurs during the command execution:
@@ -296,34 +300,34 @@ class SmartLine {
      * @param string $expression The expression containing the command to execute
      * @return bool true if the command have been successfuly executed ; otherwise, false.
      */
-	public function execute ($expression) {
-		//Does nothing if blank line
-		if (!$expression) return;
+    public function execute ($expression) {
+        //Does nothing if blank line
+        if (!$expression) return;
 
-		//Prepares $argv and $argc
-		$argv = $this->expression2argv($expression);
-		$argc = count($argv);
+        //Prepares $argv and $argc
+        $argv = $this->expression2argv($expression);
+        $argc = count($argv);
 
-		//Gets command
-		$command = $this->caseSensitive ? $argv[0] : strtolower($argv[0]);
+        //Gets command
+        $command = $this->caseSensitive ? $argv[0] : strtolower($argv[0]);
 
-		//If command doesn't exist, throws an error
-		if (!array_key_exists($command, $this->commands)) {
-			global $lang;
-			$this->puts(sprintf($lang['InvalidCommand'], $command), STDERR);
-			return false;
-		}
+        //If command doesn't exist, throws an error
+        if (!array_key_exists($command, $this->commands)) {
+            global $lang;
+            $this->puts(sprintf($lang['InvalidCommand'], $command), STDERR);
+            return false;
+        }
 
-		//Executes command, intercepting error and returns result
-		set_error_handler("SmartLineHandler");
+        //Executes command, intercepting error and returns result
+        set_error_handler("SmartLineHandler");
         try {
             $result = $this->commands[$command]->run($argv, $argc);
         } catch (Exception $ex) {
             $this->puts("<pre>$ex</pre>", STDERR);
         }
-		restore_error_handler();
-		return $result;
-	}
+        restore_error_handler();
+        return $result;
+    }
 
     /**
      * Adds a message to the specified output queue.
@@ -331,19 +335,19 @@ class SmartLine {
      * @param string $message the message to queue
      * @param int $output The output queue (common values are STDERR and STDOUT constants). It's an optionnal parameter ; if ommited, the default value will be STDOUT.
      */
-	public function puts ($message, $output = STDOUT) {
-	    //
-	    $_SESSION['SmartLineOutput'][$output][] = $message;
-	}
+    public function puts ($message, $output = STDOUT) {
+        //
+        $_SESSION['SmartLineOutput'][$output][] = $message;
+    }
 
     /**
      * Truncates the specified output queue.
      *
      * @param int $output The output queue (common values are STDERR and STDOUT constants). It's an optionnal parameter ; if ommited, the default value will be STDOUT.
      */
-	public function truncate ($output = STDOUT) {
-		unset($_SESSION['SmartLineOutput'][$output]);
-	}
+    public function truncate ($output = STDOUT) {
+        unset($_SESSION['SmartLineOutput'][$output]);
+    }
 
     /**
      * Pops (gets and clears) the first message from the specified output queue.
@@ -351,19 +355,20 @@ class SmartLine {
      * @param int $output The output queue (common values are STDERR and STDOUT constants). It's an optionnal parameter ; if ommited, the default value will be STDOUT.
      * @return string the message
      */
-	public function gets ($output = STDOUT) {
-		if (count($_SESSION['SmartLineOutput'][$output] > 0))
-			return array_pop($_SESSION['SmartLineOutput'][$output]);
-	}
+    public function gets ($output = STDOUT) {
+        if (count($_SESSION['SmartLineOutput'][$output] > 0)) {
+            return array_pop($_SESSION['SmartLineOutput'][$output]);
+        }
+    }
 
     /**
      * Gets the number of messages in the specified output queue.
      *
      * @param int $output The output queue (common values are STDERR and STDOUT constants). It's an optionnal parameter ; if ommited, the default value will be STDOUT.
      */
-	public function count ($output = STDOUT) {
-		return count($_SESSION['SmartLineOutput'][$output]);
-	}
+    public function count ($output = STDOUT) {
+        return count($_SESSION['SmartLineOutput'][$output]);
+    }
 
     /**
      * Gets all the message from the specified output queue.
@@ -373,14 +378,17 @@ class SmartLine {
      * @param string $suffix The string to append each message with. It's an optionnal parameter ; if ommited, '</p>'.
      * @return Array an array of string, each item a message from the specified output queue
      */
-	public function gets_all ($output = STDOUT, $prefix = '<p>', $suffix = '</p>') {
-		$count = count($_SESSION['SmartLineOutput'][$output]);
-		if ($count == 0) return;
-		for ($i = 0 ; $i < $count ; $i++)
-			$buffer .= $prefix . $_SESSION['SmartLineOutput'][$output][$i] . $suffix;
-		unset ($_SESSION['SmartLineOutput'][$output]);
+    public function gets_all ($output = STDOUT, $prefix = '<p>', $suffix = '</p>') {
+        $count = count($_SESSION['SmartLineOutput'][$output]);
+        if ($count == 0) {
+            return;
+        }
+        for ($i = 0 ; $i < $count ; $i++) {
+            $buffer .= $prefix . $_SESSION['SmartLineOutput'][$output][$i] . $suffix;
+        }
+        unset ($_SESSION['SmartLineOutput'][$output]);
         return $buffer;
-	}
+    }
 
     /**
      * Prints all the message from the specified output queue.
@@ -389,13 +397,16 @@ class SmartLine {
      * @param string $prefix The string to prepend each message with. It's an optionnal parameter ; if ommited, '<p>'.
      * @param string $suffix The string to append each message with. It's an optionnal parameter ; if ommited, '</p>'.
      */
-	public function prints_all ($output = STDOUT, $prefix = '<p>', $suffix = '</p>') {
-		$count = count($_SESSION['SmartLineOutput'][$output]);
-		if ($count == 0) return;
-		for ($i = 0 ; $i < $count ; $i++)
-			echo $prefix, $_SESSION['SmartLineOutput'][$output][$i], $suffix;
-		unset ($_SESSION['SmartLineOutput'][$output]);
-	}
+    public function prints_all ($output = STDOUT, $prefix = '<p>', $suffix = '</p>') {
+        $count = count($_SESSION['SmartLineOutput'][$output]);
+        if ($count == 0) {
+            return;
+        }
+        for ($i = 0 ; $i < $count ; $i++) {
+            echo $prefix, $_SESSION['SmartLineOutput'][$output][$i], $suffix;
+        }
+        unset ($_SESSION['SmartLineOutput'][$output]);
+    }
 
     /**
      * Gets the command help
@@ -403,9 +414,9 @@ class SmartLine {
      * @param string $command The command to get help from
      * @param string The command help
      */
-	public function gethelp ($command) {
-		return $this->commands[$command]->help();
-	}
+    public function gethelp ($command) {
+        return $this->commands[$command]->help();
+    }
 
     /**
      * Gets an an argv array from the specified expression
@@ -413,7 +424,7 @@ class SmartLine {
      * @param string $expression The expression to transform into a argv array
      * @return Array An array of string, the first item the command, the others those arguments.
      */
-	private function expression2argv ($expression) {
+    private function expression2argv ($expression) {
         //Checks if expression contains "
         $pos1 = strpos($expression, '"');
 
@@ -441,22 +452,22 @@ class SmartLine {
         //Standard expression (ie without ")
         $argv = array();
         $items = explode(' ', $expression);
-	    foreach ($items as $item) {
-	        $item = trim($item);
-	        if (!$item) {
-	            //blank, we ignore
-	            continue;
-	        }
-	        $argv[] = $item;
-	    }
-	    return $argv;
-	}
+        foreach ($items as $item) {
+            $item = trim($item);
+            if (!$item) {
+                //blank, we ignore
+                continue;
+            }
+            $argv[] = $item;
+        }
+        return $argv;
+    }
 
-	//Contains last error
-	public $lastError = '';
+    //Contains last error
+    public $lastError = '';
 
-	//If true, command isn't equal to Command
-	public $caseSensitive = true;
+    //If true, command isn't equal to Command
+    public $caseSensitive = true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -479,11 +490,11 @@ class ShowCommandsSmartLineCommand extends SmartLineCommand {
      * @param array $argv an array of string, each item a command argument
      * @param int $argc the number of arguments
      */
-	public function run ($argv, $argc) {
-	    $commands = array_keys($this->SmartLine->commands);
-	    sort($commands);
-	    $this->SmartLine->puts(implode(' ', $commands));
-	}
+    public function run ($argv, $argc) {
+        $commands = array_keys($this->SmartLine->commands);
+        sort($commands);
+        $this->SmartLine->puts(implode(' ', $commands));
+    }
 }
 
 /**
@@ -502,7 +513,7 @@ class HelpSmartLineCommand extends SmartLineCommand {
      * @param array $argv an array of string, each item a command argument
      * @param int $argc the number of arguments
      */
-	public function run ($argv, $argc) {
+    public function run ($argv, $argc) {
         global $lang;
         if ($argc == 1) {
             $this->SmartLine->puts($lang['DefaultHelp']);
@@ -519,8 +530,8 @@ class HelpSmartLineCommand extends SmartLineCommand {
             }
             $this->SmartLine->puts($help);
         }
-	}
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-;
+

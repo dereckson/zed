@@ -523,7 +523,7 @@ class Perso {
      */
     public function on_create () {
         //Notifies inviter
-	$this->notify_inviter();
+        $this->notify_inviter();
     }
 
    /**

@@ -49,12 +49,12 @@ include_once("autoload.php");         //__autoload()
  * @return string The perso's nickname
  */
 function get_name ($perso_id) {
-	global $db;
-	$perso_id = $db->sql_escape($perso_id);
+    global $db;
+    $perso_id = $db->sql_escape($perso_id);
     $sql = 'SELECT perso_nickname FROM '. TABLE_PERSOS . " WHERE perso_id = '$perso_id'";
-	if (!$result = $db->sql_query($sql)) message_die(SQL_ERROR, "Can't query persos table.", '', __LINE__, __FILE__, $sql);
-	$row = $db->sql_fetchrow($result);
-	return $row['perso_nickname'];
+    if (!$result = $db->sql_query($sql)) message_die(SQL_ERROR, "Can't query persos table.", '', __LINE__, __FILE__, $sql);
+    $row = $db->sql_fetchrow($result);
+    return $row['perso_nickname'];
 }
 
 /**
@@ -64,12 +64,12 @@ function get_name ($perso_id) {
  * @return integer the user ID
  */
 function get_userid ($username) {
-	global $db;
-	$username = $db->sql_escape($username);
-	$sql = 'SELECT user_id FROM '. TABLE_USERS . " WHERE username LIKE '$username'";
-	if (!$result = $db->sql_query($sql)) message_die(SQL_ERROR, "Can't query users table.", '', __LINE__, __FILE__, $sql);
-	$row = $db->sql_fetchrow($result);
-	return $row['user_id'];
+    global $db;
+    $username = $db->sql_escape($username);
+    $sql = 'SELECT user_id FROM '. TABLE_USERS . " WHERE username LIKE '$username'";
+    if (!$result = $db->sql_query($sql)) message_die(SQL_ERROR, "Can't query users table.", '', __LINE__, __FILE__, $sql);
+    $row = $db->sql_fetchrow($result);
+    return $row['user_id'];
 }
 
 /**
@@ -82,10 +82,10 @@ function registry_get ($key) {
     global $db;
     $key = $db->sql_escape($key);
     $sql = "SELECT registry_value FROM " . TABLE_REGISTRY . " WHERE registry_key = '$key'";
-		if (!$result = $db->sql_query($sql)) message_die(SQL_ERROR, "Can't read registry.", '', __LINE__, __FILE__, $sql);
+        if (!$result = $db->sql_query($sql)) message_die(SQL_ERROR, "Can't read registry.", '', __LINE__, __FILE__, $sql);
 
     $row = $db->sql_fetchrow($result);
-	return $row['registry_value'];
+    return $row['registry_value'];
 }
 
 /**
@@ -155,7 +155,7 @@ function generate_random_string ($format) {
  * @return string 's' if $amount implies a plural ; '' if it implies a singular.
  */
 function s ($amount) {
-	if ($amount >= 2 || $amount <= -2) return "s";
+    if ($amount >= 2 || $amount <= -2) return "s";
 }
 
 /**
@@ -166,7 +166,7 @@ function s ($amount) {
  * @return string 'x' if $amount implies a plural ; '' if it implies a singular.
  */
 function x ($amount) {
-	if ($amount >= 2 || $amount <= -2) return "x";
+    if ($amount >= 2 || $amount <= -2) return "x";
 }
 
 //Debug
@@ -180,9 +180,9 @@ function x ($amount) {
  * @param mixed $expression The expression to be printed
  */
 function dprint_r ($expression) {
-	echo '<pre>';
-	print_r($expression);
-	echo '</pre>';
+    echo '<pre>';
+    print_r($expression);
+    echo '</pre>';
 }
 
 //GUID
@@ -197,16 +197,16 @@ function dprint_r ($expression) {
  * @return string the UUID
  */
 function new_guid() {
-	$characters = explode(",","a,b,c,d,e,f,0,1,2,3,4,5,6,7,8,9");
-	$guid = "";
-	for ($i = 0 ; $i < 36 ; $i++) {
-		if ($i == 8 || $i == 13 || $i == 18 || $i == 23) {
-			$guid .= "-";
-		} else {
-			$guid .= $characters[mt_rand() % sizeof($characters)];
-		}
-	}
-	return $guid;
+    $characters = explode(",","a,b,c,d,e,f,0,1,2,3,4,5,6,7,8,9");
+    $guid = "";
+    for ($i = 0 ; $i < 36 ; $i++) {
+        if ($i == 8 || $i == 13 || $i == 18 || $i == 23) {
+            $guid .= "-";
+        } else {
+            $guid .= $characters[mt_rand() % sizeof($characters)];
+        }
+    }
+    return $guid;
 }
 
 /**
@@ -222,15 +222,15 @@ function is_guid ($expression) {
     if (strlen($expression) != 36) return false;
 
     $expression = strtolower($expression);
-	for ($i = 0 ; $i < 36 ; $i++) {
-		if ($i == 8 || $i == 13 || $i == 18 || $i == 23) {
-			//with dashes
-			if ($expression[$i] != "-") return false;
-		} else {
-		    //and numbers
-			if (!is_numeric($expression[$i]) && $expression[$i] != 'a' && $expression[$i] != 'b' && $expression[$i] != 'c' && $expression[$i] != 'd' && $expression[$i] != 'e' && $expression[$i] != 'f' ) return false;
-		}
-	}
+    for ($i = 0 ; $i < 36 ; $i++) {
+        if ($i == 8 || $i == 13 || $i == 18 || $i == 23) {
+            //with dashes
+            if ($expression[$i] != "-") return false;
+        } else {
+            //and numbers
+            if (!is_numeric($expression[$i]) && $expression[$i] != 'a' && $expression[$i] != 'b' && $expression[$i] != 'c' && $expression[$i] != 'd' && $expression[$i] != 'e' && $expression[$i] != 'f' ) return false;
+        }
+    }
     return true;
 }
 
@@ -275,11 +275,11 @@ function supralog ($category, $message, $source = null) {
     $message = $db->sql_query_express($message);
     $source = $db->sql_query_express($source ? $source : $_SERVER['SERVER_ADDR']);
     $ip = $_SERVER['REMOTE_ADDR'];
-	$sql = "INSERT INTO " . TABLE_LOG .
+    $sql = "INSERT INTO " . TABLE_LOG .
            " (entry_ip, user_id, perso_id, entry_category, entry_message, entry_source) VALUES
              ('$ip', $CurrentUser->id, $CurrentPerso->id, '$category', '$message', '$source')";
-	if ( !($result = $db->sql_query($sql)) )
-		message_die(SQL_ERROR, "Can't log this entry.", '', __LINE__, __FILE__, $sql);
+    if ( !($result = $db->sql_query($sql)) )
+        message_die(SQL_ERROR, "Can't log this entry.", '', __LINE__, __FILE__, $sql);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -425,7 +425,7 @@ function lang_get ($key) {
  * @return inteeger the unixtime
  */
 function to_unixtime ($timestamp) {
-	switch (strlen($timestamp)) {
+    switch (strlen($timestamp)) {
         case 8:
         //YYYYMMDD
         return mktime(0, 0, 0, substr($timestamp, 4, 2), substr($timestamp, 6, 2), substr($timestamp, 0, 4));
@@ -448,11 +448,11 @@ function to_unixtime ($timestamp) {
  * @return string the timestamp
  */
 function to_timestamp ($unixtime = null, $format = 8) {
-	//If no parameter is specified (or null, or false), current time is used
+    //If no parameter is specified (or null, or false), current time is used
     //==== allows to_timestamp(0) to return correct 1970-1-1 value.
     if ($unixtime === null || $unixtime === false) $unixtime = time();
 
-	switch ($format) {
+    switch ($format) {
         case 8:
         //YYYYMMDD
         return date('Ymd', $unixtime);
@@ -539,8 +539,8 @@ function get_page_url () {
  * @return string the server URL
  */
 function get_server_url () {
-	switch ($port = $_SERVER['SERVER_PORT']) {
-		case '80':
+    switch ($port = $_SERVER['SERVER_PORT']) {
+        case '80':
             return "http://$_SERVER[SERVER_NAME]";
 
         case '443':
@@ -548,7 +548,7 @@ function get_server_url () {
 
         default:
             return "http://$_SERVER[SERVER_NAME]:$_SERVER[SERVER_PORT]";
-	}
+    }
 }
 
 /**

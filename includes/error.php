@@ -73,7 +73,7 @@ define ("GENERAL_ERROR", 117);
  */
 function dieprint_r ($expression, $title = '') {
     if (!$title) {
-	$title = 'Debug'; //if title is omitted or false/null, default title
+    $title = 'Debug'; //if title is omitted or false/null, default title
     }
     message_die(GENERAL_ERROR, '<pre>' . print_r($expression, true) .'</pre>', $title);
 }
@@ -125,16 +125,16 @@ function message_die ($msg_code, $msg_text = '', $msg_title = '', $err_line = ''
 
             case GENERAL_ERROR:
                 if ($msg_title)
-		    $smarty->assign('TITLE', $msg_title);
-		else
-		    $smarty->assign('TITLE', lang_get('GeneralError'));
+            $smarty->assign('TITLE', $msg_title);
+        else
+            $smarty->assign('TITLE', lang_get('GeneralError'));
                 break;
         }
 
 
         $smarty->assign('ERROR_TEXT', $debug_text);
         $template = (defined('HEADER_PRINTED') &&  HEADER_PRINTED) ? "error_block.tpl" : "error.tpl";
-	$smarty->display($template);
+    $smarty->display($template);
         exit;
     } else {
         old_message_die($msg_code, $msg_text, $msg_title, $err_line, $err_file, $sql);
@@ -157,17 +157,17 @@ function message_die ($msg_code, $msg_text = '', $msg_title = '', $err_line = ''
  */
 function old_message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '', $err_file = '', $sql = '')
 {
-	global $db, $Utilisateur;
-	$sql_store = $sql;
+    global $db, $Utilisateur;
+    $sql_store = $sql;
 
-	if ($msg_code == HACK_ERROR && $Utilisateur[user_id] < 1000) {
-		global $LoginResult;
-		foreach ($_POST as $name => $value) {
-			$champs .= "<input type=hidden name=$name value=\"$value\" />";
-		}
-		$titre = "Qui êtes-vous ?";
-		$debug_text = "Vous devez être authentifié pour accéder à cette page.";
-		$debug_text .= "
+    if ($msg_code == HACK_ERROR && $Utilisateur[user_id] < 1000) {
+        global $LoginResult;
+        foreach ($_POST as $name => $value) {
+            $champs .= "<input type=hidden name=$name value=\"$value\" />";
+        }
+        $titre = "Qui êtes-vous ?";
+        $debug_text = "Vous devez être authentifié pour accéder à cette page.";
+        $debug_text .= "
 		<FORM method='post'>
 		$champs
 		<table border='0'>
@@ -186,25 +186,25 @@ function old_message_die($msg_code, $msg_text = '', $msg_title = '', $err_line =
 		</TABLE><span class=error>$LoginResult</span>
 		</FORM>
 		";
-	} elseif ($msg_code == HACK_ERROR) {
-		$titre = "Accès non autorisé";
-		$debug_text = $msg_text;
-	} elseif ($msg_code == SQL_ERROR) {
-		$titre = "Erreur dans la requête SQL";
-		$sql_error = $db->sql_error();
-		$debug_text = $msg_text;
-		if ( $err_line != '' && $err_file != '') $debug_text .= ' dans ' . $err_file. ', ligne ' . $err_line ;
-		if ( $sql_error['message'] != '' ) $debug_text .= '<br />Erreur n° ' . $sql_error['code'] . ' : ' . $sql_error['message'];
-		if ( $sql_store != '' ) $debug_text .= "<br /><strong>$sql_store</strong>";
-	} elseif ($msg_code == GENERAL_ERROR) {
-	    $titre = $msg_title;
-	    $debug_text = $msg_text;
-	    if ($err_line && $err_file) {
-		    $debug_text .= "<BR />$err_file, ligne $err_line";
-	    }
-	}
+    } elseif ($msg_code == HACK_ERROR) {
+        $titre = "Accès non autorisé";
+        $debug_text = $msg_text;
+    } elseif ($msg_code == SQL_ERROR) {
+        $titre = "Erreur dans la requête SQL";
+        $sql_error = $db->sql_error();
+        $debug_text = $msg_text;
+        if ( $err_line != '' && $err_file != '') $debug_text .= ' dans ' . $err_file. ', ligne ' . $err_line ;
+        if ( $sql_error['message'] != '' ) $debug_text .= '<br />Erreur n° ' . $sql_error['code'] . ' : ' . $sql_error['message'];
+        if ( $sql_store != '' ) $debug_text .= "<br /><strong>$sql_store</strong>";
+    } elseif ($msg_code == GENERAL_ERROR) {
+        $titre = $msg_title;
+        $debug_text = $msg_text;
+        if ($err_line && $err_file) {
+            $debug_text .= "<BR />$err_file, ligne $err_line";
+        }
+    }
 
-	echo "
+    echo "
 	<TABLE height='100%' cellSpacing=0 cellPadding=0 width='100%' border=0>
   <TBODY>
   <TR>
@@ -254,5 +254,5 @@ function old_message_die($msg_code, $msg_text = '', $msg_title = '', $err_line =
       </TD></TR></TBODY></TABLE>
 	";
 
-	exit;
+    exit;
 }

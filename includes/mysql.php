@@ -21,10 +21,10 @@
 
 if (!defined('SQL_LAYER')) {
     /**
-	 * Defines the SQL engine layer implented for our SQL abstraction class:
-	 * MySQL
-	 */
-	define('SQL_LAYER', 'mysql');
+     * Defines the SQL engine layer implented for our SQL abstraction class:
+     * MySQL
+     */
+    define('SQL_LAYER', 'mysql');
 
     /**
      * SQL database class

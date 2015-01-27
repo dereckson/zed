@@ -124,49 +124,49 @@ if ($_POST['EditProfile']) {
     $extension = get_extension($_FILES['photo']['name']);
     $filename = $CurrentPerso->id . '_' . $hash . '.' . $extension;
 
-	#We ignore $_FILES[photo][error] 4, this means no file has been uploaded
-	#(so user doesn't want upload a new file)
-	#See http:/www.php.net/features.file-upload and http://www.php.net/manual/en/features.file-upload.errors.php about common errors
-	#Not valid before PHP 4.2.0
-	switch ($_FILES['photo']['error']) {
-		case 0:
-		#There is no error, the file uploaded with success.
+    #We ignore $_FILES[photo][error] 4, this means no file has been uploaded
+    #(so user doesn't want upload a new file)
+    #See http:/www.php.net/features.file-upload and http://www.php.net/manual/en/features.file-upload.errors.php about common errors
+    #Not valid before PHP 4.2.0
+    switch ($_FILES['photo']['error']) {
+        case 0:
+        #There is no error, the file uploaded with success.
 
-		if (!move_uploaded_file($_FILES['photo']['tmp_name'], PHOTOS_DIR . '/' . $filename)) {
-			$errors[] = "Upload successful, but error saving it.";
-		} else {
-			//Attaches the picture to the profile
-			$photo = new ProfilePhoto();
-			$photo->name = $filename;
-			$photo->perso_id = $CurrentPerso->id;
-			$photo->description = $_POST['description'];
-			if ($photo->avatar) $photo->promote_to_avatar();
-			$photo->save_to_database();
+        if (!move_uploaded_file($_FILES['photo']['tmp_name'], PHOTOS_DIR . '/' . $filename)) {
+            $errors[] = "Upload successful, but error saving it.";
+        } else {
+            //Attaches the picture to the profile
+            $photo = new ProfilePhoto();
+            $photo->name = $filename;
+            $photo->perso_id = $CurrentPerso->id;
+            $photo->description = $_POST['description'];
+            if ($photo->avatar) $photo->promote_to_avatar();
+            $photo->save_to_database();
 
-			//Generates thumbnail
-			if (!$photo->generate_thumbnail()) {
+            //Generates thumbnail
+            if (!$photo->generate_thumbnail()) {
                 $smarty->assign('WAP', "Error generating thumbnail.");
             }
 
-			$smarty->assign('NOTIFY', lang_get('PhotoUploaded'));
-			$mode = 'view';
-		}
-		break;
+            $smarty->assign('NOTIFY', lang_get('PhotoUploaded'));
+            $mode = 'view';
+        }
+        break;
 
-		case 1:
-		$errors[] = "The file is too large.";
-		break;
+        case 1:
+        $errors[] = "The file is too large.";
+        break;
 
-		#TODO : more explicit error messages
+        #TODO : more explicit error messages
 
-		default:
-		$errors[] = "Unknown error (#" . $_FILES['photo']['error'] . ")";
-		break;
-	}
+        default:
+        $errors[] = "Unknown error (#" . $_FILES['photo']['error'] . ")";
+        break;
+    }
 
-	if (count($errors)) {
-	    $smarty->assign('WAP', join($errors, '<br />'));
-	}
+    if (count($errors)) {
+        $smarty->assign('WAP', join($errors, '<br />'));
+    }
 } elseif ($_POST['id']) {
     //Edits photo properties
     $photo = new ProfilePhoto($_POST['id']);
@@ -191,8 +191,8 @@ if ($_POST['EditProfile']) {
 //Prepares output
 if ($profile->text) {
     //Profile
-	$smarty->assign('PROFILE_TEXT', $profile->text);
-	$smarty->assign('PROFILE_FIXEDWIDTH', $profile->fixedwidth);
+    $smarty->assign('PROFILE_TEXT', $profile->text);
+    $smarty->assign('PROFILE_FIXEDWIDTH', $profile->fixedwidth);
 }
 
 if ($mode == 'view') {
@@ -204,7 +204,7 @@ if ($mode == 'view') {
     //Gets profiles comments, photos, tags
     $comments = ProfileComment::get_comments($profile->perso_id);
     $photos   = ProfilePhoto::get_photos($profile->perso_id);
-	$tags     = $profile->get_cached_tags();
+    $tags     = $profile->get_cached_tags();
 
     //Records timestamp, to be able to track new comments
     if ($self) $CurrentPerso->set_flag('profile.lastvisit', time());
@@ -212,7 +212,7 @@ if ($mode == 'view') {
     //Template
     $smarty->assign('PROFILE_COMMENTS', $comments);
     $smarty->assign('PROFILE_SELF', $self);
-	if ($tags) $smarty->assign('PROFILE_TAGS', $tags);
+    if ($tags) $smarty->assign('PROFILE_TAGS', $tags);
     $smarty->assign('USERNAME', $perso->username);
     $smarty->assign('NAME', $perso->name ? $perso->name : $perso->nickname);
     $template = 'profile.tpl';
