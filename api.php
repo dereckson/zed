@@ -292,7 +292,7 @@ switch ($module = $url[0]) {
                 //then, falls to 'getdata'
 
             case 'getdata':
-                if (count($url) < 2) cerbere_die('/' + $url[0] + '/ must be followed by the data ID');
+                if (count($url) < 2) cerbere_die('/' . $url[0] . '/ must be followed by the data ID');
                 if (!$perso_id) $perso_id = 'NULL';
                 $data_id = $db->sql_escape($url[1]);
                 $sql = "SELECT data_content FROM applications_data WHERE application_id = '$app->id' AND data_id = '$data_id' AND perso_id = $perso_id";
