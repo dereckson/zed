@@ -436,7 +436,7 @@ class VersionSmartLineCommand extends SmartLineCommand {
 
             $this->SmartLine->puts("r$info[0] ($info[2])");
             $this->SmartLine->puts("Hash: $info[1]");
-        } else if (file_exists('version.txt')) {
+        } elseif (file_exists('version.txt')) {
             $content = file('version.txt');
             foreach ($content as $line) {
                 $this->SmartLine->puts($line);

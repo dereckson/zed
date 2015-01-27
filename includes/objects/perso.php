@@ -548,7 +548,7 @@ class Perso {
         if (!$perso->sex) $errors[] = lang_get("NoSexSpecified");
         if (!$perso->nickname) {
             $errors[] = lang_get("NoNicknameSpecified");
-        } else if (!Perso::is_available_nickname($perso->nickname)) {
+        } elseif (!Perso::is_available_nickname($perso->nickname)) {
             $errors[] = lang_get("UnavailableNickname");
         }
 
