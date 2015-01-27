@@ -155,7 +155,9 @@ switch ($module = $url[0]) {
             case 'move':
                 //Moves the ship to a new location, given absolute coordinates
                 //TODO: handle relative moves
-                if (count($url) < 2) cerbere_die("/move/ must be followed by a location expression");
+                if (count($url) < 2) {
+                    cerbere_die("/move/ must be followed by a location expression");
+                }
 
                 //Gets location class
                 //It's allow: (1) to normalize locations between formats
@@ -218,13 +220,17 @@ switch ($module = $url[0]) {
                 die();
 
             case 'checkuserkey':
-                if (count($url) < 2) cerbere_die("/checkuserkey/ must be followed by an user key");
+                if (count($url) < 2) {
+                    cerbere_die("/checkuserkey/ must be followed by an user key");
+                }
                 $reply = (boolean)$app->get_perso_id($url[2]);
                 api_output($reply, "check");
                 break;
 
             case 'pushuserdata':
-                if (count($url) < 3) cerbere_die("/pushuserdata/ must be followed by an user key");
+                if (count($url) < 3) {
+                    cerbere_die("/pushuserdata/ must be followed by an user key");
+                }
                 $perso_id = $app->get_perso_id($url[2]) or cerbere_die("Invalid application user key");
                 //then, falls to 'pushdata'
 
@@ -242,7 +248,9 @@ switch ($module = $url[0]) {
 
                     case 'file':
                         $file = $_FILES['datafile']['tmp_name'] or cerbere_die("File is missing");
-                        if (!is_uploaded_file($file)) cerbere_die("Invalid form request");
+                        if (!is_uploaded_file($file)) {
+                            cerbere_die("Invalid form request");
+                        }
                         $data = "";
                         if (preg_match('/\.tar$/', $file)) {
                             $format = "tar";
@@ -259,7 +267,7 @@ switch ($module = $url[0]) {
                             //.bz2
                             $bz = bzopen($file, "r") or cerbere_die("Couldn't open $file");
                             while (!feof($bz)) {
-                              $data .= bzread($bz, BUFFER_SIZE);
+                                $data .= bzread($bz, BUFFER_SIZE);
                             }
                             bzclose($bz);
                         }
@@ -276,8 +284,9 @@ switch ($module = $url[0]) {
                 $data = $db->sql_escape($data);
                 $perso_id = $perso_id ? $perso_id : 'NULL';
                 $sql = "REPLACE INTO applications_data (application_id, data_id, data_content, data_format, perso_id) VALUES ('$app->id', '$data_id', '$data', '$format', $perso_id)";
-                if (!$db->sql_query($sql))
+                if (!$db->sql_query($sql)) {
                     message_die(SQL_ERROR, "Can't save data", '', __LINE__, __FILE__, $sql);
+                }
                     //cerbere_die("Can't save data");
 
                 //Returns
@@ -287,20 +296,25 @@ switch ($module = $url[0]) {
             case 'getuserdata':
                 //  /api.php/getuserdata/data_id/perso_key
                 //  /api.php/getdata/data_id
-                if (count($url) < 3) cerbere_die("/getuserdata/ must be followed by an user key");
+                if (count($url) < 3) {
+                    cerbere_die("/getuserdata/ must be followed by an user key");
+                }
                 $perso_id = $app->get_perso_id($url[2]) or cerbere_die("Invalid application user key");
                 //then, falls to 'getdata'
 
             case 'getdata':
-                if (count($url) < 2) cerbere_die('/' . $url[0] . '/ must be followed by the data ID');
-                if (!$perso_id) $perso_id = 'NULL';
+                if (count($url) < 2) {
+                    cerbere_die('/' . $url[0] . '/ must be followed by the data ID');
+                }
+                if (!$perso_id) {
+                    $perso_id = 'NULL';
+                }
                 $data_id = $db->sql_escape($url[1]);
                 $sql = "SELECT data_content FROM applications_data WHERE application_id = '$app->id' AND data_id = '$data_id' AND perso_id = $perso_id";
                 if (!$result = $db->sql_query($sql)) {
                     message_die(SQL_ERROR, "Unable to query the table", '', __LINE__, __FILE__, $sql);
                 }
                 while ($row = $db->sql_fetchrow($result)) {
-
                 }
                 break;
 

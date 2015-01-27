@@ -86,8 +86,9 @@ $smarty->assign('PAGE_TITLE', lang_get('Welcome'));
 include('header.php');
 
 //Serves content
-if (!$scene->lastError)
+if (!$scene->lastError) {
     $scene->render();
+}
 
 $smarty->display('home.tpl');
 

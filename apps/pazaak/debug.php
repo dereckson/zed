@@ -39,8 +39,9 @@ echo "<h2>Table</h2>";
 $cards = $game->PlayerTable->string;
 if (is_array($cards)) {
     echo "<table><tr>";
-    foreach ($cards as $card)
+    foreach ($cards as $card) {
         echo "<td>$card</td>";
+    }
     echo "</tr></table>";
 } else {
     echo "<p>$cards</p>";
@@ -50,8 +51,9 @@ echo "<h2>Your hand</h2>";
 $cards = $game->PlayerHand->string;
 if (count($cards)) {
     echo "<table><tr>";
-    foreach ($cards as $card)
+    foreach ($cards as $card) {
         echo "<td>$card</td>";
+    }
     echo "</tr></table>";
 } else {
     echo "<p>-</p>";

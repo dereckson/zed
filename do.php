@@ -129,11 +129,14 @@ class Actions {
      * @param string $hash the security hash
      * @return boolean true if the request is valid and have been processed ; otherwise, false.
      */
-    static function perso_request ($request_flag, $store, $key, $value, $hash) {
+    static function perso_request ($request_flag, $store, $key, $value, $hash)
+    {
         global $CurrentPerso;
 
         //Ensures we've the correct amount of arguments
-        if (func_num_args() < 4) return false;
+        if (func_num_args() < 4) {
+            return false;
+        }
 
         //Checks hash
         $args = func_get_args();
@@ -174,11 +177,14 @@ class Actions {
      * @param string $location_local the local location
      * @return GeoLocation the current perso's GeoLocation object
      */
-    static function set_local_location ($location_local) {
+    static function set_local_location ($location_local)
+    {
         global $CurrentPerso;
 
         //Ensures we've the correct amount of arguments
-        if (func_num_args() < 1) return null;
+        if (func_num_args() < 1) {
+            return null;
+        }
 
         //Moves current perso to specified location
         $location_local = urldecode($location_local);
@@ -207,11 +213,14 @@ class Actions {
      * Valid moves string are north, east, south, west, up and down.
      * Valid moves coordinates are x,y,z (3 integers, comma as separator)
      */
-    static function local_move ($move, $factor = 1) {
+    static function local_move ($move, $factor = 1)
+    {
         global $CurrentPerso;
 
         //Ensures we've the correct amount of arguments
-        if (func_num_args() < 1) return null;
+        if (func_num_args() < 1) {
+            return null;
+        }
 
         //Parses $move
         switch ($move) {
@@ -242,7 +251,7 @@ class Actions {
             default:
                 $move = split(',', $move, 3);
                 foreach ($move as $coordinate) {
-                    if  (!is_numeric($coordinate)) {
+                    if (!is_numeric($coordinate)) {
                         return null;
                     }
                 }
@@ -291,7 +300,9 @@ class Actions {
         global $CurrentPerso;
 
         //Ensures we've the correct amount of arguments
-        if (func_num_args() < 1) return null;
+        if (func_num_args() < 1) {
+            return null;
+        }
 
         //Parses $move
         $move = urldecode($move);
@@ -323,7 +334,7 @@ class Actions {
             default:
                 $move = split(',', $move, 3);
                 foreach ($move as $coordinate) {
-                    if  (!is_numeric($coordinate) && !preg_match("/^[0-9]+ *°$/", $coordinate)) {
+                    if (!is_numeric($coordinate) && !preg_match("/^[0-9]+ *°$/", $coordinate)) {
                         return null;
                     }
                 }
@@ -352,7 +363,9 @@ class Actions {
      */
     static function global_move ($location_global, $location_local = null) {
         //Ensures we've the correct amount of arguments
-        if (func_num_args() < 1) return null;
+        if (func_num_args() < 1) {
+            return null;
+        }
 
         //Checks hash
         $args = func_get_args();
@@ -400,7 +413,9 @@ class Actions {
      */
     static function get_content ($location_global) {
         //Ensures we've the correct amount of arguments
-        if (func_num_args() < 1) return null;
+        if (func_num_args() < 1) {
+            return null;
+        }
 
         //Checks hash
         $args = func_get_args();

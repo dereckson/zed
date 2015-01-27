@@ -134,10 +134,12 @@ switch ($url[0]) {
 
     default:
         //Login form
-        if (array_key_exists('LastUsername', $_COOKIE))
+        if (array_key_exists('LastUsername', $_COOKIE)) {
             $smarty->assign('username', $_COOKIE['LastUsername']);
-        if (array_key_exists('LastOpenID', $_COOKIE))
+        }
+        if (array_key_exists('LastOpenID', $_COOKIE)) {
             $smarty->assign('OpenID', $_COOKIE['LastOpenID']);
+        }
         $smarty->assign('LoginError', $loginError);
         $template = 'login.tpl';
         break;
@@ -147,4 +149,6 @@ switch ($url[0]) {
 // HTML output
 //
 
-if ($template) $smarty->display($template);
+if ($template) {
+    $smarty->display($template);
+}

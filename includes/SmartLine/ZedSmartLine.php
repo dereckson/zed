@@ -50,8 +50,9 @@ function log_C ($command, $isError = false) {
     $command = $db->sql_escape($command);
     $sql = "INSERT INTO "  . TABLE_LOG_SMARTLINE . " (perso_id, command_time, command_text, isError)
             VALUES ($CurrentPerso->id, UNIX_TIMESTAMP(), '$command', $isError)";
-    if (!$db->sql_query($sql))
+    if (!$db->sql_query($sql)) {
         message_die(SQL_ERROR, "Can't log SmartLine command", '', __LINE__, __FILE__, $sql);
+    }
 }
 
 ///
@@ -71,11 +72,13 @@ if ($C = $_REQUEST['C']) {
 
     $error = $smartLine->count(STDERR) > 0;
 
-    if ($smartLine->count(STDOUT) > 0)
+    if ($smartLine->count(STDOUT) > 0) {
         $smarty->assign("SmartLine_STDOUT", $smartLine->gets_all(STDOUT, '', '<br />'));
+    }
 
-    if ($error)
+    if ($error) {
         $smarty->assign("SmartLine_STDERR", $smartLine->gets_all(STDERR, '', '<br />'));
+    }
 
     if ($controller != '') {
         include($controller);
@@ -93,7 +96,7 @@ $sql = "SELECT command_time, command_text FROM log_smartline
         WHERE isError = 0 AND perso_id = '$perso_id'
         ORDER BY command_time DESC LIMIT 100";
 if (!$result = $db->sql_query($sql)) {
-	message_die(SQL_ERROR, "Can't get SmartLine history", '', __LINE__, __FILE__, $sql);
+    message_die(SQL_ERROR, "Can't get SmartLine history", '', __LINE__, __FILE__, $sql);
 }
 $i = 0;
 while ($row = $db->sql_fetchrow($result)) {

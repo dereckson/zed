@@ -110,8 +110,9 @@ $smarty->assign('PAGE_TITLE', $title);
 include('header.php');
 
 //Serves content
-if ($template)
+if ($template) {
     $smarty->display($template);
+}
 
 //Serves footer
 include('footer.php');

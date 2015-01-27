@@ -83,8 +83,9 @@ class BeautyXML {
     function ident (&$str, $level) {
         $spaces = '';
         $level--;
-        for ($a = 0; $a < $level; $a++)
+        for ($a = 0; $a < $level; $a++) {
             $spaces .= $this->how_to_ident;
+        }
         return $spaces .= $str;
     }
 
@@ -100,11 +101,12 @@ class BeautyXML {
 
         $str = preg_replace("/<\?[^>]+>/", "", $str);
 
-		$tmp = explode("\n", $str); // extracting string into array
+        $tmp = explode("\n", $str); // extracting string into array
 
         // cleaning string from spaces and other stuff like \n \r \t
-        for ($a = 0, $c = count($tmp); $a < $c; $a++)
+        for ($a = 0, $c = count($tmp); $a < $c; $a++) {
             $tmp[$a] = trim($tmp[$a]);
+        }
 
         // joining to string ;-)
         $newstr = join("", $tmp);
@@ -122,14 +124,13 @@ class BeautyXML {
 
         // lets go :-)
         for ($a = 0, $c = count($tmp); $a <= $c; $a++) {
-
             $add = true;
 
             preg_match("/<([^\/\s>]+)/", $tmp[$a], $match);
 
             $lan = trim(strtr($match[0], "<>", "  "));
 
-			$level = count($stab);
+            $level = count($stab);
 
             if (in_array($lan, $stab) && substr_count($tmp[$a], "</$lan") == 1) {
                 $level--;
@@ -137,21 +138,25 @@ class BeautyXML {
                 $add = false;
             }
 
-            if (substr_count($tmp[$a], "<$lan") == 1 && substr_count($tmp[$a], "</$lan") == 1)
+            if (substr_count($tmp[$a], "<$lan") == 1 && substr_count($tmp[$a], "</$lan") == 1) {
                 $add = false;
+            }
 
-			if (preg_match("/\/>$/", $tmp[$a], $match))
-				$add = false;
+            if (preg_match("/\/>$/", $tmp[$a], $match)) {
+                $add = false;
+            }
 
-			$tmp[$a] = $this->ident($tmp[$a], $level);
+            $tmp[$a] = $this->ident($tmp[$a], $level);
 
-            if ($this->wrap) $tmp[$a] = wordwrap($tmp[$a], $this->wrap_cont, "\n" . $this->how_to_ident . $this->how_to_ident . $this->how_to_ident);
+            if ($this->wrap) {
+                $tmp[$a] = wordwrap($tmp[$a], $this->wrap_cont, "\n" . $this->how_to_ident . $this->how_to_ident . $this->how_to_ident);
+            }
 
-            if ($add && !@in_array($lan, $stab) && $lan != '') array_push($stab, $lan);
-
+            if ($add && !@in_array($lan, $stab) && $lan != '') {
+                array_push($stab, $lan);
+            }
         }
 
         return join("\n", $tmp);
     }
-
 }

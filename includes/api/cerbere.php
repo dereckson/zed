@@ -92,13 +92,14 @@ function cerbere () {
             //key_hits++
             $sql = "UPDATE " . TABLE_API_KEYS . " SET key_hits = key_hits + 1" .
                    " WHERE key_guid like '$guid'";
-            if (!$db->sql_query($sql))
+            if (!$db->sql_query($sql)) {
                 message_die(SQL_ERROR, "Can't record api call", '', __LINE__, __FILE__, $sql);
+            }
         } else {
             cerbere_die("Key disabled.");
         }
     } else {
-       cerbere_die("Key doesn't exist.");
+        cerbere_die("Key doesn't exist.");
     }
 }
 

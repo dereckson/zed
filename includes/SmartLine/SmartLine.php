@@ -31,12 +31,16 @@
 /**
  * The standard, regular output (like STDOUT on POSIX systems)
  */
-if (!defined('STDOUT')) define('STDOUT',  1, true);
+if (!defined('STDOUT')) {
+    define('STDOUT',  1, true);
+}
 
 /**
  * The error output (like STDERR on POSIX systems)
  */
-if (!defined('STDERR')) define('STDERR', -1, true);
+if (!defined('STDERR')) {
+    define('STDERR', -1, true);
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 // SECTION Ibis - L10n

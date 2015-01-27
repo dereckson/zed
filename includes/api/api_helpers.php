@@ -42,17 +42,24 @@
  */
 function toXml($data, $rootNodeName = 'data', $xml = null, $unknownNodeName = 'unknownNode')
 {
-  if (!$rootNodeName) $rootNodeName = 'data';
-  if (!$unknownNodeName) $unknownNodeName = 'unknownNode';
+    if (!$rootNodeName) {
+        $rootNodeName = 'data';
+    }
+    if (!$unknownNodeName) {
+        $unknownNodeName = 'unknownNode';
+    }
 
     // turn off compatibility mode as simple xml throws a wobbly if you don't.
-    if (ini_get('zend.ze1_compatibility_mode') == 1)
+    if (ini_get('zend.ze1_compatibility_mode') == 1) {
         ini_set('zend.ze1_compatibility_mode', 0);
+    }
 
     if ($xml == null) {
         if (!is_array($data) && !is_object($data)) {
             //We've a singleton
-            if (is_bool($data)) $data = $data ? 'true' : 'false';
+            if (is_bool($data)) {
+                $data = $data ? 'true' : 'false';
+            }
             return "<?xml version='1.0' encoding='utf-8'?><$rootNodeName>$data</$rootNodeName>";
         }
 
@@ -61,7 +68,7 @@ function toXml($data, $rootNodeName = 'data', $xml = null, $unknownNodeName = 'u
     }
 
     // loop through the data passed in.
-    foreach($data as $key => $value) {
+    foreach ($data as $key => $value) {
         // no numeric keys in our xml please!
         if (is_numeric($key)) {
             // make string key...
@@ -79,7 +86,9 @@ function toXml($data, $rootNodeName = 'data', $xml = null, $unknownNodeName = 'u
         } elseif (is_object($value)) {
             $node = $xml->addChild($key);
             foreach ($value as $subkey => $subvalue) {
-                if ($subkey == "lastError") continue;
+                if ($subkey == "lastError") {
+                    continue;
+                }
                 if ($subvalue === null) {
                     //Ignore null values
                     continue;
@@ -107,7 +116,6 @@ function toXml($data, $rootNodeName = 'data', $xml = null, $unknownNodeName = 'u
                 $xml->addChild($key,$value);
             }
         }
-
     }
     // pass back as string. or simple xml object if you want!
     return $xml->asXML();

@@ -19,7 +19,9 @@
             if (!array_key_exists('YubiCloud', $Config)) {
                 message_die(GENERAL_ERROR, "YubiCloud authentication not configured. Add \$Config['YubiCloud']['ClientID'] and \$Config['YubiCloud']['SecretKey'] to your config.");
             }
-            if (!$key = $_GET['OTP']) message_die(GENERAL_ERROR, "Please add in URL ?OTP=, then put your cursor at right of the = and press your YubiKey button");
+            if (!$key = $_GET['OTP']) {
+                message_die(GENERAL_ERROR, "Please add in URL ?OTP=, then put your cursor at right of the = and press your YubiKey button");
+            }
             $yubi = new Auth_Yubico($Config['YubiCloud']['ClientID'], $Config['YubiCloud']['SecreyKey']);
             if (!$data = $yubi->parsePasswordOTP($key)) {
                 message_die(GENERAL_ERROR, "This is not an YubiKey OTP.");
@@ -27,7 +29,9 @@
             $prefix = $data['prefix'];
             $auth = $yubi->verify($key);
             if (@PEAR::isError($auth)) {
-                if ($auth->getMessage() == 'REPLAYED_OTP') message_die("This OTP has already been used.");
+                if ($auth->getMessage() == 'REPLAYED_OTP') {
+                    message_die("This OTP has already been used.");
+                }
                 message_die(HACK_ERROR, "<p>Authentication failed: " . $auth->getMessage() . "</p><p>Debug: " . $yubi->getLastResponse() . "</p>");
             } else {
                 print "<p>You are authenticated!</p>";

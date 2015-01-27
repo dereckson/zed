@@ -36,7 +36,9 @@
 // Prepare fields
 //
 
-if (count($url) < 3) message_die(HACK_ERROR, "Expected URL: /request/code_to/code_object");
+if (count($url) < 3) {
+    message_die(HACK_ERROR, "Expected URL: /request/code_to/code_object");
+}
 
 //
 // Handles or print form
@@ -69,8 +71,9 @@ if (false) {
     $template = "requests/$request->obj.tpl";
     switch ($request->obj) {
         case "aid.reach":
-            if ($request->to == "B00001")
+            if ($request->to == "B00001") {
                 $request->title = "Shuttle pick up request";
+            }
             break;
     }
 }

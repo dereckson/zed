@@ -309,7 +309,9 @@ class ListSmartLineCommand extends SmartLineCommand {
     public function get_list ($table, $key, $value, $where = null) {
         global $db;
         $sql = "SELECT $key as `key`, $value as value FROM $table ";
-        if ($where) $sql .= "WHERE $where ";
+        if ($where) {
+            $sql .= "WHERE $where ";
+        }
         $sql .= "ORDER BY `key` ASC";
         if (!$result = $db->sql_query($sql)) {
             message_die(SQL_ERROR, "Unable to fetch list", '', __LINE__, __FILE__, $sql);
