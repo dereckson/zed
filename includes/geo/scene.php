@@ -210,5 +210,3 @@ class GeoScene {
         return false;
     }
 }
-
-?>

@@ -172,4 +172,3 @@ class Setting {
         return $setting;
     }
 }
-?>

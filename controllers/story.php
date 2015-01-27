@@ -127,5 +127,3 @@ $smarty->display('story.tpl');
 //Serves footer
 $smarty->assign('screen', "Story, section $section->id");
 include('footer.php');
-
-?>

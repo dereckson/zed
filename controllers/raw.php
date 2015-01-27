@@ -59,5 +59,3 @@ $smarty->display('raw.tpl');
 
 //Serves footer
 include('footer.php');
-
-?>

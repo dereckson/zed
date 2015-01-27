@@ -115,5 +115,3 @@ if ($template)
 
 //Serves footer
 include('footer.php');
-
-?>

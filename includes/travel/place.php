@@ -148,5 +148,3 @@ class TravelPlace {
         return $travelPlace;
     }
 }
-
-?>

@@ -171,5 +171,3 @@ class Travel {
         return true;
     }
 }
-
-?>

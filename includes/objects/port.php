@@ -195,5 +195,3 @@ class Port {
         return new Port($port_id);
      }
 }
-
-?>

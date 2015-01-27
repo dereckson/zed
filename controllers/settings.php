@@ -93,5 +93,3 @@ $smarty->display('settings_page.tpl');
 
 //Servers footer
 include('footer.php');
-
-?>

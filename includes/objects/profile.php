@@ -144,5 +144,3 @@ class Profile {
         return $tags_html;
     }
 }
-
-?>

@@ -162,5 +162,3 @@ function api_output ($reply, $xmlRoot = null, $xmlChildren = null) {
             break;
     }
 }
-
-?>

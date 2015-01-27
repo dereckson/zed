@@ -468,5 +468,3 @@ class WhereAmISmartLineCommand extends SmartLineCommand {
 	    $this->SmartLine->puts($CurrentPerso->location_global . ' - ' . $place);
     }
 }
-
-?>

@@ -212,5 +212,3 @@ class GeoPlace {
         return $db->sql_query_express($sql);
     }
 }
-
-?>

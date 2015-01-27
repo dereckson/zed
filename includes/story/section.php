@@ -156,5 +156,3 @@ class StorySection {
         return $section;
     }
 }
-
-?>

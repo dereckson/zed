@@ -577,5 +577,3 @@ class Perso {
         $message->send();
     }
 }
-
-?>

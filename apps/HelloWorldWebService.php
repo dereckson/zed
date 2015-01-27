@@ -23,5 +23,3 @@
 
 $client = new SoapClient("http://10.0.0.4:49319/Service1.asmx?WSDL");
 echo $client->HelloWorld()->HelloWorldResult;
-
-?>

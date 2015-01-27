@@ -74,4 +74,3 @@ class DemoStoryHook extends StoryHook {
         return '<div class="black">Lorem ipsum dolor</div>';
     }
 }
-?>

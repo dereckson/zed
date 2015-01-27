@@ -139,5 +139,3 @@ class GeoOctocube {
         return $query;
     }
 }
-
-?>

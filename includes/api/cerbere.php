@@ -120,5 +120,3 @@ function cerbere_die ($message) {
     }
     exit;
 }
-
-?>

@@ -148,5 +148,3 @@ switch ($url[0]) {
 //
 
 if ($template) $smarty->display($template);
-
-?>

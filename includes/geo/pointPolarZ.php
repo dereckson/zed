@@ -372,5 +372,3 @@ class GeoPointPolarZ implements IteratorAggregate {
         return new ArrayIterator($this);
     }
 }
-
-?>

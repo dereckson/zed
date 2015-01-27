@@ -97,5 +97,3 @@ abstract class StoryHook {
      */
     function add_html () {}
 }
-
-?>

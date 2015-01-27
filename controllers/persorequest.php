@@ -164,5 +164,3 @@ if (count($requests) == 0) {
     //Dies
     exit;
 }
-
-?>

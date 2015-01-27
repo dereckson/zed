@@ -155,5 +155,3 @@
     }
 
     include('controllers/footer.php');
-
-?>

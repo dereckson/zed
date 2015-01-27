@@ -50,5 +50,3 @@ if (!defined('NO_FOOTER_EXTRA')) {
 
 lang_load('footer.conf');
 $smarty->display('footer.tpl');
-
-?>

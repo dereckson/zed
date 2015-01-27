@@ -323,5 +323,3 @@ class Ship {
         return $ship;
     }
 }
-
-?>

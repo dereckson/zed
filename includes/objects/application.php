@@ -173,5 +173,3 @@ class Application {
         return $userkey;
     }
 }
-
-?>

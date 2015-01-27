@@ -272,5 +272,3 @@ class ContentFile {
         return ($code == 0);
     }
 }
-
-?>

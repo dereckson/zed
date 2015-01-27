@@ -33,5 +33,3 @@ include('header.php');
 
 //Servers footer
 include('footer.php');
-
-?>

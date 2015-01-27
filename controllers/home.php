@@ -99,5 +99,3 @@ if ($messages) {
 //Serves footer
 $smarty->assign("screen", "Home console");
 include('footer.php');
-
-?>

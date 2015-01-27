@@ -198,4 +198,3 @@ switch ($controller = $url[0]) {
         header("Status: 404 Not Found");
         dieprint_r($url, 'Unknown URL');
 }
-

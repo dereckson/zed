@@ -237,5 +237,3 @@ class GeoPoint3D implements IteratorAggregate {
 
 
 }
-
-?>

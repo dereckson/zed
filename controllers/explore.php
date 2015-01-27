@@ -47,5 +47,3 @@ if ($explore_controller == '') {
 //
 
 include($explore_controller . '.php');
-
-?>

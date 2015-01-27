@@ -103,5 +103,3 @@ while ($row = $db->sql_fetchrow($result)) {
 }
 
 $smarty->assign("SmartLineHistory", $commands);
-
-?>

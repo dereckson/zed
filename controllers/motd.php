@@ -52,5 +52,3 @@ $smarty->display('motd_add.tpl');
 
 //Servers footer
 include('footer.php');
-
-?>

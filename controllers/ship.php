@@ -87,5 +87,3 @@ $smarty->display('ship.tpl');
 
 //Serves footer
 include('footer.php');
-
-?>

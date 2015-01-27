@@ -59,5 +59,3 @@ if (count($cards)) {
 
 echo "<h2>Debug</h2>";
 dprint_r($game);
-
-?>

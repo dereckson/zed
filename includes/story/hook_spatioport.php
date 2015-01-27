@@ -128,5 +128,3 @@ class SpatioportStoryHook extends StoryHook {
         return Ship::get_ships_at($this->location_global, null);
     }
 }
-
-?>

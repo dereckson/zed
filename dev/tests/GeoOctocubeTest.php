@@ -41,4 +41,3 @@ class GeoOctocubeTest extends PHPUnit_Framework_TestCase {
         $this->assertTrue(GeoOctocube::get_sector(10, -6, 4) == 8);
     }
 }
-?>

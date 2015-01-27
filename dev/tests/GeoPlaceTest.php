@@ -72,4 +72,3 @@ class GeoPlaceTest extends PHPUnit_Framework_TestCase {
         $this->assertFalse($p2->is_valid_local_location("(4, 62)"));     //23
     }
 }
-?>

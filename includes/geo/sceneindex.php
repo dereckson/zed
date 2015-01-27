@@ -212,5 +212,3 @@ class GeoSceneIndex {
         return NULL;
     }
 }
-
-?>
