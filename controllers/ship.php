@@ -43,14 +43,15 @@ lang_load('ships.conf');
 if (count($url) < 2) {
     //No parameter, gets ship perso is onboard
     if (!$code = $CurrentPerso->location->ship_code) {
-        message_die(GENERAL_ERROR, "/ship/ must be followed by valid ship code.<br />/ship alone only works when you're aboard a ship", "URL error");
+        message_die(GENERAL_ERROR, lang_get("NotAboardNoCode"), lang_get("URLError"));
+        //"
     }
     $code = 'S' . $code;
 } else {
     //Code have been specified
     $code = $url[1];
     if (!preg_match("/^S[0-9]{5}$/", $code)) {
-        message_die(GENERAL_ERROR, "/ship/ must be followed by valid ship code", "URL error");
+        message_die(GENERAL_ERROR, lang_get("InvalidShipCode"), lang_get("URLError"));
     }
 }
 
