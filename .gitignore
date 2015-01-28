@@ -3,3 +3,6 @@ cache/compiled/*.php
 cache/sessions/sess_*
 cache/openid/associations/
 cache/openid/nonces/
+
+## Editors files
+*.komodoproject
