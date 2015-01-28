@@ -55,10 +55,8 @@ if (count($url) < 2) {
     }
 }
 
-//Gets ship information
+//Gets relevant information
 $ship = Ship::get($code);
-
-//Gets perso note about this ship
 $note = $CurrentPerso->get_note($code);
 
 //Determines the spatial relation between perso and ship
