@@ -22,7 +22,7 @@
  */
 
 
-//API Preferences
+//API preferences
 define('URL', 'http://' . $_SERVER['HTTP_HOST'] . '/index.php');
 
 //Pluton library
