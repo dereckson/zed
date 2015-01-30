@@ -49,7 +49,6 @@ define('PERSO_NOT_SELECTED', -7);
 /// Initialization
 ///
 
-//Pluton library
 include('includes/core.php');
 
 //Session
@@ -104,7 +103,7 @@ lang_load('core.conf');
  *
  * You can also use $_GET, $_POST or better $_REQUEST.
  *
- * Don't echo the value but return it, so we can in the future implement custom
+ * Don't print the value but return it, so we can in the future implement custom
  * formats like api_output();
  */
 class Actions {
