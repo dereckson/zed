@@ -58,11 +58,9 @@ session_start();
 $_SESSION[ID] = session_id();
 session_update(); //updates or creates the session
 
-include("includes/login.php"); //login/logout
-$CurrentUser = get_logged_user(); //Gets current user infos
-
 //Gets current perso
 require_once('includes/objects/perso.php');
+$CurrentUser = get_logged_user(); //Gets current user infos
 if ($perso_id = $CurrentUser->session['perso_id']) {
     $CurrentPerso = new Perso($perso_id);
 }
