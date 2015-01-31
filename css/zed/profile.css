@@ -17,10 +17,10 @@
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -    */
 
 .profile_id {
-	height: 40px;
+    height: 40px;
     line-height: 1.2em;
-	background-color: black;
-	color: white;
+    background-color: black;
+    color: white;
 }
 
 .profile_id H1 {
@@ -28,28 +28,28 @@
 }
 
 .profile_info {
-	float: right;
+    float: right;
     font-size: 0.90em;
     padding-right: 1em;
 }
 
 .profile_info a {
-	color: white;
+    color: white;
 }
 
 .profile_info a:hover {
-	color: white;
-	font-weight: bold;
+    color: white;
+    font-weight: bold;
 }
 
 .profile_nick {
-	float: left;
+    float: left;
     margin-top: 0;
     height: 30px;
-	padding-left: 12px;
+    padding-left: 12px;
     padding-top: 10px;
-	font-size: 1.25em;
-	font-weight: 500;
+    font-size: 1.25em;
+    font-weight: 500;
     border-left: solid #04acf8 6px;
 }
 
@@ -80,8 +80,8 @@
 }
 
 .profile_text.fixedwidth {
-	font-family: "Fixedsys Excelsior 3.01", Fixedsys, Fixed;
-	white-space: pre;
+    font-family: "Fixedsys Excelsior 3.01", Fixedsys, monospace;
+    white-space: pre;
 }
 
 .profile_separator_light {

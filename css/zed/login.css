@@ -107,16 +107,16 @@ body {
 }
 
 #link_blog a {
-    position:absolute;
-    position:fixed;
-    right:35px;
-    bottom:15px;
-    width:18px;
-    height:84px;
-    display:block;
-    background:url("../../img/login/blog.png") no-repeat left top;
+    position: absolute;
+    position: fixed;
+    right: 35px;
+    bottom: 15px;
+    width: 18px;
+    height: 84px;
+    display: block;
+    background: url("../../img/login/blog.png") no-repeat left top;
 }
 
 #link_blog a:hover {
-    background:url("../../img/login/blog.png") no-repeat right top;
+    background: url("../../img/login/blog.png") no-repeat right top;
 }
