@@ -46,6 +46,11 @@ if (!defined('SQL_LAYER')) {
          * @param string $database the database to select [optionnal]
          */
         function __construct($host = 'localhost', $username = 'root', $password = '' , $database = '') {
+            //Checks extension requirement
+            if (!function_exists("mysql_connect")) {
+                message_die(GENERAL_ERROR, "You've chosen to use a MySQL database engine, but the MySQL extension is missing.", "Setup issue");
+            }
+
             //Connects to the MySQL server
             $this->id = @mysql_connect($host, $username, $password) or $this->sql_die(); //or die ("Can't connect to SQL server.");
 
