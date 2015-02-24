@@ -250,7 +250,7 @@ class SmartLine {
         if (is_object($object)) {
             //Sets SmartLine property
             $object->SmartLine = $this;
-        } elseif (is_string($object)) {
+        } elseif (is_string($object) && class_exists($object)) {
             //Creates a new instance of $object
             $object = new $object($this);
         } else {
