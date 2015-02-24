@@ -48,7 +48,7 @@ $smartLine->register_object('settings', 'SettingsSmartLineCommand');
 $smartLine->register_object('unixtime', 'UnixTimeSmartLineCommand');
 $smartLine->register_object('version',  'VersionSmartLineCommand');
 $smartLine->register_object('whereami', 'WhereAmISmartLineCommand');
-
+$smartLine->register_object('whoami',   'WhoAmISmartLineCommand');
 
 ///
 /// Help (todo: move $lang array in lang folder)
@@ -63,7 +63,7 @@ $lang['Help']['settings'] = 'Go to settings page';
 $lang['Help']['unixtime'] = "Prints current unixtime (seconds elapsed since 1970-01-01 00:00, UTC) or the specified unixtime date.";
 $lang['Help']['version'] = "Gets Zed's software version info (Mercurial repository version, node id and if you're on the dev or prod site)";
 $lang['Help']['whereami'] = "Where am I?";
-
+$lang['Help']['whoami'] = "Who am I?";
 
 /**
  * The goto command
@@ -468,5 +468,25 @@ class WhereAmISmartLineCommand extends SmartLineCommand {
         require_once("includes/geo/location.php");
         $place = new GeoLocation($CurrentPerso->location_global);
         $this->SmartLine->puts($CurrentPerso->location_global . ' - ' . $place);
+    }
+}
+
+
+/**
+ * The whoami (Who am I?) command
+ *
+ * Prints current position, e.g. B00001001 - Tour, Hypership
+ */
+class WhoAmISmartLineCommand extends SmartLineCommand {
+    /**
+     * Runs the command
+     *
+     * @param array $argv an array of string, each item a command argument
+     * @param int $argc the number of arguments
+     */
+    public function run ($argv, $argc) {
+        global $CurrentPerso;
+        $reply = "<span id=\"whoami.nickname\">$CurrentPerso->nickname</span> (<span id=\"whoami.name\">$CurrentPerso->name</span>), <span id=\"whoami.race\">$CurrentPerso->race</span>";
+        $this->SmartLine->puts($reply);
     }
 }
