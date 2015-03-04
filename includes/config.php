@@ -26,11 +26,11 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 //SQL configuration
-$Config['sql']['product'] = 'MySQL';    //Only MySQL is currently implemented
-$Config['sql']['host'] = 'localhost';
-$Config['sql']['username'] = 'zed';
-$Config['sql']['password'] = 'zed';
-$Config['sql']['database'] = 'zed';
+$Config['database']['engine'] = 'MySQLi';  //MySQL, MySQLi
+$Config['database']['host'] = 'localhost';
+$Config['database']['username'] = 'zed';
+$Config['database']['password'] = 'zed';
+$Config['database']['database'] = 'zed';
 
 //SQL tables
 $prefix = '';

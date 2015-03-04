@@ -25,16 +25,16 @@
 ///                                                                          ///
 ////////////////////////////////////////////////////////////////////////////////
 
-//No register globals
-ini_set('register_globals', 'off');
 error_reporting(E_ALL & ~E_NOTICE);
+include_once("config.php");
+include_once("error.php");
 
-//Load libraries
-include_once("config.php");               //Site config
-include_once("error.php");               //Error management
-include_once("mysql.php");              //MySQL layer
-include_once("sessions.php");          //Sessions handler
-include_once("autoload.php");         //__autoload()
+include_once("db/Database.php");
+$db = Database::load();
+Database::cleanupConfiguration();
+
+include_once("sessions.php");
+include_once("autoload.php");
 
 ////////////////////////////////////////////////////////////////////////////////
 ///                                                                          ///
