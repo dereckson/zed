@@ -170,7 +170,11 @@ class GeoSceneIndex {
         $location = array(NULL, NULL);
 
         //Gets global location
-        $pos1 = strpos($template, "Global location: ") + 17;
+        $pos1 = strpos($template, "Global location: ");
+        if ($pos1 === false) {
+            throw new Exception("No location in template. Any template file must contain a comment line with the string 'Global location: ' followed by the global location matching the template. It should also contains a line 'Local location: ' when applicable.");
+        }
+        $pos1 += 17;
         $pos2 = strpos($template, "\n", $pos1);
         $location[0] = trim(substr($template, $pos1, $pos2 - $pos1));
 
