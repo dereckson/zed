@@ -1,7 +1,7 @@
         <div class="grid_7 alpha">
 {$xyz = explode(',', substr($CurrentPerso->location_local, 1, -1))}
 {$x = $xyz[0]}{$y = $xyz[1]}{$z = $xyz[2]}
-        Sector C<span id="sector">{GeoOctocube::get_sector($x, $y, $z)}</span>
+        Sector C<span id="sector">{GeoOctocube::getSector($x, $y, $z)}</span>
     </div>
     <div class="grid_2" style="text-align: center;" id="info_area">
         Zone <span id="area">{abs($x)}-{abs($y)}</span>

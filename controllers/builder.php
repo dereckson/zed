@@ -66,8 +66,8 @@ switch ($build_mode = $url[1]) {
         //Get zones at this floor
         if ($CurrentPerso->location->global == 'B00001002') {
             $point = GeoPoint3D::fromString($CurrentPerso->location->local);
-            $sector = GeoOctocube::get_sector_from_point3D($point);
-            $pattern = GeoOctocube::get_rlike_pattern_from_sector($sector, $point->z);
+            $sector = GeoOctocube::getSectorFromPoint3D($point);
+            $pattern = GeoOctocube::getRlikePatternFromSector($sector, $point->z);
             $zones = ContentZone::search($CurrentPerso->location->global, $pattern, true);
         } else {
             message_die(GENERAL_ERROR, "Can't map this area.", "Builder :: Map");

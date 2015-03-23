@@ -30,14 +30,14 @@ class GeoOctocubeTest extends PHPUnit_Framework_TestCase {
      */
     public function testGetSector () {
         //Testing HyperShip Tower T2C3 format
-        $this->assertTrue(GeoOctocube::get_sector(0, 0, 0) == 0);
-        $this->assertTrue(GeoOctocube::get_sector(-10, 6, -4) == 1);
-        $this->assertTrue(GeoOctocube::get_sector(10, 6, -4) == 2);
-        $this->assertTrue(GeoOctocube::get_sector(-10, -6, -4) == 3);
-        $this->assertTrue(GeoOctocube::get_sector(10, -6, -4) == 4);
-        $this->assertTrue(GeoOctocube::get_sector(-10, 6, 4) == 5);
-        $this->assertTrue(GeoOctocube::get_sector(10, 6, 4) == 6);
-        $this->assertTrue(GeoOctocube::get_sector(-10, -6, 4) == 7);
-        $this->assertTrue(GeoOctocube::get_sector(10, -6, 4) == 8);
+        $this->assertTrue(GeoOctocube::getSector(0, 0, 0) == 0);
+        $this->assertTrue(GeoOctocube::getSector(-10, 6, -4) == 1);
+        $this->assertTrue(GeoOctocube::getSector(10, 6, -4) == 2);
+        $this->assertTrue(GeoOctocube::getSector(-10, -6, -4) == 3);
+        $this->assertTrue(GeoOctocube::getSector(10, -6, -4) == 4);
+        $this->assertTrue(GeoOctocube::getSector(-10, 6, 4) == 5);
+        $this->assertTrue(GeoOctocube::getSector(10, 6, 4) == 6);
+        $this->assertTrue(GeoOctocube::getSector(-10, -6, 4) == 7);
+        $this->assertTrue(GeoOctocube::getSector(10, -6, 4) == 8);
     }
 }

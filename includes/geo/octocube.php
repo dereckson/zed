@@ -49,7 +49,7 @@ class GeoOctocube {
      * @param int $z the z coordinate
      * @return int the number of the sector (0 if x = y = z = 0 ; otherwise, 1 to 8)
      */
-    static function get_sector ($x, $y, $z) {
+    static function getSector ($x, $y, $z) {
         //Cube center
         if ($x == 0 && $y == 0 && $z == 0) return 0;
 
@@ -64,16 +64,16 @@ class GeoOctocube {
 
     /**
      * Gets the sector from the (x, y, z) specified coordinates
-     * @see get_sector
+     * @see getSector
      *
      * @param mixed $pt a GeoPoint3D object for the x, y, z coordinates or a parsable string
      * @return int the number of the sector (0 if x = y = z 0 ; otherwise, 1 to 8)
      */
-    static function get_sector_from_point3D ($pt) {
+    static function getSectorFromPoint3D ($pt) {
         if (is_string($pt)) {
             $pt = GeoPoint3D::fromString($pt);
         }
-        return self::get_sector($pt->x, $pt->y, $pt->z);
+        return self::getSector($pt->x, $pt->y, $pt->z);
     }
 
     /**
@@ -81,13 +81,13 @@ class GeoOctocube {
      *
      * Example code:
      *
-     * $vector = GeoOctocube::get_base_vector(4);
+     * $vector = GeoOctocube::getBaseVector(4);
      * //$vector is a (1, -1, -1) array
      *
      * @param int $sector the sector number (0-8)
      * @return array if the sector is 0, (0, 0, 0) ; otherwise, an array with three signed 1 values.
      */
-    static function get_base_vector ($sector) {
+    static function getBaseVector ($sector) {
         switch ($sector) {
             case 0: return array(0, 0, 0);
             case 1: return array(-1, 1, -1);
@@ -98,7 +98,7 @@ class GeoOctocube {
             case 6: return array(1, 1, 1);
             case 7: return array(-1, -1, 1);
             case 8: return array(1, -1, 1);
-            default: message_die(GENERAL_ERROR, "Invalid sector: $sector", "GeoOctocube::get_base_vector");
+            default: message_die(GENERAL_ERROR, "Invalid sector: $sector", "GeoOctocube::getBaseVector");
         }
     }
 
@@ -110,10 +110,10 @@ class GeoOctocube {
      * @param int $z if not null, limits the query to the specified z coordinate [optional]
      * @return string a SQL clause like "([0-9]+, -[0,9]+, [0,9]+)"
      */
-    static function get_rlike_pattern_from_sector ($sector, $z = null) {
+    static function getRlikePatternFromSector ($sector, $z = null) {
         if ($sector == 0) return "(0, 0, 0)";
 
-        $vector = self::get_base_vector($sector);
+        $vector = self::getBaseVector($sector);
 
         //x
         if ($vector[0] == 1)
