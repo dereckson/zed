@@ -69,7 +69,7 @@ switch ($module = $url[0]) {
         //Checks creditentials
         cerbere();
         //Get coordiantes
-        api_output(GeoGalaxy::get_coordinates(), 'galaxy', 'object');
+        api_output(GeoGalaxy::getCoordinates(), 'galaxy', 'object');
         break;
 
 

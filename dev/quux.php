@@ -76,7 +76,7 @@
             echo '<H2>Spherical coordinates test</H2>';
             echo '<table cellpadding=8>';
             echo "<tr><th>Name</th><th>Type</th><th>Cartesian coords</th><th>Spherical I</th><th>Spherical II</th><th>Pencil coordinates</th></tr>";
-            $objects = GeoGalaxy::get_coordinates();
+            $objects = GeoGalaxy::getCoordinates();
             foreach ($objects as $row) {
                 echo "<tr><th style='text-align: left'>$row[0]</th><td>$row[1]</td><td>$row[2]</td>";
                 $pt = $row[2];

@@ -44,7 +44,7 @@ class GeoGalaxy {
      *
      * @return array An array of array. Each item is  [string object_name, string object_type, GeoPoint3D coordinates]
      */
-    static function get_coordinates () {
+    static function getCoordinates () {
         global $db;
         $sql = "SELECT * FROM geo_coordinates";
         if (!$result = $db->sql_query($sql)) message_die(SQL_ERROR, "Can't query geo_coordinates view.", '', __LINE__, __FILE__, $sql);
