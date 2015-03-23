@@ -110,7 +110,7 @@ class GeoPlace {
      *
      * @return string the status field value (e.g. "requiresPTA,default")
      */
-    function get_status () {
+    function getStatus () {
         $flags = array('start', 'hidden');
         foreach ($flags as $flag) {
             if ($this->$flag == true) {
@@ -131,7 +131,7 @@ class GeoPlace {
         $code = $db->sql_escape($this->code);
         $name = $db->sql_escape($this->name);
         $description = $db->sql_escape($this->description);
-        $status = $this->get_status();
+        $status = $this->getStatus();
         $location_local_format = $db->sql_escape($this->location_local_format);
 
         //Updates or inserts

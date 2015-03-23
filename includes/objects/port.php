@@ -97,7 +97,7 @@ class Port {
      *
      * @return string the status field value (e.g. "requiresPTA,default")
      */
-    function get_status () {
+    function getStatus () {
         $flags = array('hidden', 'requiresPTA', 'default');
         foreach ($flags as $flag) {
             if ($this->$flag) {
@@ -117,7 +117,7 @@ class Port {
         $location_global = $db->sql_escape($this->location_global);
         $location_local = $db->sql_escape($this->location_local);
         $name = $db->sql_escape($this->name);
-        $status = $this->get_status();
+        $status = $this->getStatus();
 
         //Updates or inserts
         $sql = "REPLACE INTO " . TABLE_PORTS . " (`port_id`, `location_global`, `location_local`, `port_name`, `port_status`) VALUES ($id, '$location_global', '$location_local', '$name', '$status')";

@@ -109,7 +109,7 @@ class GeoBody {
      *
      * @return string the status field value (e.g. "asteroid,hidden")
      */
-    function get_status () {
+    function getStatus () {
         $flags = array('hypership','asteroid','moon','planet','star','orbital','hidden');
         foreach ($flags as $flag) {
             if ($this->$flag) {
@@ -154,7 +154,7 @@ class GeoBody {
 
         $code = $this->code ? "'" . $db->sql_escape($this->code) . "'" : 'NULL';
         $name = $db->sql_escape($this->name);
-        $status = get_status();
+        $status = getStatus();
         $location = $db->sql_escape($this->location);
         $description = $db->sql_escape($this->description);
 
