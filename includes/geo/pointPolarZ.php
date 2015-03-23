@@ -181,8 +181,8 @@ class GeoPointPolarZ implements IteratorAggregate {
         if (!is_numerical($angle2)) {
             $angle2 = deg2rad((float)$angle2);
         }
-        $angle1 = self::normalize_angle($angle1);
-        $angle2 = self::normalize_angle($angle2);
+        $angle1 = self::normalizeAngle($angle1);
+        $angle2 = self::normalizeAngle($angle2);
         return ($angle1 == $angle2);
     }
 
@@ -194,7 +194,7 @@ class GeoPointPolarZ implements IteratorAggregate {
      * @param float $max the radains value the angle must be stricly lesser than [optional, default value: M_PI]
      * @param float $interval the increment interval [optional, default value: 360]
      */
-    static function normalize_angle ($angle, $min = 0, $max = M_PI, $interval = M_PI) {
+    static function normalizeAngle ($angle, $min = 0, $max = M_PI, $interval = M_PI) {
         while ($angle < $min) {
              $angle += $interval;
         }
@@ -212,7 +212,7 @@ class GeoPointPolarZ implements IteratorAggregate {
      * @param float $max the degrees value the angle must be stricly lesser than [optional, default value: 360]
      * @param float $interval the increment interval [optional, default value: 360]
      */
-    static function normalize_angle_deg ($angle, $min = 0, $max = 360, $interval = 360) {
+    static function normalizeAngleInDegrees ($angle, $min = 0, $max = 360, $interval = 360) {
         while ($angle < $min) {
              $angle += $interval;
         }
@@ -246,7 +246,7 @@ class GeoPointPolarZ implements IteratorAggregate {
      * Converts a polar coordinate angle to a 0-360° CW angle
      */
     static function get_natural_degrees ($angle) {
-        return self::normalize_angle_deg(90 - self::get_degrees($angle));
+        return self::normalizeAngleinDegrees(90 - self::get_degrees($angle));
     }
 
     //

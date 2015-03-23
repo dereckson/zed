@@ -30,7 +30,7 @@
  * This class provides methods to convert coordinate polars.
  *
  * @todo create a unit testing file dev/tests/GeoGalaxyTest.php
- * @todo add unit testing for the normalize_angle method in dev/tests/GeoGalaxyTest.php
+ * @todo add unit testing for the normalizeAngle method in dev/tests/GeoGalaxyTest.php
  */
 class GeoGalaxy {
     /*
@@ -70,7 +70,7 @@ class GeoGalaxy {
      * @param float $angle angle in radians (use deg2rad() if you've degrees)
      * @return an angle in the 0 =< angle < 2 PI interval
      */
-    static function normalize_angle ($angle) {
+    static function normalizeAngle ($angle) {
         while ($angle < 0) {
             $angle += 2 * M_PI;
         }
