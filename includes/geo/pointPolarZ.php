@@ -145,7 +145,7 @@ class GeoPointPolarZ implements IteratorAggregate {
      *  echo $point->sprintf("(%d, %s, %d)");
      */
     function sprintf ($format) {
-        return sprintf($format, $this->r, self::get_degrees($this->t), $this->z);
+        return sprintf($format, $this->r, self::getDegrees($this->t), $this->z);
     }
 
     /**
@@ -164,7 +164,7 @@ class GeoPointPolarZ implements IteratorAggregate {
      * @return bool true if the two points are equal ; otherwise, false.
      */
     function equals ($point) {
-        return ($this->r == $point->r) && self::angle_equals($this->t, $point->t) && ($this->z == $point->z);
+        return ($this->r == $point->r) && self::areAngleEqual($this->t, $point->t) && ($this->z == $point->z);
     }
 
     /**
@@ -173,7 +173,7 @@ class GeoPointPolarZ implements IteratorAggregate {
      * @param mixed $angle2 the second angle value, a float (angle in radian) or a string formed by an integed appended by ° (degrees)
      * @return bool true if the angles are equal ; otherwise, false.
      */
-    static function angle_equals ($angle1, $angle2) {
+    static function areAngleEqual ($angle1, $angle2) {
         if ($angle1 === $angle2) return true;
         if (!is_numerical($angle1)) {
             $angle1 = deg2rad((float)$angle1);
@@ -228,7 +228,7 @@ class GeoPointPolarZ implements IteratorAggregate {
      * @param mixed $angle the angle, a float in radians or a string (a float + "°" or " °" in degrees
      * @return float the angle in radians
      */
-    static function get_radians ($angle) {
+    static function getRadians ($angle) {
         return is_numeric($angle) ? $angle : deg2rad((float)$angle);
     }
 
@@ -238,15 +238,15 @@ class GeoPointPolarZ implements IteratorAggregate {
      * @param mixed $angle the angle, a float in radians or a string (a float + "°" or " °" in degrees
      * @return string the angle (float) in degrees followed by "°"
      */
-    static function get_degrees ($angle) {
+    static function getDegrees ($angle) {
         return is_numeric($angle) ? rad2deg((float)$angle) . '°' : $angle;
     }
 
     /**
      * Converts a polar coordinate angle to a 0-360° CW angle
      */
-    static function get_natural_degrees ($angle) {
-        return self::normalizeAngleinDegrees(90 - self::get_degrees($angle));
+    static function getNaturalDegrees ($angle) {
+        return self::normalizeAngleinDegrees(90 - self::getDegrees($angle));
     }
 
     //
@@ -259,8 +259,8 @@ class GeoPointPolarZ implements IteratorAggregate {
      * @return array an array of 3 floats number, representing the (x, y, z) cartesian coordinates
      */
     function toCartesian () {
-        $x = $this->r * cos(self::get_radians($this->t));
-        $y = $this->r * sin(self::get_radians($this->t));
+        $x = $this->r * cos(self::getRadians($this->t));
+        $y = $this->r * sin(self::getRadians($this->t));
         return array($x, $y, $this->z);
     }
 
@@ -269,7 +269,7 @@ class GeoPointPolarZ implements IteratorAggregate {
      *
      * @return GeoPoint3D an instance of the GeoPoint3D class representing the (x, y, z) cartesian coordinates
      */
-    function to_Point3D () {
+    function toPoint3D () {
         $pt = $this->toCartesian();
         return new GeoPoint3D($pt[0], $pt[1], $pt[2]);
     }
@@ -340,7 +340,7 @@ class GeoPointPolarZ implements IteratorAggregate {
      * @param int $count the number of sections (default value: 6)
      * @return $int the section number
      */
-    static function calculate_section ($angle, $count = 6) {
+    static function calculateSection ($angle, $count = 6) {
         if ($angle < 90) {
             $angle += 270;
         } else {
@@ -355,8 +355,8 @@ class GeoPointPolarZ implements IteratorAggregate {
      * @param int $count the number of sections
      * @return $int the section number
      */
-    function get_section ($count = 6) {
-        return self::calculate_section(self::get_natural_degrees($this->t), $count);
+    function getSection ($count = 6) {
+        return self::calculateSection(self::getNaturalDegrees($this->t), $count);
     }
 
     //
