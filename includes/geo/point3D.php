@@ -172,8 +172,8 @@ class GeoPoint3D implements IteratorAggregate {
      *
      * @return array an array of 3 floats number, representing the (ρ, φ, θ) spherical coordinates
      */
-    function to_spherical () {
-        return GeoGalaxy::cartesian_to_spherical($this->x, $this->y, $this->z);
+    function toSpherical () {
+        return GeoGalaxy::cartesianToSpherical($this->x, $this->y, $this->z);
     }
 
     /**
@@ -183,8 +183,8 @@ class GeoPoint3D implements IteratorAggregate {
      *
      * @return array an array of 3 floats number, representing the (ρ, φ, θ) spherical coordinates
      */
-    function to_spherical2 () {
-        return GeoGalaxy::cartesian_to_spherical2($this->x, $this->y, $this->z);
+    function toSphericalAlternative () {
+        return GeoGalaxy::cartesianToSphericalAlternative($this->x, $this->y, $this->z);
     }
 
     /**

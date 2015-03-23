@@ -348,7 +348,7 @@ class GeoLocation {
                 break;
 
             case 'x':
-                $pt = $this->point3D->to_spherical();
+                $pt = $this->point3D->toSpherical();
                 return sprintf("(%d, %d°, %d°)", $pt[0], $pt[1], $pt[2]);
 
             default:

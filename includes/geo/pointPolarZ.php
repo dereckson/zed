@@ -258,7 +258,7 @@ class GeoPointPolarZ implements IteratorAggregate {
      *
      * @return array an array of 3 floats number, representing the (x, y, z) cartesian coordinates
      */
-    function to_cartesian () {
+    function toCartesian () {
         $x = $this->r * cos(self::get_radians($this->t));
         $y = $this->r * sin(self::get_radians($this->t));
         return array($x, $y, $this->z);
@@ -270,7 +270,7 @@ class GeoPointPolarZ implements IteratorAggregate {
      * @return GeoPoint3D an instance of the GeoPoint3D class representing the (x, y, z) cartesian coordinates
      */
     function to_Point3D () {
-        $pt = $this->to_cartesian();
+        $pt = $this->toCartesian();
         return new GeoPoint3D($pt[0], $pt[1], $pt[2]);
     }
 
@@ -281,9 +281,9 @@ class GeoPointPolarZ implements IteratorAggregate {
      *
      * @return array an array of 3 floats number, representing the (ρ, φ, θ) spherical coordinates
      */
-    function to_spherical () {
-        $pt = $this->to_cartesian();
-        return GeoGalaxy::cartesian_to_spherical($pt[0], $pt[1], $pt[2]);
+    function toSpherical () {
+        $pt = $this->toCartesian();
+        return GeoGalaxy::cartesianToSpherical($pt[0], $pt[1], $pt[2]);
     }
 
     /**
@@ -293,9 +293,9 @@ class GeoPointPolarZ implements IteratorAggregate {
      *
      * @return array an array of 3 floats number, representing the (ρ, φ, θ) spherical coordinates
      */
-    function to_spherical2 () {
-        $pt = $this->to_cartesian();
-        return GeoGalaxy::cartesian_to_spherical2($pt[0], $pt[1], $pt[2]);
+    function toSphericalAlternative () {
+        $pt = $this->toCartesian();
+        return GeoGalaxy::cartesianToSphericalAlternative($pt[0], $pt[1], $pt[2]);
     }
 
     /**

@@ -80,8 +80,8 @@
             foreach ($objects as $row) {
                 echo "<tr><th style='text-align: left'>$row[0]</th><td>$row[1]</td><td>$row[2]</td>";
                 $pt = $row[2];
-                echo '<td>(', implode(', ', $pt->to_spherical()), ')</td>';
-                echo '<td>(', implode(', ', $pt->to_spherical2()), ')</td>';
+                echo '<td>(', implode(', ', $pt->toSpherical()), ')</td>';
+                echo '<td>(', implode(', ', $pt->toSphericalAlternative()), ')</td>';
                 $pt->translate(500, 300, 200, 2);
                 echo '<td>', $pt, '</td>';
                 echo '</tr>';

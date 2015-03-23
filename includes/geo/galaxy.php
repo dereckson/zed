@@ -90,7 +90,7 @@ class GeoGalaxy {
      * @param int $z the z coordinate
      * @return array an array of 3 floats number, representing the (ρ, φ, θ) spherical coordinates
      */
-    static function cartesian_to_spherical ($x, $y, $z) {
+    static function cartesianToSpherical ($x, $y, $z) {
         $rho = sqrt($x * $x + $y * $y + $z * $z);    //ρ = sqrt(x² + y² + z²)
         $theta= acos($z / $rho);                    //φ = acos z/φ
         $phi = acos($x / sqrt($x * $x + $y * $y)); //θ = acos x / sqrt(x² + y²)
@@ -109,7 +109,7 @@ class GeoGalaxy {
      * @param int $z the z coordinate
      * @return array an array of 3 floats number, representing the (ρ, φ, θ) spherical coordinates
      */
-    static function cartesian_to_spherical2 ($x, $y, $z) {
+    static function cartesianToSphericalAlternative ($x, $y, $z) {
         $rho = sqrt($x * $x + $y * $y + $z * $z); //ρ = sqrt(x² + y² + z²)
         $theta= atan2($y, $x);                    //φ = atan2 $y $x
         $phi = acos($z / $rho);                   //θ = acos z/φ
