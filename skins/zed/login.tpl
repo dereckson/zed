@@ -40,7 +40,7 @@
 
 <!-- Links -->
 <div id="link_tour"><a href="/tour.html"></a></div>
-<div id="link_blog"><a href="/blog"></a></div>
+<div id="link_blog"><a href="http://planet.nasqueron.org/zed/"></a></div>
 
 {$code = generate_random_string('AAA111')}
 <!--
