@@ -1,0 +1,54 @@
+{
+    "exclude": [
+        "(^vendor/)",
+        "(^apps/)",
+        "(^includes/Smarty)",
+        "(^js/dojo/)",
+        "(^js/FCKeditor/)",
+        "(^js/jquery.*)"
+    ],
+    "linters": {
+        "chmod": {
+            "type": "chmod"
+        },
+        "filename": {
+            "type": "filename"
+        },
+        "json": {
+            "type": "json",
+            "include": [
+                "(^\\.arcconfig$)",
+                "(^\\.arclint$)",
+                "(\\.json$)"
+            ]
+        },
+        "merge-conflict": {
+            "type": "merge-conflict"
+        },
+        "php": {
+            "type": "php",
+            "include": "(\\.php$)"
+        },
+        "phpcs": {
+            "type": "phpcs",
+            "bin": "vendor/bin/phpcs",
+            "phpcs.standard": "./phpcs.xml",
+            "include": [
+                "(^controllers/.*\\.php$)",
+                "(^includes/.*\\.php$)",
+                "(^dev/tests/.*\\.php$)",
+                "(^api\\.php$)",
+                "(^cron\\.php$)",
+                "(^do\\.php$)",
+                "(^index\\.php$)"
+            ]
+        },
+        "spelling": {
+            "type": "spelling"
+        },
+        "xml": {
+            "type": "xml",
+            "include": "(\\.xml$)"
+        }
+    }
+}
