@@ -133,7 +133,7 @@ class Perso {
         }
         if ( !($result = $db->sql_query($sql)) ) message_die(SQL_ERROR, "Unable to query persos", '', __LINE__, __FILE__, $sql);
         if (!$row = $db->sql_fetchrow($result)) {
-            $this->lastError = "Perso unkwown: " . $this->id;
+            $this->lastError = "Perso unknown: " . $this->id;
             return false;
         }
 
@@ -334,7 +334,7 @@ class Perso {
      *
      *
      * @param string $flag the flag to assert
-     * @param int $threshold value the flasg must stricly be greater than (optional, the default value is 0)
+     * @param int $threshold value the flags must strictly be greater than (optional, the default value is 0)
      *
      * Example:
      * <code>
@@ -484,7 +484,7 @@ class Perso {
     }
 
     /**
-     * Determines wheter the perso is online
+     * Determines whether the perso is online
      *
      * @return bool true if the perso is online ; otherwise, false.
      */
@@ -522,7 +522,7 @@ class Perso {
      * This event method is called when the perso is created
      */
     public function on_create () {
-        //Notifies inviter
+        //Notifies host
         $this->notify_inviter();
     }
 

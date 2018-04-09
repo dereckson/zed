@@ -64,7 +64,7 @@ class RequestReply {
         $sql = "SELECT * FROM " . TABLE_REQUESTS_REPLIES . " WHERE request_reply_id = '" . $id . "'";
         if (!$result = $db->sql_query($sql)) message_die(SQL_ERROR, "Unable to query requests_replies", '', __LINE__, __FILE__, $sql);
         if (!$row = $db->sql_fetchrow($result)) {
-            $this->lastError = "RequestReply unkwown: " . $this->id;
+            $this->lastError = "RequestReply unknown: " . $this->id;
             return false;
         }
         $this->request_id = $row['request_id'];

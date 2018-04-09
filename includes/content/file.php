@@ -92,7 +92,7 @@ class ContentFile {
         $sql = "SELECT * FROM content_files WHERE content_id = '" . $id . "'";
         if ( !($result = $db->sql_query($sql)) ) message_die(SQL_ERROR, "Unable to query content", '', __LINE__, __FILE__, $sql);
         if (!$row = $db->sql_fetchrow($result)) {
-            $this->lastError = "Content unkwown: " . $this->id;
+            $this->lastError = "Content unknown: " . $this->id;
             return false;
         }
         $this->load_from_row($row);

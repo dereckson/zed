@@ -68,7 +68,7 @@ class ProfileComment {
         $sql = "SELECT c.*, p.perso_name as author FROM " . TABLE_PROFILES_COMMENTS . " c, " . TABLE_PERSOS . " p WHERE c.comment_id = '$id' AND p.perso_id = c.comment_author";
         if ( !($result = $db->sql_query($sql)) ) message_die(SQL_ERROR, "Unable to query azhar_profiles_comments", '', __LINE__, __FILE__, $sql);
         if (!$row = $db->sql_fetchrow($result)) {
-            $this->lastError = "comment unkwown: " . $this->id;
+            $this->lastError = "comment unknown: " . $this->id;
             return false;
         }
         $this->perso_id = $row['perso_id'];

@@ -47,7 +47,7 @@ class PersoRequest {
     public $value_deny  = 0;
 
     /**
-     * Initialies a perso request
+     * Initialises a perso request
      *
      * @param string $requestFlag the request's flag
      * @param string $message the message to print

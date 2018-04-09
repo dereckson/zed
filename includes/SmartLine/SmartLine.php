@@ -74,7 +74,7 @@ $lang = array_merge($lang, array(
 /**
  * Error handler called during SmartLine command execution.
  *
- * Any error occuring during command execution will be set in STDERR.
+ * Any error occurring during command execution will be set in STDERR.
  *
  * To get an array with all the errors:
  * <code>$errors = $yourSmartLine->gets_all(STDERR)</code>
@@ -90,8 +90,8 @@ $lang = array_merge($lang, array(
  *
  * @param int $level The PHP error level
  * @param string $error The error description
- * @param string $file The script where the error occured
- * @param int $line The line where the error occured
+ * @param string $file The script where the error occurred
+ * @param int $line The line where the error occurred
  */
 function SmartLineHandler($level, $error, $file, $line) {
     switch ($level) {
@@ -118,7 +118,7 @@ function SmartLineHandler($level, $error, $file, $line) {
 // SECTION III - BASE CLASSES
 ///////////////////////////////////////////////////////////////////////////////
 
-//SmartLineCommand is a class implemanting a SmartLine command.
+//SmartLineCommand is a class implementing a SmartLine command.
 //If you want to create a more complex command, extends this class.
 
 /**
@@ -200,7 +200,7 @@ class SmartLine {
      * Registers a private method as command.
      *
      * @param string $command The name of the command to register
-     * @param string $method The method to register [OPTIONAL]. If omitted, the method regisered will be the method having the same name as the command.
+     * @param string $method The method to register [OPTIONAL]. If omitted, the method registered will be the method having the same name as the command.
      * @param bool $useArgvArgc If true, indicates the method uses $argv, $argc as parameters. If false, indicates the method uses its parameters (default behavior). [OPTIONAL]
      *
      * @return bool true if the command have successfully been registered ; otherwise, false.
@@ -265,7 +265,7 @@ class SmartLine {
     }
 
     /**
-     * Determines wheter the specified command have been registered.
+     * Determines whether the specified command have been registered.
      *
      * @param string $command The name of the command to check
      * @return true if the specified command have been registered ; otherwise, false.
@@ -282,7 +282,7 @@ class SmartLine {
      *
      * If an error occurs during the command execution:
      *     the STDERR output will contains the errors,
-     *     the value returned by this methos will be false.
+     *     the value returned by this methods will be false.
      *
      * To execute the command and prints error:
      * <code>
@@ -298,7 +298,7 @@ class SmartLine {
      * </code>
      *
      * @param string $expression The expression containing the command to execute
-     * @return bool true if the command have been successfuly executed ; otherwise, false.
+     * @return bool true if the command have been successfully executed ; otherwise, false.
      */
     public function execute ($expression) {
         //Does nothing if blank line
@@ -333,7 +333,7 @@ class SmartLine {
      * Adds a message to the specified output queue.
      *
      * @param string $message the message to queue
-     * @param int $output The output queue (common values are STDERR and STDOUT constants). It's an optionnal parameter ; if ommited, the default value will be STDOUT.
+     * @param int $output The output queue (common values are STDERR and STDOUT constants). It's an optional parameter ; if omitted, the default value will be STDOUT.
      */
     public function puts ($message, $output = STDOUT) {
         //
@@ -343,7 +343,7 @@ class SmartLine {
     /**
      * Truncates the specified output queue.
      *
-     * @param int $output The output queue (common values are STDERR and STDOUT constants). It's an optionnal parameter ; if ommited, the default value will be STDOUT.
+     * @param int $output The output queue (common values are STDERR and STDOUT constants). It's an optional parameter ; if omitted, the default value will be STDOUT.
      */
     public function truncate ($output = STDOUT) {
         unset($_SESSION['SmartLineOutput'][$output]);
@@ -352,7 +352,7 @@ class SmartLine {
     /**
      * Pops (gets and clears) the first message from the specified output queue.
      *
-     * @param int $output The output queue (common values are STDERR and STDOUT constants). It's an optionnal parameter ; if ommited, the default value will be STDOUT.
+     * @param int $output The output queue (common values are STDERR and STDOUT constants). It's an optional parameter ; if omitted, the default value will be STDOUT.
      * @return string the message
      */
     public function gets ($output = STDOUT) {
@@ -364,7 +364,7 @@ class SmartLine {
     /**
      * Gets the number of messages in the specified output queue.
      *
-     * @param int $output The output queue (common values are STDERR and STDOUT constants). It's an optionnal parameter ; if ommited, the default value will be STDOUT.
+     * @param int $output The output queue (common values are STDERR and STDOUT constants). It's an optional parameter ; if omitted, the default value will be STDOUT.
      */
     public function count ($output = STDOUT) {
         return count($_SESSION['SmartLineOutput'][$output]);
@@ -373,9 +373,9 @@ class SmartLine {
     /**
      * Gets all the message from the specified output queue.
      *
-     * @param int $output The output queue (common values are STDERR and STDOUT constants). It's an optionnal parameter ; if ommited, the default value will be STDOUT.
-     * @param string $prefix The string to prepend each message with. It's an optionnal parameter ; if ommited, '<p>'.
-     * @param string $suffix The string to append each message with. It's an optionnal parameter ; if ommited, '</p>'.
+     * @param int $output The output queue (common values are STDERR and STDOUT constants). It's an optional parameter ; if omitted, the default value will be STDOUT.
+     * @param string $prefix The string to prepend each message with. It's an optional parameter ; if omitted, '<p>'.
+     * @param string $suffix The string to append each message with. It's an optional parameter ; if omitted, '</p>'.
      * @return Array an array of string, each item a message from the specified output queue
      */
     public function gets_all ($output = STDOUT, $prefix = '<p>', $suffix = '</p>') {
@@ -393,9 +393,9 @@ class SmartLine {
     /**
      * Prints all the message from the specified output queue.
      *
-     * @param int $output The output queue (common values are STDERR and STDOUT constants). It's an optionnal parameter ; if ommited, the default value will be STDOUT.
-     * @param string $prefix The string to prepend each message with. It's an optionnal parameter ; if ommited, '<p>'.
-     * @param string $suffix The string to append each message with. It's an optionnal parameter ; if ommited, '</p>'.
+     * @param int $output The output queue (common values are STDERR and STDOUT constants). It's an optional parameter ; if omitted, the default value will be STDOUT.
+     * @param string $prefix The string to prepend each message with. It's an optional parameter ; if omitted, '<p>'.
+     * @param string $suffix The string to append each message with. It's an optional parameter ; if omitted, '</p>'.
      */
     public function prints_all ($output = STDOUT, $prefix = '<p>', $suffix = '</p>') {
         $count = count($_SESSION['SmartLineOutput'][$output]);
@@ -475,7 +475,7 @@ class SmartLine {
 ///////////////////////////////////////////////////////////////////////////////
 
 /*
- * These commands are availaible in all default smartlines instance
+ * These commands are available in all default smartlines instance
  */
 
 /**

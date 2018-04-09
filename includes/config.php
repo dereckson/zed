@@ -182,7 +182,7 @@ $Config['DoURL'] = $Config['SiteURL'] . "/do.php";
 //On default installation, those directories are at site root.
 //To improve site performance, you can use a CDN for that.
 //
-//Recommanded setting: $Config['StaticContentURL'] = $Config['SiteURL'];
+//Recommended setting: $Config['StaticContentURL'] = $Config['SiteURL'];
 //Or if Zed is the site root: $Config['StaticContentURL'] = '';
 //With CoralCDN: $Config['StaticContentURL'] =  . '.nyud.net';
 //
@@ -265,6 +265,6 @@ ini_set('session.gc_maxlifetime', 345600);  //4 days, for week-end story pause a
 ///                                                                          ///
 ////////////////////////////////////////////////////////////////////////////////
 
-//Zed can invoke a slighty modified version of HOTGLUE to build zones.
+//Zed can invoke a slightly modified version of HOTGLUE to build zones.
 $Config['builder']['hotglue']['enable'] = true;
 $Config['builder']['hotglue']['URL'] = '/apps/hotglue/index.php';

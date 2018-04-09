@@ -68,7 +68,7 @@ class Profile {
         $sql = "SELECT * FROM " . TABLE_PROFILES . " WHERE perso_id = '$id'";
         if ( !($result = $db->sql_query($sql)) ) message_die(SQL_ERROR, "Unable to query azhar_profiles", '', __LINE__, __FILE__, $sql);
         if (!$row = $db->sql_fetchrow($result)) {
-            $this->lastError = "Profile unkwown: " . $this->perso_id;
+            $this->lastError = "Profile unknown: " . $this->perso_id;
             return false;
         }
 

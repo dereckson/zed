@@ -8,7 +8,7 @@
  * (c) 2010, Dereckson, some rights reserved.
  * Released under BSD license.
  *
- * This error handler uses the same idea and message_die methode signature
+ * This error handler uses the same idea and message_die method signature
  * of the phpBB 2 one.
  *
  * @package     Zed
@@ -69,7 +69,7 @@ define ("GENERAL_ERROR", 117);
  * @see message_die
  *
  * @param mixed $expression the expression to be printed
- * @param string $title the message title (optionnal, default will be 'Debug')
+ * @param string $title the message title (optional, default will be 'Debug')
  */
 function dieprint_r ($expression, $title = '') {
     if (!$title) {
@@ -83,17 +83,17 @@ function dieprint_r ($expression, $title = '') {
  *
  * Error will be output through Smarty one of the following templates :
  *     error_block.tpl if the header have already been printed ;
- *     error.tpl if the error ocurred before the header were called and printed.
+ *     error.tpl if the error occurred before the header were called and printed.
  *
  * If smarty couldn't be loaded, old_message_die method will be called, which
  * produces a table output.
  *
  * @param int $msg_code an integer constant identifying the error (HACK_ERROR, SQL_ERROR, GENERAL_ERROR)
- * @param string $msg_text the error message text (optionnal, but recommanded)
- * @param string $msg_title the error message title (optionnal)
- * @param int $err_line the line number of the file where the error occured (optionnal, suggested value is __LINE__)
- * @param string $err_line the path of file where the error occured (optionnal, suggested value is __FILE__)
- * @param string $sql the SQL query (optionnal, used only if msg_code is SQL_ERROR)
+ * @param string $msg_text the error message text (optional, but recommended)
+ * @param string $msg_title the error message title (optional)
+ * @param int $err_line the line number of the file where the error occurred (optional, suggested value is __LINE__)
+ * @param string $err_line the path of file where the error occurred (optional, suggested value is __FILE__)
+ * @param string $sql the SQL query (optional, used only if msg_code is SQL_ERROR)
  */
 function message_die ($msg_code, $msg_text = '', $msg_title = '', $err_line = '', $err_file = '', $sql = '') {
     global $smarty, $db;
@@ -148,11 +148,11 @@ function message_die ($msg_code, $msg_text = '', $msg_title = '', $err_line = ''
  * Former "german style" error HTML markups have been removed.
  *
  * @param int $msg_code an integer constant identifying the error (HACK_ERROR, SQL_ERROR, GENERAL_ERROR)
- * @param string $msg_text the error message text (optionnal, but recommanded)
- * @param string $msg_title the error message title (optionnal)
- * @param int $err_line the line number of the file where the error occured (optionnal, suggested value is __LINE__)
- * @param string $err_line the path of file where the error occured (optionnal, suggested value is __FILE__)
- * @param string $sql the SQL query (optionnal, used only if msg_code is SQL_ERROR)
+ * @param string $msg_text the error message text (optional, but recommended)
+ * @param string $msg_title the error message title (optional)
+ * @param int $err_line the line number of the file where the error occurred (optional, suggested value is __LINE__)
+ * @param string $err_line the path of file where the error occurred (optional, suggested value is __FILE__)
+ * @param string $sql the SQL query (optional, used only if msg_code is SQL_ERROR)
  *
  * @deprecated since 0.1
  */

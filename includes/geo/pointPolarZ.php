@@ -101,7 +101,7 @@ class GeoPointPolarZ implements IteratorAggregate {
     }
 
     /**
-     * Parses a string expression ang gets a GeoPointPolarZ object
+     * Parses a string expression and gets a GeoPointPolarZ object
      *
      * Formats recognized are:
      *      - rtz: [ρ, θ, z]
@@ -137,7 +137,7 @@ class GeoPointPolarZ implements IteratorAggregate {
      *  $point = new GeoPointPolarZ(10, '20°', 40);
      *  echo $point->sprintf("rtz: [%d, %s, %d]");
      *
-     *  //Of course, you could have (implicitely) use the __toString method:
+     *  //Of course, you could have (implicitly) use the __toString method:
      *  echo $point;
      *
      * To print a (10, 20°, 40) string:
@@ -168,9 +168,9 @@ class GeoPointPolarZ implements IteratorAggregate {
     }
 
     /**
-     * Detemrines if two angles are equal
-     * @param mixed $angle1 the first angle value, ie a float (angle in radian) or a string formed by an integed appended by ° (degrees)
-     * @param mixed $angle2 the second angle value, a float (angle in radian) or a string formed by an integed appended by ° (degrees)
+     * Determines if two angles are equal
+     * @param mixed $angle1 the first angle value, ie a float (angle in radian) or a string formed by an integer appended by ° (degrees)
+     * @param mixed $angle2 the second angle value, a float (angle in radian) or a string formed by an integer appended by ° (degrees)
      * @return bool true if the angles are equal ; otherwise, false.
      */
     static function areAngleEqual ($angle1, $angle2) {
@@ -191,7 +191,7 @@ class GeoPointPolarZ implements IteratorAggregate {
      *
      * @param float $angle the angle (in radians)
      * @param float $min the radians value the angle must be greater or equal than  [optional, default value: 0]
-     * @param float $max the radains value the angle must be stricly lesser than [optional, default value: M_PI]
+     * @param float $max the radians value the angle must be strictly lesser than [optional, default value: M_PI]
      * @param float $interval the increment interval [optional, default value: 360]
      */
     static function normalizeAngle ($angle, $min = 0, $max = M_PI, $interval = M_PI) {
@@ -209,7 +209,7 @@ class GeoPointPolarZ implements IteratorAggregate {
      *
      * @param float $angle the angle to normalize, in degrees
      * @param float $min the degrees value the angle must be greater or equal than [optional, default value: 0]
-     * @param float $max the degrees value the angle must be stricly lesser than [optional, default value: 360]
+     * @param float $max the degrees value the angle must be strictly lesser than [optional, default value: 360]
      * @param float $interval the increment interval [optional, default value: 360]
      */
     static function normalizeAngleInDegrees ($angle, $min = 0, $max = 360, $interval = 360) {

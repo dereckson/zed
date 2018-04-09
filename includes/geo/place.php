@@ -85,7 +85,7 @@ class GeoPlace {
         $sql = "SELECT * FROM " . TABLE_PLACES . " WHERE place_id = '" . $this->id . "'";
         if ( !($result = $db->sql_query($sql)) ) message_die(SQL_ERROR, "Unable to query geo_places", '', __LINE__, __FILE__, $sql);
         if (!$row = $db->sql_fetchrow($result)) {
-            $this->lastError = "place unkwown: " . $this->id;
+            $this->lastError = "place unknown: " . $this->id;
             return false;
         }
         $this->body_code = $row['body_code'];

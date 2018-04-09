@@ -1,7 +1,7 @@
 #!/usr/local/bin/tclsh8.5
 #
 # php-autoload-generator
-# (c) Sébastien Santoro aka Dereckson, 2010-2013, some rights resrved.
+# (c) Sébastien Santoro aka Dereckson, 2010-2013, some rights reserved.
 # Released under BSD license
 #
 # Last version of the code can be fetch at:

@@ -98,7 +98,7 @@ class User {
         $sql = "SELECT * FROM " . TABLE_USERS . " WHERE user_id = '" . $this->id . "'";
         if ( !($result = $db->sql_query($sql)) ) message_die(SQL_ERROR, "Unable to query users", '', __LINE__, __FILE__, $sql);
         if (!$row = $db->sql_fetchrow($result)) {
-            $this->lastError = "User unkwown: " . $this->id;
+            $this->lastError = "User unknown: " . $this->id;
             return false;
         }
         $this->name = $row['username'];

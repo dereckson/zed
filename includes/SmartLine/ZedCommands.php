@@ -304,7 +304,7 @@ class ListSmartLineCommand extends SmartLineCommand {
      * @param $table the table to query from the database
      * @param $key the first field to fetch, as key
      * @param $value the second field to fetch, as value
-     * @param $where the WHERE clause, without the WHERE keyword (optionnal)
+     * @param $where the WHERE clause, without the WHERE keyword (optional)
      */
     public function get_list ($table, $key, $value, $where = null) {
         global $db;
@@ -410,12 +410,12 @@ class UnixTimeSmartLineCommand extends SmartLineCommand {
 /**
  * The version command
  *
- * Prints current hg revision, if we're in prod or dev environement and
+ * Prints current hg revision, if we're in prod or dev environment and
  * the current revision's hash.
  *
  * The version and env information is extracted from
  *      .hg/tags.cache (indicating we're in a Mercurial repo and so in a dev environment), or from
- *      version.txt file (indicating we've deployed code in a production environement)
+ *      version.txt file (indicating we've deployed code in a production environment)
  *
  * e.g. r130 (development environment)
  *      Hash: 057bf394741706fd2136541e3bb07c9e60b4963d

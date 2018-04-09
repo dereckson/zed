@@ -33,10 +33,10 @@ class sql_db {
     /**
      * Initializes a new instance of the database abstraction class, for MySQL engine
      *
-     * @param string $host the SQL server to connect [optionnal, by default localhost]
-     * @param string $username the SQL username [optionnal, by default root]
-     * @param string $password the SQL password [optionnal, by default blank]
-     * @param string $database the database to select [optionnal]
+     * @param string $host the SQL server to connect [optional, by default localhost]
+     * @param string $username the SQL username [optional, by default root]
+     * @param string $password the SQL password [optional, by default blank]
+     * @param string $database the database to select [optional]
      */
     function __construct($host = 'localhost', $username = 'root', $password = '' , $database = '') {
         //Checks extension requirement

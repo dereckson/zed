@@ -26,7 +26,7 @@
  *
  * This class maps the content_locations table.
  *
- * A content location is defined by 3 paramaters:
+ * A content location is defined by 3 parameters:
  *  - location_global
  *  - location_local
  *  - location_k, an index for the content at the specified location
@@ -99,7 +99,7 @@ class ContentLocation {
         $sql = "SELECT * FROM content_locations WHERE location_global = '$location_global' AND location_local = '$location_local' AND location_k = '$location_k'";
         if ( !($result = $db->sql_query($sql)) ) message_die(SQL_ERROR, "Unable to query content", '', __LINE__, __FILE__, $sql);
         if (!$row = $db->sql_fetchrow($result)) {
-            $this->lastError = "Content location unkwown: " . $this->content_id;
+            $this->lastError = "Content location unknown: " . $this->content_id;
             return false;
         }
         $this->load_from_row($row);

@@ -57,7 +57,7 @@ switch ($module = $url[0]) {
         break;
 
     case 'location':
-        //Checks creditentials
+        //Checks credentials
         cerbere();
         //Gets location info
         require_once("includes/geo/location.php");
@@ -66,9 +66,9 @@ switch ($module = $url[0]) {
         break;
 
     case 'coordinates':
-        //Checks creditentials
+        //Checks credentials
         cerbere();
-        //Get coordiantes
+        //Get coordinates
         api_output(GeoGalaxy::getCoordinates(), 'galaxy', 'object');
         break;
 

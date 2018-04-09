@@ -26,7 +26,7 @@
 /// Initialization
 ///
 
-//Keruald (formelly Pluton) library
+//Keruald (formerly Pluton) library
 include('includes/core.php');
 
 //Session
@@ -37,7 +37,7 @@ $_SESSION[ID] = session_id();
 session_update(); //updates or creates the session
 
 include("includes/login.php"); //login/logout
-$CurrentUser = get_logged_user(); //Gets current user infos
+$CurrentUser = get_logged_user(); //Gets current user information
 
 //Gets current perso
 require_once('includes/objects/perso.php');

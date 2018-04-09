@@ -29,7 +29,7 @@ require_once('includes/content/zone.php');
  * Determines if a specified location is buildable
  *
  * @param GeoLocation $location the location to check
- * @param string if the location isn't buidable, a textual description of why.
+ * @param string if the location isn't buildable, a textual description of why.
  * @return bool true if the location is buildable ; otherwise, false
  *
  * @todo create a build.xml document to set what's buildable, and by who

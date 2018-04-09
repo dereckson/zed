@@ -86,7 +86,7 @@ var slide = {
 function OnLoginSubmit (submitButton) {
     //Checks all fields are completed
     if (document.getElementById("openid").value != "") {
-        //OpenID is prefered login way, so we're okay.
+        //OpenID is preferred login way, so we're okay.
     } else {
         haveUsername = document.getElementById("username").value != "";
         havePassword = document.getElementById("password").value != "";

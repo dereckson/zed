@@ -82,7 +82,7 @@ class Invite {
         $sql = "SELECT * FROM " . TABLE_USERS_INVITES . " WHERE invite_code = '" . $code . "'";
         if ( !($result = $db->sql_query($sql)) ) message_die(SQL_ERROR, "Unable to query invite codes", '', __LINE__, __FILE__, $sql);
         if (!$row = $db->sql_fetchrow($result)) {
-            $this->lastError = "Invite code unkwown: " . $this->code;
+            $this->lastError = "Invite code unknown: " . $this->code;
             return false;
         }
         $this->code = $row['invite_code'];
@@ -95,7 +95,7 @@ class Invite {
     }
 
     /**
-     * Determines wheter the current invite code have been claimed by an user.
+     * Determines whether the current invite code have been claimed by an user.
      *
      * @return true if the code have been claimed ; otherwise, false.
      */

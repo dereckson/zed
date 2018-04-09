@@ -11,7 +11,7 @@
  * This controller handles the pages for not logged in users.
  *
  * It recognizes the following URLs:
- *      /tour       a redirect to tour.html file, a visite guidée drom Zed ;
+ *      /tour       a redirect to tour.html file, a visite guidée from Zed ;
  *      /invite     the page to claim the invites.
  *
  * In all other cases, it prints the login form.
@@ -47,7 +47,7 @@ switch ($url[0]) {
             //Gets invite
             $invite = new Invite($_POST['invite_code']);
             if ($invite->lastError != '') {
-                //Not existant invite.
+                //Not existing invite.
                 $smarty->assign('NOTIFY', lang_get("IncorrectInviteCode"));
             } elseif ($invite->is_claimed()) {
                 //The invitation have already claimed by someone else.
@@ -88,7 +88,7 @@ switch ($url[0]) {
                     $invite->to_user_id = $user->id;
                     $invite->save_to_database();
 
-                    //Notifies inviter
+                    //Notifies host
                     require_once('includes/objects/message.php');
                     $message = new Message();
                     $message->from = 0;

@@ -5,7 +5,7 @@
     By default, travel inside a place is restricted and should be handled
     by /explore mechanisms.
 
-    To allow wheter a local move, wheter a move to another place, you've
+    To allow whether a local move, whether a move to another place, you've
     to add an TravelPlace entry.
 
     When you need regular behavior, without any exception, you don't need

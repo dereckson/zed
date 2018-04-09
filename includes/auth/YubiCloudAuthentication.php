@@ -91,24 +91,24 @@ class YubiCloudAuthentication implements IAuthentication {
      */
     function isValid () {
         global $Config;
-    
+
         //No need to lost time to query server if format is incorrect.
         if (!$this->looksValidOTP()) {
             $this->error = "Not the expected YubiKey OTP format.";
             return false;
         }
-    
+
         //Query YubiCloud. We stop validation tests if that fails.
         $yubi = new Auth_Yubico(
             $Config['YubiCloud']['ClientID'],
-            $Config['YubiCloud']['SecreyKey']
+            $Config['YubiCloud']['SecretKey']
         );
         $auth = $yubi->verify($this->key);
         if (@PEAR::isError($auth)) {
             $this->error = $auth->getMessage();
             return false;
         }
-    
+
         //Note: We first query the YubiCloud server, then we check if we can use the key
         //      as the key is an OTP (*one time* password), this allow to invalidate it.
         //      If we wouldn't do that, an attacker can reuse this password for another site.
@@ -117,7 +117,7 @@ class YubiCloudAuthentication implements IAuthentication {
             $this->mustThrowError = true;
             return false;
         }
-    
+
         //Finally, if someone puts also a login, we'll check this user ID match this username
         if ($this->username) {
             $user = User::get($this->user_id);
@@ -127,7 +127,7 @@ class YubiCloudAuthentication implements IAuthentication {
             return false;
             }
         }
-    
+
         return true;
     }
 
@@ -138,7 +138,7 @@ class YubiCloudAuthentication implements IAuthentication {
      */
     function computeUserID () {
         global $db;
-    
+
         /**
          * Here a MySQL record for a valid OTP
          * +---------+-----------+---------------+-----------------+---------+

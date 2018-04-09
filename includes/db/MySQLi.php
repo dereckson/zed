@@ -122,7 +122,7 @@ class DatabaseMySQLi {
             //No query, no value
             return '';
         } elseif (!$result = $this->sql_query($query)) {
-            //An error have occured
+            //An error have occurred
             message_die(SQL_ERROR, $error_message, '', '', '', $query);
         } else {
             //Fetches row

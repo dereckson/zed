@@ -66,7 +66,7 @@ class MOTD {
         $sql = "SELECT * FROM " . TABLE_MOTD . " WHERE motd_id = '" . $id . "'";
         if ( !($result = $db->sql_query($sql)) ) message_die(SQL_ERROR, "Unable to query azhar_motd", '', __LINE__, __FILE__, $sql);
         if (!$row = $db->sql_fetchrow($result)) {
-            $this->lastError = "MOTD unkwown: " . $this->id;
+            $this->lastError = "MOTD unknown: " . $this->id;
             return false;
         }
         $this->perso_id = $row['perso_id'];

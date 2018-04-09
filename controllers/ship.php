@@ -41,7 +41,7 @@ lang_load('ships.conf');
 
 //Gets ship from URL
 if (count($url) < 2) {
-    //No parameter, gets ship perso is onboard
+    //No parameter, gets ship perso is aboard
     if (!$code = $CurrentPerso->location->ship_code) {
         message_die(GENERAL_ERROR, lang_get("NotAboardNoCode"), lang_get("URLError"));
         //"

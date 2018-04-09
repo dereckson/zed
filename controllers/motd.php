@@ -13,7 +13,7 @@
  * It allows to add a message in the MOTD (messages printed in the header on
  * the top of each page).
  *
- * It usees the motd_add.tpl view and the MOTD class.
+ * It uses the motd_add.tpl view and the MOTD class.
  *
  * @package     Zed
  * @subpackage  Controllers

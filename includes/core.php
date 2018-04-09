@@ -213,7 +213,7 @@ function new_guid() {
  * Determines if the expression is a valid UUID (a guid without {}).
  * @see new_guid
  *
- * @param string $expression the expression to chjeck
+ * @param string $expression the expression to check
  * @return boolean true if the specified expression is a valid UUID ; otherwise, false.
  */
 function is_guid ($expression) {
@@ -238,7 +238,7 @@ function is_guid ($expression) {
  * Gets file extension
  *
  * @param string $file the file to get the extension
- * @return string the extension froùm the specified tfile
+ * @return string the extension from the specified file
  */
 function get_extension ($file) {
     $dotPosition = strrpos($file, ".");
@@ -422,7 +422,7 @@ function lang_get ($key) {
  * @link http://en.wikipedia.org/wiki/Unix_time Unix time
  *
  * @param string $timestamp the timestamp to convert
- * @return inteeger the unixtime
+ * @return integer the unixtime
  */
 function to_unixtime ($timestamp) {
     switch (strlen($timestamp)) {
@@ -629,7 +629,7 @@ function get_current_url_fragments () {
  * Gets an hash value to check the integrity of URLs in /do.php calls
  *
  * @param Array $args the args to compute the hash
- * @return the hash paramater for your xmlHttpRequest url
+ * @return the hash parameter for your xmlHttpRequest url
  */
 function get_xhr_hash ($args) {
     global $Config;

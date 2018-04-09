@@ -13,7 +13,7 @@
  * It handles the following URLs:
  *     /who/<perso nickname>  views the nickname's profile,
  *     /who/random            views a random profile,
- *     /who/edit/profile      edits its profileq
+ *     /who/edit/profile      edits its profile
  *     /who/edit/account      edits its account (disabled on Zed, cf. settings),
  *     /who/edit/photo(s)     manages its profile's photos,
  *          /who/edit/photo/edit/<photo id>      edits a photo properties,

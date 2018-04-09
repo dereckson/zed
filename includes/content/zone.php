@@ -78,7 +78,7 @@ class ContentZone {
         $sql = "SELECT * FROM " . TABLE_CONTENT_ZONES . " WHERE zone_id = '" . $id . "'";
         if (!$result = $db->sql_query($sql)) message_die(SQL_ERROR, 'Unable to query content_zones', '', __LINE__, __FILE__, $sql);
         if (!$row = $db->sql_fetchrow($result)) {
-            $this->lastError = 'Zone unkwown: ' . $this->id;
+            $this->lastError = 'Zone unknown: ' . $this->id;
             return false;
         }
         $this->load_from_row($row);

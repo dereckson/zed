@@ -37,7 +37,7 @@
  *   i.  Each content have EXACTLY ONE location
  *   ii. Location fields will not be modified
  *
- * If a content have more than one location, only the first occurence in
+ * If a content have more than one location, only the first occurrence in
  * content_locations table will be considered.
  *
  * If a content have no location, it will be ignored.
@@ -126,7 +126,7 @@ class Content {
         $sql = "SELECT * FROM content WHERE content_id = '" . $id . "'";
         if ( !($result = $db->sql_query($sql)) ) message_die(SQL_ERROR, "Unable to query content", '', __LINE__, __FILE__, $sql);
         if (!$row = $db->sql_fetchrow($result)) {
-            $this->lastError = "Content unkwown: " . $this->id;
+            $this->lastError = "Content unknown: " . $this->id;
             return false;
         }
         $this->load_from_row($row);

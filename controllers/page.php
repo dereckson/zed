@@ -17,7 +17,7 @@
  *
  * To edit a page, append ?mode=edit to the URL.
  *
- * It usees the page_edit.tpl view to edit and the raw.tpl view to print pages.
+ * It uses the page_edit.tpl view to edit and the raw.tpl view to print pages.
  *
  * Versions of the edited pages are saved in a separate table
  * but it's not a wiki, it's for backup purposes.
@@ -32,7 +32,7 @@
  * @link        http://zed.dereckson.be/
  * @filesource
  *
- * @todo move "handle editor form" and some of the "gets page" code to a includes/objets/page.php file (rationale: cleaner model/controller separation)
+ * @todo move "handle editor form" and some of the "gets page" code to a includes/objects/page.php file (rationale: cleaner model/controller separation)
  */
 
 if (!$code = $db->sql_escape($url[1])) {

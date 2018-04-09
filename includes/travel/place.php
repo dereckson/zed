@@ -55,7 +55,7 @@ class TravelPlace {
     public $globalTravelTo = array();
 
     /**
-     * Aray of array, containing [location, alias, name] entries
+     * Array of array, containing [location, alias, name] entries
      *
      * This matches LocalMove XML tags.
      *
@@ -64,7 +64,7 @@ class TravelPlace {
     public $localMoves = array();
 
     /**
-     * Aray of array, containing [expression, global_location, local_location] entries
+     * Array of array, containing [expression, global_location, local_location] entries
      *
      * This matches RewriteRule XML tags.
      *
@@ -76,7 +76,7 @@ class TravelPlace {
      * Initializes a new TravelPlace instance, from the specified XML fragment
      *
      * @param string $xml the XML fragment to parse
-     * @return TravelPlace the TravelPlace instance maching the specified XML fragment
+     * @return TravelPlace the TravelPlace instance matching the specified XML fragment
      */
     static function from_xml ($xml) {
         $travelPlace = new TravelPlace();

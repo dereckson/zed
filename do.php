@@ -106,7 +106,7 @@ lang_load('core.conf');
  */
 class Actions {
     /**
-     * Checks the arguments hash and determines wheter it is valid.
+     * Checks the arguments hash and determines whether it is valid.
      *
      * @param Array $args the arguments, the last being the hash
      * @return boolean true if the hash is valid ; otherwise, false.
@@ -199,7 +199,7 @@ class Actions {
      * So, if you write a story capturing a perso, use flags to handle this escape!
      *
      * @param string $move the move (coordinates or direction)
-     * @param int $factor a number multipling the specified move [optional]
+     * @param int $factor a number multiplying the specified move [optional]
      * @return GeoLocation the current perso's GeoLocation object
      *
      * e.g. to move from 2 units to east, you can use one of those instructions:
@@ -276,7 +276,7 @@ class Actions {
      * So, if you write a story capturing a perso, use flags to handle this escape!
      *
      * @param string $move the move (coordinates or direction)
-     * @param int $factor a number multipling the specified move [optional]
+     * @param int $factor a number multiplying the specified move [optional]
      * @return GeoLocation the current perso's GeoLocation object
      *
      * Valid moves string are cw, ccw, out, in, up and down.
@@ -289,7 +289,7 @@ class Actions {
      *  polarz_local_move('cw', 2);
      *  polarz_local_move('(0, 20°, 0)', 2);
      *  polarz_local_move('(0, 40°, 0)');
-     * Or if you really want to use radiants (PI/9 won't be parsed):
+     * Or if you really want to use radians (PI/9 won't be parsed):
      *  polarz_local_move('(0, 0.6981317007977318, 0)';
      *
      */

@@ -78,7 +78,7 @@ function toXml($data, $rootNodeName = 'data', $xml = null, $unknownNodeName = 'u
         // replace anything not alpha numeric
         $key = preg_replace('/[^a-z]/i', '', $key);
 
-        //If there is another array found recrusively call this function
+        //If there is another array found recursively call this function
         if (is_array($value)) {
             $node = $xml->addChild($key);
             //Recursive call.
@@ -127,8 +127,8 @@ function toXml($data, $rootNodeName = 'data', $xml = null, $unknownNodeName = 'u
  * The format will be read form $_REQUEST['format'].
  *
  * @param mixed $reply the reply to format
- * @param string $xmlRoot the XML root element name (optionnal, default value is 'data').
- * @param string $xmlChildren the XML children elements name (optionnal, will be deducted from the context if ommited, or, if not posssible, will be unknownNode)
+ * @param string $xmlRoot the XML root element name (optional, default value is 'data').
+ * @param string $xmlChildren the XML children elements name (optional, will be deducted from the context if omitted, or, if not possible, will be unknownNode)
  */
 function api_output ($reply, $xmlRoot = null, $xmlChildren = null) {
     $format = isset($_REQUEST['format']) ? $_REQUEST['format'] : 'preview';

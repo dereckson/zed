@@ -134,7 +134,7 @@ class SettingsPage {
             $currentValue = $setting->get();
             if ($setting->field == "checkbox" || $currentValue != $value) {
                 if (!$setting->set($value)) {
-                    $errors[] = $setting->lastError ? $setting->lastError : "An error have occured in $setting->key field.";
+                    $errors[] = $setting->lastError ? $setting->lastError : "An error have occurred in $setting->key field.";
                 }
                 if ($setting->object) $objects[] = $setting->object;
             }

@@ -11,7 +11,7 @@
  * This is a controller printing HTML content as is.
  *
  * It prints the raw.tpl view containing two variables:
- * - PAGE_TITLE (optionnal), to add a H1 page title
+ * - PAGE_TITLE (optional), to add a H1 page title
  * - CONTENT (should be defined), the content to print
  *
  * To use it:

@@ -77,7 +77,7 @@ class Request {
         $sql = "SELECT * FROM " . TABLE_REQUESTS . " WHERE request_id = '" . $id . "'";
         if (!$result = $db->sql_query($sql)) message_die(SQL_ERROR, "Unable to query requests", '', __LINE__, __FILE__, $sql);
         if (!$row = $db->sql_fetchrow($result)) {
-            $this->lastError = "Request unkwown: " . $this->id;
+            $this->lastError = "Request unknown: " . $this->id;
             return false;
         }
         $this->code = $row['request_code'];

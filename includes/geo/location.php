@@ -46,7 +46,7 @@ class GeoLocation {
      * the first element is the global location
      * and the second element is the local location.
      *
-     * @var Aray
+     * @var Array
      */
     private $data;
 
@@ -128,7 +128,7 @@ class GeoLocation {
         }
 
         //TODO: handle $local in a better way: from the global location, gets
-        //a local location handler. Or a some inheriance, like a class
+        //a local location handler. Or a some inheritance, like a class
         //HypershipGeoLocation extending GeoLocation.
         if ($local !== null) $this->data[1] = $local;
 

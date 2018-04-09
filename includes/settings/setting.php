@@ -100,7 +100,7 @@ class Setting {
             }
         }
 
-        message_die(GENERAL_ERROR, "Setting $this->key haven't any set indication. Please set <object> (and wheter <method>, whether <property>) or a custom <handler><set></set></handler> block.", "Settings error");
+        message_die(GENERAL_ERROR, "Setting $this->key haven't any set indication. Please set <object> (and whether <method>, whether <property>) or a custom <handler><set></set></handler> block.", "Settings error");
     }
 
     /**

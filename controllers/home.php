@@ -28,7 +28,7 @@
  * @link        http://zed.dereckson.be/
  * @filesource
  *
- * @todo The homepage requires Dojo but Dojo loading here is currently a kludge, as dojo is required by hypership .tpl scene. We should create an optionnal .meta xml file format to set this kind of options.
+ * @todo The homepage requires Dojo but Dojo loading here is currently a kludge, as dojo is required by hypership .tpl scene. We should create an optional .meta xml file format to set this kind of options.
  */
 
 //
@@ -73,7 +73,7 @@ $smarty->assign('SCENE', $scene);
 //Serves header
 
 //TODO: Dojo loading here is currently a kludge, as dojo is required by
-//hypership .tpl scene. We should create an optionnal .meta xml file format
+//hypership .tpl scene. We should create an optional .meta xml file format
 //to set this kind of options
 if (!defined('DIJIT')) {
     /**

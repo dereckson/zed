@@ -112,7 +112,7 @@ class Ship {
         $sql = "SELECT * FROM ships WHERE ship_id = '" . $id . "'";
         if ( !($result = $db->sql_query($sql)) ) message_die(SQL_ERROR, "Unable to query Ships", '', __LINE__, __FILE__, $sql);
         if (!$row = $db->sql_fetchrow($result)) {
-            $this->lastError = "Ship unkwown: " . $this->id;
+            $this->lastError = "Ship unknown: " . $this->id;
             return false;
         }
         $this->name = $row['ship_name'];
@@ -290,7 +290,7 @@ class Ship {
      * @return mixed the session
      */
     function get_perso_from_session ($session_id) {
-        //Cleands old session
+        //Cleans old session
         self::clean_ship_sessions();
 
         //Reads api.ship.session.S00001.$session_id

@@ -74,7 +74,7 @@ class Port {
         $sql = "SELECT * FROM " . TABLE_PORTS . " WHERE port_id = '" . $id . "'";
         if ( !($result = $db->sql_query($sql)) ) message_die(SQL_ERROR, "Unable to query ports", '', __LINE__, __FILE__, $sql);
         if (!$row = $db->sql_fetchrow($result)) {
-            $this->lastError = "Port unkwown: " . $this->id;
+            $this->lastError = "Port unknown: " . $this->id;
             return false;
         }
         $this->location_global = $row['location_global'];

@@ -52,9 +52,9 @@ if (!defined('TABLE_API_KEYS')) {
 }
 
 /**
- * Checks if creditentials are okay and exits if not
+ * Checks if credentials are okay and exits if not
  *
- * If the creditentials aren't valid, it will prints an error message if
+ * If the credentials aren't valid, it will prints an error message if
  * OUTPUT_ERROR is defined and true.
  *
  * This error message will be formatted through the api_output function if
@@ -76,7 +76,7 @@ function cerbere () {
 
     //No key, no authentication
     if (!$guid = $_REQUEST['key']) {
-        cerbere_die('You must add creditentials to your request.');
+        cerbere_die('You must add credentials to your request.');
     }
 
     //Authenticates user

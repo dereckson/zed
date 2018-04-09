@@ -71,7 +71,7 @@ class Application {
         $sql = "SELECT * FROM applications WHERE application_id = '" . $id . "'";
         if ( !($result = $db->sql_query($sql)) ) message_die(SQL_ERROR, "Unable to query applications", '', __LINE__, __FILE__, $sql);
         if (!$row = $db->sql_fetchrow($result)) {
-            $this->lastError = "Application unkwown: " . $this->id;
+            $this->lastError = "Application unknown: " . $this->id;
             return false;
         }
         $this->code = $row['application_code'];
@@ -156,7 +156,7 @@ class Application {
      * Generates a key for the specified perso and current application.
      *
      * @param int $perso_id The perso ID
-     * @param string $userkey User application key GUID (optionnal)
+     * @param string $userkey User application key GUID (optional)
      * @return Application User application key GUID
      */
     function generate_userkey ($perso_id = null, $userkey = null) {

@@ -22,7 +22,7 @@
             if (!$key = $_GET['OTP']) {
                 message_die(GENERAL_ERROR, "Please add in URL ?OTP=, then put your cursor at right of the = and press your YubiKey button");
             }
-            $yubi = new Auth_Yubico($Config['YubiCloud']['ClientID'], $Config['YubiCloud']['SecreyKey']);
+            $yubi = new Auth_Yubico($Config['YubiCloud']['ClientID'], $Config['YubiCloud']['SecretKey']);
             if (!$data = $yubi->parsePasswordOTP($key)) {
                 message_die(GENERAL_ERROR, "This is not an YubiKey OTP.");
             }

@@ -1,15 +1,14 @@
 <?php
 
 /**
- * XML beautifer
+ * XML beautifier
  *
  * Zed. The immensity of stars. The HyperShip. The people.
  *
  * (c) 2010, Dereckson, some rights reserved.
  * Released under BSD license.
  *
- *
- * This class is simple XML beautifer
+ * This class is simple XML beautifier
  * it's very, very, very simple - feature version will be better :-)
  *
  * IMPORTANT NOTE
@@ -39,7 +38,7 @@
  */
 
 /**
- * This class is simple XML beautifer.
+ * This class is simple XML beautifier.
  * It's very, very, very simple - feature version will be better :-)
  *
  * @author      Slawomir Jasinski <sj@gex.pl>
@@ -53,7 +52,7 @@ class BeautyXML {
      *
      * @var string
      */
-    var $how_to_ident = "    "; // you can user also \t or more/less spaces
+    var $how_to_indent = "    "; // you can user also \t or more/less spaces
 
     /**
      * Determines if long text have to be wrapped.
@@ -65,9 +64,9 @@ class BeautyXML {
     var $wrap = false;
 
     /**
-     * If $wrap is true, determines the line lenght.
+     * If $wrap is true, determines the line length.
      *
-     * After this lenght, any text will be wrapped.
+     * After this length, any text will be wrapped.
      *
      * @see $wrap
      * @var @int
@@ -75,16 +74,16 @@ class BeautyXML {
     var $wrap_cont = 80; // where wrap words
 
     /**
-     * Idents the specified string.
+     * Indents the specified string.
      *
      * @param string $str the string to indent
-     * @param int $level the ident level, ie the number of identation to prepend the string with
+     * @param int $level the indent level, ie the number of indentation to prepend the string with
      */
-    function ident (&$str, $level) {
+    function indent (&$str, $level) {
         $spaces = '';
         $level--;
         for ($a = 0; $a < $level; $a++) {
-            $spaces .= $this->how_to_ident;
+            $spaces .= $this->how_to_indent;
         }
         return $spaces .= $str;
     }
@@ -146,10 +145,10 @@ class BeautyXML {
                 $add = false;
             }
 
-            $tmp[$a] = $this->ident($tmp[$a], $level);
+            $tmp[$a] = $this->indent($tmp[$a], $level);
 
             if ($this->wrap) {
-                $tmp[$a] = wordwrap($tmp[$a], $this->wrap_cont, "\n" . $this->how_to_ident . $this->how_to_ident . $this->how_to_ident);
+                $tmp[$a] = wordwrap($tmp[$a], $this->wrap_cont, "\n" . $this->how_to_indent . $this->how_to_indent . $this->how_to_indent);
             }
 
             if ($add && !@in_array($lan, $stab) && $lan != '') {

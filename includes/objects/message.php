@@ -71,7 +71,7 @@ class Message {
         $sql = "SELECT * FROM messages WHERE message_id = '" . $this->id . "'";
         if ( !($result = $db->sql_query($sql)) ) message_die(SQL_ERROR, "Unable to query messages", '', __LINE__, __FILE__, $sql);
         if (!$row = $db->sql_fetchrow($result)) {
-            $this->lastError = "Message unkwown: " . $this->id;
+            $this->lastError = "Message unknown: " . $this->id;
             return false;
         }
         $this->date = $row['message_date'];

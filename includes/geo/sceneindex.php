@@ -40,9 +40,9 @@ class GeoSceneIndex {
     public $global_templates;
 
     /**
-     * Rocal location templates 2D array
+     * Local location templates 2D array
      *
-     * Keys are global and local ocation codes.
+     * Keys are global and local location codes.
      * Values the relevant template file.
      *
      * e.g. $local_templates['B00017001']['(10, 50, 8)'] => 'B00017_port.tpl'
@@ -90,7 +90,7 @@ class GeoSceneIndex {
     }
 
     /**
-     * Initializes a new GeoSceneIndex istance
+     * Initializes a new GeoSceneIndex instance
      *
      * @param string $directory the scene templates directory
      */
@@ -194,7 +194,7 @@ class GeoSceneIndex {
      *
      * @param string $location_global the global location
      * @param string $location_global the local location
-     * @return string the relevant template scene file, or NULL if not existant
+     * @return string the relevant template scene file, or NULL if not existing
      */
     public function get_local_template ($location_global, $location_local) {
         if (isset($this->local_templates[$location_global][$location_local])) {
@@ -207,7 +207,7 @@ class GeoSceneIndex {
      * Gets global template file from index
      *
      * @param string $location_global the global location
-     * @return string the relevant template scene file, or NULL if not existant
+     * @return string the relevant template scene file, or NULL if not existing
      */
     public function get_global_template ($location_global) {
         if (isset($this->global_templates[$location_global])) {

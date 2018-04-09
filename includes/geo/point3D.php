@@ -95,7 +95,7 @@ class GeoPoint3D implements IteratorAggregate {
     }
 
     /**
-     * Parses a string expression ang gets a GeoPoint3D object
+     * Parses a string expression and gets a GeoPoint3D object
      *
      * Formats recognized are:
      *      - xyz: [x, y, z]
@@ -131,7 +131,7 @@ class GeoPoint3D implements IteratorAggregate {
      *  $point = new GeoPoint3D(10, 20, 40);
      *  echo $point->sprintf("xyz: [%d, %d, %d]");
      *
-     *  //Of course, you could have (implicitely) use the __toString method:
+     *  //Of course, you could have (implicitly) use the __toString method:
      *  echo $point;
      *
      * To print a (10, 20, 40) string:

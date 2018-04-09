@@ -71,7 +71,7 @@ class ProfilePhoto {
         $sql = "SELECT * FROM " . TABLE_PROFILES_PHOTOS . " WHERE photo_id = '" . $id . "'";
         if ( !($result = $db->sql_query($sql)) ) message_die(SQL_ERROR, "Unable to query azhar_profiles_photos", '', __LINE__, __FILE__, $sql);
         if (!$row = $db->sql_fetchrow($result)) {
-            $this->lastError = "photo unkwown: " . $this->id;
+            $this->lastError = "photo unknown: " . $this->id;
             return false;
         }
         $this->perso_id = $row['perso_id'];
