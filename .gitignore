@@ -6,3 +6,7 @@ cache/openid/nonces/
 
 ## Editors files
 *.komodoproject
+
+## Composer
+vendor/
+composer.lock

@@ -1,0 +1,22 @@
+{
+    "name": "zed/zed",
+    "description": "Hypership and galaxy",
+    "type": "project",
+    "require": {
+        "smarty/smarty": "^3.1",
+        "keruald/globalfunctions": "^0.5.1"
+    },
+    "require-dev": {
+        "nasqueron/codestyle": "^0.0.1",
+        "phan/phan": "^0.12.5",
+        "squizlabs/php_codesniffer": "^3.2",
+        "phpunit/phpunit": "^7.1"
+    },
+    "license": "BSD-2-Clause",
+    "authors": [
+        {
+            "name": "Sébastien Santoro",
+            "email": "dereckson@espace-win.org"
+        }
+    ]
+}
