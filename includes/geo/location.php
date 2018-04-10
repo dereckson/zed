@@ -103,7 +103,7 @@ class GeoLocation {
      */
     function __construct ($global = null, $local = null) {
         if (!$global) {
-            $this->data = array();
+            $this->data = [];
         } elseif (preg_match("/[BS][0-9]{5}[0-9]{3}/", $global)) {
             $this->data[0] = $global;
         } elseif (preg_match("/[BS][0-9]{5}/", $global)) {

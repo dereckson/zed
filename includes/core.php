@@ -368,9 +368,9 @@ function get_http_accept_languages () {
     foreach ($http_accept_language as $language) {
         $userlang = explode(';q=', $language);
         if (count($userlang) == 1) {
-            $userlangs[] = array(1, $language);
+            $userlangs[] = [1, $language];
         } else {
-            $userlangs[] = array($userlang[1], $userlang[0]);
+            $userlangs[] = [$userlang[1], $userlang[0]];
         }
     }
     rsort($userlangs);
@@ -615,7 +615,7 @@ function get_current_url () {
  */
 function get_current_url_fragments () {
     $url_source = get_current_url();
-    if ($url_source == $_SERVER["PHP_SELF"]) return array();
+    if ($url_source == $_SERVER["PHP_SELF"]) return [];
     return explode('/', substr($url_source, 1));
 }
 

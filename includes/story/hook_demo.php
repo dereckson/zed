@@ -61,7 +61,7 @@ class DemoStoryHook extends StoryHook {
      */
     function get_choices_links (&$links) {
         //Adds a link to /push
-        $links[] = array(lang_get("PushMessage"), get_url('push'));
+        $links[] = [lang_get("PushMessage"), get_url('push')];
     }
 
     /**

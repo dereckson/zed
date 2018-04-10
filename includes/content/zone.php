@@ -174,7 +174,7 @@ class ContentZone {
      */
     static function search ($location_global_query, $location_local_query, $use_regexp_for_local = false) {
         global $db;
-        $zones = array();
+        $zones = [];
 
         $op = $use_regexp_for_local ? 'RLIKE' : 'LIKE';
         $sql = "SELECT * FROM " . TABLE_CONTENT_ZONES_LOCATIONS . " WHERE location_global LIKE '$location_global_query' AND location_local $op '$location_local_query'";

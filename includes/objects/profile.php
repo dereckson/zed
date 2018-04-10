@@ -113,7 +113,7 @@ class Profile {
         if (!$result = $db->sql_query($sql)) {
             message_die(SQL_ERROR, "Can't get tags", '', __LINE__, __FILE__, $sql);
         }
-        $tags = array();
+        $tags = [];
         while ($row = $db->sql_fetchrow($result)) {
             $tags[$row['tag_class']][] = $row['tag_code'];
         }

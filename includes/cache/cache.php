@@ -84,6 +84,6 @@ class Cache {
             message_die(GENERAL_ERROR, "Can't initialize $engine cache engine.<br />$engine_class class not found.", 'Cache');
         }
 
-        return call_user_func(array($engine_class, 'load'));
+        return call_user_func([$engine_class, 'load']);
     }
 }

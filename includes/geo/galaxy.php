@@ -49,11 +49,11 @@ class GeoGalaxy {
         $sql = "SELECT * FROM geo_coordinates";
         if (!$result = $db->sql_query($sql)) message_die(SQL_ERROR, "Can't query geo_coordinates view.", '', __LINE__, __FILE__, $sql);
 
-        $objects = array();
+        $objects = [];
         while ($row = $db->sql_fetchrow($result)) {
             //Demios  ship        xyz: [-50, 30, 40]
             //Kaos	  asteroid    xyz: [150, -129, 10]
-            $objects[] = array($row[0], $row[1], GeoPoint3D::fromString($row[2]));
+            $objects[] = [$row[0], $row[1], GeoPoint3D::fromString($row[2])];
         }
         return $objects;
     }
@@ -96,7 +96,7 @@ class GeoGalaxy {
         $phi = acos($x / sqrt($x * $x + $y * $y)); //θ = acos x / sqrt(x² + y²)
         if (y < 0) $phi = 2 * M_PI - $phi;        //∀ y < 0     θ = 2π - θ
 
-        return array(round($rho, 2), round(rad2deg($theta), 2), round(rad2deg($phi), 2));
+        return [round($rho, 2), round(rad2deg($theta), 2), round(rad2deg($phi), 2)];
     }
 
     /**
@@ -114,6 +114,6 @@ class GeoGalaxy {
         $theta= atan2($y, $x);                    //φ = atan2 $y $x
         $phi = acos($z / $rho);                   //θ = acos z/φ
 
-        return array(round($rho, 2), round(rad2deg($theta), 2), round(rad2deg($phi), 2));
+        return [round($rho, 2), round(rad2deg($theta), 2), round(rad2deg($phi), 2)];
     }
 }

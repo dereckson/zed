@@ -261,7 +261,7 @@ class GeoPointPolarZ implements IteratorAggregate {
     function toCartesian () {
         $x = $this->r * cos(self::getRadians($this->t));
         $y = $this->r * sin(self::getRadians($this->t));
-        return array($x, $y, $this->z);
+        return [$x, $y, $this->z];
     }
 
     /**

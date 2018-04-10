@@ -102,7 +102,7 @@ function get_request_url ($requestFlag, $store, $key, $value) {
 lang_load('persorequest.conf');
 
 //The array request will be passed to Smarty and will contain PersoRequest items.
-$requests = array();
+$requests = [];
 
 foreach ($CurrentPerso->flags as $flag => $value) {
     if ($value && substr($flag, 0, 8) == "request.") {

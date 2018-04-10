@@ -110,7 +110,7 @@ class GeoBody {
      * @return string the status field value (e.g. "asteroid,hidden")
      */
     function getStatus () {
-        $flags = array('hypership','asteroid','moon','planet','star','orbital','hidden');
+        $flags = ['hypership','asteroid','moon','planet','star','orbital','hidden'];
         foreach ($flags as $flag) {
             if ($this->$flag) {
                 $status[] = $flag;
@@ -128,7 +128,7 @@ class GeoBody {
         //If a location can be described by 2 flags, order the relevant flags list
         //by priority, as it'll return the first triggered.
         //e.g. a moon converted in hypership will be "hypership" and not "moon".
-        $relevantFlags = array('hypership','asteroid','moon','planet','star','orbital');
+        $relevantFlags = ['hypership','asteroid','moon','planet','star','orbital'];
         foreach ($relevantFlags as $flag) {
             if ($this->$flag) {
                 return $flag;

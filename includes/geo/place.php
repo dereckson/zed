@@ -111,7 +111,7 @@ class GeoPlace {
      * @return string the status field value (e.g. "requiresPTA,default")
      */
     function getStatus () {
-        $flags = array('start', 'hidden');
+        $flags = ['start', 'hidden'];
         foreach ($flags as $flag) {
             if ($this->$flag == true) {
                 $status[] = $flag;

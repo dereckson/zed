@@ -289,7 +289,7 @@ class Content {
         }
 
         //Fills content array
-        $contents = array();
+        $contents = [];
         while ($row = $db->sql_fetchrow($result)) {
             $content = new Content();
             $content->load_from_row($row);

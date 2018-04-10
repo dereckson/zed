@@ -222,27 +222,27 @@ class Actions {
         //Parses $move
         switch ($move) {
             case 'north':
-                $move = array(0, 1, 0);
+                $move = [0, 1, 0];
                 break;
 
             case 'east':
-                $move = array(1, 0, 0);
+                $move = [1, 0, 0];
                 break;
 
             case 'south':
-                $move = array(0, -1, 0);
+                $move = [0, -1, 0];
                 break;
 
             case 'west':
-                $move = array(-1, 0, 0);
+                $move = [-1, 0, 0];
                 break;
 
             case 'up':
-                $move = array(0, 0, 1);
+                $move = [0, 0, 1];
                 break;
 
             case 'down':
-                $move = array(0, 0, -1);
+                $move = [0, 0, -1];
                 break;
 
             default:
@@ -305,27 +305,27 @@ class Actions {
         $move = urldecode($move);
         switch ($move) {
             case 'cw':
-                $move = array(0, '20°', 0);
+                $move = [0, '20°', 0];
                 break;
 
             case 'ccw':
-                $move = array(0, '-20°', 0);
+                $move = [0, '-20°', 0];
                 break;
 
             case 'in':
-                $move = array(+12, 0, 0);
+                $move = [+12, 0, 0];
                 break;
 
             case 'out':
-                $move = array(-12, 0, 0);
+                $move = [-12, 0, 0];
                 break;
 
             case 'up':
-                $move = array(0, 0, 1);
+                $move = [0, 0, 1];
                 break;
 
             case 'down':
-                $move = array(0, 0, -1);
+                $move = [0, 0, -1];
                 break;
 
             default:
@@ -449,7 +449,7 @@ if ($_REQUEST['debug']) {
     ini_set('display_errors', 'stderr');
     error_reporting(-1);
     if (method_exists('Actions', $method)) {
-        $result = call_user_func_array(array('Actions', $method), $args);
+        $result = call_user_func_array(['Actions', $method], $args);
         echo json_encode($result);
     } else {
         echo "<p>Method doesn't exist: $method</p>";
@@ -462,7 +462,7 @@ if ($_REQUEST['debug']) {
 } else {
     //Prod version doesn't prints warning <== silence operator
     if (method_exists('Actions', $method)) {
-        $result = @call_user_func_array(array('Actions', $method), $args);
+        $result = @call_user_func_array(['Actions', $method], $args);
 
         if (array_key_exists('redirectTo', $_REQUEST)) {
             //If user JS disabled, you can add ?redirectTo= followed by an URL

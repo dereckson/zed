@@ -327,7 +327,7 @@ if ($mode == 'view') {
 if (count($photos) || $photo) {
     $smarty->assign('URL_PICS', PHOTOS_URL);
     $css[] = 'lightbox.css';
-    $smarty->assign('PAGE_JS', array('prototype.js', 'effects.js', 'lightbox.js'));
+    $smarty->assign('PAGE_JS', ['prototype.js', 'effects.js', 'lightbox.js']);
     $smarty->assign('PICS', $photos);
 }
 

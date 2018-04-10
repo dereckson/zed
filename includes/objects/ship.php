@@ -50,7 +50,7 @@ class Ship {
     public $api_key;
     public $description;
 
-    private static $hashtable = array();
+    private static $hashtable = [];
 
     /**
      * Initializes a new instance
@@ -177,7 +177,7 @@ class Ship {
         if (!$result = $db->sql_query($sql)) {
             message_die(SQL_ERROR, "Can't get ships", '', __LINE__, __FILE__, $sql);
         }
-        $ships = array();
+        $ships = [];
         $location = new GeoLocation($location_global, $location_local);
         while ($row = $db->sql_fetchrow($result)) {
             $shipLocation = new GeoLocation($row['location_global'], $row['location_local']);

@@ -149,7 +149,7 @@ class GeoScene {
                 case 'tpl':
                     global $smarty, $Config;
                     $template_dir = $smarty->template_dir;
-                    $smarty->template_dir = array(getcwd(), $template_dir);
+                    $smarty->template_dir = [getcwd(), $template_dir];
 
                     //$this->location is the object reference
                     //Some objects like the hypership move, so we also need to know where there are.
@@ -200,7 +200,7 @@ class GeoScene {
      */
     private function try_get_scene ($code) {
         $file = SCENE_DIR . "/$code";
-        $extensions = array('tpl', 'png', 'jpg', 'gif', 'bmp', 'swf', 'html', 'php');
+        $extensions = ['tpl', 'png', 'jpg', 'gif', 'bmp', 'swf', 'html', 'php'];
         foreach ($extensions as $ext) {
             if (file_exists("$file.$ext")) {
                 $this->sceneFile = "$file.$ext";

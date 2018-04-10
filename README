@@ -12,7 +12,7 @@
  INSTALL
 =========
 
- * Zed is a PHP 5.3 application.
+ * Zed is a PHP 5.4 application.
 
  * You can import dev/schema-mysql.sql as original SQL schema
 

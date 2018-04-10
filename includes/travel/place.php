@@ -52,7 +52,7 @@ class TravelPlace {
      *
      * @var Array
      */
-    public $globalTravelTo = array();
+    public $globalTravelTo = [];
 
     /**
      * Array of array, containing [location, alias, name] entries
@@ -61,7 +61,7 @@ class TravelPlace {
      *
      * @var Array
      */
-    public $localMoves = array();
+    public $localMoves = [];
 
     /**
      * Array of array, containing [expression, global_location, local_location] entries
@@ -70,7 +70,7 @@ class TravelPlace {
      *
      * @var Array
      */
-    public $rewriteRules = array();
+    public $rewriteRules = [];
 
         /**
      * Initializes a new TravelPlace instance, from the specified XML fragment
@@ -105,7 +105,7 @@ class TravelPlace {
 
         //<LocalMove local_location="(0, 0, 0)" alias="C0" name="Core" />
         foreach ($xml->LocalMove as $localMoveXml) {
-            $localMove = array(null, null, null);
+            $localMove = [null, null, null];
             foreach ($localMoveXml->attributes() as $key => $value) {
                 switch ($key) {
                     case 'local_location':
@@ -126,7 +126,7 @@ class TravelPlace {
 
         //<RewriteRule expression="/^T([1-9][0-9]*)$/" global_location="B00001001" local_location="T$1C1" />
         foreach ($xml->RewriteRule as $rewriteRuleXml) {
-            $rewriteRule = array(null, null, null);
+            $rewriteRule = [null, null, null];
             foreach ($rewriteRuleXml->attributes() as $key => $value) {
                 switch ($key) {
                     case 'expression':

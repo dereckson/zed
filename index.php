@@ -82,7 +82,7 @@ if ($CurrentUser->id < 1000) {
 //Handles form
 if ($_POST['form'] == 'perso.create') {
     $perso = null;
-    $errors = array();
+    $errors = [];
     if (Perso::create_perso_from_form($CurrentUser, $perso, $errors)) {
         //Notifies and logs in
         $smarty->assign('NOTIFY', lang_get('NewCharacterCreated'));

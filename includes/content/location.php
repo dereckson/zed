@@ -215,7 +215,7 @@ class ContentLocation {
         }
 
         //Fills content array
-        $contents = array();
+        $contents = [];
         while ($row = $db->sql_fetchrow($result)) {
             $k = $row['location_k'];
             $contents[$k] = new ContentFile();

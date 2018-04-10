@@ -115,7 +115,7 @@ if ($action == 'openid.login') {
         //Authentications way, the user/password in last.
         //OpenID is handled by a separate logic.
         $Login = $_POST['username'];
-        $authentications = array();
+        $authentications = [];
         if ($useYubiCloud = array_key_exists('YubiCloud', $Config) ) {
             $authentications[] = new YubiCloudAuthentication($_POST['password'], $Login);
         }

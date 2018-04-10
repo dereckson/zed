@@ -119,7 +119,7 @@ class BeautyXML {
         $tmp = explode("\n", $newstr);
 
         // preparing array for list of tags
-        $stab = array('');
+        $stab = [''];
 
         // lets go :-)
         for ($a = 0, $c = count($tmp); $a <= $c; $a++) {

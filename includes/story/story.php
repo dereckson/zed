@@ -48,7 +48,7 @@ class Story {
      *
      * @var Array
      */
-    public $sections = array();
+    public $sections = [];
 
     /**
      * The SimpleXML parser
@@ -69,7 +69,7 @@ class Story {
      *
      * @var Array
      */
-    private $sectionsByLocation = array();
+    private $sectionsByLocation = [];
 
     function __construct ($file) {
         //Opens .xml

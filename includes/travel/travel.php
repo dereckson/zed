@@ -47,7 +47,7 @@ class Travel {
      */
     function __construct () {
         //Initializes array
-        $this->globalTravelTo = array();
+        $this->globalTravelTo = [];
     }
 
     /**
@@ -101,7 +101,7 @@ class Travel {
         $travelPlace = $this->globalTravelTo[$from->global];
         foreach ($travelPlace->rewriteRules as $rule) {
             //$rule is an array [expression, global_location, local_location]
-            $subpatterns = array();
+            $subpatterns = [];
             $result = preg_match($rule[0], $expression, $subpatterns);
             if ($result > 0) {
                 //$subpatterns is an array with:

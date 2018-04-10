@@ -89,15 +89,15 @@ class GeoOctocube {
      */
     static function getBaseVector ($sector) {
         switch ($sector) {
-            case 0: return array(0, 0, 0);
-            case 1: return array(-1, 1, -1);
-            case 2: return array(1, 1, -1);
-            case 3: return array(-1, -1, -1);
-            case 4: return array(1, -1, -1);
-            case 5: return array(-1, 1, 1);
-            case 6: return array(1, 1, 1);
-            case 7: return array(-1, -1, 1);
-            case 8: return array(1, -1, 1);
+            case 0: return [0, 0, 0];
+            case 1: return [-1, 1, -1];
+            case 2: return [1, 1, -1];
+            case 3: return [-1, -1, -1];
+            case 4: return [1, -1, -1];
+            case 5: return [-1, 1, 1];
+            case 6: return [1, 1, 1];
+            case 7: return [-1, -1, 1];
+            case 8: return [1, -1, 1];
             default: message_die(GENERAL_ERROR, "Invalid sector: $sector", "GeoOctocube::getBaseVector");
         }
     }

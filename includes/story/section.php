@@ -59,12 +59,12 @@ class StorySection {
     /**
      * @var Array the section choices (array of StoryChoice items)
      */
-    public $choices = array();
+    public $choices = [];
 
     /*
      * @var Array the section hooks (array of StoryHook items)
      */
-    public $hooks = array();
+    public $hooks = [];
 
     /**
      * @var boolean if true, it's the story start ; otherwise, false;

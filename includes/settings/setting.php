@@ -93,7 +93,7 @@ class Setting {
         if ($this->object) {
             $object = $GLOBALS[$this->object];
             if ($this->method) {
-                return call_user_func(array($object, $this->method), $value);
+                return call_user_func([$object, $this->method], $value);
             } elseif ($property = $this->property) {
                 $object->$property = $value;
                 return true;
@@ -112,7 +112,7 @@ class Setting {
         if ($this->object) {
             $object = $GLOBALS[$this->object];
             if (method_exists($object, SETTINGS_SAVE_METHOD)) {
-                return call_user_func(array($object, SETTINGS_SAVE_METHOD));
+                return call_user_func([$object, SETTINGS_SAVE_METHOD]);
             }
         }
 
@@ -148,14 +148,14 @@ class Setting {
         $setting = new Setting($id);
 
         //Parses simple <tag>value</tag>
-        $properties = array('key', 'field', 'object', 'property', 'method', 'regExp');
+        $properties = ['key', 'field', 'object', 'property', 'method', 'regExp'];
         foreach ($properties as $property) {
             if ($xml->$property)
                 $setting->$property = (string)$xml->$property;
         }
 
         //Parses <handler>
-        $setting->handler = array();
+        $setting->handler = [];
         if ($xml->handler) {
             if ($xml->handler->get) $setting->handler['get'] = (string)$xml->handler->get;
             if ($xml->handler->set) $setting->handler['set'] = (string)$xml->handler->set;

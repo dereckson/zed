@@ -56,7 +56,7 @@ switch ($url[0]) {
                 //Checks if the given information is correct
                 //We ignore bad mails. All we really need is a login and a pass.
                 //We fill our array $errors with all the errors
-                $errors = array();
+                $errors = [];
                 if (!$_POST['username']) {
                     $errors[] = lang_get('MissingUsername');
                 } elseif (!User::is_available_login($_POST['username'])) {

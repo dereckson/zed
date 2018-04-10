@@ -74,7 +74,7 @@ class Database {
         if (!class_exists($engine_class)) {
             message_die(GENERAL_ERROR, "Can't initialize $engine database engine.<br />$engine_class class not found.", 'Setup issue');
         }
-        return call_user_func(array($engine_class, 'load'));
+        return call_user_func([$engine_class, 'load']);
     }
     
     static function cleanupConfiguration () {

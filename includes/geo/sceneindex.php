@@ -73,7 +73,7 @@ class GeoSceneIndex {
      *
      * @var Array
      */
-    static $instance = array();
+    static $instance = [];
 
     /**
      * Gets the index instance, initializing it if needed
@@ -131,8 +131,8 @@ class GeoSceneIndex {
      * Reads scene templates and indexes information
      */
     public function refresh_information () {
-        $this->global_templates = array();
-        $this->local_templates = array();
+        $this->global_templates = [];
+        $this->local_templates = [];
         $this->updated = filemtime($this->directory);
         if ($handle = opendir($this->directory)) {
             while (false !== ($file = readdir($handle))) {
@@ -167,7 +167,7 @@ class GeoSceneIndex {
      *  At key 1, a string with local location, or NULL if not specified
      */
     private static function get_template_location ($template) {
-        $location = array(NULL, NULL);
+        $location = [NULL, NULL];
 
         //Gets global location
         $pos1 = strpos($template, "Global location: ");

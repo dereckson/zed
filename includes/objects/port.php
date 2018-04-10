@@ -98,7 +98,7 @@ class Port {
      * @return string the status field value (e.g. "requiresPTA,default")
      */
     function getStatus () {
-        $flags = array('hidden', 'requiresPTA', 'default');
+        $flags = ['hidden', 'requiresPTA', 'default'];
         foreach ($flags as $flag) {
             if ($this->$flag) {
                 $status[] = $flag;

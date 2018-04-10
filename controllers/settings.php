@@ -61,7 +61,7 @@ foreach ($settings->pages as $tmppage) {
 if (array_key_exists('settings_page', $_POST)) {
     if ($_POST['settings_page'] == $page->id) {
         //Updates settings
-        $errors = array();
+        $errors = [];
         $page->handle_form($errors);
         if (count($errors)) {
             //Prints error message

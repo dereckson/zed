@@ -39,8 +39,8 @@ class User {
     public $email;
     public $regdate;
 
-    public static $hashtable_id = array();
-    public static $hashtable_name = array();
+    public static $hashtable_id = [];
+    public static $hashtable_name = [];
 
     /**
      * Initializes a new instance

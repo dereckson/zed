@@ -48,10 +48,10 @@ if (!defined('STDERR')) {
 
 //Ensures $lang is a standard array
 if (empty($lang) || !is_array($lang)) {
-    $lang = array();
+    $lang = [];
 }
 
-$lang = array_merge($lang, array(
+$lang = array_merge($lang, [
     //Errors
     'InvalidCommand' => "Invalid command %s. Use <strong>showcommands</strong> to show all commands.",
     'RegisteredButNotExistingCommand' => "[CRITICAL ERROR] The command %s has correctly been registered but its method or class doesn't exist.",
@@ -61,11 +61,11 @@ $lang = array_merge($lang, array(
     'DefaultHelp' => "This SmartLine is a command line interface.
                       <br /><br /><strong>showcommands</strong> prints the list.
                       <br /><strong>help &lt;command&gt;</strong> prints help for this command.",
-    'Help' => array(
+    'Help' => [
         'help' => "<strong>help &lt;command&gt;</strong> prints command help.",
         'showcommands' => 'show available commands'
-    )
-));
+    ]
+]);
 
 ///////////////////////////////////////////////////////////////////////////////
 // SECTION II - HELPERS FUNCTIONS
@@ -189,7 +189,7 @@ class SmartLine {
      */
     public function __construct () {
         //Assumes we've an empty array where store registered commands.
-        $this->commands = array();
+        $this->commands = [];
 
         //Let's register standard commands
         $this->register_object('showcommands', 'ShowCommandsSmartLineCommand');
@@ -444,13 +444,13 @@ class SmartLine {
             }
             return array_merge(
                 $this->expression2argv(substr($expression, 0, $pos1)),
-                array(substr($expression, $pos1 + 1, $pos2 - $pos1 - 1)),
+                [substr($expression, $pos1 + 1, $pos2 - $pos1 - 1)],
                 $this->expression2argv(substr($expression, $pos2 + 1))
             );
         }
 
         //Standard expression (ie without ")
-        $argv = array();
+        $argv = [];
         $items = explode(' ', $expression);
         foreach ($items as $item) {
             $item = trim($item);

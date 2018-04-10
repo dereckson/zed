@@ -60,7 +60,7 @@ class SettingsPage {
      * This property is an array of Setting items and maps the <setting> tags
      * @var Array
      */
-    public $settings = array();
+    public $settings = [];
 
     /**
      * Initializes a new instance of SettingsPage class
@@ -118,8 +118,8 @@ class SettingsPage {
      * @param Array $errors an array where the errors will be filled
      * @return boolean true if there isn't error ; otherwise, false.
      */
-    function handle_form (&$errors = array()) {
-        $objects = array();
+    function handle_form (&$errors = []) {
+        $objects = [];
 
         //Sets new settings values
         foreach ($this->settings as $setting) {
@@ -146,7 +146,7 @@ class SettingsPage {
             foreach ($objects as $object) {
                 $object = $GLOBALS[$object];
                 if (method_exists($object, SETTINGS_SAVE_METHOD)) {
-                    call_user_func(array($object, SETTINGS_SAVE_METHOD));
+                    call_user_func([$object, SETTINGS_SAVE_METHOD]);
                 }
             }
         }
