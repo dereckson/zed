@@ -136,5 +136,3 @@ class ProfileComment {
         return $comments;
     }
 }
-
-?>

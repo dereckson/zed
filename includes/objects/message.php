@@ -164,5 +164,3 @@ class Message {
         return $messages;
     }
 }
-
-?>
