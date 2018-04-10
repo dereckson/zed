@@ -79,7 +79,8 @@ class SettingsPage {
      */
     static function from_xml ($xml) {
         //Reads attributes
-        $id = ''; $title = '';
+        $id = '';
+        $title = '';
         foreach ($xml->attributes() as $key => $value) {
             switch ($key) {
                 case 'title':
