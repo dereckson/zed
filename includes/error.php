@@ -156,8 +156,7 @@ function message_die ($msg_code, $msg_text = '', $msg_title = '', $err_line = ''
  *
  * @deprecated since 0.1
  */
-function old_message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '', $err_file = '', $sql = '')
-{
+function old_message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '', $err_file = '', $sql = '') {
     global $db, $Utilisateur;
     $sql_store = $sql;
 

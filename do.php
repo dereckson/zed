@@ -126,8 +126,7 @@ class Actions {
      * @param string $hash the security hash
      * @return boolean true if the request is valid and have been processed ; otherwise, false.
      */
-    static function perso_request ($request_flag, $store, $key, $value, $hash)
-    {
+    static function perso_request ($request_flag, $store, $key, $value, $hash) {
         global $CurrentPerso;
 
         //Ensures we've the correct amount of arguments
@@ -174,8 +173,7 @@ class Actions {
      * @param string $location_local the local location
      * @return GeoLocation the current perso's GeoLocation object
      */
-    static function set_local_location ($location_local)
-    {
+    static function set_local_location ($location_local) {
         global $CurrentPerso;
 
         //Ensures we've the correct amount of arguments
@@ -210,8 +208,7 @@ class Actions {
      * Valid moves string are north, east, south, west, up and down.
      * Valid moves coordinates are x,y,z (3 integers, comma as separator)
      */
-    static function local_move ($move, $factor = 1)
-    {
+    static function local_move ($move, $factor = 1) {
         global $CurrentPerso;
 
         //Ensures we've the correct amount of arguments

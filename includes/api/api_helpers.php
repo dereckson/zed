@@ -40,8 +40,7 @@
  * @param string $unknownNodeName Name to give to unknown (numeric) keys
  * @return string XML
  */
-function toXml($data, $rootNodeName = 'data', $xml = null, $unknownNodeName = 'unknownNode')
-{
+function toXml($data, $rootNodeName = 'data', $xml = null, $unknownNodeName = 'unknownNode') {
     if (!$rootNodeName) {
         $rootNodeName = 'data';
     }

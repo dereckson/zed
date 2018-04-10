@@ -76,9 +76,8 @@ function nbc () {
     return $row[0];
 }
 
-function get_info ($info)
+function get_info ($info) {
 //Renvoie une variable de la session
-{
     global $db;
     $sql = "SELECT $info FROM " . TABLE_SESSIONS . " WHERE session_id LIKE '$_SESSION[ID]'";
     if ( !($result = $db->sql_query($sql)) ) message_die(SQL_ERROR, "Impossible d'obtenir $info", '', __LINE__, __FILE__, $sql);
@@ -86,9 +85,8 @@ function get_info ($info)
     return $row[$info];
 }
 
-function get_logged_user ()
+function get_logged_user () {
 //Renvoie toutes les informations d'un utilisateur
-{
     global $db;
     $sql = "SELECT * FROM " . TABLE_SESSIONS . " WHERE session_id LIKE '$_SESSION[ID]'";
     if ( !($result = $db->sql_query($sql)) ) message_die(SQL_ERROR, "Impossible d'obtenir les informations de l'utilisateur", '', __LINE__, __FILE__, $sql);
@@ -102,9 +100,8 @@ function get_logged_user ()
     return $user;
 }
 
-function set_info ($info, $value)
+function set_info ($info, $value) {
 //Définit une variable session
-{
     global $db;
     $value = ($value === null) ? 'NULL' : "'" . $db->sql_escape($value) . "'";
     $sql = "UPDATE " . TABLE_SESSIONS . " SET $info = $value WHERE session_id LIKE '$_SESSION[ID]'";
