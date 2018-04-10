@@ -112,7 +112,7 @@ function toXml($data, $rootNodeName = 'data', $xml = null, $unknownNodeName = 'u
             //Adds single node.
             if ($value || $value === 0) {
                 $value = htmlentities($value);
-                $xml->addChild($key,$value);
+                $xml->addChild($key, $value);
             }
         }
     }

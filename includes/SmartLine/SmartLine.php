@@ -32,7 +32,7 @@
  * The standard, regular output (like STDOUT on POSIX systems)
  */
 if (!defined('STDOUT')) {
-    define('STDOUT',  1, true);
+    define('STDOUT', 1, true);
 }
 
 /**

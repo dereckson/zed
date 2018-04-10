@@ -37,7 +37,7 @@
 /**
  * Magic number which indicates the user is not logged in.
  */
-define('USER_NOT_LOGGED',    -9);
+define('USER_NOT_LOGGED', -9);
 
 /**
  * Magic number which indicates the user is logged in, but haven't selected its perso.

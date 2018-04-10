@@ -34,7 +34,7 @@
  *
  * As a message_die function parameter, it allows to add SQL specific debug information.
  */
-define ("SQL_ERROR",  65);
+define ("SQL_ERROR", 65);
 
 /**
  * HACK_ERROR is the constant meaning access is non authorized to the resource.
