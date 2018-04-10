@@ -101,8 +101,9 @@ function message_die ($msg_code, $msg_text = '', $msg_title = '', $err_line = ''
     if ($smarty) {
         $debug_text = $msg_text;
 
-        if ($err_line && $err_file)
+        if ($err_line && $err_file) {
             $debug_text .= ' &mdash; ' . $err_file. ', ' . lang_get('line') . ' ' . $err_line ;
+        }
 
         switch ($msg_code) {
             case HACK_ERROR:
@@ -124,10 +125,11 @@ function message_die ($msg_code, $msg_text = '', $msg_title = '', $err_line = ''
                 //Falls to GENERAL_ERROR
 
             case GENERAL_ERROR:
-                if ($msg_title)
+                if ($msg_title) {
             $smarty->assign('TITLE', $msg_title);
-        else
+        } else {
             $smarty->assign('TITLE', lang_get('GeneralError'));
+        }
                 break;
         }
 

@@ -140,8 +140,9 @@ class GeoLocation {
      */
     function load_classes () {
         //No data, no class to load
-        if (!count($this->data))
+        if (!count($this->data)) {
             return;
+        }
 
         //Loads global classes
         $global = $this->data[0];
@@ -252,8 +253,9 @@ class GeoLocation {
             case 'B':
                 switch (strlen($this->data[0])) {
                     case 9:
-                        if (!$place = GeoPlace::from_code($this->data[0]))
+                        if (!$place = GeoPlace::from_code($this->data[0])) {
                             return false;
+                        }
                         break;
 
                     case 6:
@@ -328,8 +330,9 @@ class GeoLocation {
      * @return string a string representing the current location
      */
     function __toString () {
-        if (!$this->data[0])
+        if (!$this->data[0]) {
             return "";
+        }
 
         switch ($this->data[0][0]) {
             case 'S':

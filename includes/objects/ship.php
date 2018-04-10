@@ -279,8 +279,9 @@ class Ship {
         //Cleans old sessions
         global $db;
         $sql = "DELETE FROM " . TABLE_REGISTRY . " WHERE registry_key LIKE 'api.ship.session.%' AND registry_updated < NOW() - 7200";
-        if (!$db->sql_query($sql))
+        if (!$db->sql_query($sql)) {
             message_die(SQL_ERROR, "Can't delete old ship API sessions", '', __LINE__, __FILE__, $sql);
+        }
     }
 
     /**

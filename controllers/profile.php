@@ -307,8 +307,9 @@ if ($mode == 'view') {
 
             if (!$template) {
                 $photos = ProfilePhoto::get_photos($profile->perso_id);
-                if (!$smarty->tpl_vars['NOTIFY'])
+                if (!$smarty->tpl_vars['NOTIFY']) {
                     $smarty->assign('NOTIFY', "Your feedback is valued. Report any bug or suggestion on the graffiti wall.");
+                }
                 $template = 'profile_photo.tpl';
             }
             break;

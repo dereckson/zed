@@ -180,8 +180,9 @@ class Content {
         //Saves location
         $id = $this->id ? "'" . $db->sql_escape($this->id) . "'" : 'NULL';
         $sql = "REPLACE INTO content_locations (location_global, location_local, location_k, content_id) VALUES ($location_global, $location_local, $location_k, $id)";
-        if (!$db->sql_query($sql))
+        if (!$db->sql_query($sql)) {
             message_die(SQL_ERROR, "Can't save content location", '', __LINE__, __FILE__, $sql);
+        }
     }
 
 /*  -------------------------------------------------------------

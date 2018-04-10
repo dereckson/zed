@@ -99,8 +99,9 @@ function registry_set ($key, $value) {
     $key = $db->sql_escape($key);
     $value = $db->sql_escape($value);
     $sql = "REPLACE INTO " . TABLE_REGISTRY . " (registry_key, registry_value) VALUES ('$key', '$value')";
-    if (!$db->sql_query($sql))
+    if (!$db->sql_query($sql)) {
         message_die(SQL_ERROR, "Can't update registry", '', __LINE__, __FILE__, $sql);
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -133,8 +134,9 @@ function generate_random_string ($format) {
         if (preg_match("/^[a-zA-Z]/", $format[$i]))
         {
             $add=$t_alphabet[mt_rand() % sizeof($t_alphabet)];
-            if (preg_match("/^[a-z]/", $format[$i]))
+            if (preg_match("/^[a-z]/", $format[$i])) {
                 $add=strtolower($add);
+            }
         }
         elseif(preg_match("/^[0-9]/", $format[$i]))
             $add=$t_number[mt_rand() % sizeof($t_number)];
@@ -278,8 +280,9 @@ function supralog ($category, $message, $source = null) {
     $sql = "INSERT INTO " . TABLE_LOG .
            " (entry_ip, user_id, perso_id, entry_category, entry_message, entry_source) VALUES
              ('$ip', $CurrentUser->id, $CurrentPerso->id, '$category', '$message', '$source')";
-    if ( !($result = $db->sql_query($sql)) )
+    if ( !($result = $db->sql_query($sql)) ) {
         message_die(SQL_ERROR, "Can't log this entry.", '', __LINE__, __FILE__, $sql);
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -302,8 +305,9 @@ function initialize_lang () {
         $_SESSION['lang'] = $lang ? $lang : '-';
     }
 
-    if ($_SESSION['lang'] != '-')
+    if ($_SESSION['lang'] != '-') {
         define('LANG', $_SESSION['lang']);
+    }
 }
 
 /**
@@ -324,8 +328,9 @@ function find_lang () {
 
         //The array $langs contains now the language available.
         //Gets the langs the user should want:
-        if (!$userlangs = get_http_accept_languages())
+        if (!$userlangs = get_http_accept_languages()) {
             return;
+        }
 
         //Gets the intersection between the both languages arrays
         //If it matches, returns first result
@@ -338,8 +343,9 @@ function find_lang () {
         //by default return en-US and not en or fr-BE and not fr, so second pass
         foreach ($userlangs as $userlang) {
             $lang = explode('-', $userlang);
-            if (count($lang) > 1)
+            if (count($lang) > 1) {
                 $userlangs2[] = $lang[0];
+            }
         }
         $intersect = array_intersect($userlangs2, $langs);
         if (count($intersect)) {
@@ -390,12 +396,14 @@ function lang_load ($file, $sections = null) {
     global $smarty;
 
     //Loads English file as fallback if some parameters are missing
-    if (file_exists("lang/en/$file"))
+    if (file_exists("lang/en/$file")) {
         $smarty->configLoad("lang/en/$file", $sections);
+    }
 
     //Loads wanted file (if it exists and a language have been defined)
-    if (defined('LANG') && LANG != 'en' && file_exists('lang/' . LANG . '/' . $file))
+    if (defined('LANG') && LANG != 'en' && file_exists('lang/' . LANG . '/' . $file)) {
         $smarty->configLoad('lang/' . LANG . '/' . $file, $sections);
+    }
 }
 
 /**

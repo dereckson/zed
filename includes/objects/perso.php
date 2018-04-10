@@ -252,8 +252,9 @@ class Perso {
             $sql = "UPDATE " . TABLE_PERSOS .
                    " SET location_global = '$g', location_local = '$l'" .
                    " WHERE perso_id = '$perso_id'";
-            if (!$db->sql_query($sql))
+            if (!$db->sql_query($sql)) {
                 message_die(SQL_ERROR, "Can't save new $global $local location.", '', __LINE__, __FILE__, $sql);
+            }
         } elseif ($global != null) {
             $this->save_field('location_global');
         } elseif ($local != null) {
@@ -296,8 +297,9 @@ class Perso {
      */
     public function set_flag ($key, $value = 1) {
         //Checks if flag isn't already set at this value
-        if ($this->flags != null && array_key_exists($key, $this->flags) && $this->flags[$key] === $value)
+        if ($this->flags != null && array_key_exists($key, $this->flags) && $this->flags[$key] === $value) {
             return;
+        }
 
         //Saves flag to database
         global $db;
@@ -305,8 +307,9 @@ class Perso {
         $key = $db->sql_escape($key);
         $value = $db->sql_escape($value);
         $sql = "REPLACE " . TABLE_PERSOS_FLAGS . " SET perso_id = '$id', flag_key = '$key', flag_value = '$value'";
-        if (!$db->sql_query($sql))
+        if (!$db->sql_query($sql)) {
             message_die(SQL_ERROR, "Can't save flag", '', __LINE__, __FILE__, $sql);
+        }
 
         //Sets flag in this perso instance
         $this->flags[$key] = $value;
@@ -325,8 +328,9 @@ class Perso {
         $key = $db->sql_escape($key);
         $sql = "DELETE FROM " . TABLE_PERSOS_FLAGS  .
                " WHERE flag_key = '$key' AND perso_id = '$id' LIMIT 1";
-        if (!$db->sql_query($sql))
+        if (!$db->sql_query($sql)) {
             message_die(SQL_ERROR, "Can't delete flag", '', __LINE__, __FILE__, $sql);
+        }
     }
 
     /**
@@ -379,8 +383,9 @@ class Perso {
         $code = $db->sql_escape($code);
         $text = $db->sql_escape($text);
         $sql = "REPLACE INTO " . TABLE_PERSOS_NOTES  . " (perso_id, note_code, note_text) VALUES ('$id', '$code', '$text')";
-        if (!$db->sql_query($sql))
+        if (!$db->sql_query($sql)) {
             message_die(SQL_ERROR, "Can't save note", '', __LINE__, __FILE__, $sql);
+        }
     }
 
     /**

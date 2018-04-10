@@ -93,8 +93,9 @@ class StorySection {
      */
     function get_choice ($guid) {
         foreach ($this->choices as $choice) {
-            if ($choice->guid == $guid)
+            if ($choice->guid == $guid) {
                 return $choice;
+            }
         }
 
         return null;

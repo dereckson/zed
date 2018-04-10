@@ -128,8 +128,9 @@ class ContentLocation {
         $content_id = $this->content_id ? "'" . $db->sql_escape($this->content_id) . "'" : 'NULL';
 
         $sql = "REPLACE INTO content_locations (location_global, location_local, location_k, content_id) VALUES ($location_global, $location_local, $location_k, $content_id)";
-        if (!$db->sql_query($sql))
+        if (!$db->sql_query($sql)) {
             message_die(SQL_ERROR, "Can't save content location", '', __LINE__, __FILE__, $sql);
+        }
     }
 
 /*  -------------------------------------------------------------
@@ -148,8 +149,9 @@ class ContentLocation {
         $location_global = "'" . $db->sql_escape($location_global) . "'";
         $location_local = "'" . $db->sql_escape($location_local) . "'";
         $sql = "SELECT MAX(location_k) + 1 FROM content_locations WHERE location_global = '$location_global' AND location_local = '$location_local'";
-        if (!$result = $db->sql_query($sql))
+        if (!$result = $db->sql_query($sql)) {
             message_die(SQL_ERROR, "Can't get content location k", '', __LINE__, __FILE__, $sql);
+        }
         $row = $db->sql_fetchrow($result);
         return $row[0];
     }
@@ -162,8 +164,9 @@ class ContentLocation {
         $location_local = "'" . $db->sql_escape($this->location_local) . "'";
         $location_k = "'" . $db->sql_escape($this->location_k) . "'";
         $sql = "DELETE FROM content_locations WHERE location_global = '$location_global' AND location_local = '$location_local' AND location_k = '$location_k' LIMIT 1";
-        if (!$db->sql_query($sql))
+        if (!$db->sql_query($sql)) {
             message_die(SQL_ERROR, "Can't delete current content location", '', __LINE__, __FILE__, $sql);
+        }
     }
 
     /**

@@ -199,12 +199,14 @@ class User {
         if (!$this->id) $this->save_to_database();
         $url = $db->sql_escape($url);
         $sql = "DELETE FROM " . TABLE_USERS_AUTH . " WHERE auth_type = 'OpenID' AND user_id = $this->id";
-        if (!$db->sql_query($sql))
+        if (!$db->sql_query($sql)) {
             message_die(SQL_ERROR, "Can't delete old OpenID", '', __LINE__, __FILE__, $sql);
+        }
         if ($url != '') {
             $sql = "INSERT INTO " . TABLE_USERS_AUTH . " (auth_type, auth_identity, user_id) VALUES ('OpenID', '$url', $this->id)";
-            if (!$db->sql_query($sql))
+            if (!$db->sql_query($sql)) {
                 message_die(SQL_ERROR, "Can't add new OpenID", '', __LINE__, __FILE__, $sql);
+            }
         }
     }
 
