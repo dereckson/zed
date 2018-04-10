@@ -99,11 +99,11 @@ function SmartLineHandler($level, $error, $file, $line) {
         $type = 'Notice';
         break;
 
-       CASE E_WARNING:
+       case E_WARNING:
         $type = 'Warning';
         break;
 
-       CASE E_ERROR:
+       case E_ERROR:
         $type = 'Error';
         break;
 
