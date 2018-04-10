@@ -53,10 +53,18 @@ class ProfileComment {
      * Loads the object comment (ie fill the properties) from the $_POST array
      */
     function load_from_form () {
-          if (array_key_exists('perso_id', $_POST)) $this->perso_id = $_POST['perso_id'];
-          if (array_key_exists('author', $_POST)) $this->author = $_POST['author'];
-          if (array_key_exists('date', $_POST)) $this->date = $_POST['date'];
-          if (array_key_exists('text', $_POST)) $this->text = $_POST['text'];
+          if (array_key_exists('perso_id', $_POST)) {
+            $this->perso_id = $_POST['perso_id'];
+          }
+          if (array_key_exists('author', $_POST)) {
+            $this->author = $_POST['author'];
+          }
+          if (array_key_exists('date', $_POST)) {
+            $this->date = $_POST['date'];
+          }
+          if (array_key_exists('text', $_POST)) {
+            $this->text = $_POST['text'];
+          }
     }
 
     /**
@@ -66,7 +74,9 @@ class ProfileComment {
         global $db;
         $id = $db->sql_escape($this->id);
         $sql = "SELECT c.*, p.perso_name as author FROM " . TABLE_PROFILES_COMMENTS . " c, " . TABLE_PERSOS . " p WHERE c.comment_id = '$id' AND p.perso_id = c.comment_author";
-        if ( !($result = $db->sql_query($sql)) ) message_die(SQL_ERROR, "Unable to query azhar_profiles_comments", '', __LINE__, __FILE__, $sql);
+        if ( !($result = $db->sql_query($sql)) ) {
+            message_die(SQL_ERROR, "Unable to query azhar_profiles_comments", '', __LINE__, __FILE__, $sql);
+        }
         if (!$row = $db->sql_fetchrow($result)) {
             $this->lastError = "comment unknown: " . $this->id;
             return false;

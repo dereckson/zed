@@ -56,11 +56,21 @@ class Message {
      * Loads the object Message (ie fill the properties) from the $_POST array
      */
     function load_from_form () {
-        if (array_key_exists('date', $_POST)) $this->date = $_POST['date'];
-        if (array_key_exists('from', $_POST)) $this->from = $_POST['from'];
-        if (array_key_exists('to', $_POST)) $this->to = $_POST['to'];
-        if (array_key_exists('text', $_POST)) $this->text = $_POST['text'];
-        if (array_key_exists('flag', $_POST)) $this->flag = $_POST['flag'];
+        if (array_key_exists('date', $_POST)) {
+            $this->date = $_POST['date'];
+        }
+        if (array_key_exists('from', $_POST)) {
+            $this->from = $_POST['from'];
+        }
+        if (array_key_exists('to', $_POST)) {
+            $this->to = $_POST['to'];
+        }
+        if (array_key_exists('text', $_POST)) {
+            $this->text = $_POST['text'];
+        }
+        if (array_key_exists('flag', $_POST)) {
+            $this->flag = $_POST['flag'];
+        }
     }
 
     /**
@@ -69,7 +79,9 @@ class Message {
     function load_from_database () {
         global $db;
         $sql = "SELECT * FROM messages WHERE message_id = '" . $this->id . "'";
-        if ( !($result = $db->sql_query($sql)) ) message_die(SQL_ERROR, "Unable to query messages", '', __LINE__, __FILE__, $sql);
+        if ( !($result = $db->sql_query($sql)) ) {
+            message_die(SQL_ERROR, "Unable to query messages", '', __LINE__, __FILE__, $sql);
+        }
         if (!$row = $db->sql_fetchrow($result)) {
             $this->lastError = "Message unknown: " . $this->id;
             return false;

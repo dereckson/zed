@@ -51,10 +51,18 @@ class ContentZone {
      * Loads the object zone (ie fill the properties) from the $_POST array
      */
     function load_from_form () {
-        if (array_key_exists('title', $_POST)) $this->user_id = $_POST['title'];
-        if (array_key_exists('type', $_POST)) $this->user_id = $_POST['type'];
-        if (array_key_exists('params', $_POST)) $this->user_id = $_POST['params'];
-        if (array_key_exists('deleted', $_POST)) $this->user_id = $_POST['deleted'];
+        if (array_key_exists('title', $_POST)) {
+            $this->user_id = $_POST['title'];
+        }
+        if (array_key_exists('type', $_POST)) {
+            $this->user_id = $_POST['type'];
+        }
+        if (array_key_exists('params', $_POST)) {
+            $this->user_id = $_POST['params'];
+        }
+        if (array_key_exists('deleted', $_POST)) {
+            $this->user_id = $_POST['deleted'];
+        }
     }
 
     /**
@@ -76,7 +84,9 @@ class ContentZone {
         $id = $db->sql_escape($this->id);
 
         $sql = "SELECT * FROM " . TABLE_CONTENT_ZONES . " WHERE zone_id = '" . $id . "'";
-        if (!$result = $db->sql_query($sql)) message_die(SQL_ERROR, 'Unable to query content_zones', '', __LINE__, __FILE__, $sql);
+        if (!$result = $db->sql_query($sql)) {
+            message_die(SQL_ERROR, 'Unable to query content_zones', '', __LINE__, __FILE__, $sql);
+        }
         if (!$row = $db->sql_fetchrow($result)) {
             $this->lastError = 'Zone unknown: ' . $this->id;
             return false;

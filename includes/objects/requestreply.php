@@ -49,10 +49,18 @@ class RequestReply {
      * Loads the object RequestReply (ie fill the properties) from the $_POST array
      */
     function load_from_form () {
-        if (array_key_exists('request_id', $_POST)) $this->request_id = $_POST['request_id'];
-        if (array_key_exists('author', $_POST)) $this->author = $_POST['author'];
-        if (array_key_exists('date', $_POST)) $this->date = $_POST['date'];
-        if (array_key_exists('text', $_POST)) $this->text = $_POST['text'];
+        if (array_key_exists('request_id', $_POST)) {
+            $this->request_id = $_POST['request_id'];
+        }
+        if (array_key_exists('author', $_POST)) {
+            $this->author = $_POST['author'];
+        }
+        if (array_key_exists('date', $_POST)) {
+            $this->date = $_POST['date'];
+        }
+        if (array_key_exists('text', $_POST)) {
+            $this->text = $_POST['text'];
+        }
     }
 
     /**
@@ -62,7 +70,9 @@ class RequestReply {
         global $db;
         $id = $db->sql_escape($this->id);
         $sql = "SELECT * FROM " . TABLE_REQUESTS_REPLIES . " WHERE request_reply_id = '" . $id . "'";
-        if (!$result = $db->sql_query($sql)) message_die(SQL_ERROR, "Unable to query requests_replies", '', __LINE__, __FILE__, $sql);
+        if (!$result = $db->sql_query($sql)) {
+            message_die(SQL_ERROR, "Unable to query requests_replies", '', __LINE__, __FILE__, $sql);
+        }
         if (!$row = $db->sql_fetchrow($result)) {
             $this->lastError = "RequestReply unknown: " . $this->id;
             return false;

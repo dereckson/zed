@@ -96,11 +96,21 @@ class Ship {
      * Loads the object Ship (ie fill the properties) from the $_POST array
      */
     function load_from_form () {
-        if (array_key_exists('name', $_POST)) $this->name = $_POST['name'];
-        if (array_key_exists('location_global', $_POST)) $this->location = $_POST['location_global'];
-        if (array_key_exists('location_local', $_POST)) $this->location = $_POST['location_local'];
-        if (array_key_exists('api_key', $_POST)) $this->api_key = $_POST['api_key'];
-        if (array_key_exists('description', $_POST)) $this->description = $_POST['description'];
+        if (array_key_exists('name', $_POST)) {
+            $this->name = $_POST['name'];
+        }
+        if (array_key_exists('location_global', $_POST)) {
+            $this->location = $_POST['location_global'];
+        }
+        if (array_key_exists('location_local', $_POST)) {
+            $this->location = $_POST['location_local'];
+        }
+        if (array_key_exists('api_key', $_POST)) {
+            $this->api_key = $_POST['api_key'];
+        }
+        if (array_key_exists('description', $_POST)) {
+            $this->description = $_POST['description'];
+        }
     }
 
     /**
@@ -110,7 +120,9 @@ class Ship {
         global $db;
         $id = $db->sql_escape($this->id);
         $sql = "SELECT * FROM ships WHERE ship_id = '" . $id . "'";
-        if ( !($result = $db->sql_query($sql)) ) message_die(SQL_ERROR, "Unable to query Ships", '', __LINE__, __FILE__, $sql);
+        if ( !($result = $db->sql_query($sql)) ) {
+            message_die(SQL_ERROR, "Unable to query Ships", '', __LINE__, __FILE__, $sql);
+        }
         if (!$row = $db->sql_fetchrow($result)) {
             $this->lastError = "Ship unknown: " . $this->id;
             return false;
@@ -310,9 +322,12 @@ class Ship {
         global $db;
         $key = $db->sql_escape($key);
         $sql = "SELECT * FROM ships WHERE api_key = '" . $key . "'";
-        if ( !($result = $db->sql_query($sql)) ) message_die(SQL_ERROR, "Unable to query ships", '', __LINE__, __FILE__, $sql);
-        if (!$row = $db->sql_fetchrow($result))
+        if ( !($result = $db->sql_query($sql)) ) {
+            message_die(SQL_ERROR, "Unable to query ships", '', __LINE__, __FILE__, $sql);
+        }
+        if (!$row = $db->sql_fetchrow($result)) {
             return null;
+        }
 
         //Fills ship information
         $ship = new Ship();

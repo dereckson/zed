@@ -115,7 +115,9 @@ class StorySection {
         foreach ($xml->attributes() as $key => $value) {
             switch ($key) {
                 case 'start':
-                    if ($value) $start = true;
+                    if ($value) {
+                        $start = true;
+                    }
                     break;
 
                 case 'id':

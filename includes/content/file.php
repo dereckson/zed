@@ -74,12 +74,20 @@ class ContentFile {
      * @param boolean $allowSensibleFields if false, allow only title to be defined ; otherwise, allow all fields.
      */
     function load_from_form ($allowSensibleFields = false) {
-        if (array_key_exists('title', $_POST)) $this->title = $_POST['title'];
+        if (array_key_exists('title', $_POST)) {
+            $this->title = $_POST['title'];
+        }
 
         if ($allowSensibleFields) {
-            if (array_key_exists('path', $_POST)) $this->path = $_POST['path'];
-            if (array_key_exists('user_id', $_POST)) $this->user_id = $_POST['user_id'];
-            if (array_key_exists('perso_id', $_POST)) $this->perso_id = $_POST['perso_id'];
+            if (array_key_exists('path', $_POST)) {
+                $this->path = $_POST['path'];
+            }
+            if (array_key_exists('user_id', $_POST)) {
+                $this->user_id = $_POST['user_id'];
+            }
+            if (array_key_exists('perso_id', $_POST)) {
+                $this->perso_id = $_POST['perso_id'];
+            }
         }
     }
 
@@ -90,7 +98,9 @@ class ContentFile {
         global $db;
         $id = $db->sql_escape($this->id);
         $sql = "SELECT * FROM content_files WHERE content_id = '" . $id . "'";
-        if ( !($result = $db->sql_query($sql)) ) message_die(SQL_ERROR, "Unable to query content", '', __LINE__, __FILE__, $sql);
+        if ( !($result = $db->sql_query($sql)) ) {
+            message_die(SQL_ERROR, "Unable to query content", '', __LINE__, __FILE__, $sql);
+        }
         if (!$row = $db->sql_fetchrow($result)) {
             $this->lastError = "Content unknown: " . $this->id;
             return false;

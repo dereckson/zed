@@ -67,12 +67,16 @@ class GeoScene {
 
         //Gets local scene
         if ($location->containsLocalLocation) {
-            if ($this->get_local_scene()) return;
+            if ($this->get_local_scene()) {
+                return;
+            }
         }
 
         //Gets global scene
         if ($location->containsGlobalLocation) {
-            if ($this->get_global_scene()) return;
+            if ($this->get_global_scene()) {
+                return;
+            }
         }
 
         //If not scene found, let's set a warning

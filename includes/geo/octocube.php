@@ -51,13 +51,21 @@ class GeoOctocube {
      */
     static function getSector ($x, $y, $z) {
         //Cube center
-        if ($x == 0 && $y == 0 && $z == 0) return 0;
+        if ($x == 0 && $y == 0 && $z == 0) {
+            return 0;
+        }
 
         //One of the 8 cubes
         $sector = 1;
-        if ($x >= 0) $sector++;      //we're at right
-        if ($y < 0)  $sector += 2;  //we're at bottom
-        if ($z >= 0) $sector += 4; //we're on the top layer
+        if ($x >= 0) {
+            $sector++;     //we're at right
+        }
+        if ($y < 0) {
+            $sector += 2;  //we're at bottom
+        }
+        if ($z >= 0) {
+            $sector += 4;  //we're on the top layer
+        }
 
         return $sector;
     }
@@ -111,21 +119,25 @@ class GeoOctocube {
      * @return string a SQL clause like "([0-9]+, -[0,9]+, [0,9]+)"
      */
     static function getRlikePatternFromSector ($sector, $z = null) {
-        if ($sector == 0) return "(0, 0, 0)";
+        if ($sector == 0) {
+            return "(0, 0, 0)";
+        }
 
         $vector = self::getBaseVector($sector);
 
         //x
-        if ($vector[0] == 1)
+        if ($vector[0] == 1) {
             $query = "([0-9]+, ";
-        else
+        } else {
             $query = "(-[0-9]+, ";
+        }
 
         //y
-        if ($vector[1] == 1)
+        if ($vector[1] == 1) {
             $query .= "[0-9]+, ";
-        else
+        } else {
             $query .= "-[0-9]+, ";
+        }
 
         //z
         if ($z !== null) {

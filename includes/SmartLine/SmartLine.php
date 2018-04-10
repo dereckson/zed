@@ -206,7 +206,9 @@ class SmartLine {
      * @return bool true if the command have successfully been registered ; otherwise, false.
      */
     public function register_method ($command, $method = null, $useArgvArgc = false) {
-        if (is_null($function)) $method = $command;
+        if (is_null($function)) {
+            $method = $command;
+        }
 
         if (!method_exists($this, $method)) {
             $this->lastError = "Registration failed. Unknown method $method";
@@ -302,7 +304,9 @@ class SmartLine {
      */
     public function execute ($expression) {
         //Does nothing if blank line
-        if (!$expression) return;
+        if (!$expression) {
+            return;
+        }
 
         //Prepares $argv and $argc
         $argv = $this->expression2argv($expression);

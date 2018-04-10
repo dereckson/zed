@@ -69,12 +69,24 @@ class GeoPlace {
      * Loads the object place (ie fill the properties) from the $_POST array
      */
     function load_from_form () {
-        if (array_key_exists('body_code', $_POST)) $this->body_code = $_POST['body_code'];
-        if (array_key_exists('code', $_POST)) $this->code = $_POST['code'];
-        if (array_key_exists('name', $_POST)) $this->name = $_POST['name'];
-        if (array_key_exists('description', $_POST)) $this->description = $_POST['description'];
-        if (array_key_exists('status', $_POST)) $this->status = $_POST['status'];
-        if (array_key_exists('location_local_format', $_POST)) $this->location_local_format = $_POST['location_local_format'];
+        if (array_key_exists('body_code', $_POST)) {
+            $this->body_code = $_POST['body_code'];
+        }
+        if (array_key_exists('code', $_POST)) {
+            $this->code = $_POST['code'];
+        }
+        if (array_key_exists('name', $_POST)) {
+            $this->name = $_POST['name'];
+        }
+        if (array_key_exists('description', $_POST)) {
+            $this->description = $_POST['description'];
+        }
+        if (array_key_exists('status', $_POST)) {
+            $this->status = $_POST['status'];
+        }
+        if (array_key_exists('location_local_format', $_POST)) {
+            $this->location_local_format = $_POST['location_local_format'];
+        }
     }
 
     /**
@@ -83,7 +95,9 @@ class GeoPlace {
     function load_from_database () {
         global $db;
         $sql = "SELECT * FROM " . TABLE_PLACES . " WHERE place_id = '" . $this->id . "'";
-        if ( !($result = $db->sql_query($sql)) ) message_die(SQL_ERROR, "Unable to query geo_places", '', __LINE__, __FILE__, $sql);
+        if ( !($result = $db->sql_query($sql)) ) {
+            message_die(SQL_ERROR, "Unable to query geo_places", '', __LINE__, __FILE__, $sql);
+        }
         if (!$row = $db->sql_fetchrow($result)) {
             $this->lastError = "place unknown: " . $this->id;
             return false;
@@ -175,7 +189,9 @@ class GeoPlace {
     static function from_code ($code) {
         global $db;
         $sql = "SELECT * FROM " . TABLE_PLACES . " WHERE CONCAT('B', body_code, place_code) LIKE '$code'";
-        if (!$result = $db->sql_query($sql)) message_die(SQL_ERROR, "Unable to query geo_places", '', __LINE__, __FILE__, $sql);
+        if (!$result = $db->sql_query($sql)) {
+            message_die(SQL_ERROR, "Unable to query geo_places", '', __LINE__, __FILE__, $sql);
+        }
         if (!$row = $db->sql_fetchrow($result)) {
             return null;
         }

@@ -47,7 +47,9 @@ class GeoGalaxy {
     static function getCoordinates () {
         global $db;
         $sql = "SELECT * FROM geo_coordinates";
-        if (!$result = $db->sql_query($sql)) message_die(SQL_ERROR, "Can't query geo_coordinates view.", '', __LINE__, __FILE__, $sql);
+        if (!$result = $db->sql_query($sql)) {
+            message_die(SQL_ERROR, "Can't query geo_coordinates view.", '', __LINE__, __FILE__, $sql);
+        }
 
         $objects = [];
         while ($row = $db->sql_fetchrow($result)) {
@@ -94,7 +96,9 @@ class GeoGalaxy {
         $rho = sqrt($x * $x + $y * $y + $z * $z);    //ρ = sqrt(x² + y² + z²)
         $theta= acos($z / $rho);                    //φ = acos z/φ
         $phi = acos($x / sqrt($x * $x + $y * $y)); //θ = acos x / sqrt(x² + y²)
-        if (y < 0) $phi = 2 * M_PI - $phi;        //∀ y < 0     θ = 2π - θ
+        if (y < 0) {
+            $phi = 2 * M_PI - $phi;        //∀ y < 0     θ = 2π - θ
+        }
 
         return [round($rho, 2), round(rad2deg($theta), 2), round(rad2deg($phi), 2)];
     }

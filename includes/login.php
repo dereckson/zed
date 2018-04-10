@@ -58,7 +58,9 @@ function openid_login ($url) {
          . " WHERE auth_type = 'OpenID' AND auth_identity LIKE '$url'";
     if ($user_id = $db->sql_query_express($sql)) {
         $sql = "UPDATE " . TABLE_SESSIONS . " SET user_id = '$user_id' WHERE session_id LIKE '$_SESSION[ID]'";
-        if (!$db->sql_query($sql)) message_die(SQL_ERROR, "Can't update session table", '', __LINE__, __FILE__, $sql);
+        if (!$db->sql_query($sql)) {
+            message_die(SQL_ERROR, "Can't update session table", '', __LINE__, __FILE__, $sql);
+        }
         $LoginSuccessful = true;
         setcookie("LastOpenID", $url, time() + 2592000);
         header("location: " . get_url());

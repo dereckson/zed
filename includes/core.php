@@ -52,7 +52,9 @@ function get_name ($perso_id) {
     global $db;
     $perso_id = $db->sql_escape($perso_id);
     $sql = 'SELECT perso_nickname FROM '. TABLE_PERSOS . " WHERE perso_id = '$perso_id'";
-    if (!$result = $db->sql_query($sql)) message_die(SQL_ERROR, "Can't query persos table.", '', __LINE__, __FILE__, $sql);
+    if (!$result = $db->sql_query($sql)) {
+        message_die(SQL_ERROR, "Can't query persos table.", '', __LINE__, __FILE__, $sql);
+    }
     $row = $db->sql_fetchrow($result);
     return $row['perso_nickname'];
 }
@@ -67,7 +69,9 @@ function get_userid ($username) {
     global $db;
     $username = $db->sql_escape($username);
     $sql = 'SELECT user_id FROM '. TABLE_USERS . " WHERE username LIKE '$username'";
-    if (!$result = $db->sql_query($sql)) message_die(SQL_ERROR, "Can't query users table.", '', __LINE__, __FILE__, $sql);
+    if (!$result = $db->sql_query($sql)) {
+        message_die(SQL_ERROR, "Can't query users table.", '', __LINE__, __FILE__, $sql);
+    }
     $row = $db->sql_fetchrow($result);
     return $row['user_id'];
 }
@@ -82,7 +86,9 @@ function registry_get ($key) {
     global $db;
     $key = $db->sql_escape($key);
     $sql = "SELECT registry_value FROM " . TABLE_REGISTRY . " WHERE registry_key = '$key'";
-        if (!$result = $db->sql_query($sql)) message_die(SQL_ERROR, "Can't read registry.", '', __LINE__, __FILE__, $sql);
+    if (!$result = $db->sql_query($sql)) {
+        message_die(SQL_ERROR, "Can't read registry.", '', __LINE__, __FILE__, $sql);
+    }
 
     $row = $db->sql_fetchrow($result);
     return $row['registry_value'];
@@ -129,21 +135,21 @@ function generate_random_string ($format) {
     $t_alphabet=explode(",", "A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z");
     $t_number=explode(",", "1,2,3,4,5,6,7,8,9,0");
 
-    for ($i=0;$i<strlen($format);$i++)
-    {
-        if (preg_match("/^[a-zA-Z]/", $format[$i]))
-        {
+    for ($i=0;$i<strlen($format);$i++) {
+        if (preg_match("/^[a-zA-Z]/", $format[$i])) {
             $add=$t_alphabet[mt_rand() % sizeof($t_alphabet)];
             if (preg_match("/^[a-z]/", $format[$i])) {
                 $add=strtolower($add);
             }
-        }
-        elseif(preg_match("/^[0-9]/", $format[$i]))
+        } elseif(preg_match("/^[0-9]/", $format[$i])) {
             $add=$t_number[mt_rand() % sizeof($t_number)];
-        else $add="?";
+        } else {
+            $add="?";
+        }
 
         $str_to_return.=$add;
     }
+
     return $str_to_return;
 }
 
@@ -157,7 +163,9 @@ function generate_random_string ($format) {
  * @return string 's' if $amount implies a plural ; '' if it implies a singular.
  */
 function s ($amount) {
-    if ($amount >= 2 || $amount <= -2) return "s";
+    if ($amount >= 2 || $amount <= -2) {
+        return "s";
+    }
 }
 
 /**
@@ -168,7 +176,9 @@ function s ($amount) {
  * @return string 'x' if $amount implies a plural ; '' if it implies a singular.
  */
 function x ($amount) {
-    if ($amount >= 2 || $amount <= -2) return "x";
+    if ($amount >= 2 || $amount <= -2) {
+        return "x";
+    }
 }
 
 //Debug
@@ -221,16 +231,22 @@ function new_guid() {
 function is_guid ($expression) {
     //We avoid regexp to speed up the check
     //A guid is a 36 characters string
-    if (strlen($expression) != 36) return false;
+    if (strlen($expression) != 36) {
+        return false;
+    }
 
     $expression = strtolower($expression);
     for ($i = 0 ; $i < 36 ; $i++) {
         if ($i == 8 || $i == 13 || $i == 18 || $i == 23) {
             //with dashes
-            if ($expression[$i] != "-") return false;
+            if ($expression[$i] != "-") {
+                return false;
+            }
         } else {
             //and numbers
-            if (!is_numeric($expression[$i]) && $expression[$i] != 'a' && $expression[$i] != 'b' && $expression[$i] != 'c' && $expression[$i] != 'd' && $expression[$i] != 'e' && $expression[$i] != 'f' ) return false;
+            if (!is_numeric($expression[$i]) && $expression[$i] != 'a' && $expression[$i] != 'b' && $expression[$i] != 'c' && $expression[$i] != 'd' && $expression[$i] != 'e' && $expression[$i] != 'f' ) {
+                return false;
+            }
         }
     }
     return true;
@@ -260,7 +276,9 @@ function string_starts_with ($haystack, $needle, $case_sensitive = true) {
         $haystack = strtoupper($haystack);
         $needle = strtoupper($needle);
     }
-    if ($haystack == $needle) return true;
+    if ($haystack == $needle) {
+        return true;
+    }
     return strpos($haystack, $needle) === 0;
 }
 
@@ -458,7 +476,9 @@ function to_unixtime ($timestamp) {
 function to_timestamp ($unixtime = null, $format = 8) {
     //If no parameter is specified (or null, or false), current time is used
     //==== allows to_timestamp(0) to return correct 1970-1-1 value.
-    if ($unixtime === null || $unixtime === false) $unixtime = time();
+    if ($unixtime === null || $unixtime === false) {
+        $unixtime = time();
+    }
 
     switch ($format) {
         case 8:
@@ -484,7 +504,9 @@ function to_timestamp ($unixtime = null, $format = 8) {
  */
 function get_hypership_time ($unixtime = null) {
     //If unixtime is not specified, it's now
-    if ($unixtime === null) $unixtime = time();
+    if ($unixtime === null) {
+        $unixtime = time();
+    }
 
     //Hypership time is a count of days since launch @ 2010-07-03 00:00:00
     //Followed by a fraction of the current day /1000, like the internet time
@@ -623,7 +645,9 @@ function get_current_url () {
  */
 function get_current_url_fragments () {
     $url_source = get_current_url();
-    if ($url_source == $_SERVER["PHP_SELF"]) return [];
+    if ($url_source == $_SERVER["PHP_SELF"]) {
+        return [];
+    }
     return explode('/', substr($url_source, 1));
 }
 

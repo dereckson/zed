@@ -56,13 +56,25 @@ class Port {
      * Loads the object Port (ie fill the properties) from the $_POST array
      */
     function load_from_form () {
-        if (array_key_exists('location_global', $_POST)) $this->location_global = $_POST['location_global'];
-        if (array_key_exists('location_local', $_POST)) $this->location_local = $_POST['location_local'];
-        if (array_key_exists('name', $_POST)) $this->name = $_POST['name'];
+        if (array_key_exists('location_global', $_POST)) {
+            $this->location_global = $_POST['location_global'];
+        }
+        if (array_key_exists('location_local', $_POST)) {
+            $this->location_local = $_POST['location_local'];
+        }
+        if (array_key_exists('name', $_POST)) {
+            $this->name = $_POST['name'];
+        }
 
-        if (array_key_exists('hidden', $_POST)) $this->hidden = $_POST['hidden'] ? true : false;
-        if (array_key_exists('requiresPTA', $_POST)) $this->requiresPTA = $_POST['requiresPTA'] ? true : false;
-        if (array_key_exists('default', $_POST)) $this->hidden = $_POST['default'] ? true : false;
+        if (array_key_exists('hidden', $_POST)) {
+            $this->hidden = $_POST['hidden'] ? true : false;
+        }
+        if (array_key_exists('requiresPTA', $_POST)) {
+            $this->requiresPTA = $_POST['requiresPTA'] ? true : false;
+        }
+        if (array_key_exists('default', $_POST)) {
+            $this->hidden = $_POST['default'] ? true : false;
+        }
     }
 
     /**
@@ -72,7 +84,9 @@ class Port {
         global $db;
         $id = $db->sql_escape($this->id);
         $sql = "SELECT * FROM " . TABLE_PORTS . " WHERE port_id = '" . $id . "'";
-        if ( !($result = $db->sql_query($sql)) ) message_die(SQL_ERROR, "Unable to query ports", '', __LINE__, __FILE__, $sql);
+        if ( !($result = $db->sql_query($sql)) ) {
+            message_die(SQL_ERROR, "Unable to query ports", '', __LINE__, __FILE__, $sql);
+        }
         if (!$row = $db->sql_fetchrow($result)) {
             $this->lastError = "Port unknown: " . $this->id;
             return false;

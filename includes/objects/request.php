@@ -57,15 +57,33 @@ class Request {
      * Loads the object Request (ie fill the properties) from the $_POST array
      */
     function load_from_form () {
-        if (array_key_exists('code', $_POST)) $this->code = $_POST['code'];
-        if (array_key_exists('title', $_POST)) $this->title = $_POST['title'];
-        if (array_key_exists('date', $_POST)) $this->date = $_POST['date'];
-        if (array_key_exists('author', $_POST)) $this->author = $_POST['author'];
-        if (array_key_exists('to', $_POST)) $this->to = $_POST['to'];
-        if (array_key_exists('message', $_POST)) $this->message = $_POST['message'];
-        if (array_key_exists('location_global', $_POST)) $this->location_global = $_POST['location_global'];
-        if (array_key_exists('location_local', $_POST)) $this->location_local = $_POST['location_local'];
-        if (array_key_exists('status', $_POST)) $this->status = $_POST['status'];
+        if (array_key_exists('code', $_POST)) {
+            $this->code = $_POST['code'];
+        }
+        if (array_key_exists('title', $_POST)) {
+            $this->title = $_POST['title'];
+        }
+        if (array_key_exists('date', $_POST)) {
+            $this->date = $_POST['date'];
+        }
+        if (array_key_exists('author', $_POST)) {
+            $this->author = $_POST['author'];
+        }
+        if (array_key_exists('to', $_POST)) {
+            $this->to = $_POST['to'];
+        }
+        if (array_key_exists('message', $_POST)) {
+            $this->message = $_POST['message'];
+        }
+        if (array_key_exists('location_global', $_POST)) {
+            $this->location_global = $_POST['location_global'];
+        }
+        if (array_key_exists('location_local', $_POST)) {
+            $this->location_local = $_POST['location_local'];
+        }
+        if (array_key_exists('status', $_POST)) {
+            $this->status = $_POST['status'];
+        }
     }
 
     /**
@@ -75,7 +93,9 @@ class Request {
         global $db;
         $id = $db->sql_escape($this->id);
         $sql = "SELECT * FROM " . TABLE_REQUESTS . " WHERE request_id = '" . $id . "'";
-        if (!$result = $db->sql_query($sql)) message_die(SQL_ERROR, "Unable to query requests", '', __LINE__, __FILE__, $sql);
+        if (!$result = $db->sql_query($sql)) {
+            message_die(SQL_ERROR, "Unable to query requests", '', __LINE__, __FILE__, $sql);
+        }
         if (!$row = $db->sql_fetchrow($result)) {
             $this->lastError = "Request unknown: " . $this->id;
             return false;

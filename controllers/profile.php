@@ -140,7 +140,9 @@ if ($_POST['EditProfile']) {
             $photo->name = $filename;
             $photo->perso_id = $CurrentPerso->id;
             $photo->description = $_POST['description'];
-            if ($photo->avatar) $photo->promote_to_avatar();
+            if ($photo->avatar) {
+                $photo->promote_to_avatar();
+            }
             $photo->save_to_database();
 
             //Generates thumbnail
@@ -207,12 +209,16 @@ if ($mode == 'view') {
     $tags     = $profile->get_cached_tags();
 
     //Records timestamp, to be able to track new comments
-    if ($self) $CurrentPerso->set_flag('profile.lastvisit', time());
+    if ($self) {
+        $CurrentPerso->set_flag('profile.lastvisit', time());
+    }
 
     //Template
     $smarty->assign('PROFILE_COMMENTS', $comments);
     $smarty->assign('PROFILE_SELF', $self);
-    if ($tags) $smarty->assign('PROFILE_TAGS', $tags);
+    if ($tags) {
+        $smarty->assign('PROFILE_TAGS', $tags);
+    }
     $smarty->assign('USERNAME', $perso->username);
     $smarty->assign('NAME', $perso->name ? $perso->name : $perso->nickname);
     $template = 'profile.tpl';
@@ -339,7 +345,9 @@ $smarty->assign('PAGE_TITLE', $perso->name);
 include('header.php');
 
 //Serves content
-if ($template) $smarty->display($template);
+if ($template) {
+    $smarty->display($template);
+}
 
 //Serves footer
 include('footer.php');

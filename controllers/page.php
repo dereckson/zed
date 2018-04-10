@@ -50,7 +50,9 @@ if ($_POST['code']) {
     //Gets version
     $sql = "SELECT MAX(page_version) + 1 FROM " . TABLE_PAGES_EDITS .
             " WHERE page_code = '$code'";
-    if (!$result = $db->sql_query($sql)) message_die(SQL_ERROR, "Can't fetch pages", '', __LINE__, __FILE__, $sql);
+    if (!$result = $db->sql_query($sql)) {
+        message_die(SQL_ERROR, "Can't fetch pages", '', __LINE__, __FILE__, $sql);
+    }
     $row = $db->sql_fetchrow($result);
     $page_version = ($row[0] == "") ? 0 : $row[0];
 
@@ -82,7 +84,9 @@ if ($_POST['code']) {
 //
 
 $sql = "SELECT page_title, page_content, page_code FROM " . TABLE_PAGES . " WHERE page_code LIKE '$code'";
-if ( !($result = $db->sql_query($sql)) ) message_die(SQL_ERROR, "Can't get pages", '', __LINE__, __FILE__, $sql);
+if ( !($result = $db->sql_query($sql)) ) {
+    message_die(SQL_ERROR, "Can't get pages", '', __LINE__, __FILE__, $sql);
+}
 $row = $db->sql_fetchrow($result);
 
 switch ($_GET['mode']) {

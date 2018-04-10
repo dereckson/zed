@@ -56,10 +56,18 @@ class Application {
      * Loads the object Application (ie fill the properties) from the $_POST array
      */
     function load_from_form () {
-        if (array_key_exists('code', $_POST)) $this->code = $_POST['code'];
-        if (array_key_exists('name', $_POST)) $this->name = $_POST['name'];
-        if (array_key_exists('api_key', $_POST)) $this->api_key = $_POST['api_key'];
-        if (array_key_exists('description', $_POST)) $this->description = $_POST['description'];
+        if (array_key_exists('code', $_POST)) {
+            $this->code = $_POST['code'];
+        }
+        if (array_key_exists('name', $_POST)) {
+            $this->name = $_POST['name'];
+        }
+        if (array_key_exists('api_key', $_POST)) {
+            $this->api_key = $_POST['api_key'];
+        }
+        if (array_key_exists('description', $_POST)) {
+            $this->description = $_POST['description'];
+        }
     }
 
     /**
@@ -69,7 +77,9 @@ class Application {
         global $db;
         $id = $db->sql_escape($this->id);
         $sql = "SELECT * FROM applications WHERE application_id = '" . $id . "'";
-        if ( !($result = $db->sql_query($sql)) ) message_die(SQL_ERROR, "Unable to query applications", '', __LINE__, __FILE__, $sql);
+        if ( !($result = $db->sql_query($sql)) ) {
+            message_die(SQL_ERROR, "Unable to query applications", '', __LINE__, __FILE__, $sql);
+        }
         if (!$row = $db->sql_fetchrow($result)) {
             $this->lastError = "Application unknown: " . $this->id;
             return false;
@@ -121,9 +131,12 @@ class Application {
         global $db;
         $key = $db->sql_escape($key);
         $sql = "SELECT * FROM applications WHERE api_key = '" . $key . "'";
-        if ( !($result = $db->sql_query($sql)) ) message_die(SQL_ERROR, "Unable to query applications", '', __LINE__, __FILE__, $sql);
-        if (!$row = $db->sql_fetchrow($result))
+        if ( !($result = $db->sql_query($sql)) ) {
+            message_die(SQL_ERROR, "Unable to query applications", '', __LINE__, __FILE__, $sql);
+        }
+        if (!$row = $db->sql_fetchrow($result)) {
             return null;
+        }
 
         //Fills app  information
         $app = new Application();
@@ -163,7 +176,9 @@ class Application {
         global $CurrentPerso;
 
         //Ensures we've a key and someone to be assigned it
-        if ($userkey === null) $userkey = new_guid();
+        if ($userkey === null) {
+            $userkey = new_guid();
+        }
         $perso = ($perso_id === null) ? $CurrentPerso : Perso::get($perso_id);
 
         //Saves key

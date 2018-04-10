@@ -80,7 +80,9 @@ class Invite {
         global $db;
         $code = $db->sql_escape($this->code);
         $sql = "SELECT * FROM " . TABLE_USERS_INVITES . " WHERE invite_code = '" . $code . "'";
-        if ( !($result = $db->sql_query($sql)) ) message_die(SQL_ERROR, "Unable to query invite codes", '', __LINE__, __FILE__, $sql);
+        if ( !($result = $db->sql_query($sql)) ) {
+            message_die(SQL_ERROR, "Unable to query invite codes", '', __LINE__, __FILE__, $sql);
+        }
         if (!$row = $db->sql_fetchrow($result)) {
             $this->lastError = "Invite code unknown: " . $this->code;
             return false;

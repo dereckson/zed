@@ -150,15 +150,20 @@ class Setting {
         //Parses simple <tag>value</tag>
         $properties = ['key', 'field', 'object', 'property', 'method', 'regExp'];
         foreach ($properties as $property) {
-            if ($xml->$property)
+            if ($xml->$property) {
                 $setting->$property = (string)$xml->$property;
+            }
         }
 
         //Parses <handler>
         $setting->handler = [];
         if ($xml->handler) {
-            if ($xml->handler->get) $setting->handler['get'] = (string)$xml->handler->get;
-            if ($xml->handler->set) $setting->handler['set'] = (string)$xml->handler->set;
+            if ($xml->handler->get) {
+                $setting->handler['get'] = (string)$xml->handler->get;
+            }
+            if ($xml->handler->set) {
+                $setting->handler['set'] = (string)$xml->handler->set;
+            }
         }
 
         //Parses <choices>

@@ -130,7 +130,9 @@ class GeoLocation {
         //TODO: handle $local in a better way: from the global location, gets
         //a local location handler. Or a some inheritance, like a class
         //HypershipGeoLocation extending GeoLocation.
-        if ($local !== null) $this->data[1] = $local;
+        if ($local !== null) {
+            $this->data[1] = $local;
+        }
 
         $this->load_classes();
     }
@@ -246,7 +248,9 @@ class GeoLocation {
         $n = count($this->data);
 
         //If not defined, it doesn't exist
-        if ($n == 0) return false;
+        if ($n == 0) {
+            return false;
+        }
 
         //Checks global location
         switch ($this->data[0][0]) {
@@ -260,7 +264,9 @@ class GeoLocation {
 
                     case 6:
                         $body = new GeoBody(substr($this->data[0], 1));
-                        if ($body->lastError) return false;
+                        if ($body->lastError) {
+                            return false;
+                        }
                         break;
 
                     default:
@@ -271,7 +277,9 @@ class GeoLocation {
 
             case 'S':
                 $ship = new Ship(substr($this->data[0], 1));
-                if ($body->lastError) return false;
+                if ($body->lastError) {
+                    return false;
+                }
                 break;
 
             default:
@@ -312,7 +320,9 @@ class GeoLocation {
             }
         }
 
-        if ($expression == $this->data[0]) return true;
+        if ($expression == $this->data[0]) {
+            return true;
+        }
 
         $n1 = strlen($expression);
         $n2 = strlen($this->data[0]);

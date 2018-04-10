@@ -82,12 +82,24 @@ class User {
      * Loads the object User (ie fill the properties) from the $_POST array
      */
     function load_from_form () {
-        if (array_key_exists('name', $_POST)) $this->name = $_POST['name'];
-        if (array_key_exists('password', $_POST)) $this->password = $_POST['password'];
-        if (array_key_exists('active', $_POST)) $this->active = $_POST['active'];
-        if (array_key_exists('actkey', $_POST)) $this->actkey = $_POST['actkey'];
-        if (array_key_exists('email', $_POST)) $this->email = $_POST['email'];
-        if (array_key_exists('regdate', $_POST)) $this->regdate = $_POST['regdate'];
+        if (array_key_exists('name', $_POST)) {
+            $this->name = $_POST['name'];
+        }
+        if (array_key_exists('password', $_POST)) {
+            $this->password = $_POST['password'];
+        }
+        if (array_key_exists('active', $_POST)) {
+            $this->active = $_POST['active'];
+        }
+        if (array_key_exists('actkey', $_POST)) {
+            $this->actkey = $_POST['actkey'];
+        }
+        if (array_key_exists('email', $_POST)) {
+            $this->email = $_POST['email'];
+        }
+        if (array_key_exists('regdate', $_POST)) {
+            $this->regdate = $_POST['regdate'];
+        }
     }
 
     /**
@@ -96,7 +108,9 @@ class User {
     function load_from_database () {
         global $db;
         $sql = "SELECT * FROM " . TABLE_USERS . " WHERE user_id = '" . $this->id . "'";
-        if ( !($result = $db->sql_query($sql)) ) message_die(SQL_ERROR, "Unable to query users", '', __LINE__, __FILE__, $sql);
+        if ( !($result = $db->sql_query($sql)) ) {
+            message_die(SQL_ERROR, "Unable to query users", '', __LINE__, __FILE__, $sql);
+        }
         if (!$row = $db->sql_fetchrow($result)) {
             $this->lastError = "User unknown: " . $this->id;
             return false;
@@ -196,7 +210,9 @@ class User {
      */
     public function set_OpenID ($url) {
         global $db;
-        if (!$this->id) $this->save_to_database();
+        if (!$this->id) {
+            $this->save_to_database();
+        }
         $url = $db->sql_escape($url);
         $sql = "DELETE FROM " . TABLE_USERS_AUTH . " WHERE auth_type = 'OpenID' AND user_id = $this->id";
         if (!$db->sql_query($sql)) {

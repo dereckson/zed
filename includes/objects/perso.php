@@ -106,14 +106,30 @@ class Perso {
      * Loads the object Perso (ie fill the properties) from the $_POST array
      */
     function load_from_form () {
-        if (array_key_exists('user_id', $_POST)) $this->user_id = $_POST['user_id'];
-        if (array_key_exists('name', $_POST)) $this->name = $_POST['name'];
-        if (array_key_exists('nickname', $_POST)) $this->nickname = $_POST['nickname'];
-        if (array_key_exists('race', $_POST)) $this->race = $_POST['race'];
-        if (array_key_exists('sex', $_POST)) $this->sex = $_POST['sex'];
-        if (array_key_exists('avatar', $_POST)) $this->avatar = $_POST['avatar'];
-        if (array_key_exists('location_global', $_POST)) $this->location_global = $_POST['location_global'];
-        if (array_key_exists('location_local', $_POST)) $this->location_local = $_POST['location_local'];
+        if (array_key_exists('user_id', $_POST)) {
+            $this->user_id = $_POST['user_id'];
+        }
+        if (array_key_exists('name', $_POST)) {
+            $this->name = $_POST['name'];
+        }
+        if (array_key_exists('nickname', $_POST)) {
+            $this->nickname = $_POST['nickname'];
+        }
+        if (array_key_exists('race', $_POST)) {
+            $this->race = $_POST['race'];
+        }
+        if (array_key_exists('sex', $_POST)) {
+            $this->sex = $_POST['sex'];
+        }
+        if (array_key_exists('avatar', $_POST)) {
+            $this->avatar = $_POST['avatar'];
+        }
+        if (array_key_exists('location_global', $_POST)) {
+            $this->location_global = $_POST['location_global'];
+        }
+        if (array_key_exists('location_local', $_POST)) {
+            $this->location_local = $_POST['location_local'];
+        }
     }
 
     /**
@@ -131,7 +147,9 @@ class Perso {
             $nickname = $db->sql_escape($this->nickname);
             $sql .= " WHERE perso_nickname = '" . $nickname . "'";
         }
-        if ( !($result = $db->sql_query($sql)) ) message_die(SQL_ERROR, "Unable to query persos", '', __LINE__, __FILE__, $sql);
+        if ( !($result = $db->sql_query($sql)) ) {
+            message_die(SQL_ERROR, "Unable to query persos", '', __LINE__, __FILE__, $sql);
+        }
         if (!$row = $db->sql_fetchrow($result)) {
             $this->lastError = "Perso unknown: " . $this->id;
             return false;
@@ -322,7 +340,9 @@ class Perso {
      */
     public function delete_flag ($key) {
         global $db;
-        if (!array_key_exists($key, $this->flags)) return;
+        if (!array_key_exists($key, $this->flags)) {
+            return;
+        }
 
         $id = $db->sql_escape($this->id);
         $key = $db->sql_escape($key);
@@ -545,19 +565,25 @@ class Perso {
         $perso->user_id = $user->id;
 
         //Validates forms
-        if (!$perso->name) $errors[] = lang_get("NoFullnameSpecified");
+        if (!$perso->name) {
+            $errors[] = lang_get("NoFullnameSpecified");
+        }
         if (!$perso->race) {
             $errors[] = lang_get("NoRaceSpecified");
             $perso->race = "being";
         }
-        if (!$perso->sex) $errors[] = lang_get("NoSexSpecified");
+        if (!$perso->sex) {
+            $errors[] = lang_get("NoSexSpecified");
+        }
         if (!$perso->nickname) {
             $errors[] = lang_get("NoNicknameSpecified");
         } elseif (!Perso::is_available_nickname($perso->nickname)) {
             $errors[] = lang_get("UnavailableNickname");
         }
 
-       if (count($errors)) return false;
+       if (count($errors)) {
+            return false;
+       }
 
        //Creates perso
        $perso->save_to_database();

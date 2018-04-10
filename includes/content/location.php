@@ -97,7 +97,9 @@ class ContentLocation {
         $location_local = "'" . $db->sql_escape($this->location_local) . "'";
         $location_k = "'" . $db->sql_escape($this->location_k) . "'";
         $sql = "SELECT * FROM content_locations WHERE location_global = '$location_global' AND location_local = '$location_local' AND location_k = '$location_k'";
-        if ( !($result = $db->sql_query($sql)) ) message_die(SQL_ERROR, "Unable to query content", '', __LINE__, __FILE__, $sql);
+        if ( !($result = $db->sql_query($sql)) ) {
+            message_die(SQL_ERROR, "Unable to query content", '', __LINE__, __FILE__, $sql);
+        }
         if (!$row = $db->sql_fetchrow($result)) {
             $this->lastError = "Content location unknown: " . $this->content_id;
             return false;

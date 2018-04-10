@@ -136,7 +136,9 @@ class SettingsPage {
                 if (!$setting->set($value)) {
                     $errors[] = $setting->lastError ? $setting->lastError : "An error have occurred in $setting->key field.";
                 }
-                if ($setting->object) $objects[] = $setting->object;
+                if ($setting->object) {
+                    $objects[] = $setting->object;
+                }
             }
         }
 

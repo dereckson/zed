@@ -174,7 +174,9 @@ class GeoPointPolarZ implements IteratorAggregate {
      * @return bool true if the angles are equal ; otherwise, false.
      */
     static function areAngleEqual ($angle1, $angle2) {
-        if ($angle1 === $angle2) return true;
+        if ($angle1 === $angle2) {
+            return true;
+        }
         if (!is_numerical($angle1)) {
             $angle1 = deg2rad((float)$angle1);
         }

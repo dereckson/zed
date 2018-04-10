@@ -54,9 +54,15 @@ class ProfilePhoto {
      * @param bool $readBoolean if false, don't read the bool avatar field to avoid to set by error false if the field weren't in the form.
      */
     function load_from_form ($readBoolean = true) {
-        if (array_key_exists('perso_id', $_POST)) $this->perso_id = $_POST['perso_id'];
-        if (array_key_exists('name', $_POST)) $this->name = $_POST['name'];
-        if (array_key_exists('description', $_POST)) $this->description = $_POST['description'];
+        if (array_key_exists('perso_id', $_POST)) {
+            $this->perso_id = $_POST['perso_id'];
+        }
+        if (array_key_exists('name', $_POST)) {
+            $this->name = $_POST['name'];
+        }
+        if (array_key_exists('description', $_POST)) {
+            $this->description = $_POST['description'];
+        }
         if ($readBoolean) {
             $this->avatar = $_POST['avatar'] ? true : false;
         }
@@ -69,7 +75,9 @@ class ProfilePhoto {
         global $db;
         $id = $db->sql_escape($this->id);
         $sql = "SELECT * FROM " . TABLE_PROFILES_PHOTOS . " WHERE photo_id = '" . $id . "'";
-        if ( !($result = $db->sql_query($sql)) ) message_die(SQL_ERROR, "Unable to query azhar_profiles_photos", '', __LINE__, __FILE__, $sql);
+        if ( !($result = $db->sql_query($sql)) ) {
+            message_die(SQL_ERROR, "Unable to query azhar_profiles_photos", '', __LINE__, __FILE__, $sql);
+        }
         if (!$row = $db->sql_fetchrow($result)) {
             $this->lastError = "photo unknown: " . $this->id;
             return false;
@@ -165,7 +173,9 @@ class ProfilePhoto {
     static function get_photos ($perso_id, $allowUnsafe = true) {
         global $db;
         $sql = "SELECT photo_id FROM " . TABLE_PROFILES_PHOTOS . " WHERE perso_id = " . $db->sql_escape($perso_id);
-        if (!$allowUnsafe) $sql .= " AND photo_safe = 0";
+        if (!$allowUnsafe) {
+            $sql .= " AND photo_safe = 0";
+        }
         if (!$result = $db->sql_query($sql)) {
             message_die(SQL_ERROR, "Unable to get photos", '', __LINE__, __FILE__, $sql);
         }
@@ -191,7 +201,9 @@ class ProfilePhoto {
             message_die(SQL_ERROR, "Unable to get avatar", '', __LINE__, __FILE__, $sql);
         }
         if ($row = $db->sql_fetchrow($result)) {
-            if (!$username) $username = get_name($perso_id);
+            if (!$username) {
+                $username = get_name($perso_id);
+            }
             $description = $row['photo_description'] ? "$row[photo_description] ($username's avatar)" : "$username's avatar";
             $url = PHOTOS_URL  . '/tn/' . $row['photo_name'];
             return "<img src=\"$url\" title=\"$username\" alt=\"$description\" />";

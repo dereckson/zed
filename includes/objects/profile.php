@@ -51,11 +51,19 @@ class Profile {
      * Loads the object Profile (ie fill the properties) from the $_POST array
      */
     function load_from_form ($read_boolean = true) {
-        if (array_key_exists('perso_id', $_POST)) $this->perso_id = $_POST['perso_id'];
-        if (array_key_exists('text', $_POST)) $this->text = $_POST['text'];
-        if (array_key_exists('updated', $_POST)) $this->updated = $_POST['updated'];
+        if (array_key_exists('perso_id', $_POST)) {
+            $this->perso_id = $_POST['perso_id'];
+        }
+        if (array_key_exists('text', $_POST)) {
+            $this->text = $_POST['text'];
+        }
+        if (array_key_exists('updated', $_POST)) {
+            $this->updated = $_POST['updated'];
+        }
         if ($read_boolean) {
-            if (array_key_exists('fixedwidth', $_POST)) $this->fixedwidth = $_POST['fixedwidth'];
+            if (array_key_exists('fixedwidth', $_POST)) {
+                $this->fixedwidth = $_POST['fixedwidth'];
+            }
         }
     }
 
@@ -66,7 +74,9 @@ class Profile {
         global $db;
         $id = $db->sql_escape($this->perso_id);
         $sql = "SELECT * FROM " . TABLE_PROFILES . " WHERE perso_id = '$id'";
-        if ( !($result = $db->sql_query($sql)) ) message_die(SQL_ERROR, "Unable to query azhar_profiles", '', __LINE__, __FILE__, $sql);
+        if ( !($result = $db->sql_query($sql)) ) {
+            message_die(SQL_ERROR, "Unable to query azhar_profiles", '', __LINE__, __FILE__, $sql);
+        }
         if (!$row = $db->sql_fetchrow($result)) {
             $this->lastError = "Profile unknown: " . $this->perso_id;
             return false;

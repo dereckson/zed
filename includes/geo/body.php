@@ -62,20 +62,40 @@ class GeoBody {
      * @param bool $readBoolean if false, don't read any form item matching a boolean field to avoid to set it to false if there are absent from a form.
      */
     function load_from_form ($readBoolean = true) {
-        if (array_key_exists('name', $_POST)) $this->name = $_POST['name'];
-
-        if ($readBoolean) {
-            if (array_key_exists('hypership', $_POST)) $this->hypership = $_POST['hypership'];
-            if (array_key_exists('star', $_POST)) $this->start = $_POST['star'];
-            if (array_key_exists('asteroid', $_POST)) $this->hypership = $_POST['asteroid'];
-            if (array_key_exists('moon', $_POST)) $this->start = $_POST['moon'];
-            if (array_key_exists('planet', $_POST)) $this->start = $_POST['planet'];
-            if (array_key_exists('orbital', $_POST)) $this->start = $_POST['orbital'];
-            if (array_key_exists('hidden', $_POST)) $this->start = $_POST['hidden'];
+        if (array_key_exists('name', $_POST)) {
+            $this->name = $_POST['name'];
         }
 
-        if (array_key_exists('location', $_POST)) $this->location = $_POST['location'];
-        if (array_key_exists('description', $_POST)) $this->description = $_POST['description'];
+        if ($readBoolean) {
+            if (array_key_exists('hypership', $_POST)) {
+                $this->hypership = $_POST['hypership'];
+            }
+            if (array_key_exists('star', $_POST)) {
+                $this->start = $_POST['star'];
+            }
+            if (array_key_exists('asteroid', $_POST)) {
+                $this->hypership = $_POST['asteroid'];
+            }
+            if (array_key_exists('moon', $_POST)) {
+                $this->start = $_POST['moon'];
+            }
+            if (array_key_exists('planet', $_POST)) {
+                $this->start = $_POST['planet'];
+            }
+            if (array_key_exists('orbital', $_POST)) {
+                $this->start = $_POST['orbital'];
+            }
+            if (array_key_exists('hidden', $_POST)) {
+                $this->start = $_POST['hidden'];
+            }
+        }
+
+        if (array_key_exists('location', $_POST)) {
+            $this->location = $_POST['location'];
+        }
+        if (array_key_exists('description', $_POST)) {
+            $this->description = $_POST['description'];
+        }
     }
 
     /**
@@ -84,7 +104,9 @@ class GeoBody {
     function load_from_database () {
         global $db;
         $sql = "SELECT * FROM " . TABLE_BODIES . " WHERE body_code = '" . $this->code . "'";
-        if ( !($result = $db->sql_query($sql)) ) message_die(SQL_ERROR, "Unable to query geo_bodies", '', __LINE__, __FILE__, $sql);
+        if ( !($result = $db->sql_query($sql)) ) {
+            message_die(SQL_ERROR, "Unable to query geo_bodies", '', __LINE__, __FILE__, $sql);
+        }
         if (!$row = $db->sql_fetchrow($result)) {
             $this->lastError = "body unknown: " . $this->code;
             return false;

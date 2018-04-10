@@ -52,9 +52,15 @@ class MOTD {
      * Loads the object MOTD (ie fill the properties) from the $_POST array
      */
     function load_from_form () {
-        if (array_key_exists('perso_id', $_POST)) $this->user_id = $_POST['user_id'];
-        if (array_key_exists('text', $_POST)) $this->text = $_POST['text'];
-        if (array_key_exists('date', $_POST)) $this->date = $_POST['date'];
+        if (array_key_exists('perso_id', $_POST)) {
+            $this->user_id = $_POST['user_id'];
+        }
+        if (array_key_exists('text', $_POST)) {
+            $this->text = $_POST['text'];
+        }
+        if (array_key_exists('date', $_POST)) {
+            $this->date = $_POST['date'];
+        }
     }
 
     /**
@@ -64,7 +70,9 @@ class MOTD {
         global $db;
         $id = $db->sql_escape($this->id);
         $sql = "SELECT * FROM " . TABLE_MOTD . " WHERE motd_id = '" . $id . "'";
-        if ( !($result = $db->sql_query($sql)) ) message_die(SQL_ERROR, "Unable to query azhar_motd", '', __LINE__, __FILE__, $sql);
+        if ( !($result = $db->sql_query($sql)) ) {
+            message_die(SQL_ERROR, "Unable to query azhar_motd", '', __LINE__, __FILE__, $sql);
+        }
         if (!$row = $db->sql_fetchrow($result)) {
             $this->lastError = "MOTD unknown: " . $this->id;
             return false;
