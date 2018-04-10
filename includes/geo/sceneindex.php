@@ -137,11 +137,11 @@ class GeoSceneIndex {
         if ($handle = opendir($this->directory)) {
             while (false !== ($file = readdir($handle))) {
                  if (GeoScene::get_file_extension($file) == 'tpl') {
-                    $template = file_get_contents($this->directory . '/' . $file, false, NULL, 0, 1024);
+                    $template = file_get_contents($this->directory . '/' . $file, false, null, 0, 1024);
                     $location = self::get_template_location($template);
-                    if ($location[1] !== NULL) {
+                    if ($location[1] !== null) {
                         $this->local_templates[$location[0]][$location[1]] = $file;
-                    } elseif ($location[0] != NULL) {
+                    } elseif ($location[0] != null) {
                         $this->global_templates[$location[0]] = $file;
                     }
                  }
@@ -167,7 +167,7 @@ class GeoSceneIndex {
      *  At key 1, a string with local location, or NULL if not specified
      */
     private static function get_template_location ($template) {
-        $location = [NULL, NULL];
+        $location = [null, null];
 
         //Gets global location
         $pos1 = strpos($template, "Global location: ");
@@ -200,7 +200,7 @@ class GeoSceneIndex {
         if (isset($this->local_templates[$location_global][$location_local])) {
             return $this->local_templates[$location_global][$location_local];
         }
-        return NULL;
+        return null;
     }
 
     /**
@@ -213,6 +213,6 @@ class GeoSceneIndex {
         if (isset($this->global_templates[$location_global])) {
             return $this->global_templates[$location_global];
         }
-        return NULL;
+        return null;
     }
 }

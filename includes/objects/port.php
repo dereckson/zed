@@ -45,7 +45,7 @@ class Port {
      * Initializes a new instance
      * @param int $id the primary key
      */
-    function __construct ($id = NULL) {
+    function __construct ($id = null) {
         if ($id) {
             $this->id = $id;
             $this->load_from_database();
@@ -152,7 +152,7 @@ class Port {
      * @return boolean true if there is a spatioport exactly at the specified location ; otherwise, false.
      */
     static function have_port ($location_global) {
-        return (get_port_id($location_global) !== NULL);
+        return (get_port_id($location_global) !== null);
     }
 
     /**

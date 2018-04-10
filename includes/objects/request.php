@@ -43,7 +43,7 @@ class Request {
      * Initializes a new instance
      * @param int $id the primary key
      */
-    function __construct ($id = NULL) {
+    function __construct ($id = null) {
         if ($id) {
             $this->id = $id;
             $this->load_from_database();

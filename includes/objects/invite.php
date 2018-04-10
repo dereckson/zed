@@ -39,14 +39,14 @@ class Invite {
      *
      * @var int
      */
-    public $to_user_id = NULL;
+    public $to_user_id = null;
 
     /**
      * Initializes a new instance
      *
      * @param int $code the primary key
      */
-    function __construct ($code = NULL) {
+    function __construct ($code = null) {
         if ($code) {
             $this->code = $code;
             $this->load_from_database();
