@@ -71,7 +71,7 @@ function toXml($data, $rootNodeName = 'data', $xml = null, $unknownNodeName = 'u
         // no numeric keys in our xml please!
         if (is_numeric($key)) {
             // make string key...
-            $key = $unknownNodeName . '_'. (string) $key;
+            $key = $unknownNodeName . '_'. (string)$key;
         }
 
         // replace anything not alpha numeric
