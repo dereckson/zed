@@ -476,7 +476,7 @@ INSERT INTO `registry` (`registry_key`, `registry_value`, `registry_updated`) VA
 CREATE TABLE IF NOT EXISTS `sessions` (
   `session_id` varchar(32) NOT NULL DEFAULT '',
   `Where` tinyint(4) NOT NULL DEFAULT '1',
-  `IP` varchar(8) NOT NULL DEFAULT '',
+  `IP` varchar(45) NOT NULL DEFAULT '',
   `user_id` smallint(5) NOT NULL DEFAULT '-1',
   `perso_id` smallint(6) DEFAULT NULL,
   `Skin` varchar(31) NOT NULL DEFAULT 'zed',
