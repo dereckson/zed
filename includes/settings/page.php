@@ -116,11 +116,12 @@ class SettingsPage {
     /**
      * Handles form reading $_POST array, set new settings values and saves.
      *
-     * @param Array $errors an array where the errors will be filled
+     * @param array $errors an array where the errors will be filled
      * @return boolean true if there isn't error ; otherwise, false.
      */
-    function handle_form (&$errors = []) {
+    function handle_form (array &$errors = []) : bool {
         $objects = [];
+        $result = true;
 
         //Sets new settings values
         foreach ($this->settings as $setting) {
@@ -136,6 +137,7 @@ class SettingsPage {
             if ($setting->field == "checkbox" || $currentValue != $value) {
                 if (!$setting->set($value)) {
                     $errors[] = $setting->lastError ? $setting->lastError : "An error have occurred in $setting->key field.";
+                    $result = false;
                 }
                 if ($setting->object) {
                     $objects[] = $setting->object;
@@ -154,6 +156,7 @@ class SettingsPage {
             }
         }
 
+       return $result;
     }
 
 }
