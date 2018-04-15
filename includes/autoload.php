@@ -1,9 +1,6 @@
 <?php
 
-/**
- * This magic method is called when a class can't be loaded
- */
-function __autoload ($className) {
+spl_autoload_register(function (string $className) {
     //Classes
     $classes['IAuthentication'] = './includes/auth/IAuthentication.php';
     $classes['UserPasswordAuthentication'] = './includes/auth/UserPasswordAuthentication.php';
@@ -60,4 +57,4 @@ function __autoload ($className) {
     if (array_key_exists($className, $classes)) {
         require_once($classes[$className]);
     }
-}
+});

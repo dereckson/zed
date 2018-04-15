@@ -1,15 +1,14 @@
 #!/usr/local/bin/tclsh8.5
 #
 # php-autoload-generator
-# (c) Sébastien Santoro aka Dereckson, 2010-2013, some rights reserved.
+# (c) Sébastien Santoro aka Dereckson, 2010-2018, some rights reserved.
 # Released under BSD license
 #
 # Last version of the code can be fetch at:
 # http://bitbucket.org/dereckson/php-autoload-generator
 #
-# This code generator write a __autoload() PHP method, when you don't have a
-# consistent pattern for classes naming and don't want to register several
-# autoloader with spl_autoload_register().
+# This code generator writes a spl_autoload_register PHP method,
+# when you don't have a consistent pattern for classes naming.
 #
 # Parses your classes folder & reads each file to check if it contains classes.
 #
@@ -24,10 +23,7 @@ set config(directoriesToIgnore) {Smarty SmartLine}
 #The output to produce before the lines
 set config(templateBefore) "<?php
 
-/**
- * This magic method is called when a class can't be loaded
- */
-function __autoload (\$className) {
+spl_autoload_register(function (string \$className) {
     //Classes"
 
 #The output to produce after the
@@ -36,7 +32,7 @@ set config(templateAfter) "
     if (array_key_exists(\$className, \$classes)) {
         require_once(\$classes\[\$className]);
     }
-}"
+});"
 
 #The line format, for %%lines%%
 set config(templateClassLine) {    $classes['%%class%%'] = '%%file%%';}
