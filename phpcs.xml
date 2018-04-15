@@ -8,6 +8,4 @@
     <file>cron.php</file>
     <file>do.php</file>
     <file>index.php</file>
-
-    <exclude-pattern>includes/smarty/*</exclude-pattern>
 </ruleset>
