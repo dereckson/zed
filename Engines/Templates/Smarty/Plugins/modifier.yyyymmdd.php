@@ -16,10 +16,7 @@
  * @param string
  * @return string
  */
-function smarty_modifier_yyyymmdd($string)
-{
+function smarty_modifier_yyyymmdd($string) {
     return substr($string, 0, 4) . '-' . substr($string, 4, 2)
            . '-' . substr($string, 6, 2);
 }
-
-?>
