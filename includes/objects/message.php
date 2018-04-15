@@ -143,6 +143,8 @@ class Message {
      */
     static function get_messages ($perso_id, $mark_as_read = true, &$countNewMessages = 0) {
         global $db;
+        $ids = [];
+
         $sql = "SELECT message_id FROM " . TABLE_MESSAGES . " WHERE message_to = " . $db->sql_escape($perso_id) . " AND message_flag < 2 ORDER BY message_id DESC";
         if (!$result = $db->sql_query($sql)) {
             message_die(SQL_ERROR, "Unable to get messages", '', __LINE__, __FILE__, $sql);
