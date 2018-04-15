@@ -152,8 +152,6 @@ class GeoScene {
 
                 case 'tpl':
                     global $smarty, $Config;
-                    $template_dir = $smarty->template_dir;
-                    $smarty->template_dir = [getcwd(), $template_dir];
 
                     //$this->location is the object reference
                     //Some objects like the hypership move, so we also need to know where there are.
@@ -178,9 +176,8 @@ class GeoScene {
             }
                     lang_load('scenes.conf', $this->location->global);
 
-                    //Displays scene, then restores regular settings
+                    //Displays scene
                     $smarty->display($file);
-                    $smarty->template_dir = $template_dir;
                     break;
 
                 case 'php':
