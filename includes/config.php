@@ -190,17 +190,17 @@ $Config['StaticContentURL'] = '';
 //$Config['StaticContentURL'] = get_server_url() . '.nyud.net';
 
 //Site content
-$contentDirectory = $_ENV['CONTENT_DIR'] ?? 'content';
+define('CONTENT_DIR', $_ENV['CONTENT_DIR'] ?? 'content');
 
 //Scenes
-define('SCENE_DIR', "$contentDirectory/scenes");
+define('SCENE_DIR', CONTENT_DIR . "/scenes");
 define('SCENE_URL', $Config['StaticContentURL'] . '/content/scenes');
 
 //Stories
-define('STORIES_DIR', "$contentDirectory/stories");
+define('STORIES_DIR', CONTENT_DIR . "/stories");
 
 //Profile's photos
-define('PHOTOS_DIR', "$contentDirectory/users/_photos");
+define('PHOTOS_DIR', CONTENT_DIR . "/users/_photos");
 define('PHOTOS_URL', $Config['StaticContentURL'] . '/content/users/_photos');
 
 //ImageMagick paths

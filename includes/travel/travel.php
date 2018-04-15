@@ -62,7 +62,7 @@ class Travel {
         if (!$travel = $cache->get('zed_travel')) {
             //Initializes resource and caches it
             $travel = new Travel();
-            $travel->load_xml("content/travel.xml");
+            $travel->load_xml(CONTENT_DIR . "/travel.xml");
             $cache->set('zed_travel', serialize($travel));
             return $travel;
         }
