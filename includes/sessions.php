@@ -45,8 +45,8 @@ function session_update () {
     }
 
     /* Création / mise à jour de la session utilisateur */
-    if (!$_SESSION[ID]) {
-        $_SESSION[ID] = md5(generate_random_string("AAAA1234"));
+    if (!$_SESSION['ID']) {
+        $_SESSION['ID'] = md5(generate_random_string("AAAA1234"));
     }
 
     $sql = "SELECT * FROM " . TABLE_SESSIONS . " WHERE session_id LIKE '$_SESSION[ID]'";
