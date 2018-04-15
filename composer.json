@@ -3,7 +3,7 @@
     "description": "Hypership and galaxy",
     "type": "project",
     "require": {
-        "smarty/smarty": "^3.1",
+        "smarty/smarty": "dev-master",
         "keruald/globalfunctions": "^0.5.1"
     },
     "require-dev": {
