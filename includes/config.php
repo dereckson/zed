@@ -189,16 +189,19 @@ $Config['DoURL'] = $Config['SiteURL'] . "/do.php";
 $Config['StaticContentURL'] = '';
 //$Config['StaticContentURL'] = get_server_url() . '.nyud.net';
 
+//Site content
+$contentDirectory = $_ENV['CONTENT_DIR'] ?? 'content';
+
 //Scenes
-define('SCENE_DIR', 'content/scenes');
-define('SCENE_URL', $Config['StaticContentURL'] . '/' . SCENE_DIR);
+define('SCENE_DIR', "$contentDirectory/scenes");
+define('SCENE_URL', $Config['StaticContentURL'] . '/content/scenes');
 
 //Stories
-define('STORIES_DIR', "content/stories");
+define('STORIES_DIR', "$contentDirectory/stories");
 
 //Profile's photos
-define('PHOTOS_DIR', 'content/users/_photos');
-define('PHOTOS_URL', $Config['StaticContentURL'] . '/' . PHOTOS_DIR);
+define('PHOTOS_DIR', "$contentDirectory/users/_photos");
+define('PHOTOS_URL', $Config['StaticContentURL'] . '/content/users/_photos');
 
 //ImageMagick paths
 //Be careful on Windows platform convert could match the NTFS convert command.
@@ -218,7 +221,7 @@ $Config['ImageMagick']['identify'] = 'identify';
  *
  * Security tip: you can move this cache directory outside the webserver tree.
  */
-define('CACHE_DIR', 'cache');
+define('CACHE_DIR', $_ENV['CACHE_DIR'] ?? 'cache');
 
 /*
  * Furthermore, you can also enable a cache engine, like memcached, to store
