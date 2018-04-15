@@ -27,6 +27,8 @@
  * @filesource
  */
 
+use Zed\Engines\Templates\Smarty\Engine as SmartyEngine;
+
 ////////////////////////////////////////////////////////////////////////////////
 ///
 /// Constants
@@ -76,13 +78,7 @@ if (!$CurrentPerso) {
 }
 
 //Loads Smarty (as it handles l10n, it will be used by lang_get)
-require('includes/Smarty/Smarty.class.php');
-$smarty = new Smarty();
-$current_dir = dirname(__FILE__);
-$smarty->template_dir = $current_dir . '/skins/zed';
-$smarty->compile_dir = $current_dir . '/cache/compiled';
-$smarty->cache_dir = $current_dir . '/cache';
-$smarty->config_dir = $current_dir;
+$smarty = SmartyEngine::load()->getSmarty();
 
 //Loads language files
 initialize_lang();

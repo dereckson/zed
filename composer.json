@@ -12,6 +12,11 @@
         "squizlabs/php_codesniffer": "^3.2",
         "phpunit/phpunit": "^7.1"
     },
+    "autoload": {
+        "psr-4": {
+            "Zed\\Engines\\": "Engines"
+        }
+    },
     "license": "BSD-2-Clause",
     "authors": [
         {

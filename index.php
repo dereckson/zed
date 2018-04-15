@@ -21,6 +21,8 @@
  *              perso select/create into several files)
  */
 
+use Zed\Engines\Templates\Smarty\Engine as SmartyEngine;
+
 ////////////////////////////////////////////////////////////////////////////////
 ///
 /// Initialization
@@ -50,16 +52,7 @@ define('THEME', $CurrentUser->session['Skin']);
 define('ACCENT', $CurrentUser->session['Skin_accent']);
 
 //Loads Smarty
-require('includes/Smarty/Smarty.class.php');
-$smarty = new Smarty();
-$current_dir = dirname(__FILE__);
-$smarty->setTemplateDir($current_dir . '/skins/' . THEME);
-
-$smarty->compile_dir = CACHE_DIR . '/compiled';
-$smarty->cache_dir = CACHE_DIR;
-$smarty->config_dir = $current_dir;
-
-$smarty->config_vars['StaticContentURL'] = $Config['StaticContentURL'];
+$smarty = SmartyEngine::load()->getSmarty();
 
 //Loads language files
 initialize_lang();
