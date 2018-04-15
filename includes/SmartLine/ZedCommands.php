@@ -421,6 +421,18 @@ class UnixTimeSmartLineCommand extends SmartLineCommand {
  *      Hash: 057bf394741706fd2136541e3bb07c9e60b4963d
  */
 class VersionSmartLineCommand extends SmartLineCommand {
+    private static function getGitHash (string $gitFolder = '.git') : string {
+        $head = trim(file_get_contents("$gitFolder/HEAD"));
+
+        if (substr($head, 0, 5) === "ref: ") {
+             // Follows reference
+             $ref = substr($head, 5);
+             return file_get_contents("$gitFolder/$ref");
+        }
+
+        return $head;
+    }
+
     /**
      * Runs the command
      *
@@ -428,14 +440,17 @@ class VersionSmartLineCommand extends SmartLineCommand {
      * @param int $argc the number of arguments
      */
     public function run ($argv, $argc) {
-        //Gets .hg revision
         if (file_exists('.hg/tags.cache')) {
+            //Gets .hg revision
             $content = file_get_contents('.hg/tags.cache');
             $info = explode(' ', $content, 2);
             $info[] = "development environment";
 
             $this->SmartLine->puts("r$info[0] ($info[2])");
             $this->SmartLine->puts("Hash: $info[1]");
+        } elseif (file_exists('.git/HEAD')) {
+            $hash = self::getGitHash();
+            $this->SmartLine->puts("Hash: $hash");
         } elseif (file_exists('version.txt')) {
             $content = file('version.txt');
             foreach ($content as $line) {
