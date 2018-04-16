@@ -4,7 +4,8 @@
     "type": "project",
     "require": {
         "smarty/smarty": "dev-master",
-        "keruald/globalfunctions": "^0.5.1"
+        "keruald/globalfunctions": "^0.5.1",
+        "keruald/omnitools": "^0.1.0"
     },
     "require-dev": {
         "nasqueron/codestyle": "^0.0.1",
@@ -14,7 +15,8 @@
     },
     "autoload": {
         "psr-4": {
-            "Zed\\Engines\\": "Engines"
+            "Zed\\Engines\\": "Engines",
+            "Zed\\Tests\\": "dev/tests"
         }
     },
     "license": "BSD-2-Clause",
