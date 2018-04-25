@@ -19,12 +19,14 @@
  * @filesource
  */
 
-require_once('../../includes/geo/place.php');
+use PHPUnit\Framework\TestCase;
+
+require_once(__DIR__ . '/../../includes/geo/place.php');
 
 /**
  * Test cases for the class GeoPlace
  */
-class GeoPlaceTest extends PHPUnit_Framework_TestCase {
+class GeoPlaceTest extends TestCase {
     /**
      * Tests the GeoPlace::is_valid_local_location($local_location) method.
      */

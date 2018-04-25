@@ -10,8 +10,8 @@
  *
  * @package     Zed
  * @subpackage  Tests
- * @author      Sébastien Santoro aka Dereckson <dereckson@espace-win.org>
- * @copyright   2010 Sébastien Santoro aka Dereckson
+ * @author      Sï¿½bastien Santoro aka Dereckson <dereckson@espace-win.org>
+ * @copyright   2010 Sï¿½bastien Santoro aka Dereckson
  * @license     http://www.opensource.org/licenses/bsd-license.php BSD
  * @version     0.1
  * @link        http://scherzo.dereckson.be/doc/zed
@@ -19,12 +19,15 @@
  * @filesource
  */
 
-require_once('../../includes/geo/octocube.php');
+use PHPUnit\Framework\TestCase;
+
+require_once(__DIR__ . '/../../includes/geo/octocube.php');
 
 /**
  * Test cases for the class GeoPlace
  */
-class GeoOctocubeTest extends PHPUnit_Framework_TestCase {
+class GeoOctocubeTest extends TestCase {
+
     /**
      * Tests the GeoPlace::is_valid_local_location($local_location) method.
      */
@@ -40,4 +43,5 @@ class GeoOctocubeTest extends PHPUnit_Framework_TestCase {
         $this->assertTrue(GeoOctocube::getSector(-10, -6, 4) == 7);
         $this->assertTrue(GeoOctocube::getSector(10, -6, 4) == 8);
     }
+
 }
