@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
 * Smarty plugin
 *
@@ -19,10 +21,14 @@ use Keruald\OmniTools\Culture\Rome\RomanNumerals;
 * @return string
 */
 function smarty_modifier_romanize ($number) : string {
+    if (!is_numeric($number)) {
+        return (string)$number;
+    }
+
     try {
-        return RomanNumerals::fromHinduArabic($number);
-    } catch (Throwable $ex) {
+        return RomanNumerals::fromHinduArabic((int)$number);
+    } catch (InvalidArgumentException $ex) {
         // Not a strictly positive integer, don't modify
-        return $number;
+        return (string)$number;
     }
 }
