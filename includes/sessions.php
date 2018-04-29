@@ -141,7 +141,7 @@ function login ($user_id, $username) {
 
     //We send a cookie to print automatically the last username on the login
     //page during 30 days.
-    if (username) {
+    if ($username) {
         setcookie("LastUsername", $username, time() + 2592000);
     }
 }
