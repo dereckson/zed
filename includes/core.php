@@ -646,11 +646,7 @@ function get_current_url () {
  * @return Array an array of string, one for each URL fragment
  */
 function get_current_url_fragments () {
-    $url_source = get_current_url();
-    if ($url_source == $_SERVER["PHP_SELF"]) {
-        return [];
-    }
-    return explode('/', substr($url_source, 1));
+    return explode('/', substr(get_current_url(), 1));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
