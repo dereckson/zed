@@ -360,7 +360,7 @@ class SmartLine {
      * @return string the message
      */
     public function gets ($output = STDOUT) {
-        if (count($_SESSION['SmartLineOutput'][$output] > 0)) {
+        if ($this->count($output) > 0) {
             return array_pop($_SESSION['SmartLineOutput'][$output]);
         }
     }
@@ -371,7 +371,9 @@ class SmartLine {
      * @param int $output The output queue (common values are STDERR and STDOUT constants). It's an optional parameter ; if omitted, the default value will be STDOUT.
      */
     public function count ($output = STDOUT) {
-        return count($_SESSION['SmartLineOutput'][$output]);
+        return isset($_SESSION['SmartLineOutput'][$output])
+               ? count($_SESSION['SmartLineOutput'][$output])
+               : 0;
     }
 
     /**
@@ -383,7 +385,7 @@ class SmartLine {
      * @return Array an array of string, each item a message from the specified output queue
      */
     public function gets_all ($output = STDOUT, $prefix = '<p>', $suffix = '</p>') {
-        $count = count($_SESSION['SmartLineOutput'][$output]);
+        $count = $this->count($output);
         if ($count == 0) {
             return;
         }
@@ -402,7 +404,7 @@ class SmartLine {
      * @param string $suffix The string to append each message with. It's an optional parameter ; if omitted, '</p>'.
      */
     public function prints_all ($output = STDOUT, $prefix = '<p>', $suffix = '</p>') {
-        $count = count($_SESSION['SmartLineOutput'][$output]);
+        $count = $this->count($output);
         if ($count == 0) {
             return;
         }
