@@ -30,9 +30,6 @@
    bcmath and GMP php extensions are recommended (required?) for OpenID.
    Our dev environment outputs a white page without error if GMP isn't here.
 
-   If you don't wish to enable OpenID, replace your includes/login.php by
-   http://hg.dereckson.be/zed/src/0ffd1b08f33c/includes/login.php
-
  * Another used PHP extension is the WDDX one, to store session information in
    a human-readable format, easier to debug.
 
