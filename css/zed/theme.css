@@ -350,11 +350,11 @@ a:hover {
     text-align: right;
 }
 
-/* TODO: ajouter un sélecteur de SmarLine pour chat/commandes (60px) */
-/* grid_1 alpha -> sélecteur, grid_3 -> history, grid_12 > bar */
+/* TODO: ajouter un sÃ©lecteur de SmarLine pour chat/commandes (60px) */
+/* grid_1 alpha -> sÃ©lecteur, grid_3 -> history, grid_12 > bar */
 
 #SmartLineHistory {
-    width: 115%; /* dépasse de sa bordure */
+    width: 115%; /* dÃ©passe de sa bordure */
 }
 
 #SmartLineBar{
