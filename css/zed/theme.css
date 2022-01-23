@@ -24,6 +24,7 @@ body {
     background-image: url("../../img/zed/bg.jpg");
     background-position: top left;
     background-repeat: no-repeat;
+    background-size: cover;
 
     font-family: "Calibri", "Lucida Sans Unicode", "Trebuchet MS", "Helvetica", "Arial", sans-serif;
 
