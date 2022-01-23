@@ -20,7 +20,6 @@
  */
 
 require_once('location.php');
-require_once('octocube.php');
 require_once('sceneindex.php');
 
 if (!defined('SCENE_DIR')) {
