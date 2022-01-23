@@ -3,6 +3,7 @@
     <rule ref="vendor/nasqueron/codestyle/CodeSniffer/ruleset.xml" />
 
     <file>controllers</file>
+    <file>Engines</file>
     <file>includes</file>
     <file>api.php</file>
     <file>cron.php</file>
