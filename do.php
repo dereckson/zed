@@ -240,7 +240,7 @@ class Actions {
                 break;
 
             default:
-                $move = split(',', $move, 3);
+                $move = explode(',', $move, 3);
                 foreach ($move as $coordinate) {
                     if (!is_numeric($coordinate)) {
                         return null;
@@ -327,7 +327,7 @@ class Actions {
                 break;
 
             default:
-                $move = split(',', $move, 3);
+                $move = explode(',', $move, 3);
                 foreach ($move as $coordinate) {
                     if (!is_numeric($coordinate) && !preg_match("/^[0-9]+ *°$/", $coordinate)) {
                         return null;

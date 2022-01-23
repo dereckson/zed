@@ -145,9 +145,9 @@
             $file = 'dev/foo.tar';
             echo "<h2>$file</h2>";
             echo "<h3>.tar.bz2</h3>";
-            echo ereg('\.tar\.bz2$', $file);
+            echo preg_match('/\.tar\.bz2$/', $file);
             echo "<h3>.tar</h3>";
-            echo ereg('\.tar$', $file);
+            echo preg_match('/\.tar$/', $file);
             break;
 
         case 'app':

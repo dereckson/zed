@@ -167,7 +167,7 @@ if ($_POST['EditProfile']) {
     }
 
     if (count($errors)) {
-        $smarty->assign('WAP', join($errors, '<br />'));
+        $smarty->assign('WAP', join('<br />', $errors));
     }
 } elseif ($_POST['id']) {
     //Edits photo properties

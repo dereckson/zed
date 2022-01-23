@@ -159,7 +159,7 @@ class Message {
             }
         }
         if ($mark_as_read && count($ids)) {
-            $ids = join($ids, ', ');
+            $ids = join(', ', $ids);
             $sql = "UPDATE " . TABLE_MESSAGES . " SET message_flag = '1' WHERE message_id IN ($ids)";
             $db->sql_query($sql);
         }
