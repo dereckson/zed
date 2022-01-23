@@ -21,9 +21,10 @@
  * @filesource
  */
 
+use Hypership\Geo\Point3D;
+
 require_once('body.php');
 require_once('place.php');
-require_once('point3D.php');
 require_once('includes/objects/ship.php');
 
 /**
@@ -76,10 +77,8 @@ class GeoLocation {
 
     /**
      * A point identified by x, y, z coordinates
-     *
-     * @var GeoPoint3D
      */
-    public $point3D = null;
+    public Point3D|null $point3D = null;
 
     /**
      * A ship object
@@ -166,9 +165,9 @@ class GeoLocation {
                 break;
 
             case 'x':
-                $coords = sscanf($global, "xyz: [%d, %d, %d]");
+                $coords = sscanf($global, "xyz: [%f, %f, %f]");
                 if (count($coords) == 3) {
-                    $this->point3D = new GeoPoint3D($coords[0], $coords[1], $coords[2]);
+                    $this->point3D = new Point3D(...$coords);
                 }
                 break;
         }

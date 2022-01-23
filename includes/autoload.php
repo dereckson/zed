@@ -17,10 +17,7 @@ spl_autoload_register(function (string $className) {
     $classes['GeoBody'] = './includes/geo/body.php';
     $classes['GeoGalaxy'] = './includes/geo/galaxy.php';
     $classes['GeoLocation'] = './includes/geo/location.php';
-    $classes['GeoOctocube'] = './includes/geo/octocube.php';
     $classes['GeoPlace'] = './includes/geo/place.php';
-    $classes['GeoPoint3D'] = './includes/geo/point3D.php';
-    $classes['GeoPointPolarZ'] = './includes/geo/pointPolarZ.php';
     $classes['GeoScene'] = './includes/geo/scene.php';
     $classes['GeoSceneIndex'] = './includes/geo/sceneindex.php';
 

@@ -1,5 +1,7 @@
 <?php
 
+    use Hypership\Geo\PointPolarZ;
+
     require_once('includes/objects/ship.php');
     require_once('includes/objects/port.php');
     require_once('includes/objects/application.php');
@@ -38,11 +40,10 @@
             }
             break;
 
-        case 'GeoPointPolarZ':
-            require_once('includes/geo/pointPolarZ.php');
-            echo "<H2>GeoPointPolarZ</H2>";
-            $point = GeoPointPolarZ::fromString("(48, 30°, 3)");
-            printf("Secteur T%dC%d, zone %d-%d");
+        case 'PointPolarZ':
+            echo "<H2>PointPolarZ</H2>";
+            $point = PointPolarZ::fromString("(48, 30°, 3)");
+            printf("Secteur T%dC%d", $point->getSection(), $point->z);
             dprint_r($point);
             break;
 

@@ -19,6 +19,8 @@
  * @filesource
  */
 
+use Zed\Engines\Builder\Map\OctocubeBuilder;
+
 require_once('includes/content/zone.php');
 
 //
@@ -59,19 +61,19 @@ function is_buildable ($location, &$error = '') {
 
 switch ($build_mode = $url[1]) {
     case 'map':
-        require_once('includes/geo/octocube.php');
-
         $build_mode     = 'map';
 
         //Get zones at this floor
-        if ($CurrentPerso->location->global == 'B00001002') {
-            $point = GeoPoint3D::fromString($CurrentPerso->location->local);
-            $sector = GeoOctocube::getSectorFromPoint3D($point);
-            $pattern = GeoOctocube::getRlikePatternFromSector($sector, $point->z);
-            $zones = ContentZone::search($CurrentPerso->location->global, $pattern, true);
-        } else {
+        if (!OctocubeBuilder::canBuildAt($CurrentPerso->location)) {
             message_die(GENERAL_ERROR, "Can't map this area.", "Builder :: Map");
         }
+
+        $builder = new OctocubeBuilder($CurrentPerso->location);
+        $zones = ContentZone::search(
+            $CurrentPerso->location->global,
+            $builder->getRlikePattern(),
+            true
+        );
 
         //Template
         define('DOJO', true);

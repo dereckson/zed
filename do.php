@@ -28,6 +28,7 @@
  */
 
 use Zed\Engines\Templates\Smarty\Engine as SmartyEngine;
+use Hypership\Geo\Point3D;
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
@@ -248,15 +249,19 @@ class Actions {
         }
 
         //Moves current perso to specified location
-        if ($location_local = GeoPoint3D::fromString($CurrentPerso->location->local)) {
-            $location_local->translate($move[0] * $factor, $move[1] * $factor, $move[2] * $factor);
+        if ($location_local = Point3D::fromString($CurrentPerso->location->local)) {
+            $location_local->translate(
+                (float)$move[0] * $factor,
+                (float)$move[1] * $factor,
+                (float)$move[2] * $factor
+            );
             $CurrentPerso->move_to(null, $location_local->sprintf("(%d, %d, %d)"));
 
             //Returns GeoLocation relevant instance
             return $CurrentPerso->location;
         }
 
-        //Old local location weren't a GeoPoint3D
+        //Old local location weren't a Point3D
         return null;
     }
 
@@ -332,15 +337,9 @@ class Actions {
         dieprint_r($move);
 
         //Moves current perso to specified location
-        if ($location_local = GeoPoint3D::fromString($CurrentPerso->location->local)) {
-            $location_local->translate($move[0] * $factor, $move[1] * $factor, $move[2] * $factor);
-            $CurrentPerso->move_to(null, $location_local->sprintf("(%d, %d, %d)"));
+        throw new Exception("Move is not implemented.");
 
-            //Returns GeoLocation relevant instance
-            return $CurrentPerso->location;
-        }
-
-        //Old local location weren't a GeoPoint3D
+        //Old local location weren't a 3D point
         return null;
     }
 
