@@ -73,7 +73,7 @@ class ContentZone {
         $this->title = $row['zone_title'];
         $this->type = $row['zone_type'];
         $this->params = $row['zone_params'];
-        $this->deleted = $row['zone_deleted'] ? true : false;
+        $this->deleted = (bool)$row['zone_deleted'];
     }
 
     /**

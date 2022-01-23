@@ -220,7 +220,7 @@ if ($mode == 'view') {
         $smarty->assign('PROFILE_TAGS', $tags);
     }
     $smarty->assign('USERNAME', $perso->username);
-    $smarty->assign('NAME', $perso->name ? $perso->name : $perso->nickname);
+    $smarty->assign('NAME', $perso->name ?: $perso->nickname);
     $template = 'profile.tpl';
 } elseif ($mode == 'edit') {
     switch ($url[2]) {

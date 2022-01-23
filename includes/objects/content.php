@@ -92,7 +92,7 @@ class Content {
      * @return string the content title or path if title is blank.
      */
     function __toString () {
-        return $this->title ? $this->title : $this->path;
+        return $this->title ?: $this->path;
     }
 
 /*  -------------------------------------------------------------

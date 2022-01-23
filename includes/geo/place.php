@@ -167,7 +167,7 @@ class GeoPlace {
      * @return boolean true if the specified local location looks valid ; otherwise, false.
      */
     function is_valid_local_location ($local_location) {
-        $format = $this->location_local_format ? $this->location_local_format : LOCATION_LOCAL_DEFAULT_FORMAT;
+        $format = $this->location_local_format ?: LOCATION_LOCAL_DEFAULT_FORMAT;
         return preg_match($format, $local_location) > 0;
     }
 

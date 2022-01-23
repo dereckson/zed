@@ -351,7 +351,7 @@ class GeoLocation {
 
             case 'B':
                 $body = new GeoBody($this->body_code);
-                $location[] = $body->name ? $body->name : lang_get('UnknownBody');
+                $location[] = $body->name ?: lang_get('UnknownBody');
 
                 if (strlen($this->data[0]) == 9) {
                     $place = GeoPlace::from_code($this->data[0]);

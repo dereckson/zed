@@ -67,13 +67,13 @@ class Port {
         }
 
         if (array_key_exists('hidden', $_POST)) {
-            $this->hidden = $_POST['hidden'] ? true : false;
+            $this->hidden = (bool)$_POST['hidden'];
         }
         if (array_key_exists('requiresPTA', $_POST)) {
-            $this->requiresPTA = $_POST['requiresPTA'] ? true : false;
+            $this->requiresPTA = (bool)$_POST['requiresPTA'];
         }
         if (array_key_exists('default', $_POST)) {
-            $this->hidden = $_POST['default'] ? true : false;
+            $this->hidden = (bool)$_POST['default'];
         }
     }
 

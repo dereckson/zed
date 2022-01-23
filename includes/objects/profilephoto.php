@@ -64,7 +64,7 @@ class ProfilePhoto {
             $this->description = $_POST['description'];
         }
         if ($readBoolean) {
-            $this->avatar = $_POST['avatar'] ? true : false;
+            $this->avatar = (bool)$_POST['avatar'];
         }
     }
 

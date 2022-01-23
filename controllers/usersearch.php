@@ -90,7 +90,7 @@ switch ($mode) {
         //Prepares avatars
         if (count($users)) {
             foreach ($users as $user) {
-                $name = $user->longname ? $user->longname : $user->username;
+                $name = $user->longname ?: $user->username;
                 $user->avatar = ProfilePhoto::get_avatar($user->id, $name);
             }
         }

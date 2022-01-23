@@ -78,9 +78,9 @@ class ContentLocation {
      * @return string the content title or path if title is blank.
      */
     function __toString () {
-        $location_global = $this->location_global ? $this->location_global : '?';
-        $location_local = $this->location_local ? $this->location_local : '?';
-        $location_k = $this->location_k ? $this->location_k : '?';
+        $location_global = $this->location_global ?: '?';
+        $location_local = $this->location_local ?: '?';
+        $location_k = $this->location_k ?: '?';
         return "($location_global, $location_local, $location_k)";
     }
 

@@ -295,7 +295,7 @@ function supralog ($category, $message, $source = null) {
     global $db, $CurrentUser, $CurrentPerso;
     $category = $db->sql_query_express($category);
     $message = $db->sql_query_express($message);
-    $source = $db->sql_query_express($source ? $source : $_SERVER['SERVER_ADDR']);
+    $source = $db->sql_query_express($source ?: $_SERVER['SERVER_ADDR']);
     $ip = $_SERVER['REMOTE_ADDR'];
     $sql = "INSERT INTO " . TABLE_LOG .
            " (entry_ip, user_id, perso_id, entry_category, entry_message, entry_source) VALUES
@@ -322,7 +322,7 @@ function initialize_lang () {
     //If $_SESSION['lang'] doesn't exist yet, find a common language
     if (!array_key_exists('lang', $_SESSION)) {
         $lang = find_lang();
-        $_SESSION['lang'] = $lang ? $lang : '-';
+        $_SESSION['lang'] = $lang ?: '-';
     }
 
     if ($_SESSION['lang'] != '-') {
@@ -436,7 +436,7 @@ function lang_get ($key) {
     global $smarty;
 
     $smartyConfValue = $smarty->config_vars[$key];
-    return $smartyConfValue ? $smartyConfValue : "#$key#";
+    return $smartyConfValue ?: "#$key#";
 }
 
 ////////////////////////////////////////////////////////////////////////////////

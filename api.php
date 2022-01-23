@@ -235,7 +235,7 @@ switch ($module = $url[0]) {
                 //then, falls to 'pushdata'
 
             case 'pushdata':
-                $data_id = $_REQUEST['data'] ? $_REQUEST['data'] : new_guid();
+                $data_id = $_REQUEST['data'] ?: new_guid();
                 //Gets data
                 switch ($mode = $_REQUEST['mode']) {
                     case '':
@@ -282,7 +282,7 @@ switch ($module = $url[0]) {
                 global $db;
                 $data_id = $db->sql_escape($data_id);
                 $data = $db->sql_escape($data);
-                $perso_id = $perso_id ? $perso_id : 'NULL';
+                $perso_id = $perso_id ?: 'NULL';
                 $sql = "REPLACE INTO applications_data (application_id, data_id, data_content, data_format, perso_id) VALUES ('$app->id', '$data_id', '$data', '$format', $perso_id)";
                 if (!$db->sql_query($sql)) {
                     message_die(SQL_ERROR, "Can't save data", '', __LINE__, __FILE__, $sql);

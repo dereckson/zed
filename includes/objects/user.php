@@ -232,14 +232,14 @@ class User {
      * @param string $login the login to check
      * @return bool true if the specified login is available ; otherwise, false.
      */
-    public static function is_available_login ($login) {
+    public static function is_available_login ($login) : bool {
         global $db;
         $sql = "SELECT COUNT(*) FROM " . TABLE_USERS . " WHERE username LIKE '$login' LOCK IN SHARE MODE;";
         if (!$result = $db->sql_query($sql)) {
             message_die(SQL_ERROR, "Utilisateurs non parsable", '', __LINE__, __FILE__, $sql);
         }
         $row = $db->sql_fetchrow($result);
-        return ($row[0] ? false : true);
+        return !$row[0];
     }
 
     /**
