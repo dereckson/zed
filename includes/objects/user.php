@@ -42,6 +42,8 @@ class User {
     public static $hashtable_id = [];
     public static $hashtable_name = [];
 
+    public array $session = [];
+
     /**
      * Initializes a new instance
      *

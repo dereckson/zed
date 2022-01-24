@@ -84,7 +84,7 @@ class Perso {
      * @param mixed $data perso ID or nickname
      * @return Perso the perso instance
      */
-    static function get ($data = null) {
+    static function get ($data = null) : Perso {
         if ($data) {
             //Checks in the hashtables if we already have loaded this instance
             if (is_numeric($data)) {
@@ -98,8 +98,7 @@ class Perso {
             }
         }
 
-        $perso = new Perso($data);
-        return $perso;
+        return new Perso($data);
     }
 
     /**
@@ -466,12 +465,12 @@ class Perso {
      * Counts the perso a user have
      *
      * @param int user_id the user ID
-     * @return the user's perso count
+     * @return int the user's perso count
      */
-    public static function get_persos_count ($user_id) {
+    public static function get_persos_count ($user_id) : int {
         global $db;
         $sql = "SELECT COUNT(*) FROM " . TABLE_PERSOS . " WHERE user_id = $user_id";
-        return $db->sql_query_express($sql);
+        return (int)$db->sql_query_express($sql);
 
     }
 
@@ -480,7 +479,7 @@ class Perso {
      *
      * @param int $user_id the user ID
      */
-    public static function get_persos ($user_id) {
+    public static function get_persos (int $user_id) : array {
         global $db;
         $user_id = $db->sql_escape($user_id);
         $sql = "SELECT perso_id FROM " . TABLE_PERSOS . " WHERE user_id = $user_id";
@@ -488,8 +487,9 @@ class Perso {
             message_die(SQL_ERROR, "Can't get persos", '', __LINE__, __FILE__, $sql);
         }
 
+        $persos = [];
         while ($row = $db->sql_fetchrow($result)) {
-            $persos[] = Perso::get($row[perso_id]);
+            $persos[] = Perso::get($row['perso_id']);
         }
         return $persos;
     }
@@ -554,12 +554,12 @@ class Perso {
    /**
     * Creates a new perso, from a parameter form
     *
-    * @param int $user The user to attach the perso to
+    * @param User $user The user to attach the perso to
     * @param Perso $perso A reference to the created perso (don't initialize it, give it a null value)
     * @param array $errors A reference to the arrays containing errors  (should be an empty array, or the method will always return false)
     * @return boolean true if the perso has ben created ; otherwise, false
     */
-    public static function create_perso_from_form ($user, &$perso, &$errors) {
+    public static function create_perso_from_form (User $user, &$perso, &$errors) {
         $perso = new Perso();
         $perso->load_from_form();
         $perso->user_id = $user->id;

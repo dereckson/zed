@@ -17,10 +17,9 @@
  * @link        http://scherzo.dereckson.be/doc/zed
  * @link        http://zed.dereckson.be/
  * @filesource
- * @todo        Consider to split the different tasks (especially
- *              perso select/create into several files)
  */
 
+use Zed\Engines\Perso\PersoSelector;
 use Zed\Engines\Templates\Smarty\Engine as SmartyEngine;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -40,12 +39,6 @@ session_update(); //updates or creates the session
 
 include("includes/login.php"); //login/logout
 $CurrentUser = get_logged_user(); //Gets current user information
-
-//Gets current perso
-require_once('includes/objects/perso.php');
-if ($perso_id = $CurrentUser->session['perso_id']) {
-    $CurrentPerso = new Perso($perso_id);
-}
 
 //Skin and accent to load
 define('THEME', $CurrentUser->session['Skin']);
@@ -72,62 +65,7 @@ if ($CurrentUser->id < 1000) {
 /// Perso (=character) selector
 ///
 
-//Handles form
-if ($_POST['form'] == 'perso.create') {
-    $perso = null;
-    $errors = [];
-    if (Perso::create_perso_from_form($CurrentUser, $perso, $errors)) {
-        //Notifies and logs in
-        $smarty->assign('NOTIFY', lang_get('NewCharacterCreated'));
-        $CurrentPerso = $perso;
-        set_info('perso_id', $perso->id);
-        $CurrentPerso->set_flag("site.lastlogin", $_SERVER['REQUEST_TIME']);
-    } else {
-        //Prints again perso create form, so the user can fix it
-        $smarty->assign('WAP', join("<br />", $errors));
-        $smarty->assign('perso', $perso);
-    }
-}
-
-if ($_GET['action'] == 'perso.logout' && $CurrentPerso != null) {
-    //User wants to change perso
-    $CurrentPerso->on_logout();
-    $CurrentPerso = null;
-} elseif ($_GET['action'] == 'perso.select') {
-    //User has selected a perso
-    $CurrentPerso = new Perso($_GET['perso_id']);
-    if ($CurrentPerso->user_id != $CurrentUser->id) {
-        //User have made an error in the URL
-        message_die(HACK_ERROR, "This isn't your perso.");
-    }
-    $CurrentPerso->on_select();
-}
-
-if (!$CurrentPerso) {
-    switch ($count = Perso::get_persos_count($CurrentUser->id)) {
-        case 0:
-            //User have to create a perso
-            $smarty->display("perso_create.tpl");
-            exit;
-
-        case 1:
-            //Autoselects only perso
-            $CurrentPerso = Perso::get_first_perso($CurrentUser->id);
-            $CurrentPerso->on_select();
-            break;
-
-        default:
-            //User have to pick a perso
-            $persos = Perso::get_persos($CurrentUser->id);
-            $smarty->assign("PERSOS", $persos);
-            $smarty->display("perso_select.tpl");
-            $_SESSION['UserWithSeveralPersos'] = true;
-            exit;
-    }
-}
-
-//Assigns current perso object as Smarty variable
-$smarty->assign('CurrentPerso', $CurrentPerso);
+$CurrentPerso = PersoSelector::load($CurrentUser, $smarty);
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
