@@ -38,6 +38,41 @@ class PersoSelector {
         $this->user = $user;
     }
 
+    ///
+    /// Events processing
+    ///
+
+    /**
+     * Select a perso using several strategies in a sequential order.
+     *
+     * Order matters: for example, to be able to log a perso out,
+     * we first need to select it from the session.
+     *
+     * @return \Zed\Engines\Perso\Events\BaseEvent[]
+     */
+    private function getDefaultEvents () : array {
+        return [
+            // Strategy 1. Look in session if the perso is already selected.
+            new ReadFromSession($this),
+
+            // Strategy 2. Process forms and actions from URL.
+            new Create($this),
+            new Logout($this),
+            new Select($this),
+
+            // Strategy 3. Try to autoselect a perso or ask user for one.
+            new TryAutoSelect($this),
+        ];
+    }
+
+    private function handleEvents () : void {
+        $events = $this->getDefaultEvents();
+
+        foreach ($events as $event) {
+            $event->run();
+        }
+    }
+
     /**
      * Run all the workflow to get a perso.
      */
@@ -67,6 +102,12 @@ class PersoSelector {
     /// Properties
     ///
 
+    /**
+     * Select a perso, as a fresh login.
+     *
+     * If the perso is already logged in,
+     * we can call PersoSelector::setPerso instead.
+     */
     public function selectAndSetPerso (Perso $perso) : void {
         $perso->on_select();
         $this->setPerso($perso);
@@ -75,35 +116,6 @@ class PersoSelector {
     public function setPerso (Perso $perso) : void {
         $this->perso = $perso;
         $this->hasPerso = true;
-    }
-
-    ///
-    /// Events processing
-    ///
-
-    private function handleEvents () : void {
-        $events = $this->getDefaultEvents();
-        foreach ($events as $event) {
-            $event->run();
-        }
-    }
-
-    /**
-     * @return \Zed\Engines\Perso\Events\BaseEvent[]
-     */
-    private function getDefaultEvents () : array {
-        return [
-            // Strategy 1. Look in session if the perso is already selected.
-            new ReadFromSession($this),
-
-            // Strategy 2. Process forms and actions from URL.
-            new Create($this),
-            new Logout($this),
-            new Select($this),
-
-            // Strategy 3. Try to autoselect a perso or ask user for one.
-            new TryAutoSelect($this),
-        ];
     }
 
 }
