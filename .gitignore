@@ -10,3 +10,6 @@ cache/openid/nonces/
 ## Composer
 vendor/
 composer.lock
+
+## Content
+content
