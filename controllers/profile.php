@@ -61,7 +61,7 @@ switch ($who) {
 
     case 'random':
         $mode = 'view';
-        $who = $db->sql_query_express("SELECT perso_id FROM " . TABLE_PROFILES . " ORDER  BY rand() LIMIT 1");
+        $who = $db->queryScalar("SELECT perso_id FROM " . TABLE_PROFILES . " ORDER  BY rand() LIMIT 1");
         break;
 
     default:

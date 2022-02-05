@@ -81,18 +81,18 @@ function cerbere () {
 
     //Authenticates user
     global $db;
-    $guid = $db->sql_escape($guid);
+    $guid = $db->escape($guid);
     $sql = "SELECT key_active FROM " . TABLE_API_KEYS .
            " WHERE key_guid like '$guid'";
-    if (!$result = $db->sql_query($sql)) {
+    if (!$result = $db->query($sql)) {
         message_die(SQL_ERROR, "Can't get key", '', __LINE__, __FILE__, $sql);
     }
-    if ($row = $db->sql_fetchrow($result)) {
+    if ($row = $db->fetchRow($result)) {
         if ($row['key_active']) {
             //key_hits++
             $sql = "UPDATE " . TABLE_API_KEYS . " SET key_hits = key_hits + 1" .
                    " WHERE key_guid like '$guid'";
-            if (!$db->sql_query($sql)) {
+            if (!$db->query($sql)) {
                 message_die(SQL_ERROR, "Can't record api call", '', __LINE__, __FILE__, $sql);
             }
         } else {

@@ -72,12 +72,12 @@ class Profile {
      */
     function load_from_database () {
         global $db;
-        $id = $db->sql_escape($this->perso_id);
+        $id = $db->escape($this->perso_id);
         $sql = "SELECT * FROM " . TABLE_PROFILES . " WHERE perso_id = '$id'";
-        if ( !($result = $db->sql_query($sql)) ) {
+        if ( !($result = $db->query($sql)) ) {
             message_die(SQL_ERROR, "Unable to query azhar_profiles", '', __LINE__, __FILE__, $sql);
         }
-        if (!$row = $db->sql_fetchrow($result)) {
+        if (!$row = $db->fetchRow($result)) {
             $this->lastError = "Profile unknown: " . $this->perso_id;
             return false;
         }
@@ -95,13 +95,13 @@ class Profile {
     function save_to_database () {
         global $db;
 
-        $perso_id = $db->sql_escape($this->perso_id);
-        $text = $db->sql_escape($this->text);
-        $updated = $db->sql_escape($this->updated);
+        $perso_id = $db->escape($this->perso_id);
+        $text = $db->escape($this->text);
+        $updated = $db->escape($this->updated);
         $fixedwidth = $this->fixedwidth ? 1 : 0;
 
         $sql = "REPLACE INTO " . TABLE_PROFILES . " (`perso_id`, `profile_text`, `profile_updated`, `profile_fixedwidth`) VALUES ('$perso_id', '$text', '$updated', '$fixedwidth')";
-        if (!$db->sql_query($sql)) {
+        if (!$db->query($sql)) {
             message_die(SQL_ERROR, "Unable to save", '', __LINE__, __FILE__, $sql);
         }
     }
@@ -117,14 +117,14 @@ class Profile {
      */
     function get_tags () {
         global $db;
-        $id = $db->sql_escape($this->perso_id);
+        $id = $db->escape($this->perso_id);
         $sql = "SELECT tag_code, tag_class FROM " . TABLE_PROFILES_TAGS
              . " WHERE perso_id = '$id'";
-        if (!$result = $db->sql_query($sql)) {
+        if (!$result = $db->query($sql)) {
             message_die(SQL_ERROR, "Can't get tags", '', __LINE__, __FILE__, $sql);
         }
         $tags = [];
-        while ($row = $db->sql_fetchrow($result)) {
+        while ($row = $db->fetchRow($result)) {
             $tags[$row['tag_class']][] = $row['tag_code'];
         }
         return $tags;

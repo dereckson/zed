@@ -27,6 +27,7 @@
  * @filesource
  */
 
+use Zed\Engines\Database\Database;
 use Zed\Engines\Templates\Smarty\Engine as SmartyEngine;
 use Hypership\Geo\Point3D;
 
@@ -53,6 +54,9 @@ define('PERSO_NOT_SELECTED', -7);
 ///
 
 include('includes/core.php');
+
+//Database
+$db = Database::load($Config['Database']);
 
 //Session
 $IP = $_SERVER["REMOTE_ADDR"];

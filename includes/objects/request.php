@@ -91,12 +91,12 @@ class Request {
      */
     function load_from_database () {
         global $db;
-        $id = $db->sql_escape($this->id);
+        $id = $db->escape($this->id);
         $sql = "SELECT * FROM " . TABLE_REQUESTS . " WHERE request_id = '" . $id . "'";
-        if (!$result = $db->sql_query($sql)) {
+        if (!$result = $db->query($sql)) {
             message_die(SQL_ERROR, "Unable to query requests", '', __LINE__, __FILE__, $sql);
         }
-        if (!$row = $db->sql_fetchrow($result)) {
+        if (!$row = $db->fetchRow($result)) {
             $this->lastError = "Request unknown: " . $this->id;
             return false;
         }
@@ -118,26 +118,26 @@ class Request {
     function save_to_database () {
         global $db;
 
-        $id = $this->id ? "'" . $db->sql_escape($this->id) . "'" : 'NULL';
-        $code = $db->sql_escape($this->code);
-        $title = $db->sql_escape($this->title);
-        $date = $db->sql_escape($this->date);
-        $author = $db->sql_escape($this->author);
-        $message = $db->sql_escape($this->message);
-        $to = $db->sql_escape($this->to);
-        $location_global = $db->sql_escape($this->location_global);
-        $location_local = $db->sql_escape($this->location_local);
-        $status = $db->sql_escape($this->status);
+        $id = $this->id ? "'" . $db->escape($this->id) . "'" : 'NULL';
+        $code = $db->escape($this->code);
+        $title = $db->escape($this->title);
+        $date = $db->escape($this->date);
+        $author = $db->escape($this->author);
+        $message = $db->escape($this->message);
+        $to = $db->escape($this->to);
+        $location_global = $db->escape($this->location_global);
+        $location_local = $db->escape($this->location_local);
+        $status = $db->escape($this->status);
 
         //Updates or inserts
         $sql = "REPLACE INTO " . TABLE_REQUESTS . " (`request_id`, `request_code`, `request_title`, `request_date`, `request_author`, `request_message`, `request_to`, `location_global`, `location_local`, `request_status`) VALUES ($id, '$code', '$title', '$date', '$author', '$message', '$to', '$location_global', '$location_local', '$status')";
-        if (!$db->sql_query($sql)) {
+        if (!$db->query($sql)) {
             message_die(SQL_ERROR, "Unable to save", '', __LINE__, __FILE__, $sql);
         }
 
         if (!$this->id) {
             //Gets new record id value
-            $this->id = $db->sql_nextid();
+            $this->id = $db->nextId();
         }
     }
 }

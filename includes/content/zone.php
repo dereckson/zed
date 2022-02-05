@@ -81,13 +81,13 @@ class ContentZone {
      */
     function load_from_database () {
         global $db;
-        $id = $db->sql_escape($this->id);
+        $id = $db->escape($this->id);
 
         $sql = "SELECT * FROM " . TABLE_CONTENT_ZONES . " WHERE zone_id = '" . $id . "'";
-        if (!$result = $db->sql_query($sql)) {
+        if (!$result = $db->query($sql)) {
             message_die(SQL_ERROR, 'Unable to query content_zones', '', __LINE__, __FILE__, $sql);
         }
-        if (!$row = $db->sql_fetchrow($result)) {
+        if (!$row = $db->fetchRow($result)) {
             $this->lastError = 'Zone unknown: ' . $this->id;
             return false;
         }
@@ -100,19 +100,19 @@ class ContentZone {
      */
     function save_to_database () {
         global $db;
-        $id = $this->id ? "'" . $db->sql_escape($this->id) . "'" : 'NULL';
-        $title = $db->sql_escape($this->title);
-        $type = $db->sql_escape($this->type);
-        $params = $db->sql_escape($this->params);
+        $id = $this->id ? "'" . $db->escape($this->id) . "'" : 'NULL';
+        $title = $db->escape($this->title);
+        $type = $db->escape($this->type);
+        $params = $db->escape($this->params);
         $deleted = $this->deleted ? 1 : 0;
 
         $sql = "REPLACE INTO " . TABLE_CONTENT_ZONES . " (`zone_id`, `zone_title`, `zone_type`, `zone_params`, `zone_deleted`) VALUES ($id, '$title', '$type', '$params', $deleted)";
-        if (!$db->sql_query($sql)) {
+        if (!$db->query($sql)) {
             message_die(SQL_ERROR, "Unable to save", '', __LINE__, __FILE__, $sql);
         }
 
         if (!$this->id) {
-            $this->id = $db->sql_nextid();
+            $this->id = $db->nextId();
         }
     }
 
@@ -130,14 +130,14 @@ class ContentZone {
         global $db;
         if ($delete_old_locations) {
             $sql = "DELETE FROM " . TABLE_CONTENT_ZONES_LOCATIONS . " WHERE zone_id = " . $this->id;
-            if (!$db->sql_query($sql)) {
+            if (!$db->query($sql)) {
                 message_die(SQL_ERROR, "Unable to delete", '', __LINE__, __FILE__, $sql);
             }
         }
-        $g = $db->sql_escape($location_global);
-        $l = $db->sql_escape($location_local);
+        $g = $db->escape($location_global);
+        $l = $db->escape($location_local);
         $sql = "REPLACE INTO " . TABLE_CONTENT_ZONES_LOCATIONS . " (location_global, location_local, zone_id) VALUES ('$g', '$l', $this->id)";
-        if (!$db->sql_query($sql)) {
+        if (!$db->query($sql)) {
             message_die(SQL_ERROR, "Unable to set zone location", '', __LINE__, __FILE__, $sql);
         }
     }
@@ -152,13 +152,13 @@ class ContentZone {
      */
     static function at ($location_global, $location_local, $create = false) {
         global $db;
-        $g = $db->sql_escape($location_global);
-        $l = $db->sql_escape($location_local);
+        $g = $db->escape($location_global);
+        $l = $db->escape($location_local);
         $sql = "SELECT * FROM " . TABLE_CONTENT_ZONES_LOCATIONS . " WHERE location_global = '$g' AND location_local = '$l'";
-        if (!$result = $db->sql_query($sql)) {
+        if (!$result = $db->query($sql)) {
             message_die(SQL_ERROR, "Unable to set zone location", '', __LINE__, __FILE__, $sql);
         }
-        if ($row = $db->sql_fetchrow($result)) {
+        if ($row = $db->fetchRow($result)) {
             return new ContentZone($row['zone_id']);
         } elseif ($create) {
             $zone = new ContentZone();
@@ -189,10 +189,10 @@ class ContentZone {
         $op = $use_regexp_for_local ? 'RLIKE' : 'LIKE';
         $sql = "SELECT * FROM " . TABLE_CONTENT_ZONES_LOCATIONS . " WHERE location_global LIKE '$location_global_query' AND location_local $op '$location_local_query'";
 
-        if (!$result = $db->sql_query($sql)) {
+        if (!$result = $db->query($sql)) {
             message_die(SQL_ERROR, "Unable to set zone location", '', __LINE__, __FILE__, $sql);
         }
-        while ($row = $db->sql_fetchrow($result)) {
+        while ($row = $db->fetchRow($result)) {
             $zone = new ContentZone($row['zone_id']);
             $zone->location_global = $row['location_global'];
             $zone->location_local = $row['location_local'];

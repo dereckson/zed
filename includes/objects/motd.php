@@ -68,12 +68,12 @@ class MOTD {
      */
     function load_from_database () {
         global $db;
-        $id = $db->sql_escape($this->id);
+        $id = $db->escape($this->id);
         $sql = "SELECT * FROM " . TABLE_MOTD . " WHERE motd_id = '" . $id . "'";
-        if ( !($result = $db->sql_query($sql)) ) {
+        if ( !($result = $db->query($sql)) ) {
             message_die(SQL_ERROR, "Unable to query azhar_motd", '', __LINE__, __FILE__, $sql);
         }
-        if (!$row = $db->sql_fetchrow($result)) {
+        if (!$row = $db->fetchRow($result)) {
             $this->lastError = "MOTD unknown: " . $this->id;
             return false;
         }
@@ -88,13 +88,13 @@ class MOTD {
      */
     function save_to_database () {
         global $db;
-        $id = $this->id ? "'" . $db->sql_escape($this->id) . "'" : 'NULL';
-        $perso_id = $db->sql_escape($this->perso_id);
-        $text = $db->sql_escape($this->text);
-        $date = $db->sql_escape($this->date);
+        $id = $this->id ? "'" . $db->escape($this->id) . "'" : 'NULL';
+        $perso_id = $db->escape($this->perso_id);
+        $text = $db->escape($this->text);
+        $date = $db->escape($this->date);
 
         $sql = "REPLACE INTO " . TABLE_MOTD . " (`motd_id`, `perso_id`, `motd_text`, `motd_date`) VALUES ($id, '$perso_id', '$text', '$date')";
-        if (!$db->sql_query($sql)) {
+        if (!$db->query($sql)) {
             message_die(SQL_ERROR, "Unable to save", '', __LINE__, __FILE__, $sql);
         }
     }

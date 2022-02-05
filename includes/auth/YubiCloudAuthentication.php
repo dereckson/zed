@@ -150,10 +150,10 @@ class YubiCloudAuthentication implements IAuthentication {
         $authentication_identity = $this->getPublicIdentity();
         $sql = "SELECT user_id FROM " . TABLE_USERS_AUTH
              . " WHERE auth_type = 'YubiKey' AND auth_identity = '$authentication_identity'";
-        if (!$result = $db->sql_query($sql)) {
+        if (!$result = $db->query($sql)) {
             message_die(SQL_ERROR, "Can't query users authentication table.", '', __LINE__, __FILE__, $sql);
         }
-        if ($row = $db->sql_fetchrow($result)) {
+        if ($row = $db->fetchRow($result)) {
             $this->user_id = $row['user_id'];
             return true;
         }

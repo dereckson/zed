@@ -45,11 +45,11 @@ switch ($resource = $url[1]) {
                TABLE_USERS . " u, " . TABLE_SESSIONS .
                " s WHERE s.online = 1 AND u.user_id = s.user_id
                ORDER BY HeureLimite DESC";
-        if (!$result = $db->sql_query($sql)) {
+        if (!$result = $db->query($sql)) {
             message_die(SQL_ERROR, "Unable to query the table", '', __LINE__, __FILE__, $sql);
         }
         $i = 0;
-        while ($row = $db->sql_fetchrow($result)) {
+        while ($row = $db->fetchRow($result)) {
             $users[$i]->id = $row['user_id'];
             $users[$i]->username = $row['username'];
             $users[$i]->longname = $row['user_longname'];
@@ -62,11 +62,11 @@ switch ($resource = $url[1]) {
     case 'directory':
         $sql = 'SELECT username, user_longname FROM ' . TABLE_USERS .
                ' WHERE user_active < 2 ORDER by user_longname ASC';
-        if (!$result = $db->sql_query($sql)) {
+        if (!$result = $db->query($sql)) {
             message_die(SQL_ERROR, "Unable to query the table", '', __LINE__, __FILE__, $sql);
         }
         $i = 0;
-        while ($row = $db->sql_fetchrow($result)) {
+        while ($row = $db->fetchRow($result)) {
             $users[$i]->username = $row['username'];
             $users[$i]->longname = $row['user_longname'];
             $i++;

@@ -53,12 +53,12 @@ function get_openid_consumer () {
  */
 function openid_login ($url) {
     global $db, $_SESSION, $LoginError, $LoginSuccessful;
-    $url = $db->sql_escape($url);
+    $url = $db->escape($url);
     $sql = 'SELECT user_id FROM ' . TABLE_USERS_AUTH
          . " WHERE auth_type = 'OpenID' AND auth_identity LIKE '$url'";
-    if ($user_id = $db->sql_query_express($sql)) {
+    if ($user_id = $db->queryScalar($sql)) {
         $sql = "UPDATE " . TABLE_SESSIONS . " SET user_id = '$user_id' WHERE session_id LIKE '$_SESSION[ID]'";
-        if (!$db->sql_query($sql)) {
+        if (!$db->query($sql)) {
             message_die(SQL_ERROR, "Can't update session table", '', __LINE__, __FILE__, $sql);
         }
         $LoginSuccessful = true;
@@ -142,12 +142,12 @@ if ($action == 'openid.login') {
         //Tests if the password wouldn't match an invite code
         //If so, redirects people using login page as invitation claim page
         if (!$LoginSuccessful) {
-            $code = $db->sql_escape($_POST['password']);
+            $code = $db->escape($_POST['password']);
             $sql = "SELECT * FROM " . TABLE_USERS_INVITES . " WHERE invite_code = '$code'";
-            if (!$result = $db->sql_query($sql)) {
+            if (!$result = $db->query($sql)) {
                 message_die(SQL_ERROR, "Can't get invites", '', __LINE__, __FILE__, $sql);
             }
-            if ($row = $db->sql_fetchrow($result)) {
+            if ($row = $db->fetchRow($result)) {
                 $url = get_url('invite', $_POST['password']);
                 header('location: ' . $url);
             }

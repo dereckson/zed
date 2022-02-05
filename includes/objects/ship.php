@@ -118,12 +118,12 @@ class Ship {
      */
     function load_from_database () {
         global $db;
-        $id = $db->sql_escape($this->id);
+        $id = $db->escape($this->id);
         $sql = "SELECT * FROM ships WHERE ship_id = '" . $id . "'";
-        if ( !($result = $db->sql_query($sql)) ) {
+        if ( !($result = $db->query($sql)) ) {
             message_die(SQL_ERROR, "Unable to query Ships", '', __LINE__, __FILE__, $sql);
         }
-        if (!$row = $db->sql_fetchrow($result)) {
+        if (!$row = $db->fetchRow($result)) {
             $this->lastError = "Ship unknown: " . $this->id;
             return false;
         }
@@ -146,22 +146,22 @@ class Ship {
     function save_to_database () {
         global $db;
 
-        $id = $this->id ? "'" . $db->sql_escape($this->id) . "'" : 'NULL';
-        $name = $db->sql_escape($this->name);
-        $location_global = $db->sql_escape($this->location_global);
-        $location_local = $db->sql_escape($this->location_local);
-        $api_key = $db->sql_escape($this->api_key);
-        $description = $db->sql_escape($this->description);
+        $id = $this->id ? "'" . $db->escape($this->id) . "'" : 'NULL';
+        $name = $db->escape($this->name);
+        $location_global = $db->escape($this->location_global);
+        $location_local = $db->escape($this->location_local);
+        $api_key = $db->escape($this->api_key);
+        $description = $db->escape($this->description);
 
         //Updates or inserts
         $sql = "REPLACE INTO ships (`ship_id`, `ship_name`, `location_global`, `location_local`, `api_key`, `ship_description`) VALUES ($id, '$name', '$location_global', '$location_location', '$api_key', '$description')";
-        if (!$db->sql_query($sql)) {
+        if (!$db->query($sql)) {
             message_die(SQL_ERROR, "Unable to save", '', __LINE__, __FILE__, $sql);
         }
 
         if (!$id) {
             //Gets new record id value
-            $this->id = $db->sql_nextid();
+            $this->id = $db->nextId();
         }
     }
 
@@ -186,12 +186,12 @@ class Ship {
 
         //Gets ships
         $sql = "SELECT ship_id, location_global, location_local FROM " . TABLE_SHIPS . " WHERE location_global IS NOT NULL";
-        if (!$result = $db->sql_query($sql)) {
+        if (!$result = $db->query($sql)) {
             message_die(SQL_ERROR, "Can't get ships", '', __LINE__, __FILE__, $sql);
         }
         $ships = [];
         $location = new GeoLocation($location_global, $location_local);
-        while ($row = $db->sql_fetchrow($result)) {
+        while ($row = $db->fetchRow($result)) {
             $shipLocation = new GeoLocation($row['location_global'], $row['location_local']);
             if ($location->equals($shipLocation)) {
                 $ships[] = self::get($row['ship_id']);
@@ -291,7 +291,7 @@ class Ship {
         //Cleans old sessions
         global $db;
         $sql = "DELETE FROM " . TABLE_REGISTRY . " WHERE registry_key LIKE 'api.ship.session.%' AND registry_updated < NOW() - 7200";
-        if (!$db->sql_query($sql)) {
+        if (!$db->query($sql)) {
             message_die(SQL_ERROR, "Can't delete old ship API sessions", '', __LINE__, __FILE__, $sql);
         }
     }
@@ -320,12 +320,12 @@ class Ship {
      */
     static function from_api_key ($key) {
         global $db;
-        $key = $db->sql_escape($key);
+        $key = $db->escape($key);
         $sql = "SELECT * FROM ships WHERE api_key = '" . $key . "'";
-        if ( !($result = $db->sql_query($sql)) ) {
+        if ( !($result = $db->query($sql)) ) {
             message_die(SQL_ERROR, "Unable to query ships", '', __LINE__, __FILE__, $sql);
         }
-        if (!$row = $db->sql_fetchrow($result)) {
+        if (!$row = $db->fetchRow($result)) {
             return null;
         }
 

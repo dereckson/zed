@@ -140,16 +140,16 @@ class Perso {
         //Gets perso
         $sql = "SELECT * FROM " . TABLE_PERSOS;
         if ($this->id) {
-            $id = $db->sql_escape($this->id);
+            $id = $db->escape($this->id);
             $sql .= " WHERE perso_id = '" . $id . "'";
         } else {
-            $nickname = $db->sql_escape($this->nickname);
+            $nickname = $db->escape($this->nickname);
             $sql .= " WHERE perso_nickname = '" . $nickname . "'";
         }
-        if ( !($result = $db->sql_query($sql)) ) {
+        if ( !($result = $db->query($sql)) ) {
             message_die(SQL_ERROR, "Unable to query persos", '', __LINE__, __FILE__, $sql);
         }
-        if (!$row = $db->sql_fetchrow($result)) {
+        if (!$row = $db->fetchRow($result)) {
             $this->lastError = "Perso unknown: " . $this->id;
             return false;
         }
@@ -167,10 +167,10 @@ class Perso {
         //Gets flags
         $sql = "SELECT flag_key, flag_value FROM " . TABLE_PERSOS_FLAGS .
                " WHERE perso_id = $this->id";
-        if (!$result = $db->sql_query($sql)) {
+        if (!$result = $db->query($sql)) {
             message_die(SQL_ERROR, "Can't get flags", '', __LINE__, __FILE__, $sql);
         }
-        while ($row = $db->sql_fetchrow($result)) {
+        while ($row = $db->fetchRow($result)) {
             $this->flags[$row["flag_key"]] = $row["flag_value"];
         }
 
@@ -193,25 +193,25 @@ class Perso {
     function save_to_database () {
         global $db;
 
-        $id = $this->id ? "'" . $db->sql_escape($this->id) . "'" : 'NULL';
-        $user_id = $db->sql_escape($this->user_id);
-        $name = $db->sql_escape($this->name);
-        $nickname = $db->sql_escape($this->nickname);
-        $race = $db->sql_escape($this->race);
-        $sex = $db->sql_escape($this->sex);
-        $avatar = $db->sql_escape($this->avatar);
-        $location_global =  $this->location_global ? "'" . $db->sql_escape($this->location_global) . "'" : 'NULL';
-        $location_local = $this->location_local ? "'" .  $db->sql_escape($this->location_local) . "'" : 'NULL';
+        $id = $this->id ? "'" . $db->escape($this->id) . "'" : 'NULL';
+        $user_id = $db->escape($this->user_id);
+        $name = $db->escape($this->name);
+        $nickname = $db->escape($this->nickname);
+        $race = $db->escape($this->race);
+        $sex = $db->escape($this->sex);
+        $avatar = $db->escape($this->avatar);
+        $location_global =  $this->location_global ? "'" . $db->escape($this->location_global) . "'" : 'NULL';
+        $location_local = $this->location_local ? "'" .  $db->escape($this->location_local) . "'" : 'NULL';
 
         //Updates or inserts
         $sql = "REPLACE INTO " . TABLE_PERSOS . " (`perso_id`, `user_id`, `perso_name`, `perso_nickname`, `perso_race`, `perso_sex`, `perso_avatar`, `location_global`, `location_local`) VALUES ($id, '$user_id', '$name', '$nickname', '$race', '$sex', '$avatar', $location_global, $location_local)";
-        if (!$db->sql_query($sql)) {
+        if (!$db->query($sql)) {
             message_die(SQL_ERROR, "Unable to save", '', __LINE__, __FILE__, $sql);
         }
 
         if (!$id) {
             //Gets new record id value
-            $this->id = $db->sql_nextid();
+            $this->id = $db->nextId();
         }
     }
 
@@ -225,10 +225,10 @@ class Perso {
         if (!$this->id) {
             message_die(GENERAL_ERROR, "You're trying to update a perso record not yet saved in the database: $field");
         }
-        $id = $db->sql_escape($this->id);
-        $value = $db->sql_escape($this->$field);
+        $id = $db->escape($this->id);
+        $value = $db->escape($this->$field);
         $sql = "UPDATE " . TABLE_PERSOS . " SET `$field` = '$value' WHERE perso_id = '$id'";
-        if (!$db->sql_query($sql)) {
+        if (!$db->query($sql)) {
             message_die(SQL_ERROR, "Unable to save $field field", '', __LINE__, __FILE__, $sql);
         }
     }
@@ -263,13 +263,13 @@ class Perso {
         //Updates database record
         if ($global != null && $local != null) {
             global $db;
-            $perso_id = $db->sql_escape($this->id);
-            $g = $db->sql_escape($this->location_global);
-            $l = $db->sql_escape($this->location_local);
+            $perso_id = $db->escape($this->id);
+            $g = $db->escape($this->location_global);
+            $l = $db->escape($this->location_local);
             $sql = "UPDATE " . TABLE_PERSOS .
                    " SET location_global = '$g', location_local = '$l'" .
                    " WHERE perso_id = '$perso_id'";
-            if (!$db->sql_query($sql)) {
+            if (!$db->query($sql)) {
                 message_die(SQL_ERROR, "Can't save new $global $local location.", '', __LINE__, __FILE__, $sql);
             }
         } elseif ($global != null) {
@@ -320,11 +320,11 @@ class Perso {
 
         //Saves flag to database
         global $db;
-        $id = $db->sql_escape($this->id);
-        $key = $db->sql_escape($key);
-        $value = $db->sql_escape($value);
+        $id = $db->escape($this->id);
+        $key = $db->escape($key);
+        $value = $db->escape($value);
         $sql = "REPLACE " . TABLE_PERSOS_FLAGS . " SET perso_id = '$id', flag_key = '$key', flag_value = '$value'";
-        if (!$db->sql_query($sql)) {
+        if (!$db->query($sql)) {
             message_die(SQL_ERROR, "Can't save flag", '', __LINE__, __FILE__, $sql);
         }
 
@@ -343,11 +343,11 @@ class Perso {
             return;
         }
 
-        $id = $db->sql_escape($this->id);
-        $key = $db->sql_escape($key);
+        $id = $db->escape($this->id);
+        $key = $db->escape($key);
         $sql = "DELETE FROM " . TABLE_PERSOS_FLAGS  .
                " WHERE flag_key = '$key' AND perso_id = '$id' LIMIT 1";
-        if (!$db->sql_query($sql)) {
+        if (!$db->query($sql)) {
             message_die(SQL_ERROR, "Can't delete flag", '', __LINE__, __FILE__, $sql);
         }
     }
@@ -384,10 +384,10 @@ class Perso {
      */
     public function get_note ($code) {
         global $db;
-        $id = $db->sql_escape($this->id);
-        $code = $db->sql_escape($code);
+        $id = $db->escape($this->id);
+        $code = $db->escape($code);
         $sql = "SELECT note_text FROM " . TABLE_PERSOS_NOTES . " WHERE perso_id = '$id' AND note_code LIKE '$code'";
-        return $db->sql_query_express($sql);
+        return $db->queryScalar($sql);
     }
 
     /**
@@ -398,11 +398,11 @@ class Perso {
      */
     public function set_note ($code, $text) {
         global $db;
-        $id = $db->sql_escape($this->id);
-        $code = $db->sql_escape($code);
-        $text = $db->sql_escape($text);
+        $id = $db->escape($this->id);
+        $code = $db->escape($code);
+        $text = $db->escape($text);
         $sql = "REPLACE INTO " . TABLE_PERSOS_NOTES  . " (perso_id, note_code, note_text) VALUES ('$id', '$code', '$text')";
-        if (!$db->sql_query($sql)) {
+        if (!$db->query($sql)) {
             message_die(SQL_ERROR, "Can't save note", '', __LINE__, __FILE__, $sql);
         }
     }
@@ -414,9 +414,9 @@ class Perso {
      */
     public function count_notes () {
         global $db;
-        $id = $db->sql_escape($this->id);
+        $id = $db->escape($this->id);
         $sql = "SELECT COUNT(*) FROM " . TABLE_PERSOS_NOTES . " WHERE perso_id = '$id'";
-        return $db->sql_query_express($sql);
+        return $db->queryScalar($sql);
     }
 
     /*
@@ -429,10 +429,10 @@ class Perso {
         global $db;
 
         $sql = "SELECT COUNT(*) FROM " . TABLE_PERSOS . " WHERE perso_id = $id LOCK IN SHARE MODE";
-        if (!$result = $db->sql_query($sql)) {
+        if (!$result = $db->query($sql)) {
             message_die(SQL_ERROR, "Can't access users table", '', __LINE__, __FILE__, $sql);
         }
-        $row = $db->sql_fetchrow($result);
+        $row = $db->fetchRow($result);
         return ($row[0] == 0);
     }
 
@@ -452,12 +452,12 @@ class Perso {
      */
     public static function is_available_nickname ($nickname) {
         global $db;
-        $nickname = $db->sql_escape($nickname);
+        $nickname = $db->escape($nickname);
         $sql = "SELECT COUNT(*) FROM " . TABLE_PERSOS . " WHERE perso_nickname LIKE '$nickname' LOCK IN SHARE MODE;";
-        if (!$result = $db->sql_query($sql)) {
+        if (!$result = $db->query($sql)) {
             message_die(SQL_ERROR, "Utilisateurs non parsable", '', __LINE__, __FILE__, $sql);
         }
-        $row = $db->sql_fetchrow($result);
+        $row = $db->fetchRow($result);
         return ($row[0] == 0);
     }
 
@@ -470,7 +470,7 @@ class Perso {
     public static function get_persos_count ($user_id) : int {
         global $db;
         $sql = "SELECT COUNT(*) FROM " . TABLE_PERSOS . " WHERE user_id = $user_id";
-        return (int)$db->sql_query_express($sql);
+        return (int)$db->queryScalar($sql);
 
     }
 
@@ -481,14 +481,14 @@ class Perso {
      */
     public static function get_persos (int $user_id) : array {
         global $db;
-        $user_id = $db->sql_escape($user_id);
+        $user_id = $db->escape($user_id);
         $sql = "SELECT perso_id FROM " . TABLE_PERSOS . " WHERE user_id = $user_id";
-        if (!$result = $db->sql_query($sql)) {
+        if (!$result = $db->query($sql)) {
             message_die(SQL_ERROR, "Can't get persos", '', __LINE__, __FILE__, $sql);
         }
 
         $persos = [];
-        while ($row = $db->sql_fetchrow($result)) {
+        while ($row = $db->fetchRow($result)) {
             $persos[] = Perso::get($row['perso_id']);
         }
         return $persos;
@@ -503,7 +503,7 @@ class Perso {
     public static function get_first_perso ($user_id) {
         global $db;
         $sql = "SELECT perso_id FROM " . TABLE_PERSOS ."  WHERE user_id = $user_id LIMIT 1";
-        if ($perso_id = $db->sql_query_express($sql)) {
+        if ($perso_id = $db->queryScalar($sql)) {
             return new Perso($perso_id);
         }
     }
@@ -515,12 +515,12 @@ class Perso {
      */
     public function is_online () {
         global $db;
-        $id = $db->sql_escape($this->id);
+        $id = $db->escape($this->id);
         $sql = "SELECT MAX(online) FROM " . TABLE_SESSIONS ." WHERE perso_id = $id";
-        if (!$result = $db->sql_query($sql)) {
+        if (!$result = $db->query($sql)) {
             message_die(SQL_ERROR, "Unable to query the table", '', __LINE__, __FILE__, $sql);
         }
-        $row = $db->sql_fetchrow($result);
+        $row = $db->fetchRow($result);
         return ($row[0] == 1);
     }
 

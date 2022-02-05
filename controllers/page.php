@@ -35,7 +35,7 @@
  * @todo move "handle editor form" and some of the "gets page" code to a includes/objects/page.php file (rationale: cleaner model/controller separation)
  */
 
-if (!$code = $db->sql_escape($url[1])) {
+if (!$code = $db->escape($url[1])) {
     message_die(HACK_ERROR, "/page/ must be followed by page code");
 }
 
@@ -50,29 +50,29 @@ if ($_POST['code']) {
     //Gets version
     $sql = "SELECT MAX(page_version) + 1 FROM " . TABLE_PAGES_EDITS .
             " WHERE page_code = '$code'";
-    if (!$result = $db->sql_query($sql)) {
+    if (!$result = $db->query($sql)) {
         message_die(SQL_ERROR, "Can't fetch pages", '', __LINE__, __FILE__, $sql);
     }
-    $row = $db->sql_fetchrow($result);
+    $row = $db->fetchRow($result);
     $page_version = ($row[0] == "") ? 0 : $row[0];
 
     //Gets other fields
-    $page_code = $db->sql_escape($code);
-    $page_title = $db->sql_escape($_POST['title']);
-    $page_content = $db->sql_escape($_POST['content']);
-    $page_edit_reason = $db->sql_escape($_POST['edit_reason']);
+    $page_code = $db->escape($code);
+    $page_title = $db->escape($_POST['title']);
+    $page_content = $db->escape($_POST['content']);
+    $page_edit_reason = $db->escape($_POST['edit_reason']);
     $page_edit_user_id = $CurrentPerso->user_id;
     $page_edit_time = time();
 
     //Saves archive version
     $sql = "INSERT INTO " . TABLE_PAGES_EDITS . " (`page_code`, `page_version`, `page_title`, `page_content`, `page_edit_reason`, `page_edit_user_id`, `page_edit_time`) VALUES ('$page_code', '$page_version', '$page_title', '$page_content', '$page_edit_reason', '$page_edit_user_id', '$page_edit_time')";
-    if (!$db->sql_query($sql)) {
+    if (!$db->query($sql)) {
         message_die(SQL_ERROR, "Can't save page", '', __LINE__, __FILE__, $sql);
     }
 
     //Saves prod version
     $sql = "REPLACE INTO " . TABLE_PAGES . " (`page_code`, `page_title`, `page_content`) VALUES ('$page_code', '$page_title', '$page_content')";
-    if (!$db->sql_query($sql)) {
+    if (!$db->query($sql)) {
         message_die(SQL_ERROR, "Can't save page", '', __LINE__, __FILE__, $sql);
     }
 
@@ -84,10 +84,10 @@ if ($_POST['code']) {
 //
 
 $sql = "SELECT page_title, page_content, page_code FROM " . TABLE_PAGES . " WHERE page_code LIKE '$code'";
-if ( !($result = $db->sql_query($sql)) ) {
+if ( !($result = $db->query($sql)) ) {
     message_die(SQL_ERROR, "Can't get pages", '', __LINE__, __FILE__, $sql);
 }
-$row = $db->sql_fetchrow($result);
+$row = $db->fetchRow($result);
 
 switch ($_GET['mode']) {
     case 'edit':

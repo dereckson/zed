@@ -82,12 +82,12 @@ class Port {
      */
     function load_from_database () {
         global $db;
-        $id = $db->sql_escape($this->id);
+        $id = $db->escape($this->id);
         $sql = "SELECT * FROM " . TABLE_PORTS . " WHERE port_id = '" . $id . "'";
-        if ( !($result = $db->sql_query($sql)) ) {
+        if ( !($result = $db->query($sql)) ) {
             message_die(SQL_ERROR, "Unable to query ports", '', __LINE__, __FILE__, $sql);
         }
-        if (!$row = $db->sql_fetchrow($result)) {
+        if (!$row = $db->fetchRow($result)) {
             $this->lastError = "Port unknown: " . $this->id;
             return false;
         }
@@ -127,21 +127,21 @@ class Port {
     function save_to_database () {
         global $db;
 
-        $id = $this->id ? "'" . $db->sql_escape($this->id) . "'" : 'NULL';
-        $location_global = $db->sql_escape($this->location_global);
-        $location_local = $db->sql_escape($this->location_local);
-        $name = $db->sql_escape($this->name);
+        $id = $this->id ? "'" . $db->escape($this->id) . "'" : 'NULL';
+        $location_global = $db->escape($this->location_global);
+        $location_local = $db->escape($this->location_local);
+        $name = $db->escape($this->name);
         $status = $this->getStatus();
 
         //Updates or inserts
         $sql = "REPLACE INTO " . TABLE_PORTS . " (`port_id`, `location_global`, `location_local`, `port_name`, `port_status`) VALUES ($id, '$location_global', '$location_local', '$name', '$status')";
-        if (!$db->sql_query($sql)) {
+        if (!$db->query($sql)) {
             message_die(SQL_ERROR, "Unable to save", '', __LINE__, __FILE__, $sql);
         }
 
         if (!$id) {
             //Gets new record id value
-            $this->id = $db->sql_nextid();
+            $this->id = $db->nextId();
         }
     }
 
@@ -163,12 +163,12 @@ class Port {
      */
     static function get_port_id ($location_global) {
         global $db;
-        $location_global = $db->sql_escape($location_global);
+        $location_global = $db->escape($location_global);
         $sql = "SELECT port_id FROM " . TABLE_PORTS . " WHERE location_global = '$location_global'";
-        if (!$result = $db->sql_query($sql)) {
+        if (!$result = $db->query($sql)) {
             message_die(SQL_ERROR, "Unable to get ports", '', __LINE__, __FILE__, $sql);
         }
-        if ($row = $db->sql_fetchrow($result)) {
+        if ($row = $db->fetchRow($result)) {
            return $row['port_id'];
         }
         return null;
@@ -194,12 +194,12 @@ class Port {
             //If place have been specified (B0001001), we've to found elsewhere
             //==> B00001%
             global $db;
-            $loc = $db->sql_escape(substr($location_global, 0, 6));
+            $loc = $db->escape(substr($location_global, 0, 6));
             $sql = "SELECT port_id FROM " . TABLE_PORTS . " WHERE location_global LIKE '$loc%'";
-            if (!$result = $db->sql_query($sql)) {
+            if (!$result = $db->query($sql)) {
                 message_die(SQL_ERROR, "Can't get port", '', __LINE__, __FILE__, $sql);
             }
-            if ($row = $db->sql_fetchrow($result)) {
+            if ($row = $db->fetchRow($result)) {
                 $port_id = $row['port_id'];
             } else {
                 return null;

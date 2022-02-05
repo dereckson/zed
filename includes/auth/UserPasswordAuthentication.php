@@ -88,10 +88,10 @@ class UserPasswordAuthentication implements IAuthentication {
         global $db;
     
         $sql = "SELECT user_password, user_id FROM " . TABLE_USERS . " WHERE username = '$this->username'";
-        if (!$result = $db->sql_query($sql)) {
+        if (!$result = $db->query($sql)) {
             message_die(SQL_ERROR, "Can't query users table.", '', __LINE__, __FILE__, $sql);
         }
-        if ($row = $db->sql_fetchrow($result)) {
+        if ($row = $db->fetchRow($result)) {
             $this->user_id = $row['user_id'];
             if (!$row['user_password']) {
                 $this->error  = "This account exists but haven't a password defined. Use OpenID or contact dereckson (at) espace-win.org to fix that.";

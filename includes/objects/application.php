@@ -75,12 +75,12 @@ class Application {
      */
     function load_from_database () {
         global $db;
-        $id = $db->sql_escape($this->id);
+        $id = $db->escape($this->id);
         $sql = "SELECT * FROM applications WHERE application_id = '" . $id . "'";
-        if ( !($result = $db->sql_query($sql)) ) {
+        if ( !($result = $db->query($sql)) ) {
             message_die(SQL_ERROR, "Unable to query applications", '', __LINE__, __FILE__, $sql);
         }
-        if (!$row = $db->sql_fetchrow($result)) {
+        if (!$row = $db->fetchRow($result)) {
             $this->lastError = "Application unknown: " . $this->id;
             return false;
         }
@@ -97,21 +97,21 @@ class Application {
     function save_to_database () {
         global $db;
 
-        $id = $this->id ? "'" . $db->sql_escape($this->id) . "'" : 'NULL';
-        $code = $db->sql_escape($this->code);
-        $name = $db->sql_escape($this->name);
-        $api_key = $db->sql_escape($this->api_key);
-        $description = $db->sql_escape($this->description);
+        $id = $this->id ? "'" . $db->escape($this->id) . "'" : 'NULL';
+        $code = $db->escape($this->code);
+        $name = $db->escape($this->name);
+        $api_key = $db->escape($this->api_key);
+        $description = $db->escape($this->description);
 
         //Updates or inserts
         $sql = "REPLACE INTO applications (`application_id`, `application_code`, `application_name`, `api_key`, `application_description`) VALUES ($id, '$code', '$name', '$api_key', '$description')";
-        if (!$db->sql_query($sql)) {
+        if (!$db->query($sql)) {
             message_die(SQL_ERROR, "Unable to save", '', __LINE__, __FILE__, $sql);
         }
 
         if (!$id) {
             //Gets new record id value
-            $this->id = $db->sql_nextid();
+            $this->id = $db->nextId();
         }
     }
 
@@ -129,12 +129,12 @@ class Application {
      */
     static function from_api_key ($key) {
         global $db;
-        $key = $db->sql_escape($key);
+        $key = $db->escape($key);
         $sql = "SELECT * FROM applications WHERE api_key = '" . $key . "'";
-        if ( !($result = $db->sql_query($sql)) ) {
+        if ( !($result = $db->query($sql)) ) {
             message_die(SQL_ERROR, "Unable to query applications", '', __LINE__, __FILE__, $sql);
         }
-        if (!$row = $db->sql_fetchrow($result)) {
+        if (!$row = $db->fetchRow($result)) {
             return null;
         }
 
@@ -158,11 +158,11 @@ class Application {
     function get_perso_id ($userkey) {
         global $db;
 
-        $id = $db->sql_escape($this->id);
-        $userkey = $db->sql_escape($userkey);
+        $id = $db->escape($this->id);
+        $userkey = $db->escape($userkey);
 
         $sql = "SELECT perso_id FROM applications_userkeys WHERE api_userkey = '$userkey' AND application_id = '$id'";
-        return $db->sql_query_express($sql);
+        return $db->queryScalar($sql);
     }
 
     /**

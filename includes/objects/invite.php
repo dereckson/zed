@@ -66,10 +66,10 @@ class Invite {
         do {
             $this->code = generate_random_string("AAA111");
             $sql = "SELECT COUNT(*) FROM " . TABLE_USERS_INVITES . " WHERE invite_code = '$this->code' LOCK IN SHARE MODE;";
-            if (!$result = $db->sql_query($sql)) {
+            if (!$result = $db->query($sql)) {
                 message_die(SQL_ERROR, "Can't access invite users table", '', __LINE__, __FILE__, $sql);
             }
-            $row = $db->sql_fetchrow($result);
+            $row = $db->fetchRow($result);
         } while ($row[0]);
     }
 
@@ -78,12 +78,12 @@ class Invite {
      */
     function load_from_database () {
         global $db;
-        $code = $db->sql_escape($this->code);
+        $code = $db->escape($this->code);
         $sql = "SELECT * FROM " . TABLE_USERS_INVITES . " WHERE invite_code = '" . $code . "'";
-        if ( !($result = $db->sql_query($sql)) ) {
+        if ( !($result = $db->query($sql)) ) {
             message_die(SQL_ERROR, "Unable to query invite codes", '', __LINE__, __FILE__, $sql);
         }
-        if (!$row = $db->sql_fetchrow($result)) {
+        if (!$row = $db->fetchRow($result)) {
             $this->lastError = "Invite code unknown: " . $this->code;
             return false;
         }
@@ -111,15 +111,15 @@ class Invite {
     function save_to_database () {
         global $db;
 
-        $code = $db->sql_escape($this->code);
-        $date = $db->sql_escape($this->date);
-        $from_user_id = $db->sql_escape($this->from_user_id);
-        $from_perso_id = $db->sql_escape($this->from_perso_id);
-        $to_user_id = $this->to_user_id ? "'" . $db->sql_escape($this->to_user_id) . "'" : 'NULL';
+        $code = $db->escape($this->code);
+        $date = $db->escape($this->date);
+        $from_user_id = $db->escape($this->from_user_id);
+        $from_perso_id = $db->escape($this->from_perso_id);
+        $to_user_id = $this->to_user_id ? "'" . $db->escape($this->to_user_id) . "'" : 'NULL';
 
         //Updates or inserts
         $sql = "REPLACE INTO " . TABLE_USERS_INVITES . " (`invite_code`, `invite_date`, `invite_from_user_id`, `invite_from_perso_id`, `invite_to_user_id`) VALUES ('$code', '$date', '$from_user_id', '$from_perso_id', $to_user_id)";
-        if (!$db->sql_query($sql)) {
+        if (!$db->query($sql)) {
             message_die(SQL_ERROR, "Unable to save invite code", '', __LINE__, __FILE__, $sql);
         }
     }
@@ -129,9 +129,9 @@ class Invite {
      */
     function delete () {
         global $db;
-        $code = $db->sql_escape($this->code);
+        $code = $db->escape($this->code);
         $sql = "DELETE FROM " . TABLE_USERS_INVITES . " WHERE invite_code = '$code'";
-        if (!$db->sql_query($sql)) {
+        if (!$db->query($sql)) {
             message_die(SQL_ERROR, "Unable to save delete code", '', __LINE__, __FILE__, $sql);
         }
     }
@@ -161,11 +161,11 @@ class Invite {
         global $db;
         $sql = "SELECT invite_code FROM " . TABLE_USERS_INVITES
              . " WHERE invite_from_perso_id = $perso_id AND invite_to_user_id IS NULL ORDER BY invite_date ASC";
-        if (!$result = $db->sql_query($sql)) {
+        if (!$result = $db->query($sql)) {
             message_die(SQL_ERROR, "Can't access invite users table", '', __LINE__, __FILE__, $sql);
         }
         $codes = [];
-        while ($row = $db->sql_fetchrow($result)) {
+        while ($row = $db->fetchRow($result)) {
             $codes[] = $row['invite_code'];
         }
         return $codes;
@@ -183,10 +183,10 @@ class Invite {
 
         if ($user_id = $perso->user_id) {
             $sql = "SELECT invite_from_perso_id FROM " . TABLE_USERS_INVITES . " WHERE invite_to_user_id = '$user_id'";
-            if (!$result = $db->sql_query($sql)) {
+            if (!$result = $db->query($sql)) {
                 message_die(SQL_ERROR, "Can't access invite users table", '', __LINE__, __FILE__, $sql);
             }
-            if ($row = $db->sql_fetchrow($result)) {
+            if ($row = $db->fetchRow($result)) {
                 return $row[0];
             }
         }

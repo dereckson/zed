@@ -20,6 +20,7 @@
  */
 
 use Keruald\OmniTools\OS\Environment;
+use Keruald\Database\Engines\MySQLiEngine;
 
 ////////////////////////////////////////////////////////////////////////////////
 ///                                                                          ///
@@ -28,11 +29,12 @@ use Keruald\OmniTools\OS\Environment;
 ////////////////////////////////////////////////////////////////////////////////
 
 //SQL configuration
-$Config['database']['engine'] = 'MySQLi';  //MySQL, MySQLi
+$Config['database']['engine'] = MySQLiEngine::class;
 $Config['database']['host'] = 'localhost';
 $Config['database']['username'] = 'zed';
 $Config['database']['password'] = 'zed';
 $Config['database']['database'] = 'zed';
+$Config['database']['dontThrowExceptions'] = true;
 
 //SQL tables
 $prefix = '';

@@ -35,12 +35,12 @@ function session_update () {
 
     /* On fait le ménage */
     $sql = "UPDATE " . TABLE_SESSIONS . " SET online=0 WHERE HeureLimite < $heureActuelle";
-    if (!$db->sql_query($sql)) {
+    if (!$db->query($sql)) {
         message_die(SQL_ERROR, 'Impossible de mettre à jour les sessions (utilisateurs offline)', '', __LINE__, __FILE__, $sql);
     }
 
     $sql = "DELETE FROM " . TABLE_SESSIONS . " WHERE SessionLimite < $heureActuelle";
-    if (!$db->sql_query($sql)) {
+    if (!$db->query($sql)) {
         message_die(SQL_ERROR, "Impossible d'effacer les sessions expirées", '', __LINE__, __FILE__, $sql);
     }
 
@@ -50,18 +50,18 @@ function session_update () {
     }
 
     $sql = "SELECT * FROM " . TABLE_SESSIONS . " WHERE session_id LIKE '$_SESSION[ID]'";
-    if ( !($result = $db->sql_query($sql)) ) {
+    if ( !($result = $db->query($sql)) ) {
         message_die(SQL_ERROR, "Problème critique avec les sessions.", '', __LINE__, __FILE__, $sql);
     }
 
-    if ($db->sql_numrows($result) == 0) {
+    if ($result->numRows() === 0) {
         $sql = "INSERT INTO " . TABLE_SESSIONS . " (IP, session_id, `Where`, HeureLimite, SessionLimite) VALUES ('$IP', '$_SESSION[ID]', $Config[ResourceID], $heureActuelle + $time_online, $heureActuelle + $time_session)";
-        if (!$db->sql_query($sql)) {
+        if (!$db->query($sql)) {
             message_die(SQL_ERROR, "Impossible de créer une nouvelle session", '', __LINE__, __FILE__, $sql);
         }
     } else {
         $sql = "UPDATE " . TABLE_SESSIONS . " SET online=1, HeureLimite = $heureActuelle + $time_online, SessionLimite= $heureActuelle + $time_session WHERE session_id = '$_SESSION[ID]'";
-        if (!$db->sql_query($sql)) {
+        if (!$db->query($sql)) {
             message_die(SQL_ERROR, "Impossible de mettre à jour la session", '', __LINE__, __FILE__, $sql);
         }
     }
@@ -71,10 +71,10 @@ function nbc () {
 //Renvoi du nombre d'usagers connectés
     global $db, $Config;
     $sql = "SELECT count(*) FROM " . TABLE_SESSIONS . " WHERE online=1 AND `Where` = $Config[ResourceID]";
-    if ( !($result = $db->sql_query($sql)) ) {
+    if ( !($result = $db->query($sql)) ) {
         message_die(SQL_ERROR, "Impossible d'obtenir le nombre d'utilisateurs connectés sur le site web", '', __LINE__, __FILE__, $sql);
     }
-    $row = $db->sql_fetchrow($result);
+    $row = $db->fetchRow($result);
     return $row[0];
 }
 
@@ -82,10 +82,10 @@ function get_info ($info) {
 //Renvoie une variable de la session
     global $db;
     $sql = "SELECT $info FROM " . TABLE_SESSIONS . " WHERE session_id LIKE '$_SESSION[ID]'";
-    if ( !($result = $db->sql_query($sql)) ) {
+    if ( !($result = $db->query($sql)) ) {
         message_die(SQL_ERROR, "Impossible d'obtenir $info", '', __LINE__, __FILE__, $sql);
     }
-    $row = $db->sql_fetchrow($result);
+    $row = $db->fetchRow($result);
     return $row[$info];
 }
 
@@ -93,10 +93,10 @@ function get_logged_user () {
 //Renvoie toutes les informations d'un utilisateur
     global $db;
     $sql = "SELECT * FROM " . TABLE_SESSIONS . " WHERE session_id LIKE '$_SESSION[ID]'";
-    if ( !($result = $db->sql_query($sql)) ) {
+    if ( !($result = $db->query($sql)) ) {
         message_die(SQL_ERROR, "Impossible d'obtenir les informations de l'utilisateur", '', __LINE__, __FILE__, $sql);
     }
-    $row = $db->sql_fetchrow($result);
+    $row = $db->fetchRow($result);
 
     require_once('includes/objects/user.php');
     $user = User::get($row['user_id']);
@@ -109,9 +109,9 @@ function get_logged_user () {
 function set_info ($info, $value) {
 //Définit une variable session
     global $db;
-    $value = ($value === null) ? 'NULL' : "'" . $db->sql_escape($value) . "'";
+    $value = ($value === null) ? 'NULL' : "'" . $db->escape($value) . "'";
     $sql = "UPDATE " . TABLE_SESSIONS . " SET $info = $value WHERE session_id LIKE '$_SESSION[ID]'";
-    if (!$db->sql_query($sql)) {
+    if (!$db->query($sql)) {
         message_die(SQL_ERROR, "Impossible de définir $info", '', __LINE__, __FILE__, $sql);
     }
 }
@@ -135,7 +135,7 @@ function clean_session () {
 function login ($user_id, $username) {
     global $db;
     $sql = "UPDATE " . TABLE_SESSIONS . " SET user_id = '$user_id' WHERE session_id LIKE '$_SESSION[ID]'";
-    if (!$db->sql_query($sql)) {
+    if (!$db->query($sql)) {
         message_die(SQL_ERROR, "Impossible de procéder à la connexion", '', __LINE__, __FILE__, $sql);
     }
 
@@ -153,7 +153,7 @@ function logout () {
     //Anonymous user in session table
     global $db;
     $sql = "UPDATE " . TABLE_SESSIONS . " SET user_id = '-1', perso_id = NULL WHERE session_id LIKE '$_SESSION[ID]'";
-    if (!$db->sql_query($sql)) {
+    if (!$db->query($sql)) {
         message_die(SQL_ERROR, "Impossible de procéder à la déconnexion", '', __LINE__, __FILE__, $sql);
     }
     clean_session();

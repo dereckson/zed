@@ -19,6 +19,7 @@
  * @filesource
  */
 
+use Zed\Engines\Database\Database;
 use Zed\Engines\Perso\PersoSelector;
 use Zed\Engines\Templates\Smarty\Engine as SmartyEngine;
 
@@ -29,6 +30,9 @@ use Zed\Engines\Templates\Smarty\Engine as SmartyEngine;
 
 //Keruald (formerly Pluton) library
 include('includes/core.php');
+
+//Database
+$db = Database::load($Config['database']);
 
 //Session
 $IP = $_SERVER["REMOTE_ADDR"];

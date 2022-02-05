@@ -112,7 +112,7 @@ function message_die ($msg_code, $msg_text = '', $msg_title = '', $err_line = ''
 
             case SQL_ERROR:
                 $smarty->assign('TITLE', lang_get('SQLError'));
-                $sql_error = $db->sql_error();
+                $sql_error = $db->error();
                 if ($sql_error['message'] != '') {
                     $debug_text .= '<br />' . lang_get('Error') . ' n° ' . $sql_error['code'] . lang_get('_t') .
                                 ' ' .$sql_error['message'];
@@ -169,7 +169,7 @@ function old_message_die($msg_code, $msg_text = '', $msg_title = '', $err_line =
         $debug_text = $msg_text;
     } elseif ($msg_code == SQL_ERROR) {
         $title = "SQL error";
-        $sql_error = $db->sql_error();
+        $sql_error = $db->error();
         $debug_text = $msg_text;
         if ($err_line != '' && $err_file != '') {
             $debug_text .= ' in ' . $err_file. ', line ' . $err_line ;

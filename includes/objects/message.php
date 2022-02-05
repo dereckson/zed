@@ -79,10 +79,10 @@ class Message {
     function load_from_database () {
         global $db;
         $sql = "SELECT * FROM messages WHERE message_id = '" . $this->id . "'";
-        if ( !($result = $db->sql_query($sql)) ) {
+        if ( !($result = $db->query($sql)) ) {
             message_die(SQL_ERROR, "Unable to query messages", '', __LINE__, __FILE__, $sql);
         }
-        if (!$row = $db->sql_fetchrow($result)) {
+        if (!$row = $db->fetchRow($result)) {
             $this->lastError = "Message unknown: " . $this->id;
             return false;
         }
@@ -100,22 +100,22 @@ class Message {
     function save_to_database () {
         global $db;
 
-        $id = $this->id ? "'" . $db->sql_escape($this->id) . "'" : 'NULL';
-        $date = $db->sql_escape($this->date);
-        $from = $db->sql_escape($this->from);
-        $to = $db->sql_escape($this->to);
-        $text = $db->sql_escape($this->text);
-        $flag = $db->sql_escape($this->flag);
+        $id = $this->id ? "'" . $db->escape($this->id) . "'" : 'NULL';
+        $date = $db->escape($this->date);
+        $from = $db->escape($this->from);
+        $to = $db->escape($this->to);
+        $text = $db->escape($this->text);
+        $flag = $db->escape($this->flag);
 
         //Updates or inserts
         $sql = "REPLACE INTO messages (`message_id`, `message_date`, `message_from`, `message_to`, `message_text`, `message_flag`) VALUES ($id, '$date', '$from', '$to', '$text', '$flag')";
-        if (!$db->sql_query($sql)) {
+        if (!$db->query($sql)) {
             message_die(SQL_ERROR, "Unable to save", '', __LINE__, __FILE__, $sql);
         }
 
         if (!$id) {
             //Gets new record id value
-            $this->id = $db->sql_nextid();
+            $this->id = $db->nextId();
         }
     }
 
@@ -145,11 +145,11 @@ class Message {
         global $db;
         $ids = [];
 
-        $sql = "SELECT message_id FROM " . TABLE_MESSAGES . " WHERE message_to = " . $db->sql_escape($perso_id) . " AND message_flag < 2 ORDER BY message_id DESC";
-        if (!$result = $db->sql_query($sql)) {
+        $sql = "SELECT message_id FROM " . TABLE_MESSAGES . " WHERE message_to = " . $db->escape($perso_id) . " AND message_flag < 2 ORDER BY message_id DESC";
+        if (!$result = $db->query($sql)) {
             message_die(SQL_ERROR, "Unable to get messages", '', __LINE__, __FILE__, $sql);
         }
-        while ($row = $db->sql_fetchrow($result)) {
+        while ($row = $db->fetchRow($result)) {
             $message = new Message($row[0]);
             $messages[] = $message;
             $ids[] = $message->id;
@@ -161,7 +161,7 @@ class Message {
         if ($mark_as_read && count($ids)) {
             $ids = join(', ', $ids);
             $sql = "UPDATE " . TABLE_MESSAGES . " SET message_flag = '1' WHERE message_id IN ($ids)";
-            $db->sql_query($sql);
+            $db->query($sql);
         }
         return $messages;
     }

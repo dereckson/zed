@@ -47,10 +47,10 @@
 function log_C ($command, $isError = false) {
     global $db, $CurrentPerso;
     $isError = $isError ? 1 : 0;
-    $command = $db->sql_escape($command);
+    $command = $db->escape($command);
     $sql = "INSERT INTO "  . TABLE_LOG_SMARTLINE . " (perso_id, command_time, command_text, isError)
             VALUES ($CurrentPerso->id, UNIX_TIMESTAMP(), '$command', $isError)";
-    if (!$db->sql_query($sql)) {
+    if (!$db->query($sql)) {
         message_die(SQL_ERROR, "Can't log SmartLine command", '', __LINE__, __FILE__, $sql);
     }
 }
@@ -93,15 +93,15 @@ if (isset($_REQUEST['C'])) {
 /// Gets SmartLine history
 ///
 
-$perso_id = $db->sql_escape($CurrentPerso->id);
+$perso_id = $db->escape($CurrentPerso->id);
 $sql = "SELECT command_time, command_text FROM log_smartline
         WHERE isError = 0 AND perso_id = '$perso_id'
         ORDER BY command_time DESC LIMIT 100";
-if (!$result = $db->sql_query($sql)) {
+if (!$result = $db->query($sql)) {
     message_die(SQL_ERROR, "Can't get SmartLine history", '', __LINE__, __FILE__, $sql);
 }
 $i = 0;
-while ($row = $db->sql_fetchrow($result)) {
+while ($row = $db->fetchRow($result)) {
     $commands[$i]['time'] = get_hypership_time($row['command_time']);
     $commands[$i]['text'] = $row['command_text'];
     $i++;

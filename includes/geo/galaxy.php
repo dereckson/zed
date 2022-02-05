@@ -44,12 +44,12 @@ class GeoGalaxy {
     static function getCoordinates () {
         global $db;
         $sql = "SELECT * FROM geo_coordinates";
-        if (!$result = $db->sql_query($sql)) {
+        if (!$result = $db->query($sql)) {
             message_die(SQL_ERROR, "Can't query geo_coordinates view.", '', __LINE__, __FILE__, $sql);
         }
 
         $objects = [];
-        while ($row = $db->sql_fetchrow($result)) {
+        while ($row = $db->fetchRow($result)) {
             //Demios  ship        xyz: [-50, 30, 40]
             //Kaos	  asteroid    xyz: [150, -129, 10]
             $objects[] = [$row[0], $row[1], Point3D::fromString($row[2])];

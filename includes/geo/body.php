@@ -104,10 +104,10 @@ class GeoBody {
     function load_from_database () {
         global $db;
         $sql = "SELECT * FROM " . TABLE_BODIES . " WHERE body_code = '" . $this->code . "'";
-        if ( !($result = $db->sql_query($sql)) ) {
+        if ( !($result = $db->query($sql)) ) {
             message_die(SQL_ERROR, "Unable to query geo_bodies", '', __LINE__, __FILE__, $sql);
         }
-        if (!$row = $db->sql_fetchrow($result)) {
+        if (!$row = $db->fetchRow($result)) {
             $this->lastError = "body unknown: " . $this->code;
             return false;
         }
@@ -174,21 +174,21 @@ class GeoBody {
     function save_to_database () {
         global $db;
 
-        $code = $this->code ? "'" . $db->sql_escape($this->code) . "'" : 'NULL';
-        $name = $db->sql_escape($this->name);
+        $code = $this->code ? "'" . $db->escape($this->code) . "'" : 'NULL';
+        $name = $db->escape($this->name);
         $status = getStatus();
-        $location = $db->sql_escape($this->location);
-        $description = $db->sql_escape($this->description);
+        $location = $db->escape($this->location);
+        $description = $db->escape($this->description);
 
         //Updates or inserts
         $sql = "REPLACE INTO " . TABLE_BODIES . " (`body_code`, `body_name`, `body_status`, `body_location`, `body_description`) VALUES ($code, '$name', '$status', '$location', '$description')";
-        if (!$db->sql_query($sql)) {
+        if (!$db->query($sql)) {
             message_die(SQL_ERROR, "Unable to save", '', __LINE__, __FILE__, $sql);
         }
 
         if (!$code) {
             //Gets new record code value
-            $this->code = $db->sql_nextid();
+            $this->code = $db->nextId();
         }
     }
 }

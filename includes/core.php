@@ -32,10 +32,6 @@ error_reporting(E_ALL & ~E_NOTICE);
 include_once("config.php");
 include_once("error.php");
 
-include_once("db/Database.php");
-$db = Database::load();
-Database::cleanupConfiguration();
-
 include_once("sessions.php");
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -52,12 +48,12 @@ include_once("sessions.php");
  */
 function get_name ($perso_id) {
     global $db;
-    $perso_id = $db->sql_escape($perso_id);
+    $perso_id = $db->escape($perso_id);
     $sql = 'SELECT perso_nickname FROM '. TABLE_PERSOS . " WHERE perso_id = '$perso_id'";
-    if (!$result = $db->sql_query($sql)) {
+    if (!$result = $db->query($sql)) {
         message_die(SQL_ERROR, "Can't query persos table.", '', __LINE__, __FILE__, $sql);
     }
-    $row = $db->sql_fetchrow($result);
+    $row = $db->fetchRow($result);
     return $row['perso_nickname'];
 }
 
@@ -69,12 +65,12 @@ function get_name ($perso_id) {
  */
 function get_userid ($username) {
     global $db;
-    $username = $db->sql_escape($username);
+    $username = $db->escape($username);
     $sql = 'SELECT user_id FROM '. TABLE_USERS . " WHERE username LIKE '$username'";
-    if (!$result = $db->sql_query($sql)) {
+    if (!$result = $db->query($sql)) {
         message_die(SQL_ERROR, "Can't query users table.", '', __LINE__, __FILE__, $sql);
     }
-    $row = $db->sql_fetchrow($result);
+    $row = $db->fetchRow($result);
     return $row['user_id'];
 }
 
@@ -86,13 +82,13 @@ function get_userid ($username) {
  */
 function registry_get ($key) {
     global $db;
-    $key = $db->sql_escape($key);
+    $key = $db->escape($key);
     $sql = "SELECT registry_value FROM " . TABLE_REGISTRY . " WHERE registry_key = '$key'";
-    if (!$result = $db->sql_query($sql)) {
+    if (!$result = $db->query($sql)) {
         message_die(SQL_ERROR, "Can't read registry.", '', __LINE__, __FILE__, $sql);
     }
 
-    $row = $db->sql_fetchrow($result);
+    $row = $db->fetchRow($result);
     return $row['registry_value'];
 }
 
@@ -104,10 +100,10 @@ function registry_get ($key) {
  */
 function registry_set ($key, $value) {
     global $db;
-    $key = $db->sql_escape($key);
-    $value = $db->sql_escape($value);
+    $key = $db->escape($key);
+    $value = $db->escape($value);
     $sql = "REPLACE INTO " . TABLE_REGISTRY . " (registry_key, registry_value) VALUES ('$key', '$value')";
-    if (!$db->sql_query($sql)) {
+    if (!$db->query($sql)) {
         message_die(SQL_ERROR, "Can't update registry", '', __LINE__, __FILE__, $sql);
     }
 }
@@ -289,18 +285,18 @@ function string_starts_with ($haystack, $needle, $case_sensitive = true) {
  *
  * @param string $category the entry category
  * @param string $message the message to log
- * @param string $source the entry source.
+ * @param string|null $source the entry source.
  */
-function supralog ($category, $message, $source = null) {
+function supralog (string $category, string $message, ?string $source = null) {
     global $db, $CurrentUser, $CurrentPerso;
-    $category = $db->sql_query_express($category);
-    $message = $db->sql_query_express($message);
-    $source = $db->sql_query_express($source ?: $_SERVER['SERVER_ADDR']);
+    $category = $db->escape($category);
+    $message = $db->escape($message);
+    $source = $db->escape($source ?: $_SERVER['SERVER_ADDR']);
     $ip = $_SERVER['REMOTE_ADDR'];
     $sql = "INSERT INTO " . TABLE_LOG .
            " (entry_ip, user_id, perso_id, entry_category, entry_message, entry_source) VALUES
              ('$ip', $CurrentUser->id, $CurrentPerso->id, '$category', '$message', '$source')";
-    if ( !($result = $db->sql_query($sql)) ) {
+    if ( !($result = $db->query($sql)) ) {
         message_die(SQL_ERROR, "Can't log this entry.", '', __LINE__, __FILE__, $sql);
     }
 }

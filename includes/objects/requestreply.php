@@ -68,12 +68,12 @@ class RequestReply {
      */
     function load_from_database () {
         global $db;
-        $id = $db->sql_escape($this->id);
+        $id = $db->escape($this->id);
         $sql = "SELECT * FROM " . TABLE_REQUESTS_REPLIES . " WHERE request_reply_id = '" . $id . "'";
-        if (!$result = $db->sql_query($sql)) {
+        if (!$result = $db->query($sql)) {
             message_die(SQL_ERROR, "Unable to query requests_replies", '', __LINE__, __FILE__, $sql);
         }
-        if (!$row = $db->sql_fetchrow($result)) {
+        if (!$row = $db->fetchRow($result)) {
             $this->lastError = "RequestReply unknown: " . $this->id;
             return false;
         }
@@ -90,21 +90,21 @@ class RequestReply {
     function save_to_database () {
         global $db;
 
-        $id = $this->id ? "'" . $db->sql_escape($this->id) . "'" : 'NULL';
-        $request_id = $db->sql_escape($this->request_id);
-        $author = $db->sql_escape($this->author);
-        $date = $db->sql_escape($this->date);
-        $text = $db->sql_escape($this->text);
+        $id = $this->id ? "'" . $db->escape($this->id) . "'" : 'NULL';
+        $request_id = $db->escape($this->request_id);
+        $author = $db->escape($this->author);
+        $date = $db->escape($this->date);
+        $text = $db->escape($this->text);
 
         //Updates or inserts
         $sql = "REPLACE INTO " . TABLE_REQUESTS_REPLIES . "(`request_reply_id`, `request_id`, `request_reply_author`, `request_reply_date`, `request_reply_text`) VALUES ('$id', '$request_id', '$author', '$date', '$text')";
-        if (!$db->sql_query($sql)) {
+        if (!$db->query($sql)) {
             message_die(SQL_ERROR, "Unable to save", '', __LINE__, __FILE__, $sql);
         }
 
         if (!$this->id) {
             //Gets new record id value
-            $this->id = $db->sql_nextid();
+            $this->id = $db->nextId();
         }
     }
 }

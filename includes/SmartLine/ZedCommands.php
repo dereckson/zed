@@ -313,10 +313,10 @@ class ListSmartLineCommand extends SmartLineCommand {
             $sql .= "WHERE $where ";
         }
         $sql .= "ORDER BY `key` ASC";
-        if (!$result = $db->sql_query($sql)) {
+        if (!$result = $db->query($sql)) {
             message_die(SQL_ERROR, "Unable to fetch list", '', __LINE__, __FILE__, $sql);
         }
-        while ($row = $db->sql_fetchrow($result)) {
+        while ($row = $db->fetchRow($result)) {
             $rows .= "<tr><td>$row[key]</td><td>$row[value]</td></tr>";
         }
         $this->SmartLine->truncate(STDERR); //kludge

@@ -96,12 +96,12 @@ class ContentFile {
      */
     function load_from_database () {
         global $db;
-        $id = $db->sql_escape($this->id);
+        $id = $db->escape($this->id);
         $sql = "SELECT * FROM content_files WHERE content_id = '" . $id . "'";
-        if ( !($result = $db->sql_query($sql)) ) {
+        if ( !($result = $db->query($sql)) ) {
             message_die(SQL_ERROR, "Unable to query content", '', __LINE__, __FILE__, $sql);
         }
-        if (!$row = $db->sql_fetchrow($result)) {
+        if (!$row = $db->fetchRow($result)) {
             $this->lastError = "Content unknown: " . $this->id;
             return false;
         }
@@ -126,21 +126,21 @@ class ContentFile {
     function save_to_database () {
         global $db;
 
-        $id = $this->id ? "'" . $db->sql_escape($this->id) . "'" : 'NULL';
-        $path = $db->sql_escape($this->path);
-        $user_id = $db->sql_escape($this->user_id);
-        $perso_id = $db->sql_escape($this->perso_id);
-        $title = $db->sql_escape($this->title);
+        $id = $this->id ? "'" . $db->escape($this->id) . "'" : 'NULL';
+        $path = $db->escape($this->path);
+        $user_id = $db->escape($this->user_id);
+        $perso_id = $db->escape($this->perso_id);
+        $title = $db->escape($this->title);
 
         //Updates or inserts
         $sql = "REPLACE INTO content_files (`content_id`, `content_path`, `user_id`, `perso_id`, `content_title`) VALUES ($id, '$path', '$user_id', '$perso_id', '$title')";
-        if (!$db->sql_query($sql)) {
+        if (!$db->query($sql)) {
             message_die(SQL_ERROR, "Can't save content", '', __LINE__, __FILE__, $sql);
         }
 
         if (!$this->id) {
             //Gets new record id value
-            $this->id = $db->sql_nextid();
+            $this->id = $db->nextId();
         }
     }
 

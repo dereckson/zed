@@ -110,10 +110,10 @@ class User {
     function load_from_database () {
         global $db;
         $sql = "SELECT * FROM " . TABLE_USERS . " WHERE user_id = '" . $this->id . "'";
-        if ( !($result = $db->sql_query($sql)) ) {
+        if ( !($result = $db->query($sql)) ) {
             message_die(SQL_ERROR, "Unable to query users", '', __LINE__, __FILE__, $sql);
         }
-        if (!$row = $db->sql_fetchrow($result)) {
+        if (!$row = $db->fetchRow($result)) {
             $this->lastError = "User unknown: " . $this->id;
             return false;
         }
@@ -137,23 +137,23 @@ class User {
     function save_to_database () {
         global $db;
 
-        $id = $this->id ? "'" . $db->sql_escape($this->id) . "'" : 'NULL';
-        $name = $db->sql_escape($this->name);
-        $password = $db->sql_escape($this->password);
-        $active = $db->sql_escape($this->active);
-        $actkey = $db->sql_escape($this->actkey);
-        $email = $db->sql_escape($this->email);
-        $regdate = $this->regdate ? "'" . $db->sql_escape($this->regdate) . "'" : 'NULL';
+        $id = $this->id ? "'" . $db->escape($this->id) . "'" : 'NULL';
+        $name = $db->escape($this->name);
+        $password = $db->escape($this->password);
+        $active = $db->escape($this->active);
+        $actkey = $db->escape($this->actkey);
+        $email = $db->escape($this->email);
+        $regdate = $this->regdate ? "'" . $db->escape($this->regdate) . "'" : 'NULL';
 
         //Updates or inserts
         $sql = "REPLACE INTO " . TABLE_USERS . " (`user_id`, `username`, `user_password`, `user_active`, `user_actkey`, `user_email`, `user_regdate`) VALUES ($id, '$name', '$password', '$active', '$actkey', '$email', $regdate)";
-        if (!$db->sql_query($sql)) {
+        if (!$db->query($sql)) {
             message_die(SQL_ERROR, "Unable to save", '', __LINE__, __FILE__, $sql);
         }
 
         if (!$id) {
             //Gets new record id value
-            $this->id = $db->sql_nextid();
+            $this->id = $db->nextId();
         }
     }
 
@@ -165,10 +165,10 @@ class User {
         if (!$this->id) {
             message_die(GENERAL_ERROR, "You're trying to update a record not yet saved in the database");
         }
-        $id = $db->sql_escape($this->id);
-        $value = $db->sql_escape($this->$field);
+        $id = $db->escape($this->id);
+        $value = $db->escape($this->$field);
         $sql = "UPDATE " . TABLE_USERS . " SET `$field` = '$value' WHERE user_id = '$id'";
-        if (!$db->sql_query($sql)) {
+        if (!$db->query($sql)) {
             message_die(SQL_ERROR, "Unable to save $field field", '', __LINE__, __FILE__, $sql);
         }
     }
@@ -182,10 +182,10 @@ class User {
         do {
             $this->id = rand(2001, 5999);
             $sql = "SELECT COUNT(*) FROM " . TABLE_USERS . " WHERE user_id = $this->id LOCK IN SHARE MODE;";
-            if (!$result = $db->sql_query($sql)) {
+            if (!$result = $db->query($sql)) {
                 message_die(SQL_ERROR, "Can't access users table", '', __LINE__, __FILE__, $sql);
             }
-            $row = $db->sql_fetchrow($result);
+            $row = $db->fetchRow($result);
         } while ($row[0]);
     }
 
@@ -215,14 +215,14 @@ class User {
         if (!$this->id) {
             $this->save_to_database();
         }
-        $url = $db->sql_escape($url);
+        $url = $db->escape($url);
         $sql = "DELETE FROM " . TABLE_USERS_AUTH . " WHERE auth_type = 'OpenID' AND user_id = $this->id";
-        if (!$db->sql_query($sql)) {
+        if (!$db->query($sql)) {
             message_die(SQL_ERROR, "Can't delete old OpenID", '', __LINE__, __FILE__, $sql);
         }
         if ($url != '') {
             $sql = "INSERT INTO " . TABLE_USERS_AUTH . " (auth_type, auth_identity, user_id) VALUES ('OpenID', '$url', $this->id)";
-            if (!$db->sql_query($sql)) {
+            if (!$db->query($sql)) {
                 message_die(SQL_ERROR, "Can't add new OpenID", '', __LINE__, __FILE__, $sql);
             }
         }
@@ -237,10 +237,10 @@ class User {
     public static function is_available_login ($login) : bool {
         global $db;
         $sql = "SELECT COUNT(*) FROM " . TABLE_USERS . " WHERE username LIKE '$login' LOCK IN SHARE MODE;";
-        if (!$result = $db->sql_query($sql)) {
+        if (!$result = $db->query($sql)) {
             message_die(SQL_ERROR, "Utilisateurs non parsable", '', __LINE__, __FILE__, $sql);
         }
-        $row = $db->sql_fetchrow($result);
+        $row = $db->fetchRow($result);
         return !$row[0];
     }
 
@@ -253,10 +253,10 @@ class User {
     public static function get_username_from_email ($mail) {
         global $db;
         $sql = "SELECT username FROM " . TABLE_USERS . " WHERE user_email LIKE '$mail' LOCK IN SHARE MODE;";
-        if (!$result = $db->sql_query($sql)) {
+        if (!$result = $db->query($sql)) {
             message_die(SQL_ERROR, "Utilisateurs non parsable", '', __LINE__, __FILE__, $sql);
         }
-        if ($row = $db->sql_fetchrow($result)) {
+        if ($row = $db->fetchRow($result)) {
             return $row['username'];
         }
         return false;

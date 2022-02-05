@@ -21,6 +21,7 @@
  * @todo        /app/getdata
  */
 
+use Zed\Engines\Database\Database;
 
 //API preferences
 define('URL', 'http://' . $_SERVER['HTTP_HOST'] . '/index.php');
@@ -36,6 +37,9 @@ require_once('includes/api/cerbere.php');
 //Use our URL controller method if you want to mod_rewrite the API
 $Config['SiteURL'] = get_server_url() . $_SERVER["PHP_SELF"];
 $url = get_current_url_fragments();
+
+//Database
+$db = Database::load($Config['Database']);
 
 switch ($module = $url[0]) {
 /*  -------------------------------------------------------------
@@ -280,11 +284,11 @@ switch ($module = $url[0]) {
 
                 //Saves data
                 global $db;
-                $data_id = $db->sql_escape($data_id);
-                $data = $db->sql_escape($data);
+                $data_id = $db->escape($data_id);
+                $data = $db->escape($data);
                 $perso_id = $perso_id ?: 'NULL';
                 $sql = "REPLACE INTO applications_data (application_id, data_id, data_content, data_format, perso_id) VALUES ('$app->id', '$data_id', '$data', '$format', $perso_id)";
-                if (!$db->sql_query($sql)) {
+                if (!$db->query($sql)) {
                     message_die(SQL_ERROR, "Can't save data", '', __LINE__, __FILE__, $sql);
                 }
                     //cerbere_die("Can't save data");
@@ -309,12 +313,12 @@ switch ($module = $url[0]) {
                 if (!$perso_id) {
                     $perso_id = 'NULL';
                 }
-                $data_id = $db->sql_escape($url[1]);
+                $data_id = $db->escape($url[1]);
                 $sql = "SELECT data_content FROM applications_data WHERE application_id = '$app->id' AND data_id = '$data_id' AND perso_id = $perso_id";
-                if (!$result = $db->sql_query($sql)) {
+                if (!$result = $db->query($sql)) {
                     message_die(SQL_ERROR, "Unable to query the table", '', __LINE__, __FILE__, $sql);
                 }
-                while ($row = $db->sql_fetchrow($result)) {
+                while ($row = $db->fetchRow($result)) {
                 }
                 break;
 

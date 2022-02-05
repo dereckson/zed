@@ -72,12 +72,12 @@ class ProfileComment {
      */
     function load_from_database () {
         global $db;
-        $id = $db->sql_escape($this->id);
+        $id = $db->escape($this->id);
         $sql = "SELECT c.*, p.perso_name as author FROM " . TABLE_PROFILES_COMMENTS . " c, " . TABLE_PERSOS . " p WHERE c.comment_id = '$id' AND p.perso_id = c.comment_author";
-        if ( !($result = $db->sql_query($sql)) ) {
+        if ( !($result = $db->query($sql)) ) {
             message_die(SQL_ERROR, "Unable to query azhar_profiles_comments", '', __LINE__, __FILE__, $sql);
         }
-        if (!$row = $db->sql_fetchrow($result)) {
+        if (!$row = $db->fetchRow($result)) {
             $this->lastError = "comment unknown: " . $this->id;
             return false;
         }
@@ -95,19 +95,19 @@ class ProfileComment {
     function save_to_database () {
         global $db;
 
-        $id = $this->id ? "'" . $db->sql_escape($this->id) . "'" : 'NULL';
-        $perso_id = $db->sql_escape($this->perso_id);
-        $author = $db->sql_escape($this->author);
-        $date = $db->sql_escape($this->date);
-        $text = $db->sql_escape($this->text);
+        $id = $this->id ? "'" . $db->escape($this->id) . "'" : 'NULL';
+        $perso_id = $db->escape($this->perso_id);
+        $author = $db->escape($this->author);
+        $date = $db->escape($this->date);
+        $text = $db->escape($this->text);
 
         $sql = "REPLACE INTO " . TABLE_PROFILES_COMMENTS . " (`comment_id`, `perso_id`, `comment_author`, `comment_date`, `comment_text`) VALUES ($id, '$perso_id', '$author', '$date', '$text')";
-        if (!$db->sql_query($sql)) {
+        if (!$db->query($sql)) {
             message_die(SQL_ERROR, "Unable to save", '', __LINE__, __FILE__, $sql);
         }
         if (!$id) {
             //Gets new record id value
-            $this->id = $db->sql_nextid();
+            $this->id = $db->nextId();
         }
     }
 
@@ -126,13 +126,13 @@ class ProfileComment {
      */
     static function get_comments ($perso_id) {
         global $db;
-        $sql = "SELECT comment_id FROM " . TABLE_PROFILES_COMMENTS . " WHERE perso_id = " . $db->sql_escape($perso_id);
-        if (!$result = $db->sql_query($sql)) {
+        $sql = "SELECT comment_id FROM " . TABLE_PROFILES_COMMENTS . " WHERE perso_id = " . $db->escape($perso_id);
+        if (!$result = $db->query($sql)) {
             message_die(SQL_ERROR, "Unable to get comments", '', __LINE__, __FILE__, $sql);
         }
 
         $comments = [];
-        while ($row = $db->sql_fetchrow($result)) {
+        while ($row = $db->fetchRow($result)) {
             $comments[] = new ProfileComment($row[0]);
         }
         return $comments;

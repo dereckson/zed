@@ -73,12 +73,12 @@ class ProfilePhoto {
      */
     function load_from_database () {
         global $db;
-        $id = $db->sql_escape($this->id);
+        $id = $db->escape($this->id);
         $sql = "SELECT * FROM " . TABLE_PROFILES_PHOTOS . " WHERE photo_id = '" . $id . "'";
-        if ( !($result = $db->sql_query($sql)) ) {
+        if ( !($result = $db->query($sql)) ) {
             message_die(SQL_ERROR, "Unable to query azhar_profiles_photos", '', __LINE__, __FILE__, $sql);
         }
-        if (!$row = $db->sql_fetchrow($result)) {
+        if (!$row = $db->fetchRow($result)) {
             $this->lastError = "photo unknown: " . $this->id;
             return false;
         }
@@ -97,7 +97,7 @@ class ProfilePhoto {
 
         //1 - locally
         $sql = "UPDATE " . TABLE_PROFILES_PHOTOS . " SET photo_avatar = 0 WHERE perso_id = " . $this->perso_id;
-        $db->sql_query_express($sql);
+        $db->queryScalar($sql);
         $this->avatar = true;
 
         //2 - in perso table
@@ -113,20 +113,20 @@ class ProfilePhoto {
         global $db;
 
         //Escapes fields
-        $id = $this->id ? "'" . $db->sql_escape($this->id) . "'" : 'NULL';
-        $perso_id = $db->sql_escape($this->perso_id);
-        $name = $db->sql_escape($this->name);
-        $description = $db->sql_escape($this->description);
+        $id = $this->id ? "'" . $db->escape($this->id) . "'" : 'NULL';
+        $perso_id = $db->escape($this->perso_id);
+        $name = $db->escape($this->name);
+        $description = $db->escape($this->description);
         $avatar = $this->avatar ? 1 : 0;
 
         //Saves
         $sql = "REPLACE INTO " . TABLE_PROFILES_PHOTOS . " (`photo_id`, `perso_id`, `photo_name`, `photo_description`, `photo_avatar`) VALUES ($id, '$perso_id', '$name', '$description', $avatar)";
-        if (!$db->sql_query($sql)) {
+        if (!$db->query($sql)) {
             message_die(SQL_ERROR, "Unable to save", '', __LINE__, __FILE__, $sql);
         }
         if (!$id) {
             //Gets new record id value
-            $this->id = $db->sql_nextid();
+            $this->id = $db->nextId();
        }
     }
 
@@ -143,9 +143,9 @@ class ProfilePhoto {
         unlink($pic_genuine);
 
         //Deletes from database
-        $id = $db->sql_escape($this->id);
+        $id = $db->escape($this->id);
         $sql = "DELETE FROM " . TABLE_PROFILES_PHOTOS . " WHERE photo_id = '$id' LIMIT 1";
-        if (!$db->sql_query($sql)) {
+        if (!$db->query($sql)) {
             message_die(SQL_ERROR, "Can't delete photo", '', __LINE__, __FILE__, $sql);
         }
     }
@@ -173,16 +173,16 @@ class ProfilePhoto {
      */
     static function get_photos ($perso_id, $allowUnsafe = true) : array {
         global $db;
-        $sql = "SELECT photo_id FROM " . TABLE_PROFILES_PHOTOS . " WHERE perso_id = " . $db->sql_escape($perso_id);
+        $sql = "SELECT photo_id FROM " . TABLE_PROFILES_PHOTOS . " WHERE perso_id = " . $db->escape($perso_id);
         if (!$allowUnsafe) {
             $sql .= " AND photo_safe = 0";
         }
-        if (!$result = $db->sql_query($sql)) {
+        if (!$result = $db->query($sql)) {
             message_die(SQL_ERROR, "Unable to get photos", '', __LINE__, __FILE__, $sql);
         }
 
         $photos = [];
-        while ($row = $db->sql_fetchrow($result)) {
+        while ($row = $db->fetchRow($result)) {
             $photos[] = new ProfilePhoto($row[0]);
         }
         return $photos;
@@ -197,13 +197,13 @@ class ProfilePhoto {
     static function get_avatar ($perso_id, $username = '') {
         global $db;
 
-        $perso_id = $db->sql_escape($perso_id);
+        $perso_id = $db->escape($perso_id);
 
         $sql = "SELECT photo_description, photo_name FROM " . TABLE_PROFILES_PHOTOS . " WHERE perso_id = '$perso_id' and photo_avatar = 1";
-        if (!$result = $db->sql_query($sql)) {
+        if (!$result = $db->query($sql)) {
             message_die(SQL_ERROR, "Unable to get avatar", '', __LINE__, __FILE__, $sql);
         }
-        if ($row = $db->sql_fetchrow($result)) {
+        if ($row = $db->fetchRow($result)) {
             if (!$username) {
                 $username = get_name($perso_id);
             }

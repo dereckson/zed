@@ -136,12 +136,12 @@ class Content {
      */
     function load_from_database () {
         global $db;
-        $id = $db->sql_escape($this->id);
+        $id = $db->escape($this->id);
         $sql = "SELECT * FROM content WHERE content_id = '" . $id . "'";
-        if ( !($result = $db->sql_query($sql)) ) {
+        if ( !($result = $db->query($sql)) ) {
             message_die(SQL_ERROR, "Unable to query content", '', __LINE__, __FILE__, $sql);
         }
-        if (!$row = $db->sql_fetchrow($result)) {
+        if (!$row = $db->fetchRow($result)) {
             $this->lastError = "Content unknown: " . $this->id;
             return false;
         }
@@ -176,31 +176,31 @@ class Content {
     function save_to_database () {
         global $db;
 
-        $id = $this->id ? "'" . $db->sql_escape($this->id) . "'" : 'NULL';
-        $path = $db->sql_escape($this->path);
-        $user_id = $db->sql_escape($this->user_id);
-        $perso_id = $db->sql_escape($this->perso_id);
-        $title = $db->sql_escape($this->title);
+        $id = $this->id ? "'" . $db->escape($this->id) . "'" : 'NULL';
+        $path = $db->escape($this->path);
+        $user_id = $db->escape($this->user_id);
+        $perso_id = $db->escape($this->perso_id);
+        $title = $db->escape($this->title);
 
-        $location_global = ($this->location_global !== null) ? "'" . $db->sql_escape($this->location_global) . "'" : 'NULL';
-        $location_local = ($this->location_local !== null) ? "'" . $db->sql_escape($this->location_local) . "'" : 'NULL';
-        $location_k = ($this->location_k !== null) ? "'" . $db->sql_escape($this->location_k) . "'" : 'NULL';
+        $location_global = ($this->location_global !== null) ? "'" . $db->escape($this->location_global) . "'" : 'NULL';
+        $location_local = ($this->location_local !== null) ? "'" . $db->escape($this->location_local) . "'" : 'NULL';
+        $location_k = ($this->location_k !== null) ? "'" . $db->escape($this->location_k) . "'" : 'NULL';
 
         //Updates or inserts
         $sql = "REPLACE INTO content_files (`content_id`, `content_path`, `user_id`, `perso_id`, `content_title`) VALUES ($id, '$path', '$user_id', '$perso_id', '$title')";
-        if (!$db->sql_query($sql)) {
+        if (!$db->query($sql)) {
             message_die(SQL_ERROR, "Can't save content", '', __LINE__, __FILE__, $sql);
         }
 
         if (!$this->id) {
             //Gets new record id value
-            $this->id = $db->sql_nextid();
+            $this->id = $db->nextId();
         }
 
         //Saves location
-        $id = $this->id ? "'" . $db->sql_escape($this->id) . "'" : 'NULL';
+        $id = $this->id ? "'" . $db->escape($this->id) . "'" : 'NULL';
         $sql = "REPLACE INTO content_locations (location_global, location_local, location_k, content_id) VALUES ($location_global, $location_local, $location_k, $id)";
-        if (!$db->sql_query($sql)) {
+        if (!$db->query($sql)) {
             message_die(SQL_ERROR, "Can't save content location", '', __LINE__, __FILE__, $sql);
         }
     }
@@ -301,17 +301,17 @@ class Content {
         global $db;
 
         //Get contents at this location
-        $location_global = $db->sql_escape($location_global);
-        $location_local  = $db->sql_escape($location_local);
+        $location_global = $db->escape($location_global);
+        $location_local  = $db->escape($location_local);
 
         $sql = "SELECT c.*, p.perso_nickname, p.perso_name FROM content c, persos p WHERE c.location_global = '$location_global' AND c.location_local = '$location_local' AND p.perso_id = c.perso_id ORDER BY location_k ASC";
-        if (!$result = $db->sql_query($sql)) {
+        if (!$result = $db->query($sql)) {
             message_die(SQL_ERROR, "Can't get content", '', __LINE__, __FILE__, $sql);
         }
 
         //Fills content array
         $contents = [];
-        while ($row = $db->sql_fetchrow($result)) {
+        while ($row = $db->fetchRow($result)) {
             $content = new Content();
             $content->load_from_row($row);
             $contents[] = $content;

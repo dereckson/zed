@@ -93,14 +93,14 @@ class ContentLocation {
      */
     function load_from_database () {
         global $db;
-        $location_global = "'" . $db->sql_escape($this->location_global) . "'";
-        $location_local = "'" . $db->sql_escape($this->location_local) . "'";
-        $location_k = "'" . $db->sql_escape($this->location_k) . "'";
+        $location_global = "'" . $db->escape($this->location_global) . "'";
+        $location_local = "'" . $db->escape($this->location_local) . "'";
+        $location_k = "'" . $db->escape($this->location_k) . "'";
         $sql = "SELECT * FROM content_locations WHERE location_global = '$location_global' AND location_local = '$location_local' AND location_k = '$location_k'";
-        if ( !($result = $db->sql_query($sql)) ) {
+        if ( !($result = $db->query($sql)) ) {
             message_die(SQL_ERROR, "Unable to query content", '', __LINE__, __FILE__, $sql);
         }
-        if (!$row = $db->sql_fetchrow($result)) {
+        if (!$row = $db->fetchRow($result)) {
             $this->lastError = "Content location unknown: " . $this->content_id;
             return false;
         }
@@ -124,13 +124,13 @@ class ContentLocation {
     function save_to_database () {
         global $db;
 
-        $location_global = "'" . $db->sql_escape($this->location_global) . "'";
-        $location_local = "'" . $db->sql_escape($this->location_local) . "'";
-        $location_k = "'" . $db->sql_escape($this->location_k) . "'";
-        $content_id = $this->content_id ? "'" . $db->sql_escape($this->content_id) . "'" : 'NULL';
+        $location_global = "'" . $db->escape($this->location_global) . "'";
+        $location_local = "'" . $db->escape($this->location_local) . "'";
+        $location_k = "'" . $db->escape($this->location_k) . "'";
+        $content_id = $this->content_id ? "'" . $db->escape($this->content_id) . "'" : 'NULL';
 
         $sql = "REPLACE INTO content_locations (location_global, location_local, location_k, content_id) VALUES ($location_global, $location_local, $location_k, $content_id)";
-        if (!$db->sql_query($sql)) {
+        if (!$db->query($sql)) {
             message_die(SQL_ERROR, "Can't save content location", '', __LINE__, __FILE__, $sql);
         }
     }
@@ -211,17 +211,17 @@ class ContentLocation {
         global $db;
 
         //Get contents at this location
-        $location_global = $db->sql_escape($location_global);
-        $location_local  = $db->sql_escape($location_local);
+        $location_global = $db->escape($location_global);
+        $location_local  = $db->escape($location_local);
 
         $sql = "SELECT c.* FROM content c WHERE c.location_global = '$location_global' AND c.location_local = '$location_local' ORDER BY location_k ASC";
-        if (!$result = $db->sql_query($sql)) {
+        if (!$result = $db->query($sql)) {
             message_die(SQL_ERROR, "Can't get content", '', __LINE__, __FILE__, $sql);
         }
 
         //Fills content array
         $contents = [];
-        while ($row = $db->sql_fetchrow($result)) {
+        while ($row = $db->fetchRow($result)) {
             $k = $row['location_k'];
             $contents[$k] = new ContentFile();
             $contents[$k]->load_from_row($row);

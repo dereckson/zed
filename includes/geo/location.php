@@ -116,9 +116,9 @@ class GeoLocation {
             }
         } else {
             global $db;
-            $name = $db->sql_escape($global);
+            $name = $db->escape($global);
             $sql = "SELECT location_code FROM " . TABLE_LOCATIONS . " WHERE location_name LIKE '$name'";
-            $code = $db->sql_query_express($sql);
+            $code = $db->queryScalar($sql);
             if ($code) {
                 $this->data[0] = $code;
                 return;

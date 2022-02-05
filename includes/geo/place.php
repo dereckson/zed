@@ -95,10 +95,10 @@ class GeoPlace {
     function load_from_database () {
         global $db;
         $sql = "SELECT * FROM " . TABLE_PLACES . " WHERE place_id = '" . $this->id . "'";
-        if ( !($result = $db->sql_query($sql)) ) {
+        if ( !($result = $db->query($sql)) ) {
             message_die(SQL_ERROR, "Unable to query geo_places", '', __LINE__, __FILE__, $sql);
         }
-        if (!$row = $db->sql_fetchrow($result)) {
+        if (!$row = $db->fetchRow($result)) {
             $this->lastError = "place unknown: " . $this->id;
             return false;
         }
@@ -140,23 +140,23 @@ class GeoPlace {
     function save_to_database () {
         global $db;
 
-        $id = $this->id ? "'" . $db->sql_escape($this->id) . "'" : 'NULL';
-        $body_code = $db->sql_escape($this->body_code);
-        $code = $db->sql_escape($this->code);
-        $name = $db->sql_escape($this->name);
-        $description = $db->sql_escape($this->description);
+        $id = $this->id ? "'" . $db->escape($this->id) . "'" : 'NULL';
+        $body_code = $db->escape($this->body_code);
+        $code = $db->escape($this->code);
+        $name = $db->escape($this->name);
+        $description = $db->escape($this->description);
         $status = $this->getStatus();
-        $location_local_format = $db->sql_escape($this->location_local_format);
+        $location_local_format = $db->escape($this->location_local_format);
 
         //Updates or inserts
         $sql = "REPLACE INTO " . TABLE_PLACES . " (`place_id`, `body_code`, `place_code`, `place_name`, `place_description`, `place_status`, `location_local_format`) VALUES ($id, '$body_code', '$code', '$name', '$description', '$status', '$location_local_format')";
-        if (!$db->sql_query($sql)) {
+        if (!$db->query($sql)) {
             message_die(SQL_ERROR, "Unable to save", '', __LINE__, __FILE__, $sql);
         }
 
         if (!$id) {
             //Gets new record id value
-            $this->id = $db->sql_nextid();
+            $this->id = $db->nextId();
         }
     }
 
@@ -189,10 +189,10 @@ class GeoPlace {
     static function from_code ($code) {
         global $db;
         $sql = "SELECT * FROM " . TABLE_PLACES . " WHERE CONCAT('B', body_code, place_code) LIKE '$code'";
-        if (!$result = $db->sql_query($sql)) {
+        if (!$result = $db->query($sql)) {
             message_die(SQL_ERROR, "Unable to query geo_places", '', __LINE__, __FILE__, $sql);
         }
-        if (!$row = $db->sql_fetchrow($result)) {
+        if (!$row = $db->fetchRow($result)) {
             return null;
         }
 
@@ -225,6 +225,6 @@ class GeoPlace {
     static function get_start_location () {
         global $db;
         $sql = "SELECT CONCAT('B', body_code, place_code) FROM " . TABLE_PLACES . " WHERE FIND_IN_SET('start', place_status) > 0 ORDER BY rand() LIMIT 1";
-        return $db->sql_query_express($sql);
+        return $db->queryScalar($sql);
     }
 }
