@@ -92,4 +92,5 @@ $smarty->assign('pages', $pagesLinks);
 $smarty->display('settings_page.tpl');
 
 //Servers footer
+$smarty->assign('screen', "Settings > " . $page->title);
 include('footer.php');

@@ -115,16 +115,20 @@ class GeoSceneIndex {
      */
     public function get_cached_information () {
         $cache = Cache::load();
-        $cached_index =$cache->get('zed_sceneindex');
-        if ($index = unserialize($cache->get('zed_sceneindex'))) {
-            $index = unserialize($cache->get('zed_sceneindex'));
-            $this->global_templates = $index->global_templates;
-            $this->local_templates = $index->local_templates;
-            $this->updated = $index->updated;
-            $this->directory = $index->directory;
-            return true;
+        $cached_index = $cache->get('zed_sceneindex');
+
+        if ($cached_index === false) {
+            return false;
         }
-        return false;
+
+        $index = unserialize($cached_index);
+
+        $this->global_templates = $index->global_templates;
+        $this->local_templates = $index->local_templates;
+        $this->updated = $index->updated;
+        $this->directory = $index->directory;
+
+        return true;
     }
 
     /**

@@ -46,7 +46,7 @@ class Settings {
     /**
      * A collection of SettingsPage items
      *
-     * @var Array
+     * @var SettingsPage[]
      */
     public $pages;
 

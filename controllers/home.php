@@ -38,7 +38,8 @@
 require_once('includes/objects/message.php');
 
 //Deletes a message if user have clicked the X
-if ($_GET['action'] == 'msg_delete') {
+$action = $_GET['action'] ?? "";
+if ($action === 'msg_delete') {
     //Deletes message $_GET['id']
     $id = $_GET['id'];
     $messageToDelete = new Message($id);
@@ -83,6 +84,7 @@ if (!defined('DIJIT')) {
 }
 
 $smarty->assign('PAGE_TITLE', lang_get('Welcome'));
+
 include('header.php');
 
 //Serves content

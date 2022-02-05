@@ -51,7 +51,7 @@
                     <ul>
                         <li>{#EditProfile#}</li>
                         <li><a href="{get_url('settings','perso')}">{#EditAccount#}</a></li>
-                        <li><a href="{get_url('who')}/edit/photos">{if $PICS}{#ManagePhotos#}{else}{#AddPhoto#}{/if}</a></li>
+                        <li><a href="{get_url('who')}/edit/photos">{if isset($PICS)}{#ManagePhotos#}{else}{#AddPhoto#}{/if}</a></li>
                     </ul>
             	</div>
             <div class="border_bottom"></div>

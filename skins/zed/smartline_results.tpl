@@ -1,13 +1,12 @@
         <!-- SmartLine output -->
         <div id="SmartLineResults" class="black">
-{if $SmartLine_STDOUT}
+{if isset($SmartLine_STDOUT)}
             <p>{$SmartLine_STDOUT}</p>
 {/if}
-{if $SmartLine_STDERR}
+{if isset($SmartLine_STDERR)}
             <p class="error">{$SmartLine_STDERR}</p>
 {/if}
 
         </div>
 
         <p class="clear"></p>
-

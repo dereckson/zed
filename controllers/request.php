@@ -40,21 +40,22 @@ if (count($url) < 3) {
     message_die(HACK_ERROR, "Expected URL: /request/code_to/code_object");
 }
 
+$request = new Request();
+
 //
 // Handles or print form
 //
 if (false) {
     //Saves the request reply
-} elseif ($_POST['title'] || $_POST['message']) {
+} elseif (isset($_POST['title']) || isset($_POST['message'])) {
     //Saves the request
-    require_once('includes/objects/request.php');
-    $request = new Request();
     $request->load_from_form();
     $request->author = $CurrentPerso->id;
     $request->to = $url[1];
     $request->code = $url[2];
     $request->location_global = $CurrentPerso->location_global;
     $request->location_local = $CurrentPerso->location_local;
+
     $request->save_to_database();
 
     //Confirmation

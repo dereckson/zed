@@ -33,7 +33,7 @@
 class Profile {
 
     public $perso_id;
-    public $text;
+    public string $text = "";
     public $updated;
     public $fixedwidth;
 

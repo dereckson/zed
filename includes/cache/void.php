@@ -60,7 +60,7 @@ class CacheVoid {
      * @return mixed the data at the specified key
      */
     function get ($key) {
-       return null;
+       return false;
     }
 
     /**

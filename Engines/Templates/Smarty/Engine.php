@@ -63,11 +63,18 @@ class Engine {
             ->setConfigDir($this->config->getApplicationDirectory())
             ->addPluginsDir($this->config->getPluginsDirectory());
 
+        self::initializeDefaultVariables($smarty);
+
         $smarty->config_vars += [
             'StaticContentURL' => $this->config->getStaticContentURL(),
         ];
 
         return $smarty;
+    }
+
+    private static function initializeDefaultVariables (Smarty $smarty) {
+        $smarty->assign("PAGE_CSS", []);
+        $smarty->assign("PAGE_JS", []);
     }
 
     ///

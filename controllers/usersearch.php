@@ -105,7 +105,7 @@ switch ($mode) {
 //
 
 //Serves header
-$smarty->assign('PAGE_CSS', 'usersearch.css');
+$smarty->append('PAGE_CSS', 'usersearch.css');
 $smarty->assign('PAGE_TITLE', $title);
 include('header.php');
 

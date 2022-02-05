@@ -59,7 +59,9 @@ function log_C ($command, $isError = false) {
 /// Executes command
 ///
 
-if ($C = $_REQUEST['C']) {
+if (isset($_REQUEST['C'])) {
+    $command = $_REQUEST['C'];
+
     //Initializes SmartLine object
     require_once("SmartLine.php");
     $smartLine = new SmartLine();
@@ -68,7 +70,7 @@ if ($C = $_REQUEST['C']) {
 
     //Executes SmartLine
     $controller = '';
-    $smartLine->execute($C);
+    $smartLine->execute($command);
 
     $error = $smartLine->count(STDERR) > 0;
 
@@ -84,7 +86,7 @@ if ($C = $_REQUEST['C']) {
         include($controller);
     }
 
-    log_C($C, $error);
+    log_C($command, $error);
 }
 
 ///

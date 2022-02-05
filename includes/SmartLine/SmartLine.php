@@ -32,14 +32,14 @@
  * The standard, regular output (like STDOUT on POSIX systems)
  */
 if (!defined('STDOUT')) {
-    define('STDOUT', 1, true);
+    define('STDOUT', 1);
 }
 
 /**
  * The error output (like STDERR on POSIX systems)
  */
 if (!defined('STDERR')) {
-    define('STDERR', -1, true);
+    define('STDERR', -1);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -389,6 +389,8 @@ class SmartLine {
         if ($count == 0) {
             return;
         }
+
+        $buffer = "";
         for ($i = 0 ; $i < $count ; $i++) {
             $buffer .= $prefix . $_SESSION['SmartLineOutput'][$output][$i] . $suffix;
         }
@@ -540,4 +542,3 @@ class HelpSmartLineCommand extends SmartLineCommand {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-

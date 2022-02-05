@@ -16,12 +16,12 @@
 
     <!-- DOJO -->
     <script type="text/javascript" src="{#StaticContentURL#}/js/dojo/dojo/dojo.js" djConfig="isDebug:false, parseOnLoad: true" ></script>
-{if $DIJIT}
+{if isset($DIJIT)}
     <link rel="stylesheet" type="text/css" href="{#StaticContentURL#}/css/zed/forms.css" />
 {/if}
 {/if}
 </head>
-<body{if $DIJIT} class="tundra"{/if}>
+<body{if isset($DIJIT)} class="tundra"{/if}>
 <!-- Header -->
 <div id="header">
     <div id="header_content">
@@ -46,7 +46,7 @@
 
 <!-- Content -->
 <div class="container_16">
-{if $WAP}
+{if isset($WAP)}
 
     <!-- WAP -->
     <div class="grid_16 alpha omega">
@@ -54,7 +54,7 @@
     </div>
     <div class="clear"></div>
 {/if}
-{if $NOTIFY}
+{if isset($NOTIFY)}
 
     <!-- Notify -->
     <div class="grid_16 alpha omega">
@@ -63,7 +63,6 @@
     <div class="clear"></div>
 {/if}
 
-{if $SmartLine_STDOUT || $SmartLine_STDERR}
+{if isset($SmartLine_STDOUT) || isset($SmartLine_STDERR)}
 {include file="smartline_results.tpl"}
 {/if}
-

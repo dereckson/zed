@@ -30,7 +30,7 @@
 // Handles form
 //
 
-if ($_REQUEST['text']) {
+if (isset($_REQUEST['text'])) {
     require_once('includes/objects/motd.php');
     $motd = new MOTD();
     $motd->text = $_REQUEST['text'];

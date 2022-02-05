@@ -130,7 +130,7 @@ class Request {
         $status = $db->sql_escape($this->status);
 
         //Updates or inserts
-        $sql = "REPLACE INTO " . TABLE_REQUESTS . " (`request_id`, `request_code`, `request_title`, `request_date`, `request_author`, `request_message`, `request_to`, `location_global`, `location_local`, `request_status`) VALUES ('$id', '$code', '$title', '$date', '$author', '$message', '$to', '$location_global', '$location_local', '$status')";
+        $sql = "REPLACE INTO " . TABLE_REQUESTS . " (`request_id`, `request_code`, `request_title`, `request_date`, `request_author`, `request_message`, `request_to`, `location_global`, `location_local`, `request_status`) VALUES ($id, '$code', '$title', '$date', '$author', '$message', '$to', '$location_global', '$location_local', '$status')";
         if (!$db->sql_query($sql)) {
             message_die(SQL_ERROR, "Unable to save", '', __LINE__, __FILE__, $sql);
         }

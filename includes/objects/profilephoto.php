@@ -169,8 +169,9 @@ class ProfilePhoto {
      *
      * @param int $perso_id the perso ID
      * @param bool $allowUnsafe if false, don't include not safe for work photos
+     * @return ProfilePhoto[]
      */
-    static function get_photos ($perso_id, $allowUnsafe = true) {
+    static function get_photos ($perso_id, $allowUnsafe = true) : array {
         global $db;
         $sql = "SELECT photo_id FROM " . TABLE_PROFILES_PHOTOS . " WHERE perso_id = " . $db->sql_escape($perso_id);
         if (!$allowUnsafe) {
@@ -179,6 +180,8 @@ class ProfilePhoto {
         if (!$result = $db->sql_query($sql)) {
             message_die(SQL_ERROR, "Unable to get photos", '', __LINE__, __FILE__, $sql);
         }
+
+        $photos = [];
         while ($row = $db->sql_fetchrow($result)) {
             $photos[] = new ProfilePhoto($row[0]);
         }

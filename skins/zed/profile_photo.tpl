@@ -25,14 +25,14 @@
 		<ul>
                     <li><a href="{get_url('who')}/edit/profile">{#EditProfile#}</a></li>
                     <li><a href="{get_url('settings','perso')}">{#EditAccount#}</a></li>
-                    <li>{if $PICS}{#ManagePhotos#}{else}{#AddPhoto#}{/if}</li>
+                    <li>{if isset($PICS)}{#ManagePhotos#}{else}{#AddPhoto#}{/if}</li>
                 </ul>
             </div>
             <div class="border_bottom"></div>
         </div>
     </div>
 
-{if $PICS}
+{if isset($PICS)}
 <!-- Manage current photos -->
 <div class="grid_16 alpha omega profile_comments">
     <h2>{#ManageCurrentPhotos#}</h2>

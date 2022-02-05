@@ -89,14 +89,15 @@ $smarty->assign('perso', $perso);
 $profile = new Profile($perso->id);
 
 //Handles form
-if ($_POST['EditProfile']) {
+$message_type = $_POST['message_type'] ?? "";
+if (isset($_POST['EditProfile'])) {
     $profile->load_from_form();
     $profile->updated = time();
     $profile->save_to_database();
     $mode = 'view';
-} elseif ($_POST['UserAccount']) {
+} elseif (isset($_POST['UserAccount'])) {
     $smarty->assign('WAP', "This form have been deprecated. You can write instead settings in the SmartLine");
-} elseif ($_POST['message_type'] == 'private_message') {
+} elseif ($message_type === 'private_message') {
     //Sends a message
     require_once('includes/objects/message.php');
     $msg = new Message();
@@ -109,7 +110,7 @@ if ($_POST['EditProfile']) {
     } else {
        $smarty->assign('NOTIFY', lang_get('MessageSent'));
     }
-} elseif ($_POST['message_type'] == 'profile_comment') {
+} elseif ($message_type== 'profile_comment') {
     //New profile comment
     $comment = new ProfileComment();
     $comment->author = $CurrentPerso->id;
@@ -117,7 +118,7 @@ if ($_POST['EditProfile']) {
     $comment->text = $_POST['message'];
     $comment->publish();
     $smarty->assign('NOTIFY', lang_get('CommentPublished'));
-} elseif ($_FILES['photo']) {
+} elseif (isset($_FILES['photo'])) {
     #We've a file !
 
     $hash = md5(microtime() . serialize($_FILES));
@@ -169,7 +170,7 @@ if ($_POST['EditProfile']) {
     if (count($errors)) {
         $smarty->assign('WAP', join('<br />', $errors));
     }
-} elseif ($_POST['id']) {
+} elseif (isset($_POST['id'])) {
     //Edits photo properties
     $photo = new ProfilePhoto($_POST['id']);
     if ($photo->lastError) {
@@ -191,11 +192,8 @@ if ($_POST['EditProfile']) {
 }
 
 //Prepares output
-if ($profile->text) {
-    //Profile
-    $smarty->assign('PROFILE_TEXT', $profile->text);
-    $smarty->assign('PROFILE_FIXEDWIDTH', $profile->fixedwidth);
-}
+$smarty->assign('PROFILE_TEXT', $profile->text);
+$smarty->assign('PROFILE_FIXEDWIDTH', $profile->fixedwidth);
 
 if ($mode == 'view') {
     require_once('includes/objects/profilephoto.php');
@@ -219,7 +217,8 @@ if ($mode == 'view') {
     if ($tags) {
         $smarty->assign('PROFILE_TAGS', $tags);
     }
-    $smarty->assign('USERNAME', $perso->username);
+
+    $smarty->assign('USERNAME', $perso->nickname);
     $smarty->assign('NAME', $perso->name ?: $perso->nickname);
     $template = 'profile.tpl';
 } elseif ($mode == 'edit') {
@@ -227,14 +226,14 @@ if ($mode == 'view') {
         case 'profile':
             $smarty->assign('USERNAME', $perso->name);
             $smarty->assign('DIJIT', true);
-            $css[] = THEME . '/forms.css';
+            $smarty->append('PAGE_CSS', THEME . '/forms.css');
             $template = 'profile_edit.tpl';
             break;
 
         case 'account':
             $smarty->assign('user', $CurrentUser);
             $smarty->assign('DIJIT', true);
-            $css[] = THEME . '/forms.css';
+            $smarty->append('PAGE_CSS', THEME . '/forms.css');
             $template = 'user_account.tpl';
             break;
 
@@ -245,7 +244,10 @@ if ($mode == 'view') {
         case 'photo':
         case 'photos':
             $smarty->assign('USERNAME', $perso->name);
-            switch ($action = $url[3]) {
+
+            $action = $url[3] ?? "";
+            $id = $url[4] ?? null;
+            switch ($action) {
                 case '':
                     //Nothing to do
                     break;
@@ -270,7 +272,7 @@ if ($mode == 'view') {
                     break;
 
                 case 'edit':
-                    if (!$id = $url[4]) {
+                    if (!is_null($id)) {
                         $smarty->assign('WAP', "URL error. Parameter missing: picture id.");
                     } else {
                         $photo = new ProfilePhoto($id);
@@ -289,7 +291,7 @@ if ($mode == 'view') {
 
                 case 'avatar':
                     //Promotes a picture to avatar
-                    if (!$id = $url[4]) {
+                    if (!is_null($id)) {
                         $smarty->assign('WAP', "URL error. Parameter missing: picture id.");
                     } else {
                         $photo = new ProfilePhoto($id);
@@ -311,9 +313,9 @@ if ($mode == 'view') {
                     break;
             }
 
-            if (!$template) {
+            if (!isset($template)) {
                 $photos = ProfilePhoto::get_photos($profile->perso_id);
-                if (!$smarty->tpl_vars['NOTIFY']) {
+                if (!array_key_exists('NOTIFY', $smarty->tpl_vars)) {
                     $smarty->assign('NOTIFY', "Your feedback is valued. Report any bug or suggestion on the graffiti wall.");
                 }
                 $template = 'profile_photo.tpl';
@@ -330,22 +332,26 @@ if ($mode == 'view') {
 // HTML output
 //
 
-//Photos
-if (count($photos) || $photo) {
-    $smarty->assign('URL_PICS', PHOTOS_URL);
-    $css[] = 'lightbox.css';
-    $smarty->assign('PAGE_JS', ['prototype.js', 'effects.js', 'lightbox.js']);
-    $smarty->assign('PICS', $photos);
+$has_photos = isset($photo) || count($photos ?? []) > 0;
+
+if ($has_photos) {
+    $smarty
+        ->assign('URL_PICS', PHOTOS_URL)
+        ->assign('PICS', $photos ?? [])
+
+        ->append('PAGE_CSS', 'lightbox.css')
+        ->append('PAGE_JS', 'prototype.js')
+        ->append('PAGE_JS', 'effects.js')
+        ->append('PAGE_JS', 'lightbox.js');
 }
 
 //Serves header
-$css[] = THEME . "/profile.css";
-$smarty->assign('PAGE_CSS', $css);
+$smarty->append('PAGE_CSS', THEME . "/profile.css");
 $smarty->assign('PAGE_TITLE', $perso->name);
 include('header.php');
 
 //Serves content
-if ($template) {
+if (isset($template)) {
     $smarty->display($template);
 }
 

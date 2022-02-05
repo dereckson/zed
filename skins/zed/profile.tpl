@@ -11,7 +11,7 @@
 		</div>
 		<div class="clear">&nbsp;</div>
 		<div class="profile">
-{if $PICS}
+{if isset($PICS)}
 			<!-- Photos -->
 			<div class="profile_photos">
 {foreach from=$PICS item=photo}
@@ -55,7 +55,7 @@
 		<ul>
 		    <li><a href="{get_url('who','edit','profile')}">{#EditProfile#}</a></li>
 		    <li><a href="{get_url('settings','perso')}">{#EditAccount#}</a></li>
-		    <li><a href="{get_url('who','edit','photos')}">{if $PICS}{#ManagePhotos#}{else}{#AddPhoto#}{/if}</a></li>
+		    <li><a href="{get_url('who','edit','photos')}">{if isset($PICS)}{#ManagePhotos#}{else}{#AddPhoto#}{/if}</a></li>
 		</ul>
 {/if}
 		<!-- {{counter name=section}|romanize}. sidebar placeholder/explanation -->

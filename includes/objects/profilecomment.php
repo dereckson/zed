@@ -130,6 +130,8 @@ class ProfileComment {
         if (!$result = $db->sql_query($sql)) {
             message_die(SQL_ERROR, "Unable to get comments", '', __LINE__, __FILE__, $sql);
         }
+
+        $comments = [];
         while ($row = $db->sql_fetchrow($result)) {
             $comments[] = new ProfileComment($row[0]);
         }

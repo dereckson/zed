@@ -129,9 +129,10 @@ class GeoScene {
      * @param string $file the file path
      * @return string the file extension
      */
-    public static function get_file_extension ($file) {
+    public static function get_file_extension (string $file) : string {
         $pathinfo = pathinfo($file);
-        return $pathinfo['extension'];
+
+        return $pathinfo['extension'] ?? "";
     }
 
     /**
