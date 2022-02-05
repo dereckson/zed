@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 require_once(__DIR__ . "/../vendor/autoload.php");
+include_once("autoload.php");
 
 error_reporting(E_ALL & ~E_NOTICE);
 include_once("config.php");
@@ -36,7 +37,6 @@ $db = Database::load();
 Database::cleanupConfiguration();
 
 include_once("sessions.php");
-include_once("autoload.php");
 
 ////////////////////////////////////////////////////////////////////////////////
 ///                                                                          ///

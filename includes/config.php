@@ -19,6 +19,8 @@
  * @filesource
  */
 
+use Keruald\OmniTools\OS\Environment;
+
 ////////////////////////////////////////////////////////////////////////////////
 ///                                                                          ///
 /// I. SQL configuration                                                     ///
@@ -190,7 +192,7 @@ $Config['StaticContentURL'] = '';
 //$Config['StaticContentURL'] = get_server_url() . '.nyud.net';
 
 //Site content
-define('CONTENT_DIR', $_ENV['CONTENT_DIR'] ?? 'content');
+define('CONTENT_DIR', Environment::getOr('CONTENT_DIR', 'content'));
 
 //Scenes
 define('SCENE_DIR', CONTENT_DIR . "/scenes");
@@ -221,7 +223,7 @@ $Config['ImageMagick']['identify'] = 'identify';
  *
  * Security tip: you can move this cache directory outside the webserver tree.
  */
-define('CACHE_DIR', $_ENV['CACHE_DIR'] ?? 'cache');
+define('CACHE_DIR', Environment::getOr('CACHE_DIR', 'cache'));
 
 /*
  * Furthermore, you can also enable a cache engine, like memcached, to store

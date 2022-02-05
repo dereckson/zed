@@ -5,7 +5,7 @@
     "require": {
         "smarty/smarty": "dev-master",
         "keruald/globalfunctions": "^0.5.1",
-        "keruald/omnitools": "^0.1.0",
+        "keruald/omnitools": "^0.5.0",
         "hypership/geo": "^0.1.0"
     },
     "require-dev": {
