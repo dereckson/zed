@@ -260,9 +260,10 @@ $Config['ResourceID'] = 21;
 //$Config['YubiCloud']['SecretKey'] = 'Base64SecretKeyHere';
 
 //PHP variables
-ini_set('session.serialize_handler', 'wddx');
 ini_set('session.save_path', CACHE_DIR . '/sessions');
-ini_set('session.gc_maxlifetime', 345600);  //4 days, for week-end story pause and continue url
+
+//4 days, for week-end story pause and continue url
+ini_set('session.gc_maxlifetime', 345600);
 
 ////////////////////////////////////////////////////////////////////////////////
 ///                                                                          ///
