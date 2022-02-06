@@ -74,8 +74,10 @@ function cerbere () {
         return;
     }
 
+    $guid = $_REQUEST['key'] ?? "";
+
     //No key, no authentication
-    if (!$guid = $_REQUEST['key']) {
+    if ($guid === "") {
         cerbere_die('You must add credentials to your request.');
     }
 

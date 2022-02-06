@@ -52,11 +52,17 @@ class Configuration {
     public static function buildDefaultConfiguration() : Configuration {
         global $Config;
 
-        return (new self)
+        $engineConfig = (new self)
             ->setApplicationDirectory(dirname(__DIR__, 3))
             ->setCacheDirectory(CACHE_DIR)
-            ->setStaticContentURL($Config['StaticContentURL'])
-            ->setTheme(THEME);
+            ->setStaticContentURL($Config['StaticContentURL']);
+
+        if (defined("THEME")) {
+            // Endpoints like do.php don't have THEME defined.
+            $engineConfig->setTheme(THEME);
+        }
+
+        return $engineConfig;
     }
 
     ///

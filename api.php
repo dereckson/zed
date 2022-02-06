@@ -39,7 +39,7 @@ $Config['SiteURL'] = get_server_url() . $_SERVER["PHP_SELF"];
 $url = get_current_url_fragments();
 
 //Database
-$db = Database::load($Config['Database']);
+$db = Database::load($Config['database']);
 
 switch ($module = $url[0]) {
 /*  -------------------------------------------------------------

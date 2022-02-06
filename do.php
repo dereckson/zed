@@ -56,7 +56,7 @@ define('PERSO_NOT_SELECTED', -7);
 include('includes/core.php');
 
 //Database
-$db = Database::load($Config['Database']);
+$db = Database::load($Config['database']);
 
 //Session
 $IP = $_SERVER["REMOTE_ADDR"];
@@ -438,7 +438,8 @@ $args = get_current_url_fragments();
 
 $method = array_shift($args);
 
-if ($_REQUEST['debug']) {
+$debug = $_REQUEST['debug'] ?? false;
+if ($debug) {
     //Debug version
     //Most of E_STRICT errors are evaluated at the compile time thus such errors
     //are not reported
