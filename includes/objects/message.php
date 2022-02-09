@@ -149,6 +149,8 @@ class Message {
         if (!$result = $db->query($sql)) {
             message_die(SQL_ERROR, "Unable to get messages", '', __LINE__, __FILE__, $sql);
         }
+
+        $messages = [];
         while ($row = $db->fetchRow($result)) {
             $message = new Message($row[0]);
             $messages[] = $message;
