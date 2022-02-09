@@ -239,21 +239,50 @@ class Content {
      * @return bool true if the file have been handled
      */
     function handle_uploaded_file ($fileArray) {
-        if (count($fileArray) && $fileArray['error'] == 0) {
-            $this->create_directory("content/users/$this->user_id");
-            $this->path = "content/users/$this->user_id/$fileArray[name]";
-            if (!self::is_valid_extension(get_extension($fileArray[name]))) {
-                return false;
-            }
-            if (move_uploaded_file($fileArray['tmp_name'], $this->path)) {
-                return true;
-            } else {
-                $this->path = null;
-                return false;
-            }
-        } else {
+        if (!is_array($fileArray) || $fileArray['error'] != 0) {
             return false;
         }
+
+        $this->path = $this->getLogicalPath($fileArray["name"]);
+
+        if (!self::is_valid_extension(get_extension($this->path))) {
+            return false;
+        }
+
+        $storagePath = $this->getStoragePath();
+        if (move_uploaded_file($fileArray['tmp_name'], $storagePath)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @return string The storage path for this file on disk
+     */
+    function getStoragePath () : string {
+        $storageDir = CONTENT_USERS_DIR . "/" . $this->user_id;
+        $this->create_directory($storageDir);
+
+        $logicalDir = 'content/users/' . $this->user_id;
+        if (!str_starts_with($this->path, $logicalDir)) {
+            throw new InvalidArgumentException(<<<EOF
+
+Logical path is '$this->path', but should start with '$logicalDir'.
+EOF
+);
+        }
+
+        return str_replace($logicalDir, $storageDir, $this->path);
+    }
+
+    /**
+     * @param string $name The final destination filename
+     *
+     * @return string The URL to use to serve the file.
+     */
+    function getLogicalPath (string $name) : string {
+        return "content/users/$this->user_id/$name";
     }
 
     /**
@@ -265,7 +294,7 @@ class Content {
         global $Config;
 
         //Builds thumbnail filename
-        $sourceFile = $this->path;
+        $sourceFile = $this->getStoragePath();
         $pos = strrpos($this->path, '.');
         $thumbnailFile = substr($sourceFile, 0, $pos) . 'Square' . substr($sourceFile, $pos);
 

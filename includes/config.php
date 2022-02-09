@@ -195,6 +195,9 @@ $Config['StaticContentURL'] = '';
 
 //Site content
 define('CONTENT_DIR', Environment::getOr('CONTENT_DIR', 'content'));
+define('CONTENT_USERS_DIR', Environment::getOr(
+    'CONTENT_USERS_DIR', CONTENT_DIR . '/users'
+));
 
 //Scenes
 define('SCENE_DIR', CONTENT_DIR . "/scenes");
