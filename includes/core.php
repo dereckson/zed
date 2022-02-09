@@ -19,6 +19,8 @@
  * @filesource
  */
 
+use Keruald\OmniTools\Collections\TraversableUtilities;
+
 ////////////////////////////////////////////////////////////////////////////////
 ///                                                                          ///
 /// Configures PHP and loads site-wide used libraries                        ///
@@ -336,6 +338,7 @@ function find_lang () {
     if (file_exists('lang') && is_dir('lang')) {
         //Gets lang/ subdirectories: this is the list of available languages
         $handle = opendir('lang');
+        $langs = [];
         while ($file = readdir($handle)) {
             if ($file != '.' && $file != '..' && is_dir("lang/$file")) {
                 $langs[] = $file;
@@ -352,7 +355,7 @@ function find_lang () {
         //If it matches, returns first result
         $intersect = array_intersect($userlangs, $langs);
         if (count($intersect)) {
-            return $intersect[0];
+            return TraversableUtilities::first($intersect);
         }
 
         //Now it's okay with Opera and Firefox but Internet Explorer will
