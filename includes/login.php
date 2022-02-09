@@ -79,7 +79,7 @@ if ($action == 'openid.login') {
     //Gets Auth_OpenID_Consumer instance, completes the OpenID transaction
     //and processes the result.
 
-    if (!$useOpenID()) {
+    if (!$useOpenID) {
         header("Status: 403 Forbidden");
         die("OpenID disabled.");
     }
@@ -141,7 +141,7 @@ if ($action == 'openid.login') {
 
         //Tests if the password wouldn't match an invite code
         //If so, redirects people using login page as invitation claim page
-        if (!$LoginSuccessful) {
+        if (!$loginSuccessful) {
             $code = $db->escape($_POST['password']);
             $sql = "SELECT * FROM " . TABLE_USERS_INVITES . " WHERE invite_code = '$code'";
             if (!$result = $db->query($sql)) {

@@ -134,13 +134,9 @@ switch ($url[0]) {
 
     default:
         //Login form
-        if (array_key_exists('LastUsername', $_COOKIE)) {
-            $smarty->assign('username', $_COOKIE['LastUsername']);
-        }
-        if (array_key_exists('LastOpenID', $_COOKIE)) {
-            $smarty->assign('OpenID', $_COOKIE['LastOpenID']);
-        }
-        $smarty->assign('LoginError', $loginError);
+        $smarty->assign('username', $_COOKIE['LastUsername'] ?? "");
+        $smarty->assign('OpenID', $_COOKIE['LastOpenID'] ?? "");
+        $smarty->assign('LoginError', $loginError ?? "");
         $template = 'login.tpl';
         break;
 }
