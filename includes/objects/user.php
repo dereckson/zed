@@ -127,8 +127,8 @@ class User {
         $this->regdate = $row['user_regdate'];
 
         //Puts object in hashtables
-        Perso::$hashtable_id[$this->id] = $this;
-        Perso::$hashtable_name[$this->name] = $this;
+        User::$hashtable_id[$this->id] = $this;
+        User::$hashtable_name[$this->name] = $this;
 
         return true;
     }
