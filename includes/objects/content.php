@@ -215,20 +215,11 @@ class Content {
      * @param string $ext The extension (without dot)
      * @return boolean true if this extension is valid ; otherwise, false.
      */
-    function is_valid_extension ($ext) {
-        switch ($ext = strtolower($ext)) {
-            //Pictures
-            case 'jpg':
-            case 'gif':
-            case 'png':
-            case 'bmp':
-            case 'xbm':
-                return true;
-
-            //Denied extension
-            default:
-                return false;
-        }
+    public static function is_valid_extension ($ext) {
+        return match (strtolower($ext)) {
+            'jpg', 'gif', 'png', 'bmp', 'xbm' => true,
+            default => false,
+        };
     }
 
     /**
