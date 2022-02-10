@@ -10,9 +10,10 @@
     require_once('includes/objects/invite.php');
     require_once('includes/cache/cache.php');
 
-    include('controllers/header.php');
-
     $case = 'YubiCloud';
+
+    $smarty->assign('PAGE_TITLE', "Quux [$case]");
+    include('controllers/header.php');
 
     switch ($case) {
         case 'YubiCloud':

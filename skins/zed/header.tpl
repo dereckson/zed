@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>{$PAGE_TITLE} - {#SiteTitle#}</title>
+    <title>{if isset($PAGE_TITLE)}{$PAGE_TITLE} - {/if}{#SiteTitle#}</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link rel="stylesheet" type="text/css" href="{#StaticContentURL#}/css/960.css" media="screen" />
     <link rel="stylesheet" href="{#StaticContentURL#}/css/zed/theme.css" />
