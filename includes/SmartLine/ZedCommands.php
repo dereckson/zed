@@ -38,6 +38,7 @@
 /// Register commands
 ///
 
+$smartLine->register_object('debug',    DebugSmartLineCommand::class);
 $smartLine->register_object('goto',     'GotoSmartLineCommand');
 $smartLine->register_object('guid',     'GUIDSmartLineCommand');
 $smartLine->register_object('invite',   'InviteSmartLineCommand');
@@ -54,6 +55,7 @@ $smartLine->register_object('whoami',   'WhoAmISmartLineCommand');
 /// Help (todo: move $lang array in lang folder)
 ///
 
+$lang['Help']['debug'] = "Enable or disable debugger";
 $lang['Help']['goto'] = "Go to a location";
 $lang['Help']['guid'] = "Generate a GUID";
 $lang['Help']['invite'] = "Generate an invite. To see the generated invites, invite list.";
@@ -64,6 +66,35 @@ $lang['Help']['unixtime'] = "Prints current unixtime (seconds elapsed since 1970
 $lang['Help']['version'] = "Gets Zed's software version info (Mercurial repository version, node id and if you're on the dev or prod site)";
 $lang['Help']['whereami'] = "Where am I?";
 $lang['Help']['whoami'] = "Who am I?";
+
+/**
+ * Debugger command
+ */
+class DebugSmartLineCommand extends SmartLineCommand {
+
+    /**
+     * Runs the command
+     *
+     * @param array $argv an array of string, each item a command argument
+     * @param int $argc the number of arguments
+     */
+    public function run ($argv, $argc) {
+        if ($argc > 1) {
+            $_SESSION['debug'] = self::parseBoolean($argv[1]);
+        }
+
+        $this->SmartLine->puts("Debugger " . $this->getStatus());
+    }
+
+    private function getStatus () : string {
+        return $this->isEnabled() ? "enabled" : "disabled";
+    }
+
+    private function isEnabled () : bool {
+        return $_SESSION['debug'] ?? false;
+    }
+
+}
 
 /**
  * The goto command

@@ -169,6 +169,17 @@ class SmartLineCommand {
 
     }
 
+    static protected function parseBoolean (string $arg) : bool {
+        return match (strtolower($arg)) {
+            "on", "enable", "enabled", "1", "up", "true" => true,
+            "off", "disable", "disabled", "0", "down", "false" => false,
+
+            default => throw new InvalidArgumentException(
+                "Boolean string expected, got '$arg' instead."
+            ),
+        };
+    }
+
     /**
      * The SmartLine where this instance of the command is registered
      *

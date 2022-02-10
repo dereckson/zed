@@ -438,7 +438,7 @@ $args = get_current_url_fragments();
 
 $method = array_shift($args);
 
-$debug = $_REQUEST['debug'] ?? false;
+$debug = $_REQUEST['debug'] ?? $_SESSION['debug'] ?? false;
 if ($debug) {
     //Debug version
     //Most of E_STRICT errors are evaluated at the compile time thus such errors
