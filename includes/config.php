@@ -19,8 +19,24 @@
  * @filesource
  */
 
+use Dotenv\Dotenv;
+
 use Keruald\OmniTools\OS\Environment;
 use Keruald\Database\Engines\MySQLiEngine;
+
+////////////////////////////////////////////////////////////////////////////////
+///                                                                          ///
+/// 0. DotEnv - read environment from .env                                   ///
+///                                                                          ///
+////////////////////////////////////////////////////////////////////////////////
+
+function loadEnvironment() {
+    $directory = dirname(__DIR__);
+    $dotenv = Dotenv::createImmutable($directory);
+    $dotenv->safeLoad();
+}
+
+loadEnvironment();
 
 ////////////////////////////////////////////////////////////////////////////////
 ///                                                                          ///
@@ -30,10 +46,10 @@ use Keruald\Database\Engines\MySQLiEngine;
 
 //SQL configuration
 $Config['database']['engine'] = MySQLiEngine::class;
-$Config['database']['host'] = 'localhost';
-$Config['database']['username'] = 'zed';
-$Config['database']['password'] = 'zed';
-$Config['database']['database'] = 'zed';
+$Config['database']['host'] = $_ENV["DB_HOST"] ?? "localhost";
+$Config['database']['username'] = $_ENV["DB_USER"] ?? "zed";
+$Config['database']['password'] = $_ENV["DB_PASSWORD"] ?? "zed";
+$Config['database']['database'] = $_ENV["DB_NAME"] ?? "zed";
 $Config['database']['dontThrowExceptions'] = true;
 
 //SQL tables
@@ -85,7 +101,7 @@ $Config['DefaultTheme'] = "Zed";
 date_default_timezone_set("UTC");
 
 //Secret key, used for some verification hashes in URLs or forms.
-$Config['SecretKey'] = 'Lorem ipsum dolor';
+$Config['SecretKey'] = $_ENV["ZED_SECRET_KEY"] ?? 'Lorem ipsum dolor';
 
 //When reading files, buffer size
 define('BUFFER_SIZE', 4096);

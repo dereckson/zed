@@ -4,6 +4,7 @@
     "type": "project",
     "require": {
         "smarty/smarty": "dev-master",
+        "vlucas/phpdotenv": "^5.5",
         "keruald/database": "^0.1.0",
         "keruald/globalfunctions": "^0.5.1",
         "keruald/omnitools": "^0.6.0",
