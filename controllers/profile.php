@@ -121,6 +121,8 @@ if (isset($_POST['EditProfile'])) {
 } elseif (isset($_FILES['photo'])) {
     #We've a file !
 
+    $errors = [];
+
     $hash = md5(microtime() . serialize($_FILES));
     $extension = get_extension($_FILES['photo']['name']);
     $filename = $CurrentPerso->id . '_' . $hash . '.' . $extension;
