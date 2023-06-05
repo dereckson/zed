@@ -125,7 +125,7 @@ class SettingsPage {
 
         //Sets new settings values
         foreach ($this->settings as $setting) {
-            $value = $_POST[$setting->key];
+            $value = $_POST[$setting->key] ?? "";
 
             if ($setting->field == "password" && !$value) {
                 //We don't erase passwords if not set
