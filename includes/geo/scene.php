@@ -1,3 +1,4 @@
+
 <?php
 
 /**
@@ -137,8 +138,6 @@ class GeoScene {
 
     /**
      * Renders the file
-     *
-     * @todo Add standard code to render .swf Flash/ShockWave files.
      */
     public function render () {
         if ($file = $this->sceneFile) {
