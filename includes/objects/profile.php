@@ -37,6 +37,8 @@ class Profile {
     public $updated;
     public $fixedwidth;
 
+    public string $lastError = "";
+
     /**
      * Initializes a new instance of the Profile class
      *

@@ -37,6 +37,8 @@ class Message {
     public $text;
     public $flag;
 
+    public string $lastError = "";
+
     /**
      * Initializes a new instance
      *

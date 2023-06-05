@@ -40,6 +40,8 @@ class Application {
     public $api_key;
     public $description;
 
+    public string $lastError = "";
+
     /**
      * Initializes a new instance
      *

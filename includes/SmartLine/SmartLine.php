@@ -482,6 +482,9 @@ class SmartLine {
         return $argv;
     }
 
+    //The list of commands
+    public array $commands = [];
+
     //Contains last error
     public $lastError = '';
 

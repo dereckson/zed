@@ -38,6 +38,8 @@ class ProfilePhoto {
     public $description;
     public $avatar;
 
+    public string $lastError = "";
+
     /**
      * Initializes a new instance of the ProfilePhoto class
      */

@@ -39,6 +39,8 @@ class Request {
     public $location_local;
     public $status;
 
+    public string $lastError = "";
+
     /**
      * Initializes a new instance
      * @param int $id the primary key

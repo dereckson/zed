@@ -70,6 +70,8 @@ class Content {
     public $perso_name;
     public $perso_nickname;
 
+    public string $lastError = "";
+
 /*  -------------------------------------------------------------
     Constructor, __toString
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -    */

@@ -53,6 +53,8 @@ class GeoPlace {
     public $start;
     public $hidden;
 
+    public string $lastError = "";
+
     /**
      * Initializes a new instance
      *

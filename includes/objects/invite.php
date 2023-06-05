@@ -33,6 +33,8 @@ class Invite {
     public $from_user_id;
     public $from_perso_id;
 
+    public string $lastError = "";
+
     /**
      * The user_id who have been claimed the invite
      * Will be NULL as long as the invite haven't been claimed

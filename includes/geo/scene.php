@@ -40,7 +40,7 @@ class GeoScene {
      *
      * @var string
      */
-    public $lastError;
+    public $lastError = "";
 
     /**
      * File scene to serve

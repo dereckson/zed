@@ -47,12 +47,14 @@ class Perso {
     public $race;
     public $sex;
     public $avatar;
+
+    public $location;
     public $location_global;
     public $location_local;
 
     public $flags;
 
-    public $lastError;
+    public string $lastError = "";
 
     public static $hashtable_id = [];
     public static $hashtable_name = [];

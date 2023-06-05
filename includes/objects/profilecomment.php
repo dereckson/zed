@@ -35,6 +35,8 @@ class ProfileComment {
     public $date;
     public $text;
 
+    public string $lastError = "";
+
     /**
      * Initializes a new instance of the ProfileComment class
      *

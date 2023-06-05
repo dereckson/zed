@@ -39,6 +39,8 @@ class User {
     public $email;
     public $regdate;
 
+    public string $lastError = "";
+
     public static $hashtable_id = [];
     public static $hashtable_name = [];
 

@@ -50,6 +50,8 @@ class Ship {
     public $api_key;
     public $description;
 
+    public string $lastError = "";
+
     private static $hashtable = [];
 
     /**

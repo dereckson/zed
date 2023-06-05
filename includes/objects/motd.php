@@ -33,6 +33,8 @@ class MOTD {
     public $text;
     public $date;
 
+    public string $lastError = "";
+
     /**
      * Initializes a new instance of a MOTD object
      *
