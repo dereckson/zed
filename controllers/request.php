@@ -62,15 +62,15 @@ if (false) {
     $template = "requests/confirm.tpl";
 } else {
     $request->to  = $url[1];
-    $request->obj = $url[2];
+    $request->code = $url[2];
 
     //Checks if the request template exists
-    if (!file_exists(sprintf("skins/%s/requests/%s.tpl", THEME, $request->obj))) {
+    if (!file_exists(sprintf("skins/%s/requests/%s.tpl", THEME, $request->code))) {
         message_die(HACK_ERROR, "$url[2] isn't a valid request object code");
     }
 
-    $template = "requests/$request->obj.tpl";
-    switch ($request->obj) {
+    $template = "requests/$request->code.tpl";
+    switch ($request->code) {
         case "aid.reach":
             if ($request->to == "B00001") {
                 $request->title = "Shuttle pick up request";
