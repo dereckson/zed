@@ -219,7 +219,8 @@ class Content {
      */
     public static function is_valid_extension ($ext) {
         return match (strtolower($ext)) {
-            'jpg', 'gif', 'png', 'bmp', 'xbm' => true,
+            'jpg', 'jpeg', 'gif', 'svg', 'webp',
+            'tiff', 'png', 'bmp', 'xbm' => true,
             default => false,
         };
     }
