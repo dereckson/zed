@@ -129,7 +129,7 @@ class GeoPlace {
     function getStatus () {
         $flags = ['start', 'hidden'];
         foreach ($flags as $flag) {
-            if ($this->$flag == true) {
+            if ($this->$flag) {
                 $status[] = $flag;
             }
         }
