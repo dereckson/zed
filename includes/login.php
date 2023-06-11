@@ -73,7 +73,7 @@ function openid_login ($url) {
 /// Login procedural code
 ///
 
-$action = isset($_GET['action']) ? $_GET['action'] : '';
+$action = $_GET['action'] ?? '';
 
 if ($action == 'openid.login') {
     //Gets Auth_OpenID_Consumer instance, completes the OpenID transaction

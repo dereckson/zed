@@ -355,7 +355,7 @@ class GeoLocation {
 
                 if (strlen($this->data[0]) == 9) {
                     $place = GeoPlace::from_code($this->data[0]);
-                    $location[] = $place->name ? $place->name : lang_get('UnknownPlace');
+                    $location[] = $place->name ?: lang_get('UnknownPlace');
                 }
                 break;
 

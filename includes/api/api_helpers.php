@@ -129,7 +129,7 @@ function toXml($data, $rootNodeName = 'data', $xml = null, $unknownNodeName = 'u
  * @param string $xmlChildren the XML children elements name (optional, will be deducted from the context if omitted, or, if not possible, will be unknownNode)
  */
 function api_output ($reply, $xmlRoot = null, $xmlChildren = null) {
-    $format = isset($_REQUEST['format']) ? $_REQUEST['format'] : 'preview';
+    $format = $_REQUEST['format'] ?? 'preview';
     switch ($format) {
         case 'preview':
             echo '<pre>';
