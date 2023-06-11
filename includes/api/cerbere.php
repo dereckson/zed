@@ -54,7 +54,7 @@ if (!defined('TABLE_API_KEYS')) {
 /**
  * Checks if credentials are okay and exits if not
  *
- * If the credentials aren't valid, it will prints an error message if
+ * If the credentials aren't valid, it will print an error message if
  * OUTPUT_ERROR is defined and true.
  *
  * This error message will be formatted through the api_output function if

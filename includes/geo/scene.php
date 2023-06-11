@@ -192,7 +192,7 @@ class GeoScene {
     /**
      * Tries to get the scene file.
      *
-     * It will tries to find in the scene directory a file with $code as name,
+     * It will try to find in the scene directory a file with $code as name,
      * and .tpl .png .gif .bmp .swf .html or .php as extension.
      *
      * @param string the location code (and filename)

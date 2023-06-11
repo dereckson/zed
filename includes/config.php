@@ -153,13 +153,13 @@ define('BUFFER_SIZE', 4096);
  *
  *   In your server block:
  *       location / {
- *           #Serves static files if they exists, with one month cache
+ *           #Serves static files if they exist, with one month cache
  *           if (-f $request_filename) {
  *               expires 30d;
  *               break;
  *           }
  *
- *           #Sends all non existing file or directory requests to index.php
+ *           #Sends all non-existing file or directory requests to index.php
  *           if (!-e request_filename) {
  *               rewrite ^(.+)$ /index.php last;
  *               #Or if you use a subdirectory:

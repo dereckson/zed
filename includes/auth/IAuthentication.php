@@ -46,7 +46,7 @@ interface IAuthentication {
     /**
      * Determines if the next authentication method could be tried if this one failed.
      *
-     * This allow when a method has failed in such a way the user must be warned to warn it,
+     * This allows when a method has failed in such a way the user must be warned to warn it,
      * returning false.
      *
      * @return bool true if authentication can go on to the next method; otherwise, false

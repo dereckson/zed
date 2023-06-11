@@ -33,7 +33,7 @@ require_once('includes/objects/ship.php');
  * This class contains properties to get, set or compare a location and
  * explore the geo classes linked to.
  *
- * It quickly allow to parse through the location classes in templates and
+ * It quickly allows to parse through the location classes in templates and
  * controllers.
  *
  * @todo Initialize $point3D from $body or $ship own locations

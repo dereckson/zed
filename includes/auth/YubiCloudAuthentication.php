@@ -110,7 +110,7 @@ class YubiCloudAuthentication implements IAuthentication {
         }
 
         //Note: We first query the YubiCloud server, then we check if we can use the key
-        //      as the key is an OTP (*one time* password), this allow to invalidate it.
+        //      as the key is an OTP (*one time* password), this allows to invalidate it.
         //      If we wouldn't do that, an attacker can reuse this password for another site.
         if (!$this->computeUserID()) {
             $this->error = "Valid YubiKey OTP. But the key doesn't match any account.";

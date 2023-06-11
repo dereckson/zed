@@ -412,7 +412,7 @@ class Perso {
     /**
      * Counts the amount of notes the perso have saved
      *
-     * @return int the amount of notes assigned to the this perso
+     * @return int the amount of notes assigned to the perso
      */
     public function count_notes () {
         global $db;

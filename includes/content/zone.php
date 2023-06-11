@@ -22,7 +22,7 @@
 /**
  * Content zone class
  *
- * A zone is a physical place, independent from the location.
+ * A zone is a physical place, independent of the location.
  * This mechanism allows to more easily move zones.
  *
  * This class maps the content_zones table.

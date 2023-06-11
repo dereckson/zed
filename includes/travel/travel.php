@@ -28,7 +28,7 @@ require_once('place.php');
  *
  * The Travel class reads content/travel.xml to get travel special rules
  *
- * It so be able to provide methods determining if a move is or not valid.
+ * It's so able to provide methods determining if a move is or not valid.
  *
  * This class implements a singleton pattern.
  */
@@ -94,7 +94,7 @@ class Travel {
      * @return boolean true if the expression have been parsed ; otherwise, false.
      */
     function try_parse_rewrite_rule ($expression, $from, &$to) {
-        //Relevant write rules depends from the location the perso is ($from)
+        //Relevant write rules depends on the location the perso is ($from)
         if (!array_key_exists($from->global, $this->globalTravelTo)) {
             return false;
         }

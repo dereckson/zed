@@ -294,7 +294,7 @@ class SmartLine {
      * Executes the specified expression.
      *
      * If an error occurs during the command execution:
-     *     the STDERR output will contains the errors,
+     *     the STDERR output will contain the errors,
      *     the value returned by this methods will be false.
      *
      * To execute the command and prints error:

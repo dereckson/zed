@@ -47,7 +47,7 @@ define ("SQL_ERROR", 65);
  * fields or better in the session the previous form data, and to print a login
  * form.
  *
- * If you implement this, you don't even need to distinguishes between the two
+ * If you implement this, you don't even need to distinguish between the two
  * cases, as once logged in, the regular HACK_ERROR could also be printed.
  */
 define ("HACK_ERROR", 99);

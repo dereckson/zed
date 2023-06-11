@@ -24,7 +24,7 @@
 /**
  * TravelPlace class
  *
- * The TravelPlace class is a set of rules determining which moves are valid
+ * The TravelPlace class is a set of rules determining what moves are valid
  * in a specific place.
  *
  * @see GeoPlace

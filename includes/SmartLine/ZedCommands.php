@@ -59,7 +59,7 @@ $lang['Help']['debug'] = "Enable or disable debugger";
 $lang['Help']['goto'] = "Go to a location";
 $lang['Help']['guid'] = "Generate a GUID";
 $lang['Help']['invite'] = "Generate an invite. To see the generated invites, invite list.";
-$lang['Help']['list'] = "Lists specified objects (bodies, locations or places)";
+$lang['Help']['list'] = "Lists specified objects (bodies, locations, or places)";
 $lang['Help']['requests'] = "Checks if there are waiting requests";
 $lang['Help']['settings'] = 'Go to settings page';
 $lang['Help']['unixtime'] = "Prints current unixtime (seconds elapsed since 1970-01-01 00:00, UTC) or the specified unixtime date.";
@@ -359,7 +359,7 @@ class ListSmartLineCommand extends SmartLineCommand {
 /**
  * The requests command
  *
- * Redirects user the the requests page.
+ * Redirects user to the requests page.
  *
  * By default only redirect if a flag indicates there's a new request.
  *
@@ -387,7 +387,7 @@ class RequestsSmartLineCommand extends SmartLineCommand {
 /**
  * The settings command
  *
- * Redirects user the the settings page.
+ * Redirects user to the settings page.
  */
 class SettingsSmartLineCommand extends SmartLineCommand {
     /**

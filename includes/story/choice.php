@@ -39,7 +39,7 @@
  */
 class StoryChoice {
     /**
-     * The section key this choices links to
+     * The section key this choice links to
      *
      * @var string
      */
