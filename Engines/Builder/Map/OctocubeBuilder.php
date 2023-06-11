@@ -11,6 +11,8 @@ class OctocubeBuilder {
 
     private Point3D $localLocation;
 
+    const HYPERSHIP_CORE_LOCATION = "B00001002";
+
     public function __construct (GeoLocation $location) {
         $this->localLocation = Point3D::fromString($location->local);
     }
@@ -54,7 +56,7 @@ class OctocubeBuilder {
     }
 
     static public function canBuildAt($location) : bool {
-        return $location->global == 'B00001002';
+        return $location->global === self::HYPERSHIP_CORE_LOCATION;
     }
 
 }
