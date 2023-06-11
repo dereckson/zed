@@ -30,11 +30,11 @@
 /**
  * The main function for converting to an XML document.
  *
- * Pass in a multi dimensional array and this recursively loops through
+ * Pass in a multidimensional array and this recursively loops through
  * and builds up an XML document.
  *
  * @param mixed $data
- * @param string $rootNodeName What you want the root node to be - defaultsto data.
+ * @param string $rootNodeName What you want the root node to be — defaults to data.
  * @param SimpleXMLElement $xml Should only be used recursively
  * @param string $unknownNodeName Name to give to unknown (numeric) keys
  * @return string XML
@@ -54,7 +54,7 @@ function toXml($data, $rootNodeName = 'data', $xml = null, $unknownNodeName = 'u
 
     if ($xml == null) {
         if (!is_array($data) && !is_object($data)) {
-            //We've a singleton
+            //We've got a singleton
             if (is_bool($data)) {
                 $data = $data ? 'true' : 'false';
             }
@@ -73,7 +73,7 @@ function toXml($data, $rootNodeName = 'data', $xml = null, $unknownNodeName = 'u
             $key = $unknownNodeName . '_'. (string)$key;
         }
 
-        // replace anything not alpha numeric
+        // replace anything not alphanumeric
         $key = preg_replace('/[^a-z]/i', '', $key);
 
         //If there is another array found recursively call this function
