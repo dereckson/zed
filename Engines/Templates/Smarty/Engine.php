@@ -10,24 +10,15 @@ class Engine {
     /// Private members
     ///
 
-    /**
-     * @var Smarty
-     */
-    private $smarty;
+    private Smarty $smarty;
 
-    /**
-     * @var Configuration
-     */
-    private $config;
+    private Configuration $config;
 
     ///
     /// Singleton
     ///
 
-    /**
-     * @var Engine
-     */
-    private static $instance = null;
+    private static ?Engine $instance = null;
 
     public static function load () : Engine {
         if (self::$instance === null) {
@@ -72,7 +63,7 @@ class Engine {
         return $smarty;
     }
 
-    private static function initializeDefaultVariables (Smarty $smarty) {
+    private static function initializeDefaultVariables (Smarty $smarty): void {
         $smarty->assign("PAGE_CSS", []);
         $smarty->assign("PAGE_JS", []);
     }

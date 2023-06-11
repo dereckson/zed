@@ -8,34 +8,19 @@ class Configuration {
     /// Private members
     ///
 
-    /**
-     * @var string
-     */
-    private $applicationDirectory;
+    private string $applicationDirectory;
 
-    /**
-     * @var string
-     */
-    private $cacheDirectory;
+    private string $cacheDirectory;
 
-    /**
-     * @var string
-     */
-    private $theme;
+    private string $theme;
 
-    /**
-     * @var string
-     */
-    private $staticContentURL;
+    private string $staticContentURL;
 
     ///
     /// Singleton
     ///
 
-    /**
-     * @var Engine
-     */
-    private static $instance = null;
+    private static ?Configuration $instance = null;
 
     public static function load () : Configuration {
         if (self::$instance === null) {
