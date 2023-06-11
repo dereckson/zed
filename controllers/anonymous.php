@@ -123,11 +123,19 @@ switch ($url[0]) {
         }
 
         //If the invite code is specified, checks format
-        if ($url[1]) {
+        //If the form has already been posted with an invite code, it doesn't matter anymore.
+        if ($url[1] && !isset($_POST['invite_code'])) {
             if (preg_match("/^([A-Z]){3}([0-9]){3}$/i", $url[1])) {
-                $smarty->assign('invite_code', strtoupper($url[1]));
+                $invite = new Invite($url[1]);
+
+                if ($invite->lastError != '') {
+                    //Not existing invite.
+                    $smarty->assign('NOTIFY', lang_get("IncorrectInviteCode"));
+                } else {
+                    $smarty->assign('invite_code', strtoupper($url[1]));
+                }
             } else {
-                $smarty->assign('NOTIFY', lang_get("IncorrectInviteCode"));
+                $smarty->assign('NOTIFY', lang_get("IncorrectInviteCodeFormat"));
             }
         }
 
