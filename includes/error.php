@@ -71,7 +71,7 @@ define ("GENERAL_ERROR", 117);
  * @param mixed $expression the expression to be printed
  * @param string $title the message title (optional, default will be 'Debug')
  */
-function dieprint_r ($expression, $title = '') {
+function dieprint_r ($expression, $title = '')  : never {
     if (!$title) {
     $title = 'Debug'; //if title is omitted or false/null, default title
     }
@@ -95,7 +95,7 @@ function dieprint_r ($expression, $title = '') {
  * @param string $err_line the path of file where the error occurred (optional, suggested value is __FILE__)
  * @param string $sql the SQL query (optional, used only if msg_code is SQL_ERROR)
  */
-function message_die ($msg_code, $msg_text = '', $msg_title = '', $err_line = '', $err_file = '', $sql = '') {
+function message_die ($msg_code, $msg_text = '', $msg_title = '', $err_line = '', $err_file = '', $sql = '') : never {
     global $smarty, $db;
 
     if ($smarty) {
@@ -158,7 +158,7 @@ function message_die ($msg_code, $msg_text = '', $msg_title = '', $err_line = ''
  *
  * @deprecated since 0.1
  */
-function old_message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '', $err_file = '', $sql = '') {
+function old_message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '', $err_file = '', $sql = '') : never {
     global $db, $Utilisateur;
     $sql_store = $sql;
 
