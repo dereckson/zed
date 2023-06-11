@@ -146,7 +146,7 @@ class ContentZone {
      * Gets the zone at specified location
      *
      * @param string $location_global the global location
-     * @param string $location_global the local location
+     * @param string $location_local the local location
      * @param bool $create if the zone doesn't exist, create it [optional] [default value: false]
      * @return ContentZone the zone, or null if the zone doesn't exist and $create is false
      */
