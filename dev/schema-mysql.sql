@@ -3,14 +3,14 @@
 -- http://www.phpmyadmin.net
 --
 -- Serveur: localhost
--- Généré le : Sam 17 Juillet 2010 à 19:37
+-- GÃ©nÃ©rÃ© le : Sam 17 Juillet 2010 Ã  19:37
 -- Version du serveur: 5.5.4
 -- Version de PHP: 5.3.2
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
 --
--- Base de données: `zed`
+-- Base de donnÃ©es: `zed`
 --
 
 -- --------------------------------------------------------
@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS `api_keys` (
   `key_lastcall` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`key_guid`),
   KEY `key_active` (`key_active`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
 --
 -- Contenu de la table `api_keys`
@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS `content_files` (
   `perso_id` smallint(5) NOT NULL,
   `content_title` varchar(255) NOT NULL,
   PRIMARY KEY (`content_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=4 ;
 
 --
 -- Contenu de la table `content_files`
@@ -83,7 +83,7 @@ CREATE TABLE IF NOT EXISTS `content_locations` (
   PRIMARY KEY (`location_global`,`location_local`,`location_k`),
   KEY `content_id` (`content_id`),
   KEY `location_global` (`location_global`,`location_local`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
 --
 -- Contenu de la table `content_locations`
@@ -105,7 +105,7 @@ CREATE TABLE IF NOT EXISTS `geo_bodies` (
   PRIMARY KEY (`body_code`),
   KEY `body_status` (`body_status`),
   FULLTEXT KEY `text` (`body_name`,`body_description`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=4 ;
 
 --
 -- Contenu de la table `geo_bodies`
@@ -141,15 +141,15 @@ CREATE TABLE IF NOT EXISTS `geo_places` (
   `place_status` set('start','hidden') DEFAULT NULL,
   PRIMARY KEY (`place_id`),
   UNIQUE KEY `body_id` (`body_code`,`place_code`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4;
 
 --
 -- Contenu de la table `geo_places`
 --
 
 INSERT INTO `geo_places` (`place_id`, `body_code`, `place_code`, `place_name`, `place_description`, `location_local_format`, `place_status`) VALUES
-(1, 00001, 001, 'Tour', 'Tour circulaire, surplombant l''hypership, offrant une vue circulaire sur l''espace (ou l''ultraespace, ou l''hyperespace) et une rotonde aux derniers étages.\r\n\r\n== Toponymie numérique ==\r\nChaque niveau (correspondant à un secteur, identifié par la lettre T suivi du niveau, en partant du haut) est divisé en 6 couloirs d''approximativement 60°.', '/^(T[1-9][0-9]*C[1-6])$/', NULL),
-(2, 00001, 002, 'Core', 'Le coeur de l''hypership, son centre de gravité et les 8 cubes l''entourant.\r\n\r\n== Toponymie numérique ==\r\nLe core est divisé en 9 secteurs : C0 pour le centre de gravité, C1 à C4 pour les cubes de la couche inférieure, C5 à C8 pour les cubes de la couche supérieure.', NULL, NULL),
+(1, 00001, 001, 'Tour', 'Tour circulaire, surplombant l''hypership, offrant une vue circulaire sur l''espace (ou l''ultraespace, ou l''hyperespace) et une rotonde aux derniers Ã©tages.\r\n\r\n== Toponymie numÃ©rique ==\r\nChaque niveau (correspondant Ã  un secteur, identifiÃ© par la lettre T suivi du niveau, en partant du haut) est divisÃ© en 6 couloirs d''approximativement 60Â°.', '/^(T[1-9][0-9]*C[1-6])$/', NULL),
+(2, 00001, 002, 'Core', 'Le coeur de l''hypership, son centre de gravitÃ© et les 8 cubes l''entourant.\r\n\r\n== Toponymie numÃ©rique ==\r\nLe core est divisÃ© en 9 secteurs : C0 pour le centre de gravitÃ©, C1 Ã  C4 pour les cubes de la couche infÃ©rieure, C5 Ã  C8 pour les cubes de la couche supÃ©rieure.', NULL, NULL),
 (3, 00002, 001, 'Algir', '', NULL, NULL),
 (4, 00003, 001, 'Zeta', '', NULL, 'start'),
 (5, 00001, 003, 'Bays', 'Baies permettant d''accueillir divers vaisseaux au sein de l''hypership.', NULL, NULL);
@@ -167,7 +167,7 @@ CREATE TABLE IF NOT EXISTS `log_smartline` (
   `command_text` varchar(255) DEFAULT NULL,
   `isError` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`command_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;
 
 --
 -- Contenu de la table `log_smartline`
@@ -192,7 +192,7 @@ CREATE TABLE IF NOT EXISTS `messages` (
   KEY `message_flag` (`message_flag`),
   KEY `message_date` (`message_date`),
   KEY `inbox` (`message_to`,`message_flag`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;
 
 --
 -- Contenu de la table `messages`
@@ -214,7 +214,7 @@ CREATE TABLE IF NOT EXISTS `motd` (
   KEY `perso_id` (`perso_id`),
   KEY `motd_date` (`motd_date`),
   FULLTEXT KEY `motd_text` (`motd_text`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=25 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=25 ;
 
 --
 -- Contenu de la table `motd`
@@ -237,7 +237,7 @@ CREATE TABLE IF NOT EXISTS `pages` (
   PRIMARY KEY (`page_id`),
   UNIQUE KEY `page_code` (`page_code`),
   FULLTEXT KEY `page_text` (`page_code`,`page_title`,`page_content`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=4 ;
 
 --
 -- Contenu de la table `pages`
@@ -262,7 +262,7 @@ CREATE TABLE IF NOT EXISTS `pages_edits` (
   `page_edit_user_id` smallint(4) unsigned DEFAULT NULL,
   `page_edit_time` int(10) DEFAULT NULL,
   PRIMARY KEY (`page_edit_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=2 ;
 
 --
 -- Contenu de la table `pages_edits`
@@ -290,7 +290,7 @@ CREATE TABLE IF NOT EXISTS `persos` (
   KEY `race` (`perso_race`),
   KEY `user_id` (`user_id`),
   KEY `location_global` (`location_global`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
 --
 -- Contenu de la table `persos`
@@ -315,7 +315,7 @@ CREATE TABLE IF NOT EXISTS `persos_flags` (
   KEY `perso_id` (`perso_id`),
   KEY `flag_key` (`flag_key`),
   KEY `flag` (`flag_key`(127),`flag_value`(199))
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=459 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=459 ;
 
 
 -- --------------------------------------------------------
@@ -331,7 +331,7 @@ CREATE TABLE IF NOT EXISTS `persos_notes` (
   PRIMARY KEY (`perso_id`,`note_code`),
   KEY `perso_id` (`perso_id`),
   KEY `note_code` (`note_code`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
 --
 -- Contenu de la table `persos_notes`
@@ -351,14 +351,14 @@ CREATE TABLE IF NOT EXISTS `ports` (
   `port_name` varchar(63) NOT NULL,
   `port_status` set('hidden','requiresPTA') NOT NULL,
   PRIMARY KEY (`port_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=3 ;
 
 --
 -- Contenu de la table `ports`
 --
 
 INSERT INTO `ports` (`port_id`, `location_global`, `location_local`, `port_name`, `port_status`) VALUES
-(1, 'B00003001', '3', 'Le Dôme de Thétys', ''),
+(1, 'B00003001', '3', 'Le DÃ´me de ThÃ©tys', ''),
 (2, 'B00001003', '', 'Hypership''s general bays', '');
 
 -- --------------------------------------------------------
@@ -376,7 +376,7 @@ CREATE TABLE IF NOT EXISTS `profiles` (
   KEY `profile_fixedwidth` (`profile_fixedwidth`),
   KEY `profile_updated` (`profile_updated`),
   FULLTEXT KEY `profile` (`profile_text`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
 --
 -- Contenu de la table `profiles`
@@ -396,7 +396,7 @@ CREATE TABLE IF NOT EXISTS `profiles_comments` (
   `comment_date` int(10) NOT NULL,
   `comment_text` text NOT NULL,
   PRIMARY KEY (`comment_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=4 ;
 
 --
 -- Contenu de la table `profiles_comments`
@@ -420,7 +420,7 @@ CREATE TABLE IF NOT EXISTS `profiles_photos` (
   KEY `user_id` (`perso_id`),
   KEY `photo_avatar` (`photo_avatar`),
   KEY `user_avatar` (`perso_id`,`photo_avatar`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;
 
 --
 -- Contenu de la table `profiles_photos`
@@ -440,7 +440,7 @@ CREATE TABLE IF NOT EXISTS `profiles_tags` (
   PRIMARY KEY (`perso_id`,`tag_code`),
   KEY `tag_code` (`tag_code`),
   KEY `tag_class` (`tag_class`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
 --
 -- Contenu de la table `profiles_tags`
@@ -458,7 +458,7 @@ CREATE TABLE IF NOT EXISTS `registry` (
   `registry_value` longtext NOT NULL,
   `registry_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`registry_key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
 --
 -- Contenu de la table `registry`
@@ -487,7 +487,7 @@ CREATE TABLE IF NOT EXISTS `sessions` (
   PRIMARY KEY (`session_id`),
   KEY `Where` (`Where`),
   KEY `HeureLimite` (`HeureLimite`)
-) ENGINE=MEMORY DEFAULT CHARSET=latin1 COMMENT='Sessions @ Pluton';
+) ENGINE=MEMORY DEFAULT CHARSET=utf8mb4 COMMENT='Sessions @ Pluton';
 
 -- --------------------------------------------------------
 
@@ -507,7 +507,7 @@ CREATE TABLE IF NOT EXISTS `ships` (
   KEY `location` (`location_global`),
   KEY `api_key` (`api_key`),
   FULLTEXT KEY `ship_name_2` (`ship_name`,`ship_description`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -535,7 +535,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `user_email` varchar(63) NOT NULL DEFAULT '',
   `user_regdate` int(10) NOT NULL DEFAULT '0',
   PRIMARY KEY (`user_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
 --
 -- Contenu de la table `users`
@@ -561,7 +561,7 @@ CREATE TABLE IF NOT EXISTS `users_invites` (
   PRIMARY KEY (`invite_code`),
   KEY `invite_to_user_id` (`invite_to_user_id`),
   KEY `invite_from_user_id` (`invite_from_user_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
 --
 -- Contenu de la table `users_invites`
@@ -581,7 +581,7 @@ CREATE TABLE IF NOT EXISTS `users_openid` (
   PRIMARY KEY (`openid_id`),
   UNIQUE KEY `openid_url` (`openid_url`),
   KEY `user_id` (`user_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=5 ;
 
 --
 -- Contenu de la table `users_openid`
@@ -604,7 +604,12 @@ CREATE VIEW `content` AS select `cl`.`content_id` AS `content_id`,`cl`.`location
 --
 DROP TABLE IF EXISTS `geo_locations`;
 
-CREATE VIEW `geo_locations` AS select concat(_utf8'B',convert(`geo_bodies`.`body_code` using utf8)) AS `location_code`,`geo_bodies`.`body_name` AS `location_name` from `geo_bodies` union select concat(_utf8'B',convert(`geo_places`.`body_code` using utf8),convert(`geo_places`.`place_code` using utf8)) AS `code`,`geo_places`.`place_name` AS `NAME` from `geo_places` union select concat(_utf8'S',convert(`ships`.`ship_id` using utf8)) AS `location_code`,`ships`.`ship_name` AS `location_name` from `ships`;
+CREATE VIEW `geo_locations` AS
+    select concat('B', `geo_bodies`.`body_code`) AS `location_code`, `geo_bodies`.`body_name` AS `location_name` from `geo_bodies`
+UNION
+    select concat('B', `geo_places`.`body_code`, `geo_places`.`place_code`) AS `location_code`, `geo_places`.`place_name` AS `location_name` from `geo_places`
+UNION
+    select concat('S',`ships`.`ship_id`) AS `location_code`, `ships`.`ship_name` AS `location_name` from `ships`;
 
 -- --------------------------------------------------------
 
@@ -613,7 +618,7 @@ CREATE VIEW `geo_locations` AS select concat(_utf8'B',convert(`geo_bodies`.`body
 --
 DROP TABLE IF EXISTS `ships_sessions`;
 
-CREATE VIEW `ships_sessions` AS select substr(`registry`.`registry_key`,19,5) AS `ship_id`,substr(`registry`.`registry_key`,25) AS `session_id`,`registry`.`registry_value` AS `perso_id`,unix_timestamp(`registry`.`registry_updated`) AS `session_updated` from `registry` where (left(`registry`.`registry_key`,17) = _utf8'api.ship.session.');
+CREATE VIEW `ships_sessions` AS select substr(`registry`.`registry_key`,19,5) AS `ship_id`,substr(`registry`.`registry_key`,25) AS `session_id`,`registry`.`registry_value` AS `perso_id`,unix_timestamp(`registry`.`registry_updated`) AS `session_updated` from `registry` where (left(`registry`.`registry_key`,17) = 'api.ship.session.');
 
 -- --------------------------------------------------------
 
