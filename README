@@ -30,12 +30,6 @@
    bcmath and GMP php extensions are recommended (required?) for OpenID.
    Our dev environment outputs a white page without error if GMP isn't here.
 
- * Another used PHP extension is the WDDX one, to store session information in
-   a human-readable format, easier to debug.
-
-   If you don't want that, comment the following line from includes/config.php:
-   ini_set('session.serialize_handler', 'wddx');
-
 =========
  UPGRADE
 =========
@@ -143,7 +137,6 @@
      - preview  print_r representation, so you've an idea of the object
      - json     json_encode() output
      - php      serialize() output
-     - wddx     WDDX were an early universal serialization attempt
      - xml      XML document
      - string   output "as is" (or if it's an object, calls __toString())
 

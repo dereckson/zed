@@ -10,8 +10,7 @@
  *
  * This file provides a functions to output the API message in several formats.
  *
- * The supported formats are preview (PHP dump), XML, PHP serialize, WDDX
- * and json.
+ * The supported formats are preview (PHP dump), XML, PHP serialize and json.
  *
  * The XML outputs code uses the following codes:
  *     - http://www.thedeveloperday.com/xml-beautifier-tool/
@@ -140,12 +139,6 @@ function api_output ($reply, $xmlRoot = null, $xmlChildren = null) {
 
         case 'php':
             echo serialize($reply);
-            break;
-
-        case 'wddx':
-            require_once('BeautyXML.class.php');
-            $bc = new BeautyXML();
-            echo $bc->format(wddx_serialize_value($reply));
             break;
 
         case 'json':
