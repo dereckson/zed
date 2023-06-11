@@ -16,7 +16,7 @@
         <p>Congratulations! You found a ship.</p>
         <p>You're aboard the {$CurrentPerso->location->ship->name}.</p>
 {if $controller == "ship"}
-        <p>In the  future, you will able to explore the ship, but this is not yet implemented yet in this alpha preview.</p>
+        <p>In the future, you will be able to explore the ship, but this is not yet implemented in this alpha preview.</p>
 {if $note == ""}
         <p>Your notes is the only information generally available about ships. For reference, you should note something like "Took the {$CurrentPerso->location->ship->name} at {get_hypership_time()} from ... to the hypership."</p>
 {/if}
