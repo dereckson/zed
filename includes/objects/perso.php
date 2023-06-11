@@ -46,7 +46,7 @@ class Perso {
     public $nickname;
     public $race;
     public $sex;
-    public $avatar;
+    public string $avatar = "";
 
     public $location;
     public $location_global;

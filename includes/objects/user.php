@@ -35,7 +35,7 @@ class User {
     public $name;
     public $password;
     public $active = 0;
-    public $actkey;
+    public string $actkey = "";
     public $email;
     public $regdate;
 
