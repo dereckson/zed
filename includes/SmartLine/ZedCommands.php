@@ -330,7 +330,7 @@ class ListSmartLineCommand extends SmartLineCommand {
     /**
      * Gets a custom list from the specified table and fields.
      *
-     * The list will ascendingly ordered by the specified key.
+     * The list will be sorted by the specified key, using ascending order.
      *
      * @param $table the table to query from the database
      * @param $key the first field to fetch, as key
