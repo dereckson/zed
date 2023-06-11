@@ -602,9 +602,9 @@ function get_current_url_fragments () {
  * Gets an hash value to check the integrity of URLs in /do.php calls
  *
  * @param Array $args the args to compute the hash
- * @return the hash parameter for your xmlHttpRequest url
+ * @return string the hash parameter for your xmlHttpRequest url
  */
-function get_xhr_hash ($args) {
+function get_xhr_hash (array $args) : string {
     global $Config;
 
     array_shift($args);
@@ -616,7 +616,7 @@ function get_xhr_hash ($args) {
  *
  * @return string the xmlHttpRequest url, with an integrity hash
  */
-function get_xhr_hashed_url () {
+function get_xhr_hashed_url () : string {
     global $Config;
 
     $args = func_get_args();
@@ -629,7 +629,7 @@ function get_xhr_hashed_url () {
  *
  * @return string the xmlHttpRequest url
  */
-function get_xhr_url () {
+function get_xhr_url () : string {
     global $Config;
 
     $args = func_get_args();
