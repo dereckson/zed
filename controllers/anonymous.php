@@ -27,6 +27,8 @@
  * @filesource
  */
 
+use Keruald\OmniTools\Identifiers\Random;
+
 //
 // Prepares the page
 //
@@ -133,6 +135,10 @@ switch ($url[0]) {
         break;
 
     default:
+        //Invite code for code comment
+        $code = Random::generateString("AAA111");
+        $smarty->assign('code', $code);
+
         //Login form
         $smarty->assign('username', $_COOKIE['LastUsername'] ?? "");
         $smarty->assign('OpenID', $_COOKIE['LastOpenID'] ?? "");

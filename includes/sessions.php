@@ -24,6 +24,8 @@
  * @todo Replaces this code by the unified Keruald session class.
  */
 
+use Keruald\OmniTools\Identifiers\Random;
+
 function session_update () {
     global $db, $IP, $Config;
     //Nettoyage de la session
@@ -46,7 +48,7 @@ function session_update () {
 
     /* Création / mise à jour de la session utilisateur */
     if (!$_SESSION['ID']) {
-        $_SESSION['ID'] = md5(generate_random_string("AAAA1234"));
+        $_SESSION['ID'] = Random::generateHexHash();
     }
 
     $sql = "SELECT * FROM " . TABLE_SESSIONS . " WHERE session_id LIKE '$_SESSION[ID]'";

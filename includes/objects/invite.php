@@ -21,6 +21,8 @@
  * @filesource
  */
 
+use Keruald\OmniTools\Identifiers\Random;
+
 /**
  * User invite class
  *
@@ -66,7 +68,7 @@ class Invite {
         global $db;
 
         do {
-            $this->code = generate_random_string("AAA111");
+            $this->code = Random::generateString("AAA111");
             $sql = "SELECT COUNT(*) FROM " . TABLE_USERS_INVITES . " WHERE invite_code = '$this->code' LOCK IN SHARE MODE;";
             if (!$result = $db->query($sql)) {
                 message_die(SQL_ERROR, "Can't access invite users table", '', __LINE__, __FILE__, $sql);

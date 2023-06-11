@@ -116,43 +116,6 @@ function registry_set ($key, $value) {
 ///                                                                          ///
 ////////////////////////////////////////////////////////////////////////////////
 
-/**
- * Generates a random string, according the specified format.
- *
- * <code>
- * echo generate_random_string('AAA111'); //this could output SDQ245.
- * </code>
- *
- * @author Pierre Habart <p.habart@ifrance.com>
- *
- * @param string $format The format e.g. AAA111
- * @return string a random string
- */
-function generate_random_string ($format) {
-    mt_srand((double)microtime()*1000000);
-    $str_to_return="";
-
-    $t_alphabet=explode(",", "A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z");
-    $t_number=explode(",", "1,2,3,4,5,6,7,8,9,0");
-
-    for ($i=0;$i<strlen($format);$i++) {
-        if (preg_match("/^[a-zA-Z]/", $format[$i])) {
-            $add=$t_alphabet[mt_rand() % sizeof($t_alphabet)];
-            if (preg_match("/^[a-z]/", $format[$i])) {
-                $add=strtolower($add);
-            }
-        } elseif(preg_match("/^[0-9]/", $format[$i])) {
-            $add=$t_number[mt_rand() % sizeof($t_number)];
-        } else {
-            $add="?";
-        }
-
-        $str_to_return.=$add;
-    }
-
-    return $str_to_return;
-}
-
 //Plural management
 
 /**
