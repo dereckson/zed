@@ -5,6 +5,12 @@ namespace Zed\Engines\Templates\Smarty;
 class Configuration {
 
     ///
+    /// Constants
+    ///
+
+    const DEFAULT_THEME = "";
+
+    ///
     /// Private members
     ///
 
@@ -37,17 +43,19 @@ class Configuration {
     public static function buildDefaultConfiguration() : Configuration {
         global $Config;
 
-        $engineConfig = (new self)
+        return (new self)
             ->setApplicationDirectory(dirname(__DIR__, 3))
             ->setCacheDirectory(CACHE_DIR)
+            ->setTheme(self::getDefaultTheme())
             ->setStaticContentURL($Config['StaticContentURL']);
+    }
 
+    private static function getDefaultTheme () : string {
         if (defined("THEME")) {
-            // Endpoints like do.php don't have THEME defined.
-            $engineConfig->setTheme(THEME);
+            return THEME;
         }
 
-        return $engineConfig;
+        return self::DEFAULT_THEME;
     }
 
     ///
