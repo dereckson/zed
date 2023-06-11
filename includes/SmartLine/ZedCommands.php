@@ -455,7 +455,7 @@ class VersionSmartLineCommand extends SmartLineCommand {
     private static function getGitHash (string $gitFolder = '.git') : string {
         $head = trim(file_get_contents("$gitFolder/HEAD"));
 
-        if (substr($head, 0, 5) === "ref: ") {
+        if (str_starts_with($head, "ref: ")) {
              // Follows reference
              $ref = substr($head, 5);
              return file_get_contents("$gitFolder/$ref");

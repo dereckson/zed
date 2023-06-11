@@ -105,8 +105,8 @@ lang_load('persorequest.conf');
 $requests = [];
 
 foreach ($CurrentPerso->flags as $flag => $value) {
-    if ($value && substr($flag, 0, 8) == "request.") {
-        if (string_starts_with($flag, 'request.api.ship.auth.')) {
+    if ($value && str_starts_with($flag, "request.")) {
+        if (str_starts_with($flag, 'request.api.ship.auth.')) {
             //Gets ship
             require_once('include/objects/ship.php');
             $ship_code = substr($flag, 22);
@@ -115,7 +115,7 @@ foreach ($CurrentPerso->flags as $flag => $value) {
             //Adds request
             $message = sprintf(lang_get('RequestShipAPIAuthenticate'), $ship->name);
             $requests[] = new PersoRequest($flag, $message, substr($flag, 8));
-        } elseif (string_starts_with($flag, 'request.api.ship.session.')) {
+        } elseif (str_starts_with($flag, 'request.api.ship.session.')) {
             //Gets ship
             require_once('include/objects/ship.php');
             $ship_code = substr($flag, 25, 6);
