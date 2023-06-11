@@ -100,11 +100,13 @@ $sql = "SELECT command_time, command_text FROM log_smartline
 if (!$result = $db->query($sql)) {
     message_die(SQL_ERROR, "Can't get SmartLine history", '', __LINE__, __FILE__, $sql);
 }
-$i = 0;
+
+$commands = [];
 while ($row = $db->fetchRow($result)) {
-    $commands[$i]['time'] = get_hypership_time($row['command_time']);
-    $commands[$i]['text'] = $row['command_text'];
-    $i++;
+    $commands[] = [
+        "time" => get_hypership_time($row['command_time']),
+        "text" =>  $row['command_text'],
+    ];
 }
 
 $smarty->assign("SmartLineHistory", $commands);
