@@ -47,11 +47,6 @@ function toXml($data, $rootNodeName = 'data', $xml = null, $unknownNodeName = 'u
         $unknownNodeName = 'unknownNode';
     }
 
-    // turn off compatibility mode as simple xml throws a wobbly if you don't.
-    if (ini_get('zend.ze1_compatibility_mode') == 1) {
-        ini_set('zend.ze1_compatibility_mode', 0);
-    }
-
     if ($xml == null) {
         if (!is_array($data) && !is_object($data)) {
             //We've got a singleton
