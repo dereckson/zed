@@ -28,7 +28,7 @@ class TryAutoSelect extends BaseEvent {
         }
     }
 
-    private function askUserToCreatePerso () : void {
+    private function askUserToCreatePerso () : never {
         $this->selector->smarty
             ->display("perso_create.tpl");
         exit;
@@ -38,7 +38,7 @@ class TryAutoSelect extends BaseEvent {
         $this->selector->selectAndSetPerso($this->persos[0]);
     }
 
-    private function askUserToSelectPerso () : void {
+    private function askUserToSelectPerso () : never {
         $this->selector->smarty
             ->assign("PERSOS", $this->persos)
             ->display("perso_select.tpl");

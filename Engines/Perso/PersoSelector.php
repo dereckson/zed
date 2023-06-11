@@ -4,6 +4,7 @@ namespace Zed\Engines\Perso;
 
 use Smarty;
 
+use Zed\Engines\Perso\Events\BaseEvent;
 use Zed\Engines\Perso\Events\Create;
 use Zed\Engines\Perso\Events\Logout;
 use Zed\Engines\Perso\Events\ReadFromSession;
@@ -48,7 +49,7 @@ class PersoSelector {
      * Order matters: for example, to be able to log a perso out,
      * we first need to select it from the session.
      *
-     * @return \Zed\Engines\Perso\Events\BaseEvent[]
+     * @return BaseEvent[]
      */
     private function getDefaultEvents () : array {
         return [
