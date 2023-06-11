@@ -13,10 +13,8 @@
  * Name:     text2html<br>
  * Purpose:  HTML representation for Azhàr profiles
  * @author   Wolfaeym
- * @param string
- * @return string
  */
-function smarty_modifier_text2html ($string) {
+function smarty_modifier_text2html (string $string): string {
     //HTML entities
     $string = htmlspecialchars($string, ENT_QUOTES);
 

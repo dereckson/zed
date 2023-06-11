@@ -16,11 +16,8 @@ use Keruald\OmniTools\Culture\Rome\RomanNumerals;
 * Type:     modifier<br>
 * Name:     romanize<br>
 * Purpose:  prints a number in roman
-*
-* @param int $
-* @return string
 */
-function smarty_modifier_romanize ($number) : string {
+function smarty_modifier_romanize (mixed $number) : string {
     if (!is_numeric($number)) {
         return (string)$number;
     }
