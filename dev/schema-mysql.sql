@@ -531,7 +531,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `username` varchar(11) NOT NULL DEFAULT '',
   `user_password` varchar(32) NOT NULL DEFAULT '',
   `user_active` tinyint(1) NOT NULL DEFAULT '0',
-  `user_actkey` varchar(11) DEFAULT NULL,
+  `user_actkey` varchar(11) NOT NULL DEFAULT '',
   `user_email` varchar(63) NOT NULL DEFAULT '',
   `user_regdate` int(10) NOT NULL DEFAULT '0',
   PRIMARY KEY (`user_id`)
