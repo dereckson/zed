@@ -280,7 +280,7 @@ function initialize_lang () {
  *
  * @return string the language
  */
-function find_lang () {
+function find_lang () : string {
     if (file_exists('lang') && is_dir('lang')) {
         //Gets lang/ subdirectories: this is the list of available languages
         $handle = opendir('lang');
@@ -291,10 +291,16 @@ function find_lang () {
             }
         }
 
+        if (count($langs) === 0) {
+            throw new RuntimeException(
+                "A lang/ folder is expected with by language subdirectories"
+            );
+        }
+
         //The array $langs contains now the language available.
         //Gets the langs the user should want:
         if (!$userlangs = get_http_accept_languages()) {
-            return;
+            return TraversableUtilities::first($langs);
         }
 
         //Gets the intersection between the both languages arrays
