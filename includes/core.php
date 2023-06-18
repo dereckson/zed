@@ -262,67 +262,74 @@ function supralog (string $category, string $message, ?string $source = null) {
  * it's to determine according the user's browser preferences.
  * @see find_lang
  */
-function initialize_lang () {
+function initialize_lang () : void {
     //If $_SESSION['lang'] doesn't exist yet, find a common language
     if (!array_key_exists('lang', $_SESSION)) {
-        $lang = find_lang();
-        $_SESSION['lang'] = $lang ?: '-';
+        $_SESSION['lang'] = find_lang();
+
     }
 
-    if ($_SESSION['lang'] != '-') {
-        define('LANG', $_SESSION['lang']);
-    }
+    define('LANG', $_SESSION['lang']);
 }
 
 /**
  * Gets a common lang spoken by the site and the user's browser
- * @see get_http_accept_languages
  *
- * @return string the language
+ * @param string|null $fallback The language when no common language is found
+ * @return string The language to use
+ * @see get_http_accept_languages
  */
-function find_lang () : string {
-    if (file_exists('lang') && is_dir('lang')) {
-        //Gets lang/ subdirectories: this is the list of available languages
-        $handle = opendir('lang');
-        $langs = [];
-        while ($file = readdir($handle)) {
-            if ($file != '.' && $file != '..' && is_dir("lang/$file")) {
-                $langs[] = $file;
-            }
-        }
+function find_lang (string $fallback = null) : string {
+    if (!file_exists('lang') || !is_dir('lang')) {
+        throw new RuntimeException(
+            "A lang/ folder is expected with by language subdirectories"
+        );
+    }
 
-        if (count($langs) === 0) {
-            throw new RuntimeException(
-                "A lang/ folder is expected with by language subdirectories"
-            );
-        }
-
-        //The array $langs contains now the language available.
-        //Gets the langs the user should want:
-        if (!$userlangs = get_http_accept_languages()) {
-            return TraversableUtilities::first($langs);
-        }
-
-        //Gets the intersection between the both languages arrays
-        //If it matches, returns first result
-        $intersect = array_intersect($userlangs, $langs);
-        if (count($intersect)) {
-            return TraversableUtilities::first($intersect);
-        }
-
-        //Now it's okay with Opera and Firefox but Internet Explorer will
-        //by default return en-US and not en or fr-BE and not fr, so second pass
-        foreach ($userlangs as $userlang) {
-            $lang = explode('-', $userlang);
-            if (count($lang) > 1) {
-                $userlangs2[] = $lang[0];
-            }
-        }
-        $intersect = array_intersect($userlangs2, $langs);
-        if (count($intersect)) {
-            return $intersect[0];
+    //Gets lang/ subdirectories: this is the list of available languages
+    $handle = opendir('lang');
+    $langs = [];
+    while ($file = readdir($handle)) {
+        if ($file != '.' && $file != '..' && is_dir("lang/$file")) {
+            $langs[] = $file;
         }
     }
+
+    if (count($langs) === 0) {
+        throw new RuntimeException(
+            "A lang/ folder is expected with by language subdirectories"
+        );
+    }
+
+    //The array $langs contains now the language available.
+    //Gets the langs the user should want:
+    if (!$userlangs = get_http_accept_languages()) {
+        return TraversableUtilities::first($langs);
+    }
+
+    //Gets the intersection between the both languages arrays
+    //If it matches, returns first result
+    $intersect = array_intersect($userlangs, $langs);
+    if (count($intersect)) {
+        return TraversableUtilities::first($intersect);
+    }
+
+    //Now it's okay with Opera and Firefox but Internet Explorer will
+    //by default return en-US and not en or fr-BE and not fr, so second pass
+    $userlangs_simplified = [];
+    foreach ($userlangs as $userlang) {
+        $lang = explode('-', $userlang);
+        if (count($lang) > 1) {
+            $userlangs_simplified[] = $lang[0];
+        }
+    }
+    $intersect = array_intersect($userlangs_simplified, $langs);
+    if (count($intersect)) {
+        return TraversableUtilities::first($intersect);
+    }
+
+    // It's not possible to find a common language, return the first one.
+    return $fallback ?? TraversableUtilities::first($langs);
 }
 
 /**
@@ -331,14 +338,14 @@ function find_lang () : string {
  * This will read the HTTP_ACCEPT_LANGUAGE variable sent by the browser in the
  * HTTP request.
  *
- * @return Array an array of string, each item a language accepted by browser
+ * @return string[] list of the languages accepted by browser
  */
-function get_http_accept_languages () {
+function get_http_accept_languages () : array {
     //What language to print is sent by browser in HTTP_ACCEPT_LANGUAGE var.
     //This will be something like en,fr;q=0.8,fr-fr;q=0.5,en-us;q=0.3
 
     if (!array_key_exists('HTTP_ACCEPT_LANGUAGE', $_SERVER)) {
-        return null;
+        return [];
     }
 
     $http_accept_language = explode(',', $_SERVER["HTTP_ACCEPT_LANGUAGE"]);
@@ -351,6 +358,8 @@ function get_http_accept_languages () {
         }
     }
     rsort($userlangs);
+
+    $result = [];
     foreach ($userlangs as $userlang) {
         $result[] = $userlang[1];
     }
@@ -361,9 +370,9 @@ function get_http_accept_languages () {
  * Loads specified language Smarty configuration file
  *
  * @param string $file the file to load
- * @param mixed $sections array of section names, single section or null
+ * @param mixed|null $sections array of section names, single section or null
  */
-function lang_load ($file, $sections = null) {
+function lang_load (string $file, mixed $sections = null) : void {
     global $smarty;
 
     //Loads English file as fallback if some parameters are missing
@@ -383,7 +392,7 @@ function lang_load ($file, $sections = null) {
  * @param string $key the configuration key matching the value to get
  * @return string The value in the configuration file
  */
-function lang_get ($key) {
+function lang_get (string $key) : string {
     global $smarty;
 
     $smartyConfValue = $smarty->config_vars[$key];

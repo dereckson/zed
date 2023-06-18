@@ -67,33 +67,37 @@ abstract class StoryHook {
     /**
      * Initializes hook. Called after constructor.
      */
-    abstract function initialize ();
+    abstract function initialize () : void;
 
     /**
      * Gets choices extra links
      *
-     * @param Array $links the hooks links array
+     * @param string[] $links the hooks links array
      */
-    function get_choices_links (&$links) {}
+    function get_choices_links (array &$links) : void {
+
+    }
 
     /**
      * Updates description
      *
-     * @param string the description text (from section and previous hooks)
+     * @param string $description the description text (from section and previous hooks)
      */
-    function update_description (&$description) {}
+    function update_description (string &$description) : void {
+
+    }
 
     /**
      * Adds HTML code *AT THE END* of the story content block
-     *
-     * @return string HTML code to print
      */
-    function add_content () {}
+    function add_content (): string {
+        return "";
+    }
 
     /**
      * Adds HTML code *AFTER* the content block
-     *
-     * @return string HTML code to print
      */
-    function add_html () {}
+    function add_html (): string {
+        return "";
+    }
 }
