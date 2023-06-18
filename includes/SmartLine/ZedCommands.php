@@ -452,13 +452,16 @@ class UnixTimeSmartLineCommand extends SmartLineCommand {
  *      Hash: 057bf394741706fd2136541e3bb07c9e60b4963d
  */
 class VersionSmartLineCommand extends SmartLineCommand {
-    private static function getGitHash (string $gitFolder = '.git') : string {
-        $head = trim(file_get_contents("$gitFolder/HEAD"));
+
+    const GIT_FOLDER = ".git";
+
+    private static function getGitHash () : string {
+        $head = trim(file_get_contents(self::GIT_FOLDER . "/HEAD"));
 
         if (str_starts_with($head, "ref: ")) {
              // Follows reference
              $ref = substr($head, 5);
-             return file_get_contents("$gitFolder/$ref");
+             return file_get_contents(self::GIT_FOLDER . "/$ref");
         }
 
         return $head;
