@@ -43,7 +43,7 @@ class ContentZone {
     function __construct ($id = '') {
         if ($id) {
             $this->id = $id;
-            return $this->load_from_database();
+            $this->load_from_database();
         }
     }
 
