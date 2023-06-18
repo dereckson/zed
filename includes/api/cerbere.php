@@ -113,7 +113,7 @@ function cerbere () {
  *
  * @param string $message The error message to print
  */
-function cerbere_die ($message) {
+function cerbere_die ($message) : never {
     if (OUTPUT_ERROR) {
         if (FORMAT_ERROR) {
             api_output($message, 'error');
