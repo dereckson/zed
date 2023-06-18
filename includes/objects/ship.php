@@ -90,8 +90,7 @@ class Ship {
             }
         }
 
-        $ship = new Ship($data);
-        return $ship;
+        return new Ship($data);
     }
 
     /**
