@@ -313,10 +313,10 @@ class SmartLine {
      * @param string $expression The expression containing the command to execute
      * @return bool true if the command have been successfully executed ; otherwise, false.
      */
-    public function execute ($expression) {
+    public function execute (string $expression) : bool {
         //Does nothing if blank line
         if (!$expression) {
-            return;
+            return true;
         }
 
         //Prepares $argv and $argc
@@ -335,10 +335,12 @@ class SmartLine {
 
         //Executes command, intercepting error and returns result
         set_error_handler("SmartLineHandler");
+        $result = true;
         try {
             $result = $this->commands[$command]->run($argv, $argc);
         } catch (Exception $ex) {
             $this->puts("<pre>$ex</pre>", STDERR);
+            $result = false;
         }
         restore_error_handler();
         return $result;
@@ -374,6 +376,8 @@ class SmartLine {
         if ($this->count($output) > 0) {
             return array_pop($_SESSION['SmartLineOutput'][$output]);
         }
+
+        return "";
     }
 
     /**
@@ -393,12 +397,12 @@ class SmartLine {
      * @param int $output The output queue (common values are STDERR and STDOUT constants). It's an optional parameter ; if omitted, the default value will be STDOUT.
      * @param string $prefix The string to prepend each message with. It's an optional parameter ; if omitted, '<p>'.
      * @param string $suffix The string to append each message with. It's an optional parameter ; if omitted, '</p>'.
-     * @return Array an array of string, each item a message from the specified output queue
+     * @return string HTML representation of the messages from the specified output queue
      */
-    public function gets_all ($output = STDOUT, $prefix = '<p>', $suffix = '</p>') {
+    public function gets_all ($output = STDOUT, $prefix = '<p>', $suffix = '</p>') : string {
         $count = $this->count($output);
         if ($count == 0) {
-            return;
+            return "";
         }
 
         $buffer = "";
