@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Zed\Tests\Engines\Templates\Smarty\Plugins;
 
-class RomanNumeralsTest extends SmartyPluginTestCase {
+class RomanizeModifierTest extends SmartyPluginTestCase {
 
     public function setUp () {
         $this->requirePlugin('modifier', 'romanize');
