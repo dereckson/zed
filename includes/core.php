@@ -572,7 +572,7 @@ function get_current_url () {
 
     //We need to assert it's the correct site
     if (substr($current_url, 0, $len) != $Config['SiteURL']) {
-        dieprint_r(GENERAL_ERROR, "Edit includes/config.php and specify the correct site URL<br /><strong>Current value:</strong> $Config[SiteURL]<br /><strong>Expected value:</strong> a string starting by " . get_server_url(), "Setup");
+        dieprint_r( "Edit includes/config.php and specify the correct site URL<br /><strong>Current value:</strong> $Config[SiteURL]<br /><strong>Expected value:</strong> a string starting by " . get_server_url(), "Setup");
     }
 
     if (array_key_exists('REDIRECT_URL', $_SERVER)) {
