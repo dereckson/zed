@@ -122,26 +122,28 @@ function registry_set ($key, $value) {
  * Returns "s" when the $amount request a plural
  * This function is a French plural helper.
  *
- * @param $amount the amount of objects
  * @return string 's' if $amount implies a plural ; '' if it implies a singular.
  */
-function s ($amount) {
+function s (int $amount) : string {
     if ($amount >= 2 || $amount <= -2) {
         return "s";
     }
+
+    return "";
 }
 
 /**
  * Returns "x" when the $amount request a plural
  * This function is a French plural helper.
  *
- * @param $amount the amount of objects
  * @return string 'x' if $amount implies a plural ; '' if it implies a singular.
  */
-function x ($amount) {
+function x (int $amount) : string {
     if ($amount >= 2 || $amount <= -2) {
         return "x";
     }
+
+    return "";
 }
 
 //Debug
