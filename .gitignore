@@ -11,5 +11,8 @@ cache/openid/nonces/
 vendor/
 composer.lock
 
+## PHPUnit
+.phpunit.cache/
+
 ## Content
 /content/
