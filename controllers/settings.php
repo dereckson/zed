@@ -9,7 +9,7 @@
  * Released under BSD license.
  *
  * This controller allows user to set its preferences, according the Settings
- * classes and the preferences.xml document.
+ * classes, and the preferences.xml document.
  *
  * It handles the /settings URL.
  *
