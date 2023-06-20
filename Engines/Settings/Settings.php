@@ -19,12 +19,7 @@
  * @filesource
  */
 
-/**
- * The method to call in your objects, to save data.
- */
-define("SETTINGS_SAVE_METHOD", "save_to_database");
-
-require_once("page.php");
+namespace Zed\Engines\Settings;
 
 /**
  * Settings
@@ -36,45 +31,68 @@ require_once("page.php");
  */
 class Settings {
 
+    ///
+    /// Constants
+    ///
+
     /**
-     * The file path
+     * The method to call in your objects, to save data.
      *
-     * @var string
+     * @const string
      */
-    public $file;
+    const SETTINGS_SAVE_METHOD = "save_to_database";
+
+    ///
+    /// Properties
+    ///
+
+    public string $filePath;
 
     /**
      * A collection of SettingsPage items
      *
      * @var SettingsPage[]
      */
-    public $pages;
+    public array $pages = [];
+
+    /**
+     * The targets are underlying objects manipulated by the settings
+     *
+     * @var object[]
+     */
+    public array $targets = [];
+
+    ///
+    /// Constructor
+    ///
 
     /**
      * Initializes a new instance of Settings class
-     *
-     * @param string $xmlFile The XML document which defines the settings.
      */
-    function __construct ($xmlFile) {
+    function __construct (string $xmlFilePath) {
         //Opens .xml
-        if (!file_exists($xmlFile)) {
-            message_die(GENERAL_ERROR, "$xmlFile not found.", "Settings load error");
+        if (!file_exists($xmlFilePath)) {
+            throw new SettingException("$xmlFilePath not found.");
         }
-        $this->file = $xmlFile;
+        $this->filePath = $xmlFilePath;
 
         //Parses it
         $this->parse();
     }
+
+    ///
+    /// XML deserialization
+    ///
 
     /**
      * Parses XML file
      */
     function parse () {
         //Parses it
-        $xml = simplexml_load_file($this->file);
+        $xml = simplexml_load_file($this->filePath);
         foreach ($xml->page as $page) {
             //Gets page
-            $page = SettingsPage::from_xml($page);
+            $page = SettingsPage::fromXml($page);
 
             //Adds to sections array
             $this->pages[$page->id] = $page;

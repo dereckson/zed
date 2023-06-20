@@ -19,7 +19,9 @@
  * @filesource
  */
 
-require_once("setting.php");
+namespace Zed\Engines\Settings;
+
+use SimpleXMLElement;
 
 /**
  * This class maps the page XML element, from our Settings XML schema
@@ -36,56 +38,51 @@ require_once("setting.php");
  * It provides method to print a form built from this page and to handle form.
  */
 class SettingsPage {
+
     /**
      * The page ID
      *
-     * This property maps the id attribute from the page XML tag
-     *
-     * @var string the page ID
+     * This property maps the id attribute from the page XML tag.
      */
-    public $id;
+    public string $id;
 
     /**
      * The page's title
      *
-     * This property maps the title attribute from the page XML tag
-     *
-     * @var string the page title
+     * This property maps the title attribute from the page XML tag.
      */
-    public $title;
+    public string $title;
 
     /**
      * The settings
      *
      * This property is an array of Setting items and maps the <setting> tags
-     * @var Array
+     * @var Setting[]
      */
-    public $settings = [];
+    public array $settings = [];
 
     /**
      * Initializes a new instance of SettingsPage class
-     *
-     * @param string $id the page ID
      */
-    function __construct ($id) {
+    function __construct(string $id) {
         $this->id = $id;
     }
 
     /**
      * Initializes a settings page from an SimpleXMLElement XML fragment
-     *
-     * @param SimpleXMLElement $xml the XML fragment
-     * @return SettingsPage the section instance
      */
-    static function from_xml ($xml) {
-        //Reads attributes
+    static function fromXml(SimpleXMLElement $xml) : SettingsPage {
+        // Reads attributes
         $id = '';
         $title = '';
         foreach ($xml->attributes() as $key => $value) {
             switch ($key) {
                 case 'title':
+                    $title = (string)$value;
+                    break;
+
                 case 'id':
-                    $$key = (string)$value;
+                    $id = (string)$value;
                     break;
 
                 default:
@@ -93,8 +90,8 @@ class SettingsPage {
             }
         }
 
-        //id attribute is mandatory
-        if (!$id) {
+        // Ensure id attribute is defined
+        if ($id === "") {
             message_die(GENERAL_ERROR, "Section without id. Please add id='' in <section> tag", "Story error");
         }
 
@@ -105,7 +102,7 @@ class SettingsPage {
         //Gets settings
         if ($xml->setting) {
             foreach ($xml->setting as $settingXml) {
-                $setting = Setting::from_xml($settingXml);
+                $setting = Setting::fromXml($settingXml);
                 $page->settings[$setting->key] = $setting;
             }
         }
@@ -116,47 +113,57 @@ class SettingsPage {
     /**
      * Handles form reading $_POST array, set new settings values and saves.
      *
-     * @param array $errors an array where the errors will be filled
+     * @param string[] $errors an array where the errors will be filled
      * @return boolean true if there isn't error ; otherwise, false.
      */
-    function handle_form (array &$errors = []) : bool {
+    function handleForm(array &$errors = []) : bool {
         $objects = [];
         $result = true;
 
-        //Sets new settings values
+        // Sets new settings values, and records objects to save
         foreach ($this->settings as $setting) {
             $value = $_POST[$setting->key] ?? "";
 
-            if ($setting->field == "password" && !$value) {
-                //We don't erase passwords if not set
+            if ($setting->field === "password" && $value === "") {
+                // We don't erase passwords if not set
                 continue;
             }
 
-            //If the setting value is different of current one, we update it
+            // If the setting value is different of current one, we update it
             $currentValue = $setting->get();
-            if ($setting->field == "checkbox" || $currentValue != $value) {
+            if ($setting->field === "checkbox" || $currentValue !== $value) {
                 if (!$setting->set($value)) {
                     $errors[] = $setting->lastError ?? "An error have occurred in $setting->key field.";
                     $result = false;
                 }
+
                 if ($setting->object) {
                     $objects[] = $setting->object;
                 }
             }
         }
 
-        //Saves object (when the SETTINGS_SAVE_METHOD save method exists)
-        if (count($objects)) {
-            $objects = array_unique($objects);
-            foreach ($objects as $object) {
-                $object = $GLOBALS[$object];
-                if (method_exists($object, SETTINGS_SAVE_METHOD)) {
-                    call_user_func([$object, SETTINGS_SAVE_METHOD]);
-                }
+        $this->saveObjects($objects);
+
+        return $result;
+    }
+
+    /**
+     * @param string[] $objects
+     */
+    private function saveObjects (array $objects) : void {
+        $objects = array_unique($objects);
+
+        foreach ($objects as $objectName) {
+            $object = $this->getUnderlyingObject($objectName);
+            if (method_exists($object, Settings::SETTINGS_SAVE_METHOD)) {
+                call_user_func([$object, Settings::SETTINGS_SAVE_METHOD]);
             }
         }
+    }
 
-       return $result;
+    private function getUnderlyingObject (string $object) : object {
+        return $GLOBALS[$object];
     }
 
 }

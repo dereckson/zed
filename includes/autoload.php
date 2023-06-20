@@ -36,10 +36,6 @@ spl_autoload_register(function (string $className) {
     $classes['Ship'] = './includes/objects/ship.php';
     $classes['User'] = './includes/objects/user.php';
 
-    $classes['SettingsPage'] = './includes/settings/page.php';
-    $classes['Setting'] = './includes/settings/setting.php';
-    $classes['Settings'] = './includes/settings/settings.php';
-
     $classes['StoryChoice'] = './includes/story/choice.php';
     $classes['StoryHook'] = './includes/story/hook.php';
     $classes['DemoStoryHook'] = './includes/story/hook_demo.php';

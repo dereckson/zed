@@ -27,14 +27,28 @@
  * @todo reduce the number of for loops in this controller
  */
 
+use Zed\Engines\Settings\SettingException;
+use Zed\Engines\Settings\Settings;
+
 //
 // Loads settings
 //
 
 lang_load('settings.conf');
 
-include('includes/settings/settings.php');
-$settings = new Settings('includes/settings/preferences.xml');
+try {
+    $settings = new Settings('data/settings/preferences.xml');
+    $settings->targets = [
+        "CurrentPerso" => $CurrentPerso,
+        "CurrentUser" => $CurrentUser,
+    ];
+} catch (SettingException $ex) {
+    message_die(GENERAL_ERROR, $ex->getMessage(), "Settings error");
+}
+
+///
+/// Handle request
+///
 
 //Selects relevant settings page
 $pages = $settings->pages;
@@ -62,7 +76,7 @@ if (array_key_exists('settings_page', $_POST)) {
     if ($_POST['settings_page'] == $page->id) {
         //Updates settings
         $errors = [];
-        $page->handle_form($errors);
+        $page->handleForm($errors);
         if (count($errors)) {
             //Prints error message
             $smarty->assign('WAP', implode('<br />', $errors));
