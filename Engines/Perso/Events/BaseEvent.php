@@ -2,6 +2,7 @@
 
 namespace Zed\Engines\Perso\Events;
 
+use Keruald\Database\DatabaseEngine;
 use Zed\Engines\Perso\PersoSelector;
 
 abstract class BaseEvent {
@@ -21,5 +22,9 @@ abstract class BaseEvent {
     abstract public function isTriggered() : bool;
 
     abstract public function handle() : void;
+
+    public function getDatabase () : DatabaseEngine {
+        return $this->selector->db;
+    }
 
 }

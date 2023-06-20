@@ -22,6 +22,11 @@
  */
 
 use Zed\Engines\Database\Database;
+use Zed\Models\Geo\Galaxy;
+use Zed\Models\Geo\Location;
+use Zed\Models\Objects\Application;
+use Zed\Models\Objects\Perso;
+use Zed\Models\Objects\Ship;
 
 //API preferences
 define('URL', 'http://' . $_SERVER['HTTP_HOST'] . '/index.php');
@@ -64,8 +69,7 @@ switch ($module = $url[0]) {
         //Checks credentials
         cerbere();
         //Gets location info
-        require_once("includes/geo/location.php");
-        $location = new GeoLocation($url[1], $url[2]);
+        $location = new Location($db, $url[1], $url[2]);
         api_output($location, "location");
         break;
 
@@ -73,7 +77,7 @@ switch ($module = $url[0]) {
         //Checks credentials
         cerbere();
         //Get coordinates
-        api_output(GeoGalaxy::getCoordinates(), 'galaxy', 'object');
+        api_output(Galaxy::getCoordinates($db), 'galaxy', 'object');
         break;
 
 
@@ -92,7 +96,6 @@ switch ($module = $url[0]) {
         //Ship API
 
         //Gets ship from Ship API key (distinct of regular API keys)
-        require_once('includes/objects/ship.php');
         $ship = Ship::from_api_key($_REQUEST['key']) or cerbere_die("Invalid ship API key");
 
         switch ($command = $url[1]) {
@@ -111,7 +114,7 @@ switch ($module = $url[0]) {
                 if ($_REQUEST['name']) {
                     //Perso will be offered auth invite at next login.
                     //Handy for devices like PDA, where it's not easy to auth.
-                    $perso = new Perso($_REQUEST['name']);
+                    $perso = new Perso($db, $_REQUEST['name']);
                     if ($perso->lastError) {
                         cerbere_die($perso->lastError);
                     }
@@ -123,7 +126,7 @@ switch ($module = $url[0]) {
                     //Delivers an URL. App have to redirects user to this URL
                     //launching a browser or printing the link.
                     $ship_code = $ship->get_code();
-                    registry_set("api.ship.session.$ship_code.$tmp_session_id", -1);
+                    registry_set($db, "api.ship.session.$ship_code.$tmp_session_id", -1);
                     $url = get_server_url() . get_url() . "?action=api.ship.appauthenticate&session_id=" . $tmp_session_id;
                     api_output($url, "URL");
                 }
@@ -137,7 +140,7 @@ switch ($module = $url[0]) {
                     //Global auth not ok/revoked.
                     $auth->status = -1;
                 } else {
-                    $perso = Perso::get($perso_id);
+                    $perso = Perso::get($db, $perso_id);
                     $auth->status = 1;
                     $auth->perso->id = $perso->id;
                     $auth->perso->nickname = $perso->nickname;
@@ -166,9 +169,9 @@ switch ($module = $url[0]) {
                 //Gets location class
                 //It's allow: (1) to normalize locations between formats
                 //            (2) to ensure the syntax
-                //==> if the ship want to communicate free forms coordinates, must be added on GeoLocation a free format
+                //==> if the ship want to communicate free forms coordinates, must be added on Location a free format
                 try {
-                    $location = new GeoLocation($url[2]);
+                    $location = new Location($db, $url[2]);
                 } catch (Exception $ex) {
                     $reply->success = 0;
                     $reply->error = $ex->getMessage();
@@ -188,7 +191,7 @@ switch ($module = $url[0]) {
             case 'flyin':
                 //Flies in
                 try {
-                    $location = new GeoLocation($location);
+                    $location = new Location($db, $location);
                 } catch (Exception $ex) {
                     $reply->success = 0;
                     $reply->error = $ex->getMessage();
@@ -214,8 +217,7 @@ switch ($module = $url[0]) {
 
     case 'app':
         //Application API
-        require_once("includes/objects/application.php");
-        $app = Application::from_api_key($_REQUEST['key']) or cerbere_die("Invalid application API key");
+        $app = Application::from_api_key($db, $_REQUEST['key']) or cerbere_die("Invalid application API key");
 
         switch ($command = $url[1]) {
             case '':

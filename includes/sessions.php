@@ -25,6 +25,7 @@
  */
 
 use Keruald\OmniTools\Identifiers\Random;
+use Zed\Models\Objects\User;
 
 function session_update () {
     global $db, $IP, $Config;
@@ -100,8 +101,7 @@ function get_logged_user () {
     }
     $row = $db->fetchRow($result);
 
-    require_once('includes/objects/user.php');
-    $user = User::get($row['user_id']);
+    $user = User::get($db, $row['user_id']);
 
     $user->session = $row;
 

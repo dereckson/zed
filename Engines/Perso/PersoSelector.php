@@ -2,19 +2,17 @@
 
 namespace Zed\Engines\Perso;
 
+use Keruald\Database\DatabaseEngine;
+use LogicException;
 use Smarty;
-
 use Zed\Engines\Perso\Events\BaseEvent;
 use Zed\Engines\Perso\Events\Create;
 use Zed\Engines\Perso\Events\Logout;
 use Zed\Engines\Perso\Events\ReadFromSession;
 use Zed\Engines\Perso\Events\Select;
 use Zed\Engines\Perso\Events\TryAutoSelect;
-
-use Perso;
-use User;
-
-use LogicException;
+use Zed\Models\Objects\Perso;
+use Zed\Models\Objects\User;
 
 class PersoSelector {
 
@@ -22,6 +20,7 @@ class PersoSelector {
     /// Properties
     ///
 
+    public DatabaseEngine $db;
     public User $user;
     public Smarty $smarty;
     public Perso $perso;
@@ -34,7 +33,8 @@ class PersoSelector {
     /**
      * @param User $user The currently logged user
      */
-    public function __construct (User $user, Smarty $smarty) {
+    public function __construct (DatabaseEngine $db, User $user, Smarty $smarty) {
+        $this->db = $db;
         $this->smarty = $smarty;
         $this->user = $user;
     }
@@ -77,8 +77,8 @@ class PersoSelector {
     /**
      * Run all the workflow to get a perso.
      */
-    public static function load (User $user, Smarty $smarty) : Perso {
-        $selector = new self($user, $smarty);
+    public static function load (DatabaseEngine $db, User $user, Smarty $smarty) : Perso {
+        $selector = new self($db, $user, $smarty);
         $selector->handleEvents();
 
         if (!$selector->hasPerso) {

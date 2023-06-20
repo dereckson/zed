@@ -7,11 +7,11 @@ use PHPUnit\Framework\TestCase;
 
 abstract class SmartyPluginTestCase extends TestCase {
 
-    protected function requirePlugin (string $type, string $name) {
+    protected function requirePlugin (string $type, string $name) : void {
         require_once($this->getPluginPath($type, $name));
     }
 
-    private function getPluginPath (string $type, string $name) {
+    private function getPluginPath (string $type, string $name) : string {
         return dirname(__DIR__, 6) // application root directory
                . '/Engines/Templates/Smarty/Plugins/'
                . "$type.$name.php";

@@ -20,8 +20,8 @@
  */
 
 use Zed\Engines\Builder\Map\OctocubeBuilder;
-
-require_once('includes/content/zone.php');
+use Zed\Models\Content\Zone;
+use Zed\Models\Geo\Location;
 
 //
 // Helper methods
@@ -30,13 +30,13 @@ require_once('includes/content/zone.php');
 /**
  * Determines if a specified location is buildable
  *
- * @param GeoLocation $location the location to check
+ * @param Location $location the location to check
  * @param string if the location isn't buildable, a textual description of why.
  * @return bool true if the location is buildable ; otherwise, false
  *
  * @todo create a build.xml document to set what's buildable, and by who
  */
-function is_buildable ($location, &$error = '') {
+function is_buildable (Location $location, &$error = '') {
     //We currently allow build only in the hypership tower and core.
     if (!$location->body->hypership) {
         $error = "You can only invoke the HyperShip builder facilities inside the HyperShip.";
@@ -69,7 +69,8 @@ switch ($build_mode = $url[1]) {
         }
 
         $builder = new OctocubeBuilder($CurrentPerso->location);
-        $zones = ContentZone::search(
+        $zones = Zone::search(
+            $db,
             $CurrentPerso->location->global,
             $builder->getRlikePattern(),
             true
@@ -94,7 +95,7 @@ switch ($build_mode = $url[1]) {
         }
 
         //Gets or creates a new zone at build location
-        $zone = ContentZone::at($build_location->global, $build_location->local, true);
+        $zone = Zone::at($db, $build_location->global, $build_location->local, true);
         switch ($zone->type) {
             case 'hotglue':
                 //All rulez

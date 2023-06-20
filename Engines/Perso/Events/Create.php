@@ -2,7 +2,7 @@
 
 namespace Zed\Engines\Perso\Events;
 
-use Perso;
+use Zed\Models\Objects\Perso;
 
 /**
  * This event is triggered when a perso is created,
@@ -22,6 +22,7 @@ class Create extends BaseEvent {
 
     public function handle () : void {
         $isCreated = Perso::create_perso_from_form(
+            $this->getDatabase(),
             $this->selector->user,
             $this->createdPerso,
             $this->errors

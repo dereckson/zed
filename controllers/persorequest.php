@@ -34,6 +34,7 @@
 ///
 /// Helper class and method
 ///
+use Zed\Models\Objects\Ship;
 
 /**
  * A perso request
@@ -108,18 +109,16 @@ foreach ($CurrentPerso->flags as $flag => $value) {
     if ($value && str_starts_with($flag, "request.")) {
         if (str_starts_with($flag, 'request.api.ship.auth.')) {
             //Gets ship
-            require_once('include/objects/ship.php');
             $ship_code = substr($flag, 22);
-            $ship = Ship::get($ship_code);
+            $ship = Ship::get($db, $ship_code);
 
             //Adds request
             $message = sprintf(lang_get('RequestShipAPIAuthenticate'), $ship->name);
             $requests[] = new PersoRequest($flag, $message, substr($flag, 8));
         } elseif (str_starts_with($flag, 'request.api.ship.session.')) {
             //Gets ship
-            require_once('include/objects/ship.php');
             $ship_code = substr($flag, 25, 6);
-            $ship = Ship::get($ship_code);
+            $ship = Ship::get($$db, ship_code);
 
             //Adds request
             $message = sprintf(lang_get('RequestShipAPISessionConfirm'), $ship->name);

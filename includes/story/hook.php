@@ -18,6 +18,8 @@
  * @filesource
  */
 
+use Zed\Models\Objects\Perso;
+
 /**
  * Story hook class
  *

@@ -1,0 +1,200 @@
+<?php
+
+/**
+ * User invite class
+ *
+ * Zed. The immensity of stars. The HyperShip. The people.
+ *
+ * (c) 2010, Dereckson, some rights reserved.
+ * Released under BSD license.
+ *
+ * 0.1    2010-06-29 02:13    Initial version [DcK]
+ *
+ * @package     Zed
+ * @subpackage  Model
+ * @author      Sébastien Santoro aka Dereckson <dereckson@espace-win.org>
+ * @copyright   2010 Sébastien Santoro aka Dereckson
+ * @license     http://www.opensource.org/licenses/bsd-license.php BSD
+ * @version     0.1
+ * @link        http://scherzo.dereckson.be/doc/zed
+ * @link        http://zed.dereckson.be/
+ * @filesource
+ */
+
+namespace Zed\Models\Objects;
+
+use Keruald\Database\DatabaseEngine;
+use Keruald\OmniTools\Identifiers\Random;
+use Zed\Models\Base\Entity;
+
+/**
+ * User invite class
+ *
+ * This class maps the users_invites table.
+ */
+class Invite extends Entity {
+
+    public $code;
+    public $date;
+    public $from_user_id;
+    public $from_perso_id;
+
+    public string $lastError = "";
+
+    /**
+     * The user_id who have been claimed the invite
+     * Will be NULL as long as the invite haven't been claimed
+     *
+     * @var int
+     */
+    public $to_user_id = null;
+
+    /**
+     * Initializes a new instance
+     */
+    function __construct (DatabaseEngine $db, $code = null) {
+        $this->setDatabase($db);
+
+        if ($code) {
+            $this->code = $code;
+            $this->load_from_database();
+        } else {
+            //New invite code
+            $this->generate_code();
+            $this->date = time();
+        }
+    }
+
+    /**
+     * Generates a unique invite code and sets it in the code property.
+     */
+    function generate_code () {
+        $db = $this->getDatabase();
+
+        do {
+            $this->code = Random::generateString("AAA111");
+            $sql = "SELECT COUNT(*) FROM " . TABLE_USERS_INVITES . " WHERE invite_code = '$this->code' LOCK IN SHARE MODE;";
+            if (!$result = $db->query($sql)) {
+                message_die(SQL_ERROR, "Can't access invite users table", '', __LINE__, __FILE__, $sql);
+            }
+            $row = $db->fetchRow($result);
+        } while ($row[0]);
+    }
+
+    /**
+     * Loads the object Invite (ie fill the properties) from the database
+     */
+    function load_from_database (): bool {
+        $db = $this->getDatabase();
+
+        $code = $db->escape($this->code);
+        $sql = "SELECT * FROM " . TABLE_USERS_INVITES . " WHERE invite_code = '" . $code . "'";
+        if (!($result = $db->query($sql))) {
+            message_die(SQL_ERROR, "Unable to query invite codes", '', __LINE__, __FILE__, $sql);
+        }
+        if (!$row = $db->fetchRow($result)) {
+            $this->lastError = "Invite code unknown: " . $this->code;
+            return false;
+        }
+        $this->code = $row['invite_code'];
+        $this->date = $row['invite_date'];
+        $this->from_user_id = $row['invite_from_user_id'];
+        $this->from_perso_id = $row['invite_from_perso_id'];
+        $this->to_user_id = $row['invite_to_user_id'];
+
+        return true;
+    }
+
+    /**
+     * Determines whether the current invite code have been claimed by an user.
+     *
+     * @return true if the code have been claimed ; otherwise, false.
+     */
+    function is_claimed (): bool {
+        return (bool)$this->to_user_id;
+    }
+
+    /**
+     * Saves to database
+     */
+    function save_to_database (): void {
+        $db = $this->getDatabase();
+
+        $code = $db->escape($this->code);
+        $date = $db->escape($this->date);
+        $from_user_id = $db->escape($this->from_user_id);
+        $from_perso_id = $db->escape($this->from_perso_id);
+        $to_user_id = $this->to_user_id ? "'" . $db->escape($this->to_user_id) . "'" : 'NULL';
+
+        //Updates or inserts
+        $sql = "REPLACE INTO " . TABLE_USERS_INVITES . " (`invite_code`, `invite_date`, `invite_from_user_id`, `invite_from_perso_id`, `invite_to_user_id`) VALUES ('$code', '$date', '$from_user_id', '$from_perso_id', $to_user_id)";
+        if (!$db->query($sql)) {
+            message_die(SQL_ERROR, "Unable to save invite code", '', __LINE__, __FILE__, $sql);
+        }
+    }
+
+    /**
+     * Deletes the invite
+     */
+    function delete () {
+        $db = $this->getDatabase();
+
+        $code = $db->escape($this->code);
+        $sql = "DELETE FROM " . TABLE_USERS_INVITES . " WHERE invite_code = '$code'";
+        if (!$db->query($sql)) {
+            message_die(SQL_ERROR, "Unable to save delete code", '', __LINE__, __FILE__, $sql);
+        }
+    }
+
+    /**
+     * Creates an invite code
+     */
+    static function create (DatabaseEngine $db, Perso $perso): string {
+        $invite = new Invite($db);
+        $invite->from_perso_id = $perso->id;
+        $invite->from_user_id = $perso->user_id;
+        $invite->save_to_database();
+
+        return $invite->code;
+    }
+
+    /**
+     * Gets invites generated by the specified perso ID
+     *
+     * @return string[]
+     */
+    static function get_invites_from (DatabaseEngine $db, Perso $perso): array {
+        $perso_id = $perso->id;
+        $sql = "SELECT invite_code FROM " . TABLE_USERS_INVITES
+            . " WHERE invite_from_perso_id = $perso_id AND invite_to_user_id IS NULL ORDER BY invite_date ASC";
+        if (!$result = $db->query($sql)) {
+            message_die(SQL_ERROR, "Can't access invite users table", '', __LINE__, __FILE__, $sql);
+        }
+
+        $codes = [];
+        while ($row = $db->fetchRow($result)) {
+            $codes[] = $row['invite_code'];
+        }
+        return $codes;
+    }
+
+    /**
+     * Gets the perso ID who invited the specified perso
+     *
+     * @return int|null the perso whom to get the invites ; or null, if nobody have invited him
+     */
+    static function who_invited (DatabaseEngine $db, Perso $perso): ?int {
+        $user_id = $perso->user_id;
+
+        $sql = "SELECT invite_from_perso_id FROM " . TABLE_USERS_INVITES . " WHERE invite_to_user_id = '$user_id'";
+        if (!$result = $db->query($sql)) {
+            message_die(SQL_ERROR, "Can't access invite users table", '', __LINE__, __FILE__, $sql);
+        }
+        if ($row = $db->fetchRow($result)) {
+            return $row[0];
+        }
+
+        return null;
+    }
+
+}

@@ -27,9 +27,13 @@
  * @filesource
  */
 
+use Hypership\Geo\Point3D;
 use Zed\Engines\Database\Database;
 use Zed\Engines\Templates\Smarty\Engine as SmartyEngine;
-use Hypership\Geo\Point3D;
+use Zed\Models\Geo\Location;
+use Zed\Models\Objects\Content;
+use Zed\Models\Objects\Perso;
+use Zed\Models\Objects\User;
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
@@ -66,10 +70,9 @@ $_SESSION['ID'] = session_id();
 session_update(); //updates or creates the session
 
 //Gets current perso
-require_once('includes/objects/perso.php');
 $CurrentUser = get_logged_user(); //Gets current user infos
 if ($perso_id = $CurrentUser->session['perso_id']) {
-    $CurrentPerso = new Perso($perso_id);
+    $CurrentPerso = new Perso($db, $perso_id);
 }
 
 //Requires user and perso
@@ -172,7 +175,7 @@ class Actions {
      * So, if you write a story capturing a perso, use flags to handle this escape!
      *
      * @param string $location_local the local location
-     * @return GeoLocation the current perso's GeoLocation object
+     * @return Location the current perso's Location object
      */
     static function set_local_location ($location_local) {
         global $CurrentPerso;
@@ -186,7 +189,7 @@ class Actions {
         $location_local = urldecode($location_local);
         $CurrentPerso->move_to(null, $location_local);
 
-        //Returns GeoLocation relevant instance
+        //Returns Location relevant instance
         return $CurrentPerso->location;
     }
 
@@ -199,7 +202,7 @@ class Actions {
      *
      * @param string $move the move (coordinates or direction)
      * @param int $factor a number multiplying the specified move [optional]
-     * @return GeoLocation the current perso's GeoLocation object
+     * @return Location the current perso's Location object
      *
      * e.g. to move from 2 units to east, you can use one of those instructions:
      *  local_move('east', 2);
@@ -261,7 +264,7 @@ class Actions {
             );
             $CurrentPerso->move_to(null, $location_local->sprintf("(%d, %d, %d)"));
 
-            //Returns GeoLocation relevant instance
+            //Returns Location relevant instance
             return $CurrentPerso->location;
         }
 
@@ -279,7 +282,7 @@ class Actions {
      *
      * @param string $move the move (coordinates or direction)
      * @param int $factor a number multiplying the specified move [optional]
-     * @return GeoLocation the current perso's GeoLocation object
+     * @return Location the current perso's Location object
      *
      * Valid moves string are cw, ccw, out, in, up and down.
      *  r: out = +12   in  = -12
@@ -352,7 +355,7 @@ class Actions {
      *
      * @param string $location_global The global location
      * @param string $location_local The local location
-     * @return GeoLocation the current perso's GeoLocation object
+     * @return Location the current perso's Location object
      */
     static function global_move ($location_global, $location_local = null) {
         //Ensures we've the correct amount of arguments
@@ -379,10 +382,9 @@ class Actions {
      */
     static function upload_content () {
         global $CurrentPerso, $CurrentUser;
-        require_once('includes/objects/content.php');
 
         //Initializes a new content instance
-        $content = new Content();
+        $content = new Content($db);
         $content->load_from_form();
         $content->user_id = $CurrentUser->id;
         $content->perso_id = $CurrentPerso->id;
@@ -422,8 +424,8 @@ class Actions {
         }
 
         //Gets content
-        require_once('includes/objects/content.php');
         return Content::get_local_content($location_global, $_REQUEST['location_local']);
+        return Content::get_local_content($db, $location_global, $_REQUEST['location_local']);
     }
 }
 

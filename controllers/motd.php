@@ -26,13 +26,14 @@
  * @filesource
  */
 
+use Zed\Models\Objects\MOTD;
+
 //
 // Handles form
 //
 
 if (isset($_REQUEST['text'])) {
-    require_once('includes/objects/motd.php');
-    $motd = new MOTD();
+    $motd = new MOTD($db);
     $motd->text = $_REQUEST['text'];
     $motd->perso_id = $CurrentPerso->id;
     $motd->save_to_database();

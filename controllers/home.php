@@ -31,18 +31,19 @@
  * @todo The homepage requires Dojo but Dojo loading here is currently a kludge, as dojo is required by hypership .tpl scene. We should create an optional .meta xml file format to set this kind of options.
  */
 
+use Zed\Models\Geo\Scene;
+use Zed\Models\Messages\Message;
+
 //
 // Gets and manage messages
 //
-
-require_once('includes/objects/message.php');
 
 //Deletes a message if user have clicked the X
 $action = $_GET['action'] ?? "";
 if ($action === 'msg_delete') {
     //Deletes message $_GET['id']
     $id = $_GET['id'];
-    $messageToDelete = new Message($id);
+    $messageToDelete = new Message($db, $id);
     if ($messageToDelete->to != $CurrentPerso->id) {
         //Not one of user message
         $smarty->assign('WAP', lang_get('NotYourMessage'));
@@ -57,14 +58,13 @@ if ($action === 'msg_delete') {
 
 //Gets messages
 $newMessagesCount = 0;
-$messages = Message::get_messages($CurrentPerso->id, true, $newMessagesCount);
+$messages = Message::get_messages($db, $CurrentPerso, true, $newMessagesCount);
 if ($newMessagesCount > 0) {
     $smarty->assign('NOTIFY', sprintf(lang_get("NewMessages"), $newMessagesCount, s($newMessagesCount)));
 }
 
 //Gets scene
-require_once("includes/geo/scene.php");
-$scene = new GeoScene($CurrentPerso->location);
+$scene = new Scene($CurrentPerso->location);
 $smarty->assign('SCENE', $scene);
 
 //

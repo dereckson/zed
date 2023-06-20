@@ -2,6 +2,9 @@
 
 spl_autoload_register(function (string $className) {
     //Classes
+    //The autoload for classes in PSR-4 namespaces is handled by Composer
+    //This function takes care of the classes still in root namespace.
+
     $classes['IAuthentication'] = './includes/auth/IAuthentication.php';
     $classes['UserPasswordAuthentication'] = './includes/auth/UserPasswordAuthentication.php';
     $classes['YubiCloudAuthentication'] = './includes/auth/YubiCloudAuthentication.php';
@@ -9,32 +12,6 @@ spl_autoload_register(function (string $className) {
     $classes['Cache'] = './includes/cache/cache.php';
     $classes['CacheMemcached'] = './includes/cache/memcached.php';
     $classes['CacheVoid'] = './includes/cache/void.php';
-
-    $classes['ContentFile'] = './includes/content/file.php';
-    $classes['ContentLocation'] = './includes/content/location.php';
-    $classes['ContentZone'] = './includes/content/zone.php';
-
-    $classes['GeoBody'] = './includes/geo/body.php';
-    $classes['GeoGalaxy'] = './includes/geo/galaxy.php';
-    $classes['GeoLocation'] = './includes/geo/location.php';
-    $classes['GeoPlace'] = './includes/geo/place.php';
-    $classes['GeoScene'] = './includes/geo/scene.php';
-    $classes['GeoSceneIndex'] = './includes/geo/sceneindex.php';
-
-    $classes['Application'] = './includes/objects/application.php';
-    $classes['Content'] = './includes/objects/content.php';
-    $classes['Invite'] = './includes/objects/invite.php';
-    $classes['Message'] = './includes/objects/message.php';
-    $classes['MOTD'] = './includes/objects/motd.php';
-    $classes['Perso'] = './includes/objects/perso.php';
-    $classes['Port'] = './includes/objects/port.php';
-    $classes['Profile'] = './includes/objects/profile.php';
-    $classes['ProfileComment'] = './includes/objects/profilecomment.php';
-    $classes['ProfilePhoto'] = './includes/objects/profilephoto.php';
-    $classes['Request'] = './includes/objects/request.php';
-    $classes['RequestReply'] = './includes/objects/requestreply.php';
-    $classes['Ship'] = './includes/objects/ship.php';
-    $classes['User'] = './includes/objects/user.php';
 
     $classes['StoryChoice'] = './includes/story/choice.php';
     $classes['StoryHook'] = './includes/story/hook.php';

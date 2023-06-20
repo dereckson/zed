@@ -26,8 +26,8 @@
  * @todo Consider to use the Port class instead and to move get_ships methods there.
  */
 
-require_once('includes/objects/ship.php');
-require_once('includes/geo/location.php');
+use Zed\Models\Geo\Location;
+use Zed\Models\Objects\Ship;
 
 $class = 'SpatioportStoryHook';
 
@@ -38,7 +38,7 @@ class SpatioportStoryHook extends StoryHook {
     /**
      * The spatioport location
      *
-     * @var GeoLocation
+     * @var Location
      */
     public $location;
 
@@ -72,7 +72,7 @@ class SpatioportStoryHook extends StoryHook {
     function initialize () {
         $this->location_global = $this->perso->location_global;
         $this->location_local  = $this->section->location_local;
-        $this->location = new GeoLocation($this->location_global, $this->location_local);
+        $this->location = new Location($db, $this->location_global, $this->location_local);
     }
 
     /**
@@ -113,7 +113,9 @@ class SpatioportStoryHook extends StoryHook {
      * @return array The ships in the spatioport
      */
     private function get_ships () {
-        return Ship::get_ships_at($this->location_global, $this->location_local);
+        global $db;
+
+        return Ship::get_ships_at($db, $this->location_global, $this->location_local);
     }
 
 
@@ -125,6 +127,8 @@ class SpatioportStoryHook extends StoryHook {
      * @return array The ships in the space around the spatioport
      */
     private function get_ships_in_space () {
-        return Ship::get_ships_at($this->location_global, null);
+        global $db;
+
+        return Ship::get_ships_at($db, $this->location_global, null);
     }
 }

@@ -1,13 +1,15 @@
 <?php
 
-    use Hypership\Geo\PointPolarZ;
+use Hypership\Geo\PointPolarZ;
+use Zed\Models\Geo\Galaxy;
+use Zed\Models\Geo\Port;
+use Zed\Models\Geo\SceneIndex;
+use Zed\Models\Objects\Application;
+use Zed\Models\Objects\Content;
+use Zed\Models\Objects\Invite;
+use Zed\Models\Messages\Message;
+use Zed\Models\Objects\Perso;
 
-    require_once('includes/objects/ship.php');
-    require_once('includes/objects/port.php');
-    require_once('includes/objects/application.php');
-    require_once('includes/objects/content.php');
-    require_once('includes/objects/message.php');
-    require_once('includes/objects/invite.php');
     require_once('includes/cache/cache.php');
 
     $case = 'YubiCloud';
@@ -50,17 +52,15 @@
 
         case 'index_scenes':
             $time[] = microtime();
-            require_once('includes/geo/scene.php');
-            require_once('includes/geo/sceneindex.php');
             $cache = Cache::load();
-            if ($index = $cache->get('GeoSceneIndex')) {
+            if ($index = $cache->get('SceneIndex')) {
                 $index = unserialize($index);
             } else {
-                $index = GeoSceneIndex::Load(SCENE_DIR);
-                $cache->set('GeoSceneIndex', serialize($index));
+                $index = SceneIndex::Load(SCENE_DIR);
+                $cache->set('SceneIndex', serialize($index));
             }
             $time[] = microtime();
-            echo '<H2>GeoSceneIndex</H2>';
+            echo '<H2>SceneIndex</H2>';
             dprint_r($index);
             echo '<H2>Time (ms)</H2>';
             dprint_r(1000 * ($time[1] - $time[0]));
@@ -74,11 +74,10 @@
             break;
 
         case 'spherical':
-            require_once('includes/geo/galaxy.php');
             echo '<H2>Spherical coordinates test</H2>';
             echo '<table cellpadding=8>';
             echo "<tr><th>Name</th><th>Type</th><th>Cartesian coords</th><th>Spherical I</th><th>Spherical II</th><th>Pencil coordinates</th></tr>";
-            $objects = GeoGalaxy::getCoordinates();
+            $objects = Galaxy::getCoordinates($db);
             foreach ($objects as $row) {
                 echo "<tr><th style='text-align: left'>$row[0]</th><td>$row[1]</td><td>$row[2]</td>";
                 $pt = $row[2];
@@ -108,10 +107,10 @@
             break;
 
         case 'perso.create.notify':
-            $testperso = Perso::get(4733);
-            $message = new Message();
-            $message->from = 0;
-            $message->to = invite::who_invited(4733);
+            $testperso = Perso::get($db, 4733);
+            $message = new Message($db);
+            $message->setAsSystem();
+            $message->to = invite::who_invited($db, $testperso);
             $url = get_server_url() . get_url('who', $testperso->nickname);
             $message->text =  sprintf(lang_get('InvitePersoCreated'), $testperso->name, $url);
             $message->send();
@@ -129,7 +128,7 @@
             break;
 
         case 'thumbnail':
-            $content = new Content(1);
+            $content = new Content($db, 1);
             dprint_r($content);
             $content->generate_thumbnail();
             break;
@@ -138,7 +137,7 @@
             echo '<h2>Port::from_location test</h2>';
             $locations = array("B00002", "B00002123", "B00001001", "xyz: [800, 42, 220]");
             foreach ($locations as $location) {
-                dprint_r(Port::from_location($location));
+                dprint_r(Port::from_location($db, $location));
             }
             break;
 
@@ -152,7 +151,8 @@
             break;
 
         case 'app':
-            echo Application::from_api_key("37d839ba-f9fc-42ca-a3e8-28053e979b90")->generate_userkey();
+            echo Application::from_api_key($db, "37d839ba-f9fc-42ca-a3e8-28053e979b90")
+                ->generate_userkey($CurrentPerso);
             break;
 
         case '':

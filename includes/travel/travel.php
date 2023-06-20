@@ -21,6 +21,8 @@
  * @filesource
  */
 
+use Zed\Models\Geo\Location;
+
 require_once('place.php');
 
 /**
@@ -88,12 +90,14 @@ class Travel {
      * (for example defined by the <RewriteRule> xml tags)
      *
      * @param string $expression the expression to parse
-     * @param GeoLocation the location where the perso is
-     * @param GeoLocation the location where the perso wants to go
+     * @param Location the location where the perso is
+     * @param Location the location where the perso wants to go
      *
      * @return boolean true if the expression have been parsed ; otherwise, false.
      */
     function try_parse_rewrite_rule ($expression, $from, &$to) {
+        global $db;
+
         //Relevant write rules depends on the location the perso is ($from)
         if (!array_key_exists($from->global, $this->globalTravelTo)) {
             return false;
@@ -112,7 +116,7 @@ class Travel {
                     $rule[1] = str_replace('$' . $i, $subpatterns[$i], $rule[1]);
                     $rule[2] = str_replace('$' . $i, $subpatterns[$i], $rule[2]);
                 }
-                $to = new GeoLocation($rule[1], $rule[2]);
+                $to = new Location($db, $rule[1], $rule[2]);
                 return true;
             }
         }
@@ -124,8 +128,8 @@ class Travel {
      *
      * If an alias have been used for $to local location, set correct location.
      *
-     * @param GeoLocation the location where the perso is
-     * @param GeoLocation the location where the perso wants to go
+     * @param Location the location where the perso is
+     * @param Location the location where the perso wants to go
      * @return boolean true if the travel move is valid ; otherwise, false.
      *
      * @todo From B00001002, goto C1 doesn't work. Alias seems ignored.

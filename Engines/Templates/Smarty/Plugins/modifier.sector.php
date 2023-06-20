@@ -10,6 +10,8 @@ declare(strict_types=1);
 
 use Hypership\Geo\Octocube;
 
+use Zed\Models\Geo\Location;
+
 /**
  * Smarty sector modifier plugin
  *
@@ -17,7 +19,7 @@ use Hypership\Geo\Octocube;
  * Name:     sector<br>
  * Purpose:  prints the sector from a location
  */
-function smarty_modifier_sector (GeoLocation $location) : string {
+function smarty_modifier_sector (Location $location) : string {
     $xyz = explode(',', substr($location->local, 1, -1));
     $x = (int)$xyz[0];
     $y = (int)$xyz[1];

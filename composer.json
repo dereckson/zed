@@ -19,6 +19,7 @@
     "autoload": {
         "psr-4": {
             "Zed\\Engines\\": "Engines",
+            "Zed\\Models\\": "Models",
             "Zed\\Tests\\": "dev/tests"
         }
     },

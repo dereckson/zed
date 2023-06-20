@@ -3,8 +3,7 @@
 namespace Zed\Engines\Perso\Events;
 
 use InvalidArgumentException;
-
-use Perso;
+use Zed\Models\Objects\Perso;
 
 class Select extends BaseEvent {
 
@@ -22,7 +21,7 @@ class Select extends BaseEvent {
             );
         }
 
-        $perso = new Perso($_GET['perso_id']);
+        $perso = new Perso($this->getDatabase(), $_GET['perso_id']);
         if ($perso->user_id !== $this->selector->user->id) {
             message_die(HACK_ERROR, "This isn't your perso.");
         }

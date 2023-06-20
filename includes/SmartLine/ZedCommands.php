@@ -38,6 +38,9 @@
 /// Register commands
 ///
 
+use Zed\Models\Geo\Location;
+use Zed\Models\Objects\Invite;
+
 $smartLine->register_object('debug',    DebugSmartLineCommand::class);
 $smartLine->register_object('goto',     'GotoSmartLineCommand');
 $smartLine->register_object('guid',     'GUIDSmartLineCommand');
@@ -124,10 +127,7 @@ class GotoSmartLineCommand extends SmartLineCommand {
             $this->SmartLine->puts("Warning: ignoring $ignored_string", STDERR);
         }
 
-        require_once("includes/geo/location.php");
-        require_once("includes/travel/travel.php");
-
-        $here = new GeoLocation($CurrentPerso->location_global, $CurrentPerso->location_local);
+        $here = new Location($db, $CurrentPerso->location_global, $CurrentPerso->location_local);
         $travel = Travel::load(); //maps content/travel.xml
 
         //Parses the expression, by order of priority, as :
@@ -136,7 +136,7 @@ class GotoSmartLineCommand extends SmartLineCommand {
         //  - a new local location (inside the current global location)
         if (!$travel->try_parse_rewrite_rule($argv[1], $here, $place)) {
             try {
-                $place = new GeoLocation($argv[1]);
+                $place = new Location($db, $argv[1]);
 
                 if ($place->equals($CurrentPerso->location_global)) {
                     $this->SmartLine->puts("You're already there.");
@@ -145,7 +145,7 @@ class GotoSmartLineCommand extends SmartLineCommand {
             } catch (Exception $ex) {
                 //Global location failed, trying local location
                 try {
-                    $place = new GeoLocation($CurrentPerso->location_global, $argv[1]);
+                    $place = new Location($db, $CurrentPerso->location_global, $argv[1]);
                 } catch (Exception $ex) {
                     $this->SmartLine->puts($ex->getMessage(), STDERR);
                     return;
@@ -225,7 +225,7 @@ class InviteSmartLineCommand extends SmartLineCommand {
         $command = ($argc > 1) ? strtolower($argv[1]) : '';
         switch ($command) {
             case 'list':
-                $codes = Invite::get_invites_from($CurrentPerso->id);
+                $codes = Invite::get_invites_from($db, $CurrentPerso);
                 if (!count($codes)) {
                     $this->SmartLine->puts("No invite code.");
                 } else {
@@ -237,7 +237,7 @@ class InviteSmartLineCommand extends SmartLineCommand {
 
             case 'add':
             case '':
-                $code = Invite::create($CurrentUser->id, $CurrentPerso->id);
+                $code = Invite::create($db, $CurrentPerso);
                 $url = get_server_url() . get_url('invite', $code);
                 $this->SmartLine->puts("New invite code created: $code<br />Invite URL: $url");
                 break;
@@ -514,8 +514,7 @@ class WhereAmISmartLineCommand extends SmartLineCommand {
     public function run ($argv, $argc) {
         global $CurrentPerso;
 
-        require_once("includes/geo/location.php");
-        $place = new GeoLocation($CurrentPerso->location_global);
+        $place = new Location($db, $CurrentPerso->location_global);
         $this->SmartLine->puts($CurrentPerso->location_global . ' - ' . $place);
     }
 }

@@ -18,6 +18,8 @@
  * @filesource
  */
 
+use Zed\Models\Objects\User;
+
 require_once('Auth/Yubico.php');
 
 /**
@@ -91,6 +93,7 @@ class YubiCloudAuthentication implements IAuthentication {
      */
     function isValid () {
         global $Config;
+        global $db;
 
         //No need to lost time to query server if format is incorrect.
         if (!$this->looksValidOTP()) {
@@ -120,7 +123,7 @@ class YubiCloudAuthentication implements IAuthentication {
 
         //Finally, if someone puts also a login, we'll check this user ID match this username
         if ($this->username) {
-            $user = User::get($this->user_id);
+            $user = User::get($db, $this->user_id);
             if ($this->username != $user->name) {
             $this->error = "Valid YubiKey OTP but fix or remove your username.";
             $this->mustThrowError = true;

@@ -2,7 +2,7 @@
 
 namespace Zed\Engines\Perso\Events;
 
-use Perso;
+use Zed\Models\Objects\Perso;
 
 class TryAutoSelect extends BaseEvent {
 
@@ -16,7 +16,10 @@ class TryAutoSelect extends BaseEvent {
     }
 
     public function handle () : void {
-        $this->persos = Perso::get_persos($this->selector->user->id);
+        $this->persos = Perso::get_persos(
+            $this->getDatabase(),
+            $this->selector->user
+        );
         $count = count($this->persos);
 
         if ($count === 0) {

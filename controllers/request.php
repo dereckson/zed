@@ -36,11 +36,13 @@
 // Prepare fields
 //
 
+use Zed\Models\Requests\Request;
+
 if (count($url) < 3) {
     message_die(HACK_ERROR, "Expected URL: /request/code_to/code_object");
 }
 
-$request = new Request();
+$request = new Request($db);
 
 //
 // Handles or print form

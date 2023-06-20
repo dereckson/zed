@@ -32,7 +32,8 @@
 // Load library and language file
 //
 
-require_once('includes/objects/ship.php');
+use Zed\Models\Objects\Ship;
+
 lang_load('ships.conf');
 
 //

@@ -2,7 +2,7 @@
 
 namespace Zed\Engines\Perso\Events;
 
-use Perso;
+use Zed\Models\Objects\Perso;
 
 class ReadFromSession extends BaseEvent {
 
@@ -12,7 +12,10 @@ class ReadFromSession extends BaseEvent {
 
     public function handle (): void {
         // Gets perso ID from the session data
-        $perso = Perso::get($this->selector->user->session['perso_id']);
+        $perso = Perso::get(
+            $this->getDatabase(),
+            $this->selector->user->session['perso_id']
+        );
 
         $this->selector->setPerso($perso);
     }

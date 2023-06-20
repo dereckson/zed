@@ -47,6 +47,12 @@
  * @filesource
  */
 
+use Zed\Models\Messages\Message;
+use Zed\Models\Objects\Perso;
+use Zed\Models\Profile\Profile;
+use Zed\Models\Profile\ProfileComment;
+use Zed\Models\Profile\ProfilePhoto;
+
 //Loads language file
 lang_load('profile.conf');
 
@@ -72,21 +78,15 @@ if (!$who) {
     message_die(GENERAL_ERROR, "Who?", "URL error");
 }
 
-//Libs
-require_once('includes/objects/profile.php');
-require_once('includes/objects/profilecomment.php');
-require_once('includes/objects/profilephoto.php');
-
 //Gets perso information
-require_once('includes/objects/perso.php');
-$perso = Perso::get($who);
+$perso = Perso::get($db, $who);
 if ($perso->lastError) {
     message_die(GENERAL_ERROR, $perso->lastError, "Error");
 }
 $smarty->assign('perso', $perso);
 
 //Gets profile
-$profile = new Profile($perso->id);
+$profile = new Profile($db, $perso);
 
 //Handles form
 $message_type = $_POST['message_type'] ?? "";
@@ -99,20 +99,19 @@ if (isset($_POST['EditProfile'])) {
     $smarty->assign('WAP', "This form have been deprecated. You can write instead settings in the SmartLine");
 } elseif ($message_type === 'private_message') {
     //Sends a message
-    require_once('includes/objects/message.php');
-    $msg = new Message();
-    $msg->from = $CurrentPerso->id;
+    $msg = new Message($db);
+    $msg->setFrom($CurrentPerso);
     $msg->to = $perso->id;
     $msg->text = $_POST['message'];
     $msg->send();
-    if ($msg->from == $msg->to) {
+    if ($msg->isSelf()) {
         $smarty->assign('NOTIFY', lang_get('MessageSentSelf'));
     } else {
        $smarty->assign('NOTIFY', lang_get('MessageSent'));
     }
 } elseif ($message_type== 'profile_comment') {
     //New profile comment
-    $comment = new ProfileComment();
+    $comment = new ProfileComment($db);
     $comment->author = $CurrentPerso->id;
     $comment->perso_id = $perso->id;
     $comment->text = $_POST['message'];
@@ -139,7 +138,7 @@ if (isset($_POST['EditProfile'])) {
             $errors[] = "Upload successful, but error saving it.";
         } else {
             //Attaches the picture to the profile
-            $photo = new ProfilePhoto();
+            $photo = new ProfilePhoto($db);
             $photo->name = $filename;
             $photo->perso_id = $CurrentPerso->id;
             $photo->description = $_POST['description'];
@@ -198,14 +197,12 @@ $smarty->assign('PROFILE_TEXT', $profile->text);
 $smarty->assign('PROFILE_FIXEDWIDTH', $profile->fixedwidth);
 
 if ($mode == 'view') {
-    require_once('includes/objects/profilephoto.php');
-
     //Self profile?
-    $self = $CurrentPerso->id == $profile->perso_id;
+    $self = $CurrentPerso->id == $profile->perso->id;
 
     //Gets profiles comments, photos, tags
-    $comments = ProfileComment::get_comments($profile->perso_id);
-    $photos   = ProfilePhoto::get_photos($profile->perso_id);
+    $comments = ProfileComment::get_comments($db, $profile->perso->id);
+    $photos   = ProfilePhoto::get_photos($db, $profile->perso->id);
     $tags     = $profile->get_cached_tags();
 
     //Records timestamp, to be able to track new comments
@@ -277,7 +274,7 @@ if ($mode == 'view') {
                     if (!is_null($id)) {
                         $smarty->assign('WAP', "URL error. Parameter missing: picture id.");
                     } else {
-                        $photo = new ProfilePhoto($id);
+                        $photo = new ProfilePhoto($db, $id);
                         if ($photo->lastError) {
                             //Probably an non existent id (e.g. double F5, photo already deleted)
                             $smarty->assign('WAP', $photo->lastError);
@@ -296,7 +293,7 @@ if ($mode == 'view') {
                     if (!is_null($id)) {
                         $smarty->assign('WAP', "URL error. Parameter missing: picture id.");
                     } else {
-                        $photo = new ProfilePhoto($id);
+                        $photo = new ProfilePhoto($db, $id);
                         if ($photo->lastError) {
                             $smarty->assign('WAP', $photo->lastError);
                         } elseif ($photo->perso_id != $CurrentPerso->id) {
@@ -316,7 +313,7 @@ if ($mode == 'view') {
             }
 
             if (!isset($template)) {
-                $photos = ProfilePhoto::get_photos($profile->perso_id);
+                $photos = ProfilePhoto::get_photos($db, $profile->perso->id);
                 if (!array_key_exists('NOTIFY', $smarty->tpl_vars)) {
                     $smarty->assign('NOTIFY', "Your feedback is valued. Report any bug or suggestion on the graffiti wall.");
                 }

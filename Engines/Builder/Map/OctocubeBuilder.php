@@ -5,7 +5,7 @@ namespace Zed\Engines\Builder\Map;
 use Hypership\Geo\Octocube;
 use Hypership\Geo\Point3D;
 
-use GeoLocation;
+use Zed\Models\Geo\Location;
 
 class OctocubeBuilder {
 
@@ -13,7 +13,7 @@ class OctocubeBuilder {
 
     const HYPERSHIP_CORE_LOCATION = "B00001002";
 
-    public function __construct (GeoLocation $location) {
+    public function __construct (Location $location) {
         $this->localLocation = Point3D::fromString($location->local);
     }
 

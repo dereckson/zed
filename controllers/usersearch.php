@@ -27,8 +27,7 @@
  * @todo implement it
  */
 
-//Libs
-require_once('includes/objects/ProfilePhoto.php');
+use Zed\Models\Profile\ProfilePhoto;
 
 //
 // Does the search
@@ -91,7 +90,7 @@ switch ($mode) {
         if (count($users)) {
             foreach ($users as $user) {
                 $name = $user->longname ?: $user->username;
-                $user->avatar = ProfilePhoto::get_avatar($user->id, $name);
+                $user->avatar = ProfilePhoto::get_avatar($db, $user->id, $name);
             }
         }
         $template = 'usersearch.tpl';

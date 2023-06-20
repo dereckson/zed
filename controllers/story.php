@@ -94,7 +94,6 @@ if (!file_exists($file)) {
 //
 
 //Loads story and tries to get the section
-require_once('includes/story/story.php');
 $story = new Story($file);
 $section = get_section($story);
 

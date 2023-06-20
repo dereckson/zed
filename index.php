@@ -22,6 +22,7 @@
 use Zed\Engines\Database\Database;
 use Zed\Engines\Perso\PersoSelector;
 use Zed\Engines\Templates\Smarty\Engine as SmartyEngine;
+use Zed\Models\Geo\Place;
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
@@ -69,7 +70,7 @@ if ($CurrentUser->id < 1000) {
 /// Perso (=character) selector
 ///
 
-$CurrentPerso = PersoSelector::load($CurrentUser, $smarty);
+$CurrentPerso = PersoSelector::load($db, $CurrentUser, $smarty);
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
@@ -80,9 +81,8 @@ $CurrentPerso = PersoSelector::load($CurrentUser, $smarty);
 
 //If the perso location is unknown, ejects it to an asteroid
 if (!$CurrentPerso->location_global) {
-    require_once('includes/geo/place.php');
     $smarty->assign('NOTIFY', lang_get('NewLocationNotify'));
-    $CurrentPerso->move_to(GeoPlace::get_start_location());
+    $CurrentPerso->move_to(Place::get_start_location($db));
 }
 
 //SmartLine

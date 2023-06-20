@@ -28,6 +28,9 @@
  */
 
 use Keruald\OmniTools\Identifiers\Random;
+use Zed\Models\Messages\Message;
+use Zed\Models\Objects\Invite;
+use Zed\Models\Objects\User;
 
 //
 // Prepares the page
@@ -43,8 +46,6 @@ switch ($url[0]) {
         //Invite form
         if ($_POST['form'] == 'account.create') {
             //User tries to claim its invite to create an account
-            require_once('includes/objects/invite.php');
-            require_once('includes/objects/user.php');
 
             //Gets invite
             $invite = new Invite($_POST['invite_code']);
@@ -61,11 +62,11 @@ switch ($url[0]) {
                 $errors = [];
                 if (!$_POST['username']) {
                     $errors[] = lang_get('MissingUsername');
-                } elseif (!User::is_available_login($_POST['username'])) {
+                } elseif (!User::is_available_login($db, $_POST['username'])) {
                     $errors[] =  lang_get('LoginUnavailable');
                 }
 
-                if (User::get_username_from_email($_POST['email']) !== false) {
+                if (User::get_username_from_email($db, $_POST['email']) !== false) {
                     $errors[] = "There is already an account with this e-mail.";
                 }
 
@@ -77,7 +78,7 @@ switch ($url[0]) {
                     $smarty->assign('WAP', join('<br />', $errors));
                 } else {
                     //Creates account
-                    $user = new User();
+                    $user = new User($db);
                     $user->regdate = time();
                     $user->generate_id();
                     $user->name = $_POST['username'];
@@ -91,9 +92,8 @@ switch ($url[0]) {
                     $invite->save_to_database();
 
                     //Notifies host
-                    require_once('includes/objects/message.php');
-                    $message = new Message();
-                    $message->from = 0;
+                    $message = new Message($db);
+                    $message->setAsSystem();
                     $message->to = $invite->from_perso_id;
                     $message->text =  sprintf(lang_get('InviteHaveBeenClaimed'), $invite->code);
                     $message->send();
