@@ -148,8 +148,8 @@ class ContentLocation {
      * @param int $location_k the next free local content indice
      */
     function get_free_location_k ($location_global, $location_local) {
-        $location_global = "'" . $db->sql_escape($location_global) . "'";
-        $location_local = "'" . $db->sql_escape($location_local) . "'";
+        $location_global = "'" . $db->escape($location_global) . "'";
+        $location_local = "'" . $db->escape($location_local) . "'";
         $sql = "SELECT MAX(location_k) + 1 FROM content_locations WHERE location_global = '$location_global' AND location_local = '$location_local'";
         if (!$result = $db->sql_query($sql)) {
             message_die(SQL_ERROR, "Can't get content location k", '', __LINE__, __FILE__, $sql);
@@ -162,9 +162,9 @@ class ContentLocation {
      * Deletes this content location from the database
      */
     function delete() {
-        $location_global = "'" . $db->sql_escape($this->location_global) . "'";
-        $location_local = "'" . $db->sql_escape($this->location_local) . "'";
-        $location_k = "'" . $db->sql_escape($this->location_k) . "'";
+        $location_global = "'" . $db->escape($this->location_global) . "'";
+        $location_local = "'" . $db->escape($this->location_local) . "'";
+        $location_k = "'" . $db->escape($this->location_k) . "'";
         $sql = "DELETE FROM content_locations WHERE location_global = '$location_global' AND location_local = '$location_local' AND location_k = '$location_k' LIMIT 1";
         if (!$db->sql_query($sql)) {
             message_die(SQL_ERROR, "Can't delete current content location", '', __LINE__, __FILE__, $sql);
