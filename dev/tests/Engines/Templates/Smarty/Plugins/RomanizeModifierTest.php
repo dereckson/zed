@@ -5,7 +5,7 @@ namespace Zed\Tests\Engines\Templates\Smarty\Plugins;
 
 class RomanizeModifierTest extends SmartyPluginTestCase {
 
-    public function setUp () {
+    public function setUp () : void {
         $this->requirePlugin('modifier', 'romanize');
     }
 

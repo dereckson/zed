@@ -62,7 +62,7 @@ class SpatioportStoryHook extends StoryHook {
      *
      * @param Array $links The story links
      */
-    function get_choices_links (&$links) {
+    function get_choices_links (array &$links) {
         //$links[] = array('Examiner les vaisseaux', get_url('port','ships'));
     }
 

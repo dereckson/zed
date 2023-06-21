@@ -40,11 +40,11 @@ class DemoStoryHook extends StoryHook {
     /**
      * Updates the current section description.
      *
+     * @param string $description the description to update
      * @see StoryHook::update_description
      *
-     * @param string $description the description to update
      */
-    function update_description (&$description) {
+    function update_description (string &$description) {
         //Performs the rot13 transform of the current description
         $description = str_rot13($description);
 
@@ -55,11 +55,11 @@ class DemoStoryHook extends StoryHook {
     /**
      * Updates the current section choices
      *
-     * @see StoryHook::get_choices_links
-     *
      * @param Array $links the section links
+     *@see StoryHook::get_choices_links
+     *
      */
-    function get_choices_links (&$links) {
+    function get_choices_links (array &$links) {
         //Adds a link to /push
         $links[] = [lang_get("PushMessage"), get_url('push')];
     }
