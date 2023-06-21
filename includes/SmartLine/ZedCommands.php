@@ -274,6 +274,7 @@ class InviteSmartLineCommand extends SmartLineCommand {
  * This can easily be extended to output any list from any table.
  */
 class ListSmartLineCommand extends SmartLineCommand {
+
     /**
      * Runs the command
      *
