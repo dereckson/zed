@@ -28,6 +28,7 @@
  */
 
 use Hypership\Geo\Point3D;
+use Keruald\Database\DatabaseEngine;
 use Zed\Engines\Database\Database;
 use Zed\Engines\Templates\Smarty\Engine as SmartyEngine;
 use Zed\Models\Geo\Location;
@@ -109,6 +110,20 @@ lang_load('core.conf');
  * formats like api_output();
  */
 class Actions {
+
+    ///
+    /// Properties
+    ///
+
+    public Perso $CurrentPerso;
+
+    public User $CurrentUser;
+
+    ///
+    /// Available actions
+    ///
+    public DatabaseEngine $db;
+
     /**
      * Checks the arguments hash and determines whether it is valid.
      *
@@ -130,9 +145,7 @@ class Actions {
      * @param string $hash the security hash
      * @return boolean true if the request is valid and have been processed ; otherwise, false.
      */
-    static function perso_request ($request_flag, $store, $key, $value, $hash) {
-        global $CurrentPerso;
-
+    public function perso_request ($request_flag, $store, $key, $value, $hash) : bool {
         //Ensures we've the correct amount of arguments
         if (func_num_args() < 4) {
             return false;
@@ -147,11 +160,11 @@ class Actions {
         //Sets flag
         switch ($store) {
             case 'perso':
-                $CurrentPerso->set_flag($key, $value);
+                $this->CurrentPerso->set_flag($key, $value);
                 break;
 
             case 'registry':
-                registry_set($key, $value);
+                registry_set($this->db, $key, $value);
                 break;
 
             default:
@@ -161,7 +174,7 @@ class Actions {
 
         //Clears request flag
         if ((string)$request_flag !== "0") {
-            $CurrentPerso->delete_flag($request_flag);
+            $this->CurrentPerso->delete_flag($request_flag);
         }
 
         return true;
@@ -177,9 +190,7 @@ class Actions {
      * @param string $location_local the local location
      * @return Location the current perso's Location object
      */
-    static function set_local_location ($location_local) {
-        global $CurrentPerso;
-
+    public function set_local_location ($location_local) {
         //Ensures we've the correct amount of arguments
         if (func_num_args() < 1) {
             return null;
@@ -187,10 +198,10 @@ class Actions {
 
         //Moves current perso to specified location
         $location_local = urldecode($location_local);
-        $CurrentPerso->move_to(null, $location_local);
+        $this->CurrentPerso->move_to(null, $location_local);
 
         //Returns Location relevant instance
-        return $CurrentPerso->location;
+        return $this->CurrentPerso->location;
     }
 
     /**
@@ -212,9 +223,7 @@ class Actions {
      * Valid moves string are north, east, south, west, up and down.
      * Valid moves coordinates are x,y,z (3 integers, comma as separator)
      */
-    static function local_move ($move, $factor = 1) {
-        global $CurrentPerso;
-
+    public function local_move ($move, $factor = 1) {
         //Ensures we've the correct amount of arguments
         if (func_num_args() < 1) {
             return null;
@@ -256,16 +265,16 @@ class Actions {
         }
 
         //Moves current perso to specified location
-        if ($location_local = Point3D::fromString($CurrentPerso->location->local)) {
+        if ($location_local = Point3D::fromString($this->CurrentPerso->location->local)) {
             $location_local->translate(
                 (float)$move[0] * $factor,
                 (float)$move[1] * $factor,
                 (float)$move[2] * $factor
             );
-            $CurrentPerso->move_to(null, $location_local->sprintf("(%d, %d, %d)"));
+            $this->CurrentPerso->move_to(null, $location_local->sprintf("(%d, %d, %d)"));
 
             //Returns Location relevant instance
-            return $CurrentPerso->location;
+            return $this->CurrentPerso->location;
         }
 
         //Old local location weren't a Point3D
@@ -298,9 +307,7 @@ class Actions {
      *  polarz_local_move('(0, 0.6981317007977318, 0)';
      *
      */
-    static function polarz_local_move ($move, $factor = 1) {
-        global $CurrentPerso;
-
+    public function polarz_local_move ($move, $factor = 1) {
         //Ensures we've the correct amount of arguments
         if (func_num_args() < 1) {
             return null;
@@ -357,7 +364,7 @@ class Actions {
      * @param string $location_local The local location
      * @return Location the current perso's Location object
      */
-    static function global_move ($location_global, $location_local = null) {
+    public function global_move ($location_global, $location_local = null) {
         //Ensures we've the correct amount of arguments
         if (func_num_args() < 1) {
             return null;
@@ -370,9 +377,8 @@ class Actions {
         }
 
         //Moves
-        global $CurrentPerso;
-        $CurrentPerso->move_to($location_global, $location_local);
-        return $CurrentPerso->location;
+        $this->CurrentPerso->move_to($location_global, $location_local);
+        return $this->CurrentPerso->location;
     }
 
     /**
@@ -380,15 +386,13 @@ class Actions {
      *
      * @return string new content path
      */
-    static function upload_content () {
-        global $CurrentPerso, $CurrentUser;
-
+    public function upload_content () {
         //Initializes a new content instance
         $content = new Content($db);
         $content->load_from_form();
-        $content->user_id = $CurrentUser->id;
-        $content->perso_id = $CurrentPerso->id;
-        $content->location_global = $CurrentPerso->location_global;
+        $content->user_id = $this->CurrentUser->id;
+        $content->perso_id = $this->CurrentPerso->id;
+        $content->location_global = $this->CurrentPerso->location_global;
 
         //Saves file
         if ($content->handle_uploaded_file($_FILES['artwork'])) {
@@ -406,7 +410,7 @@ class Actions {
      * @param string $location_global The global location (local is to specified in ?location_local parameter)
      * @return Array an array of Content instances
      */
-    static function get_content ($location_global) {
+    public function get_content ($location_global) {
         //Ensures we've the correct amount of arguments
         if (func_num_args() < 1) {
             return null;
@@ -424,8 +428,7 @@ class Actions {
         }
 
         //Gets content
-        return Content::get_local_content($location_global, $_REQUEST['location_local']);
-        return Content::get_local_content($db, $location_global, $_REQUEST['location_local']);
+        return Content::get_local_content($this->db, $location_global, $_REQUEST['location_local']);
     }
 }
 
@@ -440,6 +443,11 @@ $args = get_current_url_fragments();
 
 $method = array_shift($args);
 
+$actions = new Actions();
+$actions->db = $db;
+$actions->CurrentPerso = $CurrentPerso;
+$actions->CurrentUser = $CurrentUser;
+
 $debug = $_REQUEST['debug'] ?? $_SESSION['debug'] ?? false;
 if ($debug) {
     //Debug version
@@ -447,8 +455,10 @@ if ($debug) {
     //are not reported
     ini_set('display_errors', 'stderr');
     error_reporting(-1);
-    if (method_exists('Actions', $method)) {
-        $result = call_user_func_array(['Actions', $method], $args);
+    if (method_exists($actions, $method)) {
+        $result = call_user_func_array([$actions, $method], $args);
+
+        header('Content-type: application/json; charset=utf-8');
         echo json_encode($result);
     } else {
         echo "<p>Method doesn't exist: $method</p>";
@@ -460,13 +470,14 @@ if ($debug) {
     }
 } else {
     //Prod version doesn't prints warning <== silence operator
-    if (method_exists('Actions', $method)) {
-        $result = @call_user_func_array(['Actions', $method], $args);
+    if (method_exists($actions, $method)) {
+        $result = @call_user_func_array([$actions, $method], $args);
 
         if (array_key_exists('redirectTo', $_REQUEST)) {
             //If user JS disabled, you can add ?redirectTo= followed by an URL
             header("location: " . $_REQUEST['redirectTo']);
         } else {
+            header('Content-type: application/json; charset=utf-8');
             echo json_encode($result);
         }
     }

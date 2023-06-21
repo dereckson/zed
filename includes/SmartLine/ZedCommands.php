@@ -115,7 +115,8 @@ class GotoSmartLineCommand extends SmartLineCommand {
      * @todo determine if we allow rewrite rules to bypass can_travel rules
      */
     public function run ($argv, $argc) {
-        global $CurrentPerso;
+        $db = $this->SmartLine->services["db"];
+        $CurrentPerso = $this->SmartLine->services["CurrentPerso"];
 
         if ($argc == 1) {
             $this->SmartLine->puts("Where do you want to go?", STDERR);
@@ -219,8 +220,8 @@ class InviteSmartLineCommand extends SmartLineCommand {
      * @param int $argc the number of arguments
      */
     public function run ($argv, $argc) {
-        require_once('includes/objects/invite.php');
-        global $CurrentUser, $CurrentPerso;
+        $db = $this->SmartLine->services["db"];
+        $CurrentPerso =  $this->SmartLine->services["CurrentPerso"];
 
         $command = ($argc > 1) ? strtolower($argv[1]) : '';
         switch ($command) {
@@ -338,7 +339,8 @@ class ListSmartLineCommand extends SmartLineCommand {
      * @param $where the WHERE clause, without the WHERE keyword (optional)
      */
     public function get_list ($table, $key, $value, $where = null) {
-        global $db;
+        $db = $this->SmartLine->services["db"];
+
         $sql = "SELECT $key as `key`, $value as value FROM $table ";
         if ($where) {
             $sql .= "WHERE $where ";
@@ -373,7 +375,8 @@ class RequestsSmartLineCommand extends SmartLineCommand {
      * @param int $argc the number of arguments
      */
     public function run ($argv, $argc) {
-        global $CurrentPerso;
+        $CurrentPerso = $this->SmartLine->services["CurrentPerso"];
+
         $force = ($argc > 1) && ($argv[1] == "-f" || $argv[1] == "--force");
         if ($force || (array_key_exists('site.requests', $CurrentPerso->flags) && $CurrentPerso->flags['site.requests'])) {
             global $controller;
@@ -512,7 +515,8 @@ class WhereAmISmartLineCommand extends SmartLineCommand {
      * @param int $argc the number of arguments
      */
     public function run ($argv, $argc) {
-        global $CurrentPerso;
+        $db = $this->SmartLine->services["db"];
+        $CurrentPerso = $this->SmartLine->services["CurrentPerso"];
 
         $place = new Location($db, $CurrentPerso->location_global);
         $this->SmartLine->puts($CurrentPerso->location_global . ' - ' . $place);
@@ -533,7 +537,8 @@ class WhoAmISmartLineCommand extends SmartLineCommand {
      * @param int $argc the number of arguments
      */
     public function run ($argv, $argc) {
-        global $CurrentPerso;
+        $CurrentPerso = $this->SmartLine->services["CurrentPerso"];
+
         $reply = "<span id=\"whoami.nickname\">$CurrentPerso->nickname</span> (<span id=\"whoami.name\">$CurrentPerso->name</span>), <span id=\"whoami.race\">$CurrentPerso->race</span>";
         $this->SmartLine->puts($reply);
     }

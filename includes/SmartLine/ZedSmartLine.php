@@ -65,6 +65,11 @@ if (isset($_REQUEST['C'])) {
     //Initializes SmartLine object
     require_once("SmartLine.php");
     $smartLine = new SmartLine();
+    $smartLine->services = [
+        "db" => $db,
+        "CurrentUser" => $CurrentUser,
+        "CurrentPerso" => $CurrentPerso,
+    ];
 
     require_once("ZedCommands.php");
 

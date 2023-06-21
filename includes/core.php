@@ -19,6 +19,7 @@
  * @filesource
  */
 
+use Keruald\Database\DatabaseEngine;
 use Keruald\OmniTools\Collections\TraversableUtilities;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -78,12 +79,8 @@ function get_userid ($username) {
 
 /**
  * Gets an information from the application global registry
- *
- * @param string $key the registry's key
- * @return string The key value
  */
-function registry_get ($key) {
-    global $db;
+function registry_get (DatabaseEngine $db, string $key) : string {
     $key = $db->escape($key);
     $sql = "SELECT registry_value FROM " . TABLE_REGISTRY . " WHERE registry_key = '$key'";
     if (!$result = $db->query($sql)) {
@@ -97,11 +94,11 @@ function registry_get ($key) {
 /**
  * Sets an information in the application global registry
  *
+ * @param DatabaseEngine $db
  * @param string $key the registry key
  * @param string $value the value to store at the specified registry key
  */
-function registry_set ($key, $value) {
-    global $db;
+function registry_set (DatabaseEngine $db, string $key, string $value) : void {
     $key = $db->escape($key);
     $value = $db->escape($value);
     $sql = "REPLACE INTO " . TABLE_REGISTRY . " (registry_key, registry_value) VALUES ('$key', '$value')";

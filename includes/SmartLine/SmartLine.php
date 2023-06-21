@@ -489,6 +489,9 @@ class SmartLine {
     //The list of commands
     public array $commands = [];
 
+    //The services exposed to commands
+    public array $services = [];
+
     //Contains last error
     public $lastError = '';
 
