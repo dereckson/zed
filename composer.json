@@ -5,10 +5,12 @@
     "require": {
         "smarty/smarty": "dev-master",
         "vlucas/phpdotenv": "^5.5",
-        "keruald/database": "^0.1.0",
+        "keruald/database": "^0.3.0",
         "keruald/globalfunctions": "^0.5.1",
-        "keruald/omnitools": "^0.6.0",
-        "hypership/geo": "^0.1.0"
+        "keruald/omnitools": "^0.8.0",
+        "hypership/geo": "^0.1.0",
+        "php": "^8.1",
+        "ext-simplexml": "*"
     },
     "require-dev": {
         "nasqueron/codestyle": "^0.0.1",
