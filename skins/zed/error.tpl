@@ -15,7 +15,7 @@
                 <div id="HypershipTime">{get_hypership_time()}</div>
             </div>
             <div class="grid_7">
-                <a href="{get_url()}"><img src="{#StaticContentURL#}/img/zed/logo.png" src="Zed logo" border="0" /></a>
+                <a href="{get_url()}"><img src="{#StaticContentURL#}/img/zed/logo.png" alt="Zed logo" border="0" /></a>
             </div>
         </div>
     </div>
