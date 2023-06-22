@@ -73,12 +73,12 @@ function session_update () {
 function nbc () {
 //Renvoi du nombre d'usagers connectés
     global $db, $Config;
-    $sql = "SELECT count(*) FROM " . TABLE_SESSIONS . " WHERE online=1 AND `Where` = $Config[ResourceID]";
+    $sql = "SELECT count(*) as count FROM " . TABLE_SESSIONS . " WHERE online=1 AND `Where` = $Config[ResourceID]";
     if ( !($result = $db->query($sql)) ) {
         message_die(SQL_ERROR, "Impossible d'obtenir le nombre d'utilisateurs connectés sur le site web", '', __LINE__, __FILE__, $sql);
     }
     $row = $db->fetchRow($result);
-    return $row[0];
+    return $row["count"];
 }
 
 function get_info ($info) {

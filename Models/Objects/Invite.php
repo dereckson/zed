@@ -73,12 +73,12 @@ class Invite extends Entity {
 
         do {
             $this->code = Random::generateString("AAA111");
-            $sql = "SELECT COUNT(*) FROM " . TABLE_USERS_INVITES . " WHERE invite_code = '$this->code' LOCK IN SHARE MODE;";
+            $sql = "SELECT COUNT(*) as count FROM " . TABLE_USERS_INVITES . " WHERE invite_code = '$this->code' LOCK IN SHARE MODE;";
             if (!$result = $db->query($sql)) {
                 message_die(SQL_ERROR, "Can't access invite users table", '', __LINE__, __FILE__, $sql);
             }
             $row = $db->fetchRow($result);
-        } while ($row[0]);
+        } while ($row["count"]);
     }
 
     /**
@@ -191,7 +191,7 @@ class Invite extends Entity {
             message_die(SQL_ERROR, "Can't access invite users table", '', __LINE__, __FILE__, $sql);
         }
         if ($row = $db->fetchRow($result)) {
-            return $row[0];
+            return (int)$row["invite_from_perso_id"];
         }
 
         return null;

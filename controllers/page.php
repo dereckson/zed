@@ -48,13 +48,13 @@ if ($_POST['code']) {
     $CurrentPerso->request_flag('admin.pages.editor');
 
     //Gets version
-    $sql = "SELECT MAX(page_version) + 1 FROM " . TABLE_PAGES_EDITS .
+    $sql = "SELECT MAX(page_version) + 1 as new_version FROM " . TABLE_PAGES_EDITS .
             " WHERE page_code = '$code'";
     if (!$result = $db->query($sql)) {
         message_die(SQL_ERROR, "Can't fetch pages", '', __LINE__, __FILE__, $sql);
     }
     $row = $db->fetchRow($result);
-    $page_version = ($row[0] == "") ? 0 : $row[0];
+    $page_version = ($row["new_version"] == "") ? 0 : $row["new_version"];
 
     //Gets other fields
     $page_code = $db->escape($code);

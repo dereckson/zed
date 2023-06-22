@@ -161,12 +161,12 @@ class Location extends Entity {
 
         $location_global = "'" . $db->escape($location_global) . "'";
         $location_local = "'" . $db->escape($location_local) . "'";
-        $sql = "SELECT MAX(location_k) + 1 FROM content_locations WHERE location_global = '$location_global' AND location_local = '$location_local'";
+        $sql = "SELECT MAX(location_k) + 1 as next_k FROM content_locations WHERE location_global = '$location_global' AND location_local = '$location_local'";
         if (!$result = $db->query($sql)) {
             message_die(SQL_ERROR, "Can't get content location k", '', __LINE__, __FILE__, $sql);
         }
         $row = $db->fetchRow($result);
-        return $row[0];
+        return $row["next_k"];
     }
 
     /**

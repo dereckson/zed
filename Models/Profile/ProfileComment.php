@@ -149,7 +149,7 @@ class ProfileComment extends Entity {
 
         $comments = [];
         while ($row = $db->fetchRow($result)) {
-            $comments[] = new ProfileComment($db, $row[0]);
+            $comments[] = new ProfileComment($db, $row["comment_id"]);
         }
         return $comments;
     }

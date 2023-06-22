@@ -193,7 +193,7 @@ class ProfilePhoto extends Entity {
 
         $photos = [];
         while ($row = $db->fetchRow($result)) {
-            $photos[] = new ProfilePhoto($row[0]);
+            $photos[] = new ProfilePhoto($db, $row["photo_id"]);
         }
         return $photos;
     }

@@ -45,7 +45,8 @@ class Galaxy {
      * @return array An array of array. Each item is  [string object_name, string object_type, Point3D coordinates]
      */
     static function getCoordinates (DatabaseEngine $db) {
-        $sql = "SELECT * FROM geo_coordinates";
+
+        $sql = "SELECT object_name as `name`, object_type as `type`, object_location as location FROM geo_coordinates";
         if (!$result = $db->query($sql)) {
             message_die(SQL_ERROR, "Can't query geo_coordinates view.", '', __LINE__, __FILE__, $sql);
         }
@@ -54,7 +55,8 @@ class Galaxy {
         while ($row = $db->fetchRow($result)) {
             //Demios  ship        xyz: [-50, 30, 40]
             //Kaos	  asteroid    xyz: [150, -129, 10]
-            $objects[] = [$row[0], $row[1], Point3D::fromString($row[2])];
+            $row["location"] = Point3D::fromString($row["location"]);
+            $objects[] = $row;
         }
         return $objects;
     }

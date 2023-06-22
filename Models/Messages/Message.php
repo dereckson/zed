@@ -195,7 +195,7 @@ class Message extends Entity {
 
         $messages = [];
         while ($row = $db->fetchRow($result)) {
-            $message = new Message($db, $row[0]);
+            $message = new Message($db, $row["message_id"]);
             $messages[] = $message;
             $ids[] = $message->id;
             if ($message->flag == 0) {

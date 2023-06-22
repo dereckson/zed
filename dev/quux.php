@@ -79,8 +79,8 @@ use Zed\Models\Objects\Perso;
             echo "<tr><th>Name</th><th>Type</th><th>Cartesian coords</th><th>Spherical I</th><th>Spherical II</th><th>Pencil coordinates</th></tr>";
             $objects = Galaxy::getCoordinates($db);
             foreach ($objects as $row) {
-                echo "<tr><th style='text-align: left'>$row[0]</th><td>$row[1]</td><td>$row[2]</td>";
-                $pt = $row[2];
+                echo "<tr><th style='text-align: left'>$row[object_name]</th><td>$row[object_type]</td><td>$row[object_location]</td>";
+                $pt = $row["object_location"];
                 echo '<td>(', implode(', ', $pt->toSpherical()), ')</td>';
                 echo '<td>(', implode(', ', $pt->toSphericalAlternative()), ')</td>';
                 $pt->translate(500, 300, 200, 2);

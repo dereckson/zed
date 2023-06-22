@@ -436,12 +436,12 @@ class Perso extends Entity {
     public static function is_available_id ($id) {
         global $db;
 
-        $sql = "SELECT COUNT(*) FROM " . TABLE_PERSOS . " WHERE perso_id = $id LOCK IN SHARE MODE";
+        $sql = "SELECT COUNT(*) as count FROM " . TABLE_PERSOS . " WHERE perso_id = $id LOCK IN SHARE MODE";
         if (!$result = $db->query($sql)) {
             message_die(SQL_ERROR, "Can't access users table", '', __LINE__, __FILE__, $sql);
         }
         $row = $db->fetchRow($result);
-        return ($row[0] == 0);
+        return ($row["count"] == 0);
     }
 
     /**
@@ -461,12 +461,12 @@ class Perso extends Entity {
     public static function is_available_nickname ($nickname) {
         global $db;
         $nickname = $db->escape($nickname);
-        $sql = "SELECT COUNT(*) FROM " . TABLE_PERSOS . " WHERE perso_nickname LIKE '$nickname' LOCK IN SHARE MODE;";
+        $sql = "SELECT COUNT(*) as count FROM " . TABLE_PERSOS . " WHERE perso_nickname LIKE '$nickname' LOCK IN SHARE MODE;";
         if (!$result = $db->query($sql)) {
             message_die(SQL_ERROR, "Utilisateurs non parsable", '', __LINE__, __FILE__, $sql);
         }
         $row = $db->fetchRow($result);
-        return ($row[0] == 0);
+        return ($row["count"] == 0);
     }
 
     /**
@@ -520,12 +520,12 @@ class Perso extends Entity {
     public function is_online () {
         global $db;
         $id = $db->escape($this->id);
-        $sql = "SELECT MAX(online) FROM " . TABLE_SESSIONS . " WHERE perso_id = $id";
+        $sql = "SELECT MAX(online) as is_online FROM " . TABLE_SESSIONS . " WHERE perso_id = $id";
         if (!$result = $db->query($sql)) {
             message_die(SQL_ERROR, "Unable to query the table", '', __LINE__, __FILE__, $sql);
         }
         $row = $db->fetchRow($result);
-        return ($row[0] == 1);
+        return ($row["is_online"] == 1);
     }
 
     /**

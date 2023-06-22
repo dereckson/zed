@@ -206,12 +206,12 @@ class User extends Entity {
 
         do {
             $this->id = rand(2001, 5999);
-            $sql = "SELECT COUNT(*) FROM " . TABLE_USERS . " WHERE user_id = $this->id LOCK IN SHARE MODE;";
+            $sql = "SELECT COUNT(*) as is_already_used FROM " . TABLE_USERS . " WHERE user_id = $this->id LOCK IN SHARE MODE;";
             if (!$result = $db->query($sql)) {
                 message_die(SQL_ERROR, "Can't access users table", '', __LINE__, __FILE__, $sql);
             }
             $row = $db->fetchRow($result);
-        } while ($row[0]);
+        } while ($row["is_already_used"]);
     }
 
     /**
@@ -261,12 +261,12 @@ class User extends Entity {
      * @return bool true if the specified login is available ; otherwise, false.
      */
     public static function is_available_login (DatabaseEngine $db, $login): bool {
-        $sql = "SELECT COUNT(*) FROM " . TABLE_USERS . " WHERE username LIKE '$login' LOCK IN SHARE MODE;";
+        $sql = "SELECT COUNT(*) as is_used FROM " . TABLE_USERS . " WHERE username LIKE '$login' LOCK IN SHARE MODE;";
         if (!$result = $db->query($sql)) {
             message_die(SQL_ERROR, "Utilisateurs non parsable", '', __LINE__, __FILE__, $sql);
         }
         $row = $db->fetchRow($result);
-        return !$row[0];
+        return !$row["is_used"];
     }
 
     /**
