@@ -6,7 +6,7 @@
         <div class="avatar">
             <a href="{get_url()}?action=perso.select&perso_id={$perso->id}">
 {if $perso->avatar}
-                <img src="{#StaticContentURL#}/content/users/_avatars/{$perso->avatar}" />
+                <img src="{#StaticContentURL#}/content/users/_avatars/{$perso->avatar}" alt="Avatar of {$perso->name}" />
 {else}
                 <img src="{#StaticContentURL#}/img/misc/NoAvatar.png" alt="{#NoAvatar#}" />
 {/if}

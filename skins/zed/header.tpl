@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="{#Lang#}">
 <head>
     <title>{if isset($PAGE_TITLE)}{$PAGE_TITLE} - {/if}{#SiteTitle#}</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="{#StaticContentURL#}/css/{$css}" />
 {/foreach}
 {foreach from=$PAGE_JS item=js}
-    <script src="{#StaticContentURL#}/js/{$js}"></script>
+    <script type="text/javascript" src="{#StaticContentURL#}/js/{$js}"></script>
 {/foreach}
 {if $DOJO}
 

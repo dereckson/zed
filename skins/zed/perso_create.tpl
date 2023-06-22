@@ -29,7 +29,11 @@
             </select>
         </div>
         <div class="row">
-            <button dojoType="dijit.form.Button" iconClass="dijitEditorIcon dijitEditorIconSave" type="submit" value="Save" />{#Save#}</button>
+            <button dojoType="dijit.form.Button"
+                    iconClass="dijitEditorIcon dijitEditorIconSave"
+                    type="submit" value="Save">
+                {#Save#}
+            </button>
         </div>
     </form>
 </div>

@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="{#Lang#}">
 <head>
     <title>{#SiteTitle#}</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -30,7 +30,7 @@
     <div id="header_content">
         <div class="container_16">
             <div class="grid_4 alpha omega suffix_8">
-                <a href="{get_url()}"><img src="{#StaticContentURL#}/img/zed/logo.png" src="Zed logo" border="0" /></a>
+                <a href="{get_url()}"><img src="{#StaticContentURL#}/img/zed/logo.png" alt="Zed logo" border="0" /></a>
             </div>
             <div class="clear"></div>
         </div>

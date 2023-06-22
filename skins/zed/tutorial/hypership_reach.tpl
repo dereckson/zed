@@ -5,7 +5,7 @@
     <link rel="stylesheet" type="text/css" href="{#StaticContentURL#}/js/dojo/dojox/layout/resources/ResizeHandle.css" />
 
     <!-- Dock -->
-    <style type="text/css">
+    <style>
             @import "{#StaticContentURL#}/js/dojo/dijit/themes/dijit.css";
     </style>
 

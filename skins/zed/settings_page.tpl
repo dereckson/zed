@@ -24,7 +24,7 @@
         <label for="{$setting->key}" class="firstLabel ">{#$setting->key#}</label>
         <input dojoType="dijit.form.TextBox" id="{$setting->key}" name="{$setting->key}" type="text" value="{$setting->get()}" class="long" />
 {elseif $setting->field == "password"}
-        <div dojoType="dojox.form.PasswordValidator" name="{$setting->key}">
+        <div dojoType="dojox.form.PasswordValidator" id="{$setting->key}">
             <label for="{$setting->key}" class="firstLabel ">{#$setting->key#}</label>
             <input type="password" pwType="new" id="{$setting->key}" name="{$setting->key}" value="{$setting->get()}" class="long" />
             <br />
@@ -39,7 +39,7 @@
 {/foreach}
         </select>
 {elseif $setting->field == "checkbox"}
-        <input type="checkbox" dojoType="dijit.form.CheckBox" id="{$setting->key}" name="{$setting->key}" value="1" {if $setting->get()}checked="true" {/if}/> <label for="{$setting->key}">{#$setting->key#}</label>
+        <input type="checkbox" dojoType="dijit.form.CheckBox" id="{$setting->key}" name="{$setting->key}" value="1" {if $setting->get()}checked {/if}/> <label for="{$setting->key}">{#$setting->key#}</label>
 {else}{dprint_r($setting)}
 {/if}
     </div>

@@ -11,7 +11,7 @@
             <label class="firstLabel" for="username">{#YourLogin#}</label>
             <input type="text" id="username" name="username" maxlength="11"
                    value="{$username}" dojoType="dijit.form.ValidationTextBox"
-                   required="true" trim="true" lowercase="true" class="medium"
+                   required trim="true" lowercase="true" class="medium"
                    promptMessage="{#EnterUsernamePromptMessage#}"
             />
         </div>
@@ -28,7 +28,7 @@
         <div class="row">
             <label class="firstLabel" for="email">{#YourEmail#}</label>
             <input type="text" id="email" name="email" maxlength="63"
-                   value="{$email}" class="long" required="true" trim="true"
+                   value="{$email}" class="long" required trim="true"
                    regExpGen="dojox.validate.regexp.emailAddress"
                    dojoType="dijit.form.ValidationTextBox"
                    promptMessage="{#EnterEmailPromptMessage#}"
@@ -43,8 +43,9 @@
         </div>
         <div class="row">
             <button dojoType="dijit.form.Button" type="submit" value="Save"
-                    iconClass="dijitEditorIcon dijitEditorIconSave"
-            />{#Save#}</button>
+                    iconClass="dijitEditorIcon dijitEditorIconSave">
+                {#Save#}
+            </button>
         </div>
     </form>
 </div>
