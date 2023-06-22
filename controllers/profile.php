@@ -173,7 +173,7 @@ if (isset($_POST['EditProfile'])) {
     }
 } elseif (isset($_POST['id'])) {
     //Edits photo properties
-    $photo = new ProfilePhoto($_POST['id']);
+    $photo = new ProfilePhoto($db, $_POST['id']);
     if ($photo->lastError) {
         $smarty->assign('WAP', $photo->lastError);
         $mode = 'view';
@@ -256,7 +256,7 @@ if ($mode == 'view') {
                     if (!$id = $url[4]) {
                         $smarty->assign('WAP', "URL error. Parameter missing: picture id.");
                     } else {
-                        $photo = new ProfilePhoto($id);
+                        $photo = new ProfilePhoto($db, $id);
                         if ($photo->lastError) {
                             //Probably an non existent id (e.g. double F5, photo already deleted)
                             $smarty->assign('WAP', $photo->lastError);
