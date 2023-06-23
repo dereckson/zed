@@ -9,10 +9,9 @@
 #phpdoc -d /home/dereckson/dev/zed/zed-repo -dn Zed --title "Zed. The source code to build a world." -s -ric README -o HTML:Smarty:HandS -i apps/,cache/,content/,css/,dev/,doc/ img/,js/,lang/,skins/,includes/Smarty -t /home/wwwroot/dereckson.be/scherzo/doc/zed
 
 #Config
-PHPDOC=/usr/local/bin/phpdoc
+PHPDOC=/opt/phpDocumentor/bin/phpdoc
 REPO=/home/dereckson/dev/zed/zed
 TARGETDOC=/var/wwwroot/dereckson.be/scherzo/doc/zed
-IGNORES=apps/,cache/compiled/,content/,css/,dev/,doc/,img/,js/,lang/,skins/,includes/Smarty/
 
 #Deletes previous doc
 echo Deleting previous documentation...
@@ -20,4 +19,8 @@ rm -f -R "${TARGETDOC:?}/"*
 
 #Make doc
 echo Building new documentation...
-$PHPDOC -d $REPO -dn Zed --title "Zed. The source code to build a world." -s -ric README -o HTML:Smarty:Zed -i $IGNORES -t $TARGETDOC
+$PHPDOC -d $REPO \
+    --template="default" -s template.color=deep-purple \
+    --title "Zed. The source code to build a world." \
+    -i apps -i cache/compiled -i content -i css -i dev -i doc -i img -i js -i lang -i skins -i vendor \
+    --target $TARGETDOC
