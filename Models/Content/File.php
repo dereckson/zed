@@ -26,7 +26,7 @@ namespace Zed\Models\Content;
 use Keruald\Database\DatabaseEngine;
 
 use Zed\Models\Base\Entity;
-use Zed\Models\Base\WithDatabase;
+use Zed\Engines\Database\WithDatabase;
 
 /**
  * Content class

@@ -1,6 +1,6 @@
 <?php
 
-namespace Zed\Models\Base;
+namespace Zed\Engines\Database;
 
 use Keruald\Database\DatabaseEngine;
 

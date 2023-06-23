@@ -2,6 +2,8 @@
 
 namespace Zed\Models\Base;
 
+use Zed\Engines\Database\WithDatabase;
+
 abstract class Entity implements EntityDatabaseInterface  {
 
     ///

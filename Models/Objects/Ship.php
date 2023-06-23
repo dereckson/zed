@@ -39,6 +39,7 @@ use Zed\Models\Geo\Location;
  *
  * The class also provides methods for the ship API.
  */
+
 class Ship extends Entity {
 
     /*

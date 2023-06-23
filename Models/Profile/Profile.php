@@ -28,7 +28,7 @@ namespace Zed\Models\Profile;
 use Cache;
 use Keruald\Database\DatabaseEngine;
 use Zed\Models\Base\Entity;
-use Zed\Models\Base\WithDatabase;
+use Zed\Engines\Database\WithDatabase;
 use Zed\Models\Objects\Perso;
 
 /**

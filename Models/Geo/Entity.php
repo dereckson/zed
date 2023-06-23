@@ -2,7 +2,7 @@
 
 namespace Zed\Models\Geo;
 
-use Zed\Models\Base\WithDatabase;
+use Zed\Engines\Database\WithDatabase;
 
 abstract class Entity {
 
