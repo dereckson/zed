@@ -14,5 +14,8 @@ composer.lock
 ## PHPUnit
 .phpunit.cache/
 
+## phpDocumentor
+.phpdoc/
+
 ## Content
 /content/
