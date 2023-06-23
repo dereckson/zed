@@ -5,6 +5,7 @@
     <file>controllers</file>
     <file>Engines</file>
     <file>includes</file>
+    <file>Models</file>
     <file>api.php</file>
     <file>cron.php</file>
     <file>do.php</file>
