@@ -7,7 +7,7 @@
         "vlucas/phpdotenv": "^5.5",
         "keruald/database": "^0.3.0",
         "keruald/globalfunctions": "^0.5.1",
-        "keruald/omnitools": "^0.8.0",
+        "keruald/omnitools": "^0.10.0",
         "hypership/geo": "^0.1.0",
         "php": "^8.2",
         "ext-dom": "*",
